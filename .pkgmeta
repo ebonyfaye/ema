@@ -1,8 +1,5 @@
-package-as: ema
+package-as: EMA
 
 manual-changelog: CHANGELOG.txt
 
 enable-nolib-creation: no
-
-move-folders:
-    EMA/EMA: EMA
