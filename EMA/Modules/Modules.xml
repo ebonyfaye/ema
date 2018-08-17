@@ -1,0 +1,30 @@
+<!--
+				EMA - ( Ebony's MultiBoxing Assistant )      
+				Current Author: Jennifer Cally (Ebony)				
+				License: MIT License 2018 Jennifer Cally	
+				
+				Some Code Used from 'Jamba' that is 
+				Released under 	the MIT License
+				'Jamba' Copyright 2008-2015  Michael "Jafula" Miller
+-->
+
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd" xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Sell.lua" />
+	<Script file="Purchase.lua" />
+
+	<Script file="Toon.lua" />
+	<Script file="Talk.lua" />	
+	
+	<Script file="Follow.lua" />
+	
+	<Script file="Interaction.lua" />	
+	<Script file="Trade.lua" />
+	<Script file="Guild.lua" />
+	
+	<Script file="Quest.lua" /> 
+	<Script file="QuestWatcher.lua" /> 
+	
+	<Script file="DisplayTeam.lua" />
+	<Script file="Information.lua" />
+	<Script file="ItemUse.lua" />
+</Ui>

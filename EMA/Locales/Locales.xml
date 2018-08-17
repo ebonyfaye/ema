@@ -1,0 +1,12 @@
+<!--
+				Jamba EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )     
+				Current Author: Jennifer Cally (Ebony)				
+				Copyright 2015 - 2018 Jennifer Cally "Ebony"	
+				
+				License: The MIT License (MIT)																            
+
+-->
+<Ui xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.blizzard.com/wow/ui/..\FrameXML\UI.xsd" xmlns="http://www.blizzard.com/wow/ui/">
+	<Script file="Core-Locale-enUS.lua" />
+	<Script file="Core-Locale-deDE.lua" />
+</Ui>

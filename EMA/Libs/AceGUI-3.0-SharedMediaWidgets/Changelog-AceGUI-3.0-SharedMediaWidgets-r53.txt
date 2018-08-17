@@ -1,0 +1,7 @@
+------------------------------------------------------------------------
+r53 | nevcairiel | 2016-06-03 06:51:46 +0000 (Fri, 03 Jun 2016) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0-SharedMediaWidgets/prototypes.lua
+
+Remove SetPoint to UIParent, AceGUI-3.0 will properly position the element when its used
+------------------------------------------------------------------------

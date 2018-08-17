@@ -1,0 +1,15 @@
+## Interface: 30300
+## Title: Lib: Deformat-3.0
+## Notes: A library to convert a post-formatted string back to its original arguments given its format string.
+## Author: ckknight
+## X-eMail: ckknight@gmail.com
+## X-Category: Library
+## X-License: MIT
+## LoadOnDemand: 1
+## X-Curse-Packaged-Version: Beta-4.3i-1-g3e0e1d6
+## X-Curse-Project-Name: Jamba
+## X-Curse-Project-ID: jamba
+## X-Curse-Repository-ID: wow/jamba/mainline
+
+LibStub\LibStub.lua
+lib.xml

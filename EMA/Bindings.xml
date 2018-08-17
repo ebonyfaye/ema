@@ -1,0 +1,95 @@
+<!--
+				EMA - ( Ebony's MultiBoxing Assistant )      
+				Current Author: Jennifer Cally (Ebony)				
+				License: MIT License 2018 Jennifer Cally	
+				
+				Some Code Used from 'Jamba' that is 
+				Released under the MIT License
+				'Jamba' Copyright 2008-2015  Michael "Jafula" Miller
+-->
+<Bindings>
+	<!-- Team Bindings -->
+	<Binding name="TEAMINVITE" header="TEAM" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="TEAMDISBAND" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="TEAMMASTER" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<!-- Follow Bindings-->
+	<Binding name="FOLLOWME" header="FOLLOW" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOLLOWSTROBEME" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOLLOWSTROBEOFF" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOLLOWTEAIN" category="EMA">
+		--[[dummy]]
+	</Binding>	
+	<!-- ItemUse Bindings-->
+	<Binding name="ITEMUSE1" header="ITEMUSE" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE2" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE3" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE4" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE5" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE6" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="JITEMUSE7" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE8" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE9" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE10" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE11" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE12" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE13" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE14" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE15" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE16" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE17" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE18" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE19" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE20" category="EMA">
+		--[[dummy]]
+	</Binding>
+</Bindings>

@@ -1,0 +1,281 @@
+﻿---------------------------
+ChangeLogs:
+---------------------------
+
+EMA Version: v8.0.1-Release(0086)
+Game Version: 8.0.1
+Release Date: 17/8/2018
+
+## Core/Random
+	-- Started Cleaning up < Legion Code.
+	-- Changed Translations To Fit EMA (TK911)
+	
+## Team
+	-- Added A New Key Binding To Change Master
+	
+## Follow
+	-- Added New Bindings:
+		- Follow Me
+		- Follow Strobe
+		- Follow Train
+	-- Added A New Command Line 
+		"/ema-follow Me <Tag/Group>"		
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0084/0085)
+Game Version: 8.0.1
+Release Date: 15/8/2018
+
+
+**** EMERGENCY FIX *****
+
+	--Fixed A Bug With Realm Names With Spaces And Not Setting Them Selfs Right!
+	-- DAM Debug/code -- am sorry i need to sleep i guess
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0083)
+Game Version: 8.0.1
+Release Date: 15/8/2018
+	
+## Team
+	-- Removed Isboxer Buttons
+	
+## Item-Use
+	-- Item KeyBindings Now Work As They Should
+	-- Will Now Add Useable Quest Items That sometimes are not classed as a Quest-item in the QuestLog EG: https://www.wowhead.com/item=163852/tortollan-pilgrimage-scroll 		
+	-- Fixed a few Locale Bugs in Quest-Tracker
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0081)
+Game Version: 8.0.1
+Release Date: 10/8/2018
+
+## Core
+	- Renamed 'Jamba-EE' TO EMA ( Ebony's MultiBoxing Assistant )
+	- No longer supported By IsBoxer!
+	- No Longer Available to Download on CureForge	
+	
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0078)
+Game Version: 8.0.1
+Release Date: 10/8/2018
+
+## EMA-Team 
+	-- Add Raid/Party Should Now Work Again!
+
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0078)
+Game Version: 8.0.1
+Release Date: 10/8/2018
+
+## EMA-Team 
+	-- IsboxerSync
+		- Removed,
+	-- Isboxer Auto Add Isboxer Team List.
+		- All this does is Adds New Team Members.
+		- Developer Note: Sync does not work don't seem right for to many.
+		- Isboxer Can Nolonger Remove Team Members Not In The Team List!
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0077)
+Game Version: 8.0.1
+Release Date: 09/8/2018
+
+## Team 
+	-- IsboxerSync 
+		- Fixed a bug in (Isboxer Sync) That was Removing Team Members "Randomly" 
+		- Developer Note: Am so sorry for the players i did not say was a EMA problem (it kinda was not) as this was a tricky bug to track down! -jen
+		- Sync team Only works on the 1st login.
+	--Naming
+		-Add @Target/@Mouseover Are Now Working Again *BUT WITHOUT "@"
+		-Using Target Or Mouseover Will Add Your Current Target Again
+		-Can No longer Have dumb case sensitive names EG:( TeStMyNameSuCKS) As Warcraft Does Not Support This Naming!
+	
+---------------------------
+
+EMA Version: v8.0.1-Release(0076)
+Game Version: 8.0.1
+Release Date: 3/8/2018
+
+## Tag/Group
+	- Fixed A Bug that was checking the characters and groups was Case sensitive when using command line Tag/Groups
+
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0075)
+Game Version: 8.0.1
+Release Date: 30/7/2018
+
+
+## Team
+	- When Setting a Master Without a tag or using GUI will now update "all" characters
+	
+## Group/Tag
+	- Should no be able to add Case sensitive Custom Groups/Tags as intended
+		* fixed Bug: https://github.com/ebonyfaye/EMA/issues/10	
+	
+	
+	
+## Interaction
+	- Fixed a Bug that was dismounting team when Having The "Shift" Key Down
+		** Developer Note: Yes you can use shift to stop the clones falling to there deaths!!!
+	
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0074)
+Game Version: 8.0.1
+Release Date: 20/7/2018
+
+
+## Toon
+	- Should notlonger show CC warning of it self on master character
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0073)
+Game Version: 8.0.1
+Release Date: 20/7/2018
+
+## Guild
+	- Fixed A Disaply Bug With Not Dispalying the Amount To Keep On Toon
+
+## Message
+	- We Should have EMA Raid Warning Back! YAY!!!
+
+	
+---------------------------
+
+EMA Version: v8.0.1-Release(0072)
+Game Version: 8.0.1
+Release Date: 19/7/2018
+---------------------------
+
+## Interaction
+	-- Should No longer Trun off blizzard AutoLoot.
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0071)
+Game Version: 8.0.1
+Release Date: 18/7/2018
+
+## Core
+	- Team Set Isboxer Sync List As Default
+
+
+## Display
+	- Fixed a Lua Error on Login
+
+
+
+---------------------------
+EMA Version: v8.0.1-Release(0069)
+Game Version: 8.0.1
+Release Date: 18/7/2018
+---------------------------
+
+## Core
+	-Fixed deDE Locales (Quest-Tracker Showing As Dsipaly Team on German Clients 
+	-Cleaned up some Debug Code
+	
+
+---------------------------	
+EMA Version: v8.0.1-Beta(0068)
+Game Version: 8.0.1
+Release Date: 17/7/2018
+---------------------------
+
+## Core
+	- Changed the layout of the GUI.
+    - New Grouping system no longer has "blank Pages"
+	- New Layout for modules
+	- Most of EMA is now classed as one Addon "EMA"
+	- Removed Tons Of Old code.
+	- Commands Lines Might Not Work Right.
+	- All Settings are Sorted Under A New DataBase And Have Reset!!!!
+	- All Locales system been merged into one File and is easyer to change!
+	- Added deDE Locale thanks TK911
+	- Updated As Much As I Can For 8.0.1 (BFA)
+
+#GUI
+	- New Logo'a Now Shows on GUI
+
+#API
+	Tons of EMAApi Changes.	
+	
+	
+#Team
+	- Now Shows Groups On The TeamList.
+	- Updated Gui to be more User Frindly.
+	- Added Real Sync Support For Isboxer Team Management!
+	- Added a Button To Add Isboxer Team list
+
+#Group (Tag)
+	- A full Rewrite of [Tag] Now named Group Use the Grouo List Page to add new groups/remove Groups that you can add to character's In The TeamGUI
+	- Every Module That Supported Tags Now Shows A Group DropDown list.
+
+
+### Modules changed 	
+	- Removed Taxi And Mount Modules
+	- Added New Module "Interaction"
+	- Added New Module "Guild"
+	- Removed EMAAdvancedLoot 
+	
+## Quest
+	- Tell "Team" If The A Character Has A Full Inventory When Handing In The A Quest With A Item
+
+## Quest-Tracker
+	- Removed Map Icon
+	- ProgressBar Quests Now Only Show's A Single Real Percent And Average Team Percent	
+	- Quests That Do Not Have A  "Objective As Such" Will Now Show On The EMA-Tracker
+	- Scenario Should always be at the top of the Quest-Tracker
+	- Shows Quest Items On The EMA Tracker
+	- Shows Faction Icon On New Campaign Quests
+	- Added A ToolTip That Shows Quest Rewards 
+	- Quest Objectives That have a Percent Tracker, Now Tracks Correctly On Tracker
+	- Added A Right ClickDropDown Menu For Extra Options 
+	
+
+## Interaction 	
+	New Module:
+	- Added Taxi Support
+		-- Old Taxi.
+	- Added Mount Support
+		-- Old Mount.
+		-- NOTE: Is Not Working In 8.0.0 So Has Been Disbabled For Now.
+	- Added "EMA-EE Loot V2"
+		-- Support to tell the team if you loot a Epic or Rare Items.
+		-- Speeded Up looting.
+		-- No Longer Gets stuck on Items.
+		-- No Longer runs a Endless Loop (WOWAPI DOES NOT LIKE LUA's: "while!! .. do ")
+
+## Guild
+	New Module:
+		-Support Adding Items In The GuildBank, By BankTab & Groups!
+		
+## Toon
+	- Warnings	
+		-- Added Support To Tell Your Master If Your Durability Drops Below A Certain Percent
+		-- Fixed When You Run Out Of Space In Your Bags.
+
+## ItemUse
+	-- Now Count Items In Teams Bags And Displays On The Item Tooltip's.
+		--- With Bank Items.
+	-- Total Team Count Display On the Frame. 	
+			
