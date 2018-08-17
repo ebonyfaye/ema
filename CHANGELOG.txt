@@ -4,6 +4,17 @@ ChangeLogs:
 
 EMA Version: v8.0.1-Release(0086)
 Game Version: 8.0.1
+Release Date: 18/8/2018
+
+## Core/Random
+	-- Fixed a bug with "Some" keybindings not working
+
+
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0086)
+Game Version: 8.0.1
 Release Date: 17/8/2018
 
 ## Core/Random
