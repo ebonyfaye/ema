@@ -666,8 +666,7 @@ function EMA:SettingsCreateQuestCompletionControl( top )
 	EMA.settingsControlCompletion.checkBoxNoChoiceAllAutoCompleteQuest:SetType( "radio" )
 	movingTop = movingTop - radioBoxHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControlCompletion, L["MORE_THEN_ONE_REWARD"], movingTop, false )
-	movingTop = movingTop - headingHeight	
-
+	movingTop = movingTop - headingHeight
 	-- Radio box: Has choice, minion do nothing.
 	EMA.settingsControlCompletion.checkBoxHasChoiceMinionDoNothing = EMAHelperSettings:CreateCheckBox(
 		EMA.settingsControlCompletion, 

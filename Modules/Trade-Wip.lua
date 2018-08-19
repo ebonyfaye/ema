@@ -576,20 +576,50 @@ function EMA:TradeItemsFromList()
 		--EMA:Print("Team", character )
 		local teamCharacterName = ( Ambiguate( character, "short" ) )
 		local tradePlayersName = GetUnitName("NPC")
-		if tradePlayersName == teamCharacterName then
+		if tradePlayersName == teamCharacterName and EMAUtilities:CheckIsFromMyRealm(character) == true then
 			--EMA:Print("found", tradePlayersName, teamCharacterName, character )
 			--Checks the D_B for any items in the list.
 			for position, itemInformation in pairs( EMA.db.autoTradeItemsList ) do	
-				if EMAApi.IsCharacterInGroup(EMA.characterName, itemInformation.tag ) == true and EMAUtilities:CheckIsFromMyRealm(character) == true then
-				--EMA:Print("Items in list", itemInformation.link )
-					for bag,slot,link in LibBagUtils:Iterate("BAGS", itemInformation.link ) do
-						if bag ~= nil then
+				if EMAApi.IsCharacterInGroup(EMA.characterName, itemInformation.tag ) == true then
+				EMA:Print("Items in list", itemInformation.link )
+					--for bag,slot,link in LibBagUtils:Iterate("BAGS", itemInformation.link ) do
+						--if bag ~= nil then
 							--EMA:Print("found", bag, slot)
-							for iterateTradeSlots = 1, (MAX_TRADE_ITEMS - 1) do
-								if GetTradePlayerItemLink( iterateTradeSlots ) == nil then
-									PickupContainerItem( bag, slot )
-									ClickTradeButton( iterateTradeSlots )
-								end		
+					for bagID = 0, NUM_BAG_SLOTS do
+						for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+							--EMA:Print( "Bags OK. checking", itemLink )
+							local item = Item:CreateFromBagAndSlot(bagID, slotID)
+							if ( item ) then
+								local bagItemLink = item:GetItemLink()
+								if (bagItemLink ) then	
+									local canTrade = false
+									local location = item:GetItemLocation()
+									local itemType = C_Item.GetItemInventoryType( location )
+									local isBop = C_Item.IsBound( location )
+									local itemRarity =  C_Item.GetItemQuality( location )
+									local iLvl = C_Item.GetCurrentItemLevel( location )
+									local _, itemCount = GetContainerItemInfo( bagID, slotID 
+									if bagItemLink == itemInformation.link then
+										canTrade == true
+									if 	itemRarity 
+									
+									if itemType ~= 0 then	
+											
+											
+											
+											
+											
+											
+											
+											
+										for iterateTradeSlots = 1, (MAX_TRADE_ITEMS - 1) do	
+											if GetTradePlayerItemLink( iterateTradeSlots ) == nil then
+												PickupContainerItem( bagID, slotID )
+												ClickTradeButton( iterateTradeSlots )	
+											end
+										end
+									end			
+								end
 							end
 						end		
 					end	
@@ -600,7 +630,7 @@ function EMA:TradeItemsFromList()
 		end	
 	end	
 end
-
+--[[
 function EMA:TradeBoEItems()
 	if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
 		return
@@ -674,7 +704,7 @@ function EMA:TradeCRItems()
 		end
 	end		
 end
-
+]]
 
 function EMA:TRADE_CLOSED()
 	

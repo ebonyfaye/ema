@@ -4,9 +4,9 @@
 --																					--
 --				License: MIT License 2018 Jennifer Cally							--
 --																					--
---				Some Code Used from "EMA" that is 								--
+--				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
---				"EMA" Copyright 2008-2015  Michael "Jafula" Miller				--
+--				"Jamba" Copyright 2008-2015  Michael "Jafula" Miller				--
 --																					--
 -- ================================================================================ --
 
@@ -53,7 +53,7 @@ EMAPrivate.SettingsFrame.Widget = AceGUI:Create( "EMAWindow" )
 EMAPrivate.SettingsFrame.Widget:SetTitle( "" )
 EMAPrivate.SettingsFrame.Widget:SetStatusText(L["STATUSTEXT"])
 EMAPrivate.SettingsFrame.Widget:SetWidth(900)
-EMAPrivate.SettingsFrame.Widget:SetHeight(650)
+EMAPrivate.SettingsFrame.Widget:SetHeight(800)
 EMAPrivate.SettingsFrame.Widget:SetLayout( "Fill" )
 EMAPrivate.SettingsFrame.WidgetTree = AceGUI:Create( "EMATreeGroup" )
 EMAPrivate.SettingsFrame.WidgetTree:SetLayout( "Fill" )
@@ -826,7 +826,7 @@ function EMA:ResetSettingsFrame()
 	EMA:Print( L["FRAME_RESET"] )
 	EMAPrivate.SettingsFrame.Widget:SetPoint("TOPLEFT", 0, 0)
 	EMAPrivate.SettingsFrame.Widget:SetWidth(900)
-	EMAPrivate.SettingsFrame.Widget:SetHeight(650)
+	EMAPrivate.SettingsFrame.Widget:SetHeight(800)
 	EMAPrivate.SettingsFrame.Widget:Show()
 end
 

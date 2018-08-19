@@ -1,10 +1,12 @@
 -- ================================================================================ --
---				EMA EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
+--				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
---				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
 --																					--
---				License: The MIT License (MIT)										--
---				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
+--				License: MIT License 2018 Jennifer Cally							--
+--																					--
+--				Some Code Used from "Jamba" that is 								--
+--				Released under the MIT License 										--
+--				"Jamba" Copyright 2008-2015  Michael "Jafula" Miller				--
 --																					--
 -- ================================================================================ --
 

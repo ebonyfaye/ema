@@ -46,10 +46,11 @@ EMA.settings = {
 	profile = {
 		sellItemOnAllWithAltKey = false,
 		-- Other Items
-		autoSellOtherItems = false,
 		autoSellOtherItemsList = {},
 		messageArea = EMAApi.DefaultMessageArea(),
 		autoSellItem = false,
+		blackListItem = false,
+		destroyItem = false,
 		-- Gray
 		autoSellPoor = false,
 		autoSellBoEPoor	=  false,
@@ -117,7 +118,7 @@ EMA.ITEM_QUALITY_EPIC = 4
 EMA.ITEM_QUALITY_LEGENDARY = 5
 EMA.ITEM_QUALITY_ARTIFACT = 6
 EMA.ITEM_QUALITY_HEIRLOOM = 7
-EMA.MIN_ITEM_LEVEL = 10
+EMA.MIN_ITEM_LEVEL = 5
 
 function EMA:BeforeEMAProfileChanged()	
 end
@@ -134,39 +135,45 @@ function EMA:SettingsRefresh()
 	-- Poor
 	EMA.settingsControl.checkBoxAutoSellPoor:SetValue ( EMA.db.autoSellPoor )
 	EMA.settingsControl.checkBoxAutoSellBoEPoor:SetValue ( EMA.db.autoSellBoEPoor )
-	EMA.settingsControl.checkBoxAutoSellPoor:SetDisabled ( not EMA.db.autoSellItem )
-	EMA.settingsControl.checkBoxAutoSellBoEPoor:SetDisabled ( not EMA.db.autoSellPoor )
+	EMA.settingsControl.checkBoxAutoSellPoor:SetDisabled ( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
+	EMA.settingsControl.checkBoxAutoSellBoEPoor:SetDisabled ( not EMA.db.autoSellPoor or not EMA.db.autoSellItem )
 	-- Uncommon
 	EMA.settingsControl.checkBoxAutoSellUncommon:SetValue (EMA.db.autoSellUncommon )
 	EMA.settingsControl.editBoxAutoSellIlvlUncommon:SetText (EMA.db.autoSellIlvlUncommon )
 	EMA.settingsControl.checkBoxAutoSellBoEUncommon:SetValue (EMA.db.autoSellBoEUncommon )
 	EMA.settingsControl.checkBoxAutoSellUncommon:SetDisabled ( not EMA.db.autoSellItem )
-	EMA.settingsControl.editBoxAutoSellIlvlUncommon:SetDisabled ( not EMA.db.autoSellUncommon )
-	EMA.settingsControl.checkBoxAutoSellBoEUncommon:SetDisabled ( not EMA.db.autoSellUncommon )	
+	EMA.settingsControl.editBoxAutoSellIlvlUncommon:SetDisabled ( not EMA.db.autoSellUncommon or not EMA.db.autoSellItem )
+	EMA.settingsControl.checkBoxAutoSellBoEUncommon:SetDisabled ( not EMA.db.autoSellUncommon or not EMA.db.autoSellItem )	
 	-- Rare
 	EMA.settingsControl.checkBoxAutoSellRare:SetValue (EMA.db.autoSellRare )
 	EMA.settingsControl.editBoxAutoSellIlvlRare:SetText (EMA.db.autoSellIlvlRare )
 	EMA.settingsControl.checkBoxAutoSellBoERare:SetValue (EMA.db.autoSellBoERare )
 	EMA.settingsControl.checkBoxAutoSellRare:SetDisabled ( not EMA.db.autoSellItem )
-	EMA.settingsControl.editBoxAutoSellIlvlRare:SetDisabled ( not EMA.db.autoSellRare )
-	EMA.settingsControl.checkBoxAutoSellBoERare:SetDisabled ( not EMA.db.autoSellRare )	
+	EMA.settingsControl.editBoxAutoSellIlvlRare:SetDisabled ( not EMA.db.autoSellRare or not EMA.db.autoSellItem  )
+	EMA.settingsControl.checkBoxAutoSellBoERare:SetDisabled ( not EMA.db.autoSellRare or not EMA.db.autoSellItem )	
 	-- Epic
 	EMA.settingsControl.checkBoxAutoSellEpic:SetValue ( EMA.db.autoSellEpic )
 	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetText ( EMA.db.autoSellIlvlEpic)
 	EMA.settingsControl.checkBoxAutoSellBoEEpic:SetValue ( EMA.db.autoSellBoEEpic )
 	EMA.settingsControl.checkBoxAutoSellEpic:SetDisabled ( not EMA.db.autoSellItem )
-	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetDisabled ( not EMA.db.autoSellEpic )
-	EMA.settingsControl.checkBoxAutoSellBoEEpic:SetDisabled ( not EMA.db.autoSellEpic )		
+	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetDisabled ( not EMA.db.autoSellEpic or not EMA.db.autoSellItem )
+	EMA.settingsControl.checkBoxAutoSellBoEEpic:SetDisabled ( not EMA.db.autoSellEpic or not EMA.db.autoSellItem )		
 	-- Messages.
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
-	-- Others. 
-	EMA.settingsControlOthers.checkBoxAutoSellOtherItems:SetValue( EMA.db.autoSellOtherItems )
-	EMA.settingsControlOthers.othersEditBoxOtherTag:SetText( EMA.autoSellOtherItemTag )
-	EMA.settingsControlOthers.othersEditBoxOtherItem:SetDisabled( not EMA.db.autoSellOtherItems )
-	EMA.settingsControlOthers.othersEditBoxOtherTag:SetDisabled( not EMA.db.autoSellOtherItems )
-	EMA.settingsControlOthers.othersButtonRemove:SetDisabled( not EMA.db.autoSellOtherItems )
-	EMA.settingsControlOthers.othersButtonAdd:SetDisabled( not EMA.db.autoSellOtherItems )
-	EMA:SettingsOthersScrollRefresh()
+	-- list. 
+	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
+	EMA.settingsControl.listCheckBoxBoxOtherDestroy:SetValue( EMA.db.destroyItem )
+	EMA.settingsControl.listEditBoxOtherTag:SetText( EMA.autoSellOtherItemTag )
+	EMA.settingsControl.listEditBoxOtherItem:SetDisabled( not EMA.db.autoSellItem )
+	EMA.settingsControl.listEditBoxOtherTag:SetDisabled( not EMA.db.autoSellItem )
+	EMA.settingsControl.listButtonRemove:SetDisabled( not EMA.db.autoSellItem )
+	EMA.settingsControl.listButtonAdd:SetDisabled( not EMA.db.autoSellItem )
+	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
+	EMA.settingsControl.listCheckBoxBoxOtherDestroy:SetDisabled( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
+	
+	
+	
+	EMA:SettingslistScrollRefresh()
 end
 
 -- Settings received.
@@ -186,7 +193,8 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoSellEpic = settings.autoSellEpic
 		EMA.db.autoSellIlvlEpic = settings.autoSellIlvlEpic
 		EMA.db.autoSellBoEEpic = settings.autoSellBoEEpic
-		EMA.db.autoSellOtherItems = settings.autoSellOtherItems
+		EMA.db.blackListItem = settings.blackListItem
+		EMA.db.destroyItem = settings.destroyItem 
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.autoSellOtherItemsList = EMAUtilities:CopyTable( settings.autoSellOtherItemsList )
 		-- Refresh the settings.
@@ -212,12 +220,16 @@ local function SettingsCreateMain( top )
 	local headingWidth = EMAHelperSettings:HeadingWidth( false )
 	local horizontalSpacing = EMAHelperSettings:GetHorizontalSpacing()
 	local indent = horizontalSpacing * 12
+	local indentContinueLabel = horizontalSpacing * 18
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
+	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4
+	local listWidth = headingWidth
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
-	local thirdWidth = (headingWidth - (horizontalSpacing * 5)) / 5
-	local left2 = left + thirdWidth
-	local left3 = left + halfWidth
+	local thirdWidth = (headingWidth - indentContinueLabel) / 3
+	local left2 = left + thirdWidth +  horizontalSpacing
+	local left3 = left2 + thirdWidth +  horizontalSpacing
 	local movingTop = top
+	local movingTopEdit = - 10
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
 	movingTop = movingTop - headingHeight	
@@ -233,23 +245,111 @@ local function SettingsCreateMain( top )
 		L["ALT_SELL_ALL_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight	
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL_ITEMS"], movingTop, false )
-	
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL_LIST"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	EMA.settingsControl.checkBoxAutoSellItems = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		headingWidth, 
-		left, 
+		left2, 
 		movingTop, 
 		L["AUTO_SELL_ITEMS"],
 		EMA.SettingsToggleAutoSellItems,
 		L["AUTO_SELL_ITEMS_HELP"]
 	)	
--- Gray
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.listHighlightRow = 1
+	EMA.settingsControl.listOffset = 1
+	local list = {}
+	list.listFrameName = "EMASellSettingslistFrame"
+	list.parentFrame = EMA.settingsControl.widgetSettings.content
+	list.listTop = movingTop
+	list.listLeft = left
+	list.listWidth = listWidth
+	list.rowHeight = 15
+	list.rowsToDisplay = 8
+	list.columnsToDisplay = 4
+	list.columnInformation = {}
+	list.columnInformation[1] = {}
+	list.columnInformation[1].width = 45
+	list.columnInformation[1].alignment = "LEFT"
+	list.columnInformation[2] = {}
+	list.columnInformation[2].width = 20
+	list.columnInformation[2].alignment = "LEFT"
+	list.columnInformation[3] = {}
+	list.columnInformation[3].width = 20
+	list.columnInformation[3].alignment = "LEFT"
+	list.columnInformation[4] = {}
+	list.columnInformation[4].width = 20
+	list.columnInformation[4].alignment = "LEFT"	
+	list.scrollRefreshCallback = EMA.SettingslistScrollRefresh
+	list.rowClickCallback = EMA.SettingslistRowClick
+	EMA.settingsControl.list = list
+	EMAHelperSettings:CreateScrollList( EMA.settingsControl.list )
+	movingTop = movingTop - list.listHeight - verticalSpacing
+	EMA.settingsControl.listButtonRemove = EMAHelperSettings:CreateButton(
+		EMA.settingsControl, 
+		buttonControlWidth, 
+		left, 
+		movingTop,
+		L["REMOVE"],
+		EMA.SettingslistRemoveClick
+	)
+	movingTop = movingTop -	buttonHeight - verticalSpacing
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["ADD_TO_LIST"], movingTop, false )
+	movingTop = movingTop - headingHeight
+	EMA.settingsControl.listEditBoxOtherItem = EMAHelperSettings:CreateEditBox( 
+		EMA.settingsControl,
+		thirdWidth,
+		left2,
+		movingTop,
+		L["SELL_LIST_DROP_ITEM"]
+	)
+	EMA.settingsControl.listEditBoxOtherItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedOtherItem )
+	movingTop = movingTop - editBoxHeight
+	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left,
+		movingTop + movingTopEdit,
+		L["BLACKLIST_ITEM"],
+		EMA.SettingsToggleBlackListItem,
+		L["BLACKLIST_ITEM_HELP"]
+	)
+	EMA.settingsControl.listCheckBoxBoxOtherDestroy = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left2,
+		movingTop + movingTopEdit,
+		L["DESTROY_ITEM"],
+		EMA.SettingsToggleDestroyItem,
+		L["DESTROY_ITEM_HELP"]
+	)
+	EMA.settingsControl.listEditBoxOtherTag = EMAHelperSettings:CreateDropdown(
+		EMA.settingsControl, 
+		dropBoxWidth,	
+		left3,
+		movingTop, 
+		L["GROUP_LIST"]
+	)
+	EMA.settingsControl.listEditBoxOtherTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.listEditBoxOtherTag:SetCallback( "OnValueChanged",  EMA.SellOtherGroupDropDownList )	
+	movingTop = movingTop - editBoxHeight	
+	EMA.settingsControl.listButtonAdd = EMAHelperSettings:CreateButton(	
+		EMA.settingsControl, 
+		buttonControlWidth, 
+		left, 
+		movingTop, 
+		L["ADD"],
+		EMA.SettingslistAddClick
+	)
+	movingTop = movingTop -	buttonHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL_ITEMS"], movingTop, false )
+	movingTop = movingTop - headingHeight
+	-- Gray
 	movingTop = movingTop - checkBoxHeight - 3
 	EMA.settingsControl.checkBoxAutoSellPoor = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
+		thirdWidth, 
 		left,
 		movingTop,
 		L["SELL_GRAY"],
@@ -258,8 +358,8 @@ local function SettingsCreateMain( top )
 	)
 	EMA.settingsControl.checkBoxAutoSellBoEPoor = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
-		left3,
+		thirdWidth, 
+		left2,
 		movingTop,
 		L["ONLY_SB"],
 		EMA.SettingsToggleAutoSellBoEPoor,
@@ -269,27 +369,26 @@ local function SettingsCreateMain( top )
 	movingTop = movingTop - checkBoxHeight - 3
 	EMA.settingsControl.checkBoxAutoSellUncommon = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
+		thirdWidth, 
 		left,
-		movingTop,
+		movingTop + movingTopEdit,
 		L["SELL_GREEN"],
 		EMA.SettingsToggleAutoSellUncommon,
 		L["SELL_GREEN_HELP"]
 	)
 	EMA.settingsControl.checkBoxAutoSellBoEUncommon = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
-		left3,
-		movingTop,
+		thirdWidth, 
+		left2,
+		movingTop + movingTopEdit,
 		L["ONLY_SB"],
 		EMA.SettingsToggleAutoSellBoEUncommon,
 		L["ONLY_SB_HELP"]
 	)
-	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.editBoxAutoSellIlvlUncommon = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl, 
 		thirdWidth, 
-		left,
+		left3,
 		movingTop,
 		L["iLVL"],
 		L["iLVL_HELP"]
@@ -299,27 +398,26 @@ local function SettingsCreateMain( top )
 	movingTop = movingTop - editBoxHeight - 3	
 	EMA.settingsControl.checkBoxAutoSellRare = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
+		thirdWidth, 
 		left,
-		movingTop,
+		movingTop + movingTopEdit,
 		L["SELL_RARE"],
 		EMA.SettingsToggleAutoSellRare,
 		L["SELL_RARE_HELP"]
 	)
 	EMA.settingsControl.checkBoxAutoSellBoERare = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
-		left3,
-		movingTop,
+		thirdWidth, 
+		left2,
+		movingTop + movingTopEdit,
 		L["ONLY_SB"],
 		EMA.SettingsToggleAutoSellBoERare,
 		L["ONLY_SB_HELP"]
 	)
-	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.editBoxAutoSellIlvlRare = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl, 
 		thirdWidth, 
-		left,
+		left3,
 		movingTop,
 		L["iLVL"],
 		L["iLVL_HELP"]
@@ -329,39 +427,38 @@ local function SettingsCreateMain( top )
 	movingTop = movingTop - editBoxHeight - 3
 	EMA.settingsControl.checkBoxAutoSellEpic = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
+		thirdWidth, 
 		left,
-		movingTop,
+		movingTop + movingTopEdit,
 		L["SELL_EPIC"],
 		EMA.SettingsToggleAutoSellEpic,
 		L["SELL_EPIC_HELP"]
 	)
 	EMA.settingsControl.checkBoxAutoSellBoEEpic = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
-		left3,
-		movingTop,
+		thirdWidth, 
+		left2,
+		movingTop + movingTopEdit,
 		L["ONLY_SB"],
 		EMA.SettingsToggleAutoSellBoEEpic,
 		L["ONLY_SB_HELP"]
 	)
-	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.editBoxAutoSellIlvlEpic = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl, 
 		thirdWidth, 
-		left,
+		left3,
 		movingTop,
 		L["iLVL"],
 		L["iLVL_HELP"]
 	)	
 	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedIlvlEpic )		
-	movingTop = movingTop - editBoxHeight	
+	movingTop = movingTop - editBoxHeight - 3	
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL"]..L[" "]..L["MESSAGES_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+		thirdWidth, 
+		left2, 
 		movingTop, 
 		L["MESSAGE_AREA"]
 	)
@@ -375,122 +472,18 @@ function EMA:OnMessageAreasChanged( message )
 	EMA.settingsControl.dropdownMessageArea:SetList( EMAApi.MessageAreaList() )
 end
 
-local function SettingsCreateOthers( top )
-	-- Position and size constants.
-	local buttonControlWidth = 85
-	local checkBoxHeight = EMAHelperSettings:GetCheckBoxHeight()
-	local buttonHeight = EMAHelperSettings:GetButtonHeight()
-	local editBoxHeight = EMAHelperSettings:GetEditBoxHeight()
-	local dropdownHeight = EMAHelperSettings:GetDropdownHeight()
-	local left = EMAHelperSettings:LeftOfSettings()
-	local headingHeight = EMAHelperSettings:HeadingHeight()
-	local headingWidth = EMAHelperSettings:HeadingWidth( false )
-	local horizontalSpacing = EMAHelperSettings:GetHorizontalSpacing()
-	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
-	local othersWidth = headingWidth
-	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
-	local movingTop = top
-	EMAHelperSettings:CreateHeading( EMA.settingsControlOthers, L["SELL_LIST"], movingTop, false )
-	movingTop = movingTop - headingHeight
-	EMA.settingsControlOthers.checkBoxAutoSellOtherItems = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlOthers, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["AUTO_SELL_ITEMS"],
-		EMA.SettingsToggleAutoSellOtherItems
-	)	
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlOthers.othersHighlightRow = 1
-	EMA.settingsControlOthers.othersOffset = 1
-	local list = {}
-	list.listFrameName = "EMASellSettingsOthersFrame"
-	list.parentFrame = EMA.settingsControlOthers.widgetSettings.content
-	list.listTop = movingTop
-	list.listLeft = left
-	list.listWidth = othersWidth
-	list.rowHeight = 20
-	list.rowsToDisplay = 15
-	list.columnsToDisplay = 2
-	list.columnInformation = {}
-	list.columnInformation[1] = {}
-	list.columnInformation[1].width = 70
-	list.columnInformation[1].alignment = "LEFT"
-	list.columnInformation[2] = {}
-	list.columnInformation[2].width = 30
-	list.columnInformation[2].alignment = "LEFT"	
-	list.scrollRefreshCallback = EMA.SettingsOthersScrollRefresh
-	list.rowClickCallback = EMA.SettingsOthersRowClick
-	EMA.settingsControlOthers.others = list
-	EMAHelperSettings:CreateScrollList( EMA.settingsControlOthers.others )
-	movingTop = movingTop - list.listHeight - verticalSpacing
-	EMA.settingsControlOthers.othersButtonRemove = EMAHelperSettings:CreateButton(
-		EMA.settingsControlOthers, 
-		buttonControlWidth, 
-		left, 
-		movingTop,
-		L["REMOVE"],
-		EMA.SettingsOthersRemoveClick
-	)
-	movingTop = movingTop -	buttonHeight - verticalSpacing
-	EMAHelperSettings:CreateHeading( EMA.settingsControlOthers, L["ADD_TO_LIST"], movingTop, false )
-	movingTop = movingTop - headingHeight
-	EMA.settingsControlOthers.othersEditBoxOtherItem = EMAHelperSettings:CreateEditBox( 
-		EMA.settingsControlOthers,
-		headingWidth,
-		left,
-		movingTop,
-		L["SELL_LIST_DROP_ITEM"]
-	)
-	EMA.settingsControlOthers.othersEditBoxOtherItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedOtherItem )
-	movingTop = movingTop - editBoxHeight	
-	EMA.settingsControlOthers.othersEditBoxOtherTag = EMAHelperSettings:CreateDropdown(
-		EMA.settingsControlOthers, 
-		dropBoxWidth,	
-		left,
-		movingTop, 
-		L["GROUP_LIST"]
-	)
-	EMA.settingsControlOthers.othersEditBoxOtherTag:SetList( EMAApi.GroupList() )
-	EMA.settingsControlOthers.othersEditBoxOtherTag:SetCallback( "OnValueChanged",  EMA.SellOtherGroupDropDownList )	
-	movingTop = movingTop - editBoxHeight	
-	EMA.settingsControlOthers.othersButtonAdd = EMAHelperSettings:CreateButton(	
-		EMA.settingsControlOthers, 
-		buttonControlWidth, 
-		left, 
-		movingTop, 
-		L["ADD"],
-		EMA.SettingsOthersAddClick
-	)
-	movingTop = movingTop -	buttonHeight	
-	return movingTop
-end
-
 local function SettingsCreate()
 	EMA.settingsControl = {}
-
-	EMA.settingsControlOthers = {}
 	EMAHelperSettings:CreateSettings( 
-		EMA.settingsControl, 
+	EMA.settingsControl, 
 		EMA.moduleDisplayName, 
 		EMA.parentDisplayName, 
 		EMA.SettingsPushSettingsClick,
 		EMA.moduleIcon,
 		EMA.moduleOrder		
 	)
-	EMAHelperSettings:CreateSettings( 
-		EMA.settingsControlOthers, 
-		EMA.moduleDisplayVenderName, 
-		EMA.parentDisplayName, 
-		EMA.SettingsPushSettingsClick,
-		EMA.moduleIcon,
-		EMA.moduleListOrder		
-	)	
 	local bottomOfSell = SettingsCreateMain( EMAHelperSettings:TopOfSettings() )
 	EMA.settingsControl.widgetSettings.content:SetHeight( -bottomOfSell )
-	local bottomOfOthers = SettingsCreateOthers( EMAHelperSettings:TopOfSettings() )
-	EMA.settingsControlOthers.widgetSettings.content:SetHeight( -bottomOfOthers )
-	-- Help
 	local helpTable = {}
 	EMAHelperSettings:CreateHelp( EMA.settingsControl, helpTable, EMA:GetConfiguration() )		
 end
@@ -499,40 +492,56 @@ end
 -- Settings Callbacks.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:SettingsOthersScrollRefresh()
+function EMA:SettingslistScrollRefresh()
 	FauxScrollFrame_Update(
-		EMA.settingsControlOthers.others.listScrollFrame, 
-		EMA:GetOthersMaxPosition(),
-		EMA.settingsControlOthers.others.rowsToDisplay, 
-		EMA.settingsControlOthers.others.rowHeight
+		EMA.settingsControl.list.listScrollFrame, 
+		EMA:GetlistMaxPosition(),
+		EMA.settingsControl.list.rowsToDisplay, 
+		EMA.settingsControl.list.rowHeight
 	)
-	EMA.settingsControlOthers.othersOffset = FauxScrollFrame_GetOffset( EMA.settingsControlOthers.others.listScrollFrame )
-	for iterateDisplayRows = 1, EMA.settingsControlOthers.others.rowsToDisplay do
+	EMA.settingsControl.listOffset = FauxScrollFrame_GetOffset( EMA.settingsControl.list.listScrollFrame )
+	for iterateDisplayRows = 1, EMA.settingsControl.list.rowsToDisplay do
 		-- Reset.
-		EMA.settingsControlOthers.others.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
-		EMA.settingsControlOthers.others.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
-		EMA.settingsControlOthers.others.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
-		EMA.settingsControlOthers.others.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
-		EMA.settingsControlOthers.others.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetText( "" )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 0, 0, 1.0 )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetText( "" )
+		EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetTextColor( 1.0, 0, 0, 1.0 )
+		
+		EMA.settingsControl.list.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		-- Get data.
-		local dataRowNumber = iterateDisplayRows + EMA.settingsControlOthers.othersOffset
-		if dataRowNumber <= EMA:GetOthersMaxPosition() then
-			-- Put data information into columns.
-			local othersInformation = EMA:GetOtherAtPosition( dataRowNumber )
-			EMA.settingsControlOthers.others.rows[iterateDisplayRows].columns[1].textString:SetText( othersInformation.name )
-			EMA.settingsControlOthers.others.rows[iterateDisplayRows].columns[2].textString:SetText( othersInformation.tag )
+		local dataRowNumber = iterateDisplayRows + EMA.settingsControl.listOffset
+		if dataRowNumber <= EMA:GetlistMaxPosition() then
+			-- Put data information into columns
+			local listInformation = EMA:GetOtherAtPosition( dataRowNumber )
+			local blackListText = ""
+			local destroyText = ""
+			if listInformation.blackList == true then
+				blackListText = L["ITEM_ON_BLACKLIST"]
+			end
+			if 	listInformation.destroyItem == true then
+				destroyText = L["DESTROY_ITEM"]
+			end
+			EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetText( listInformation.name )
+			EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetText( listInformation.tag )
+			EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetText( blackListText )
+			EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetText( destroyText )	
+			
 			-- Highlight the selected row.
-			if dataRowNumber == EMA.settingsControlOthers.othersHighlightRow then
-				EMA.settingsControlOthers.others.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
+			if dataRowNumber == EMA.settingsControl.listHighlightRow then
+				EMA.settingsControl.list.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
 			end
 		end
 	end
 end
 
-function EMA:SettingsOthersRowClick( rowNumber, columnNumber )		
-	if EMA.settingsControlOthers.othersOffset + rowNumber <= EMA:GetOthersMaxPosition() then
-		EMA.settingsControlOthers.othersHighlightRow = EMA.settingsControlOthers.othersOffset + rowNumber
-		EMA:SettingsOthersScrollRefresh()
+function EMA:SettingslistRowClick( rowNumber, columnNumber )		
+	if EMA.settingsControl.listOffset + rowNumber <= EMA:GetlistMaxPosition() then
+		EMA.settingsControl.listHighlightRow = EMA.settingsControl.listOffset + rowNumber
+		EMA:SettingslistScrollRefresh()
 	end
 end
 
@@ -610,7 +619,7 @@ function EMA:SettingsToggleAutoSellBoEEpic( event, checked )
 end
 
 function EMA:OnGroupAreasChanged( message )
-	EMA.settingsControlOthers.othersEditBoxOtherTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.listEditBoxOtherTag:SetList( EMAApi.GroupList() )
 end
 
 function EMA:SettingsSetMessageArea( event, value )
@@ -618,12 +627,7 @@ function EMA:SettingsSetMessageArea( event, value )
 	EMA:SettingsRefresh()
 end
 
-function EMA:SettingsToggleAutoSellOtherItems( event, checked )
-	EMA.db.autoSellOtherItems = checked
-	EMA:SettingsRefresh()
-end
-
-function EMA:SettingsOthersRemoveClick( event )
+function EMA:SettingslistRemoveClick( event )
 	StaticPopup_Show( "EMASELL_CONFIRM_REMOVE_AUTO_SELL_OTHER_ITEMS" )
 end
 
@@ -655,11 +659,22 @@ function EMA:SettingsEditBoxChangedUnusableSoulboundTag( event, text )
 	EMA:SettingsRefresh()
 end
 
-function EMA:SettingsOthersAddClick( event )
+function EMA:SettingsToggleBlackListItem( event, checked ) 
+	EMA.db.blackListItem = checked
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleDestroyItem( event, checked )
+	EMA.db.destroyItem = checked
+	EMA:SettingsRefresh()
+end	
+
+
+function EMA:SettingslistAddClick( event )
 	if EMA.autoSellOtherItemLink ~= nil and EMA.autoSellOtherItemTag ~= nil then
-		EMA:AddOther( EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag )
+		EMA:AddOther( EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag, EMA.db.blackListItem,  EMA.db.destroyItem  )
 		EMA.autoSellOtherItemLink = nil
-		EMA.settingsControlOthers.othersEditBoxOtherItem:SetText( "" )
+		EMA.settingsControl.listEditBoxOtherItem:SetText( "" )
 		EMA:SettingsRefresh()
 	end
 end
@@ -716,7 +731,7 @@ function EMA:OnDisable()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- EMASell functionality.
+-- Sell functionality.
 -------------------------------------------------------------------------------------------------------------
 
 -- The ContainerFrameItemButton_OnModifiedClick hook.
@@ -730,34 +745,28 @@ function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
 end
 
 function EMA:DoSellItem( itemlink )
-	-- Iterate each bag the player has.		
-	for bag = EMA.BAG_PLAYER_BACKPACK, EMA.BAG_PLAYER_MAXIMUM do 
-		-- Iterate each slot in the bag.
-		numSlots = GetContainerNumSlots( bag )
-		for slot = 1, numSlots do 
-			-- Get the item link for the item in this slot.
-		--	local bagItemLink = GetContainerItemLink( bag, slot )
-			local _, _, locked, _, _, _, bagItemLink, _, hasNoValue = GetContainerItemInfo(bag, slot)
-			-- If there is an item...
-			if bagItemLink ~= nil then
-				local name = GetItemInfo( bagItemLink )
-				-- Does it match the item to sell?					
-				if EMAUtilities:DoItemLinksContainTheSameItem( bagItemLink, itemlink ) then
-					-- Yes, sell this item.
-					if 	hasNoValue == false then	
+	for bagID = 0, NUM_BAG_SLOTS do
+		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+			--EMA:Print( "Bags OK. checking", itemLink )
+			local item = Item:CreateFromBagAndSlot(bagID, slotID)
+			if ( item ) then
+				local bagItemLink = item:GetItemLink()
+				local bagItemName = item:GetItemName()
+				if (bagItemLink ) then
+					if EMAUtilities:DoItemLinksContainTheSameItem( bagItemLink, itemlink ) then
 						if MerchantFrame:IsVisible() == true then	
-							UseContainerItem( bag, slot ) 
-							-- Tell the boss.
+							UseContainerItem( bagID, slotID ) 
+							-- Tell the Boss.
 							EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_SOLD_X"]( bagItemLink ), false )
 						end
-					end							
+					end
 				end
 			end
 		end
 	end
-end
+end	
 
-function EMA:GetOthersMaxPosition()
+function EMA:GetlistMaxPosition()
 	return #EMA.db.autoSellOtherItemsList
 end
 
@@ -765,7 +774,8 @@ function EMA:GetOtherAtPosition( position )
 	return EMA.db.autoSellOtherItemsList[position]
 end
 
-function EMA:AddOther( itemLink, itemTag )
+function EMA:AddOther( itemLink, itemTag, blackList, destroy )
+	--EMA:Print( itemLink, itemTag, blackList, destroy )
 	-- Get some more information about the item.
 	local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo( itemLink )
 	-- If the item could be found.
@@ -774,16 +784,18 @@ function EMA:AddOther( itemLink, itemTag )
 		itemInformation.link = itemLink
 		itemInformation.name = name
 		itemInformation.tag = itemTag
+		itemInformation.blackList = blackList
+		itemInformation.destroyItem = destroy
 		table.insert( EMA.db.autoSellOtherItemsList, itemInformation )
-		EMA:SettingsRefresh()			
-		EMA:SettingsOthersRowClick( 1, 1 )
+		EMA:SettingsRefresh()
+		EMA:SettingslistRowClick( EMA:GetlistMaxPosition() , 1 )
 	end	
 end
 
 function EMA:RemoveOther()
-	table.remove( EMA.db.autoSellOtherItemsList, EMA.settingsControlOthers.othersHighlightRow )
+	table.remove( EMA.db.autoSellOtherItemsList, EMA.settingsControl.listHighlightRow )
 	EMA:SettingsRefresh()
-	EMA:SettingsOthersRowClick( 1, 1 )		
+	EMA:SettingslistRowClick( EMA.settingsControl.listHighlightRow -1,  1 )		
 end
 
 function EMA:MERCHANT_SHOW()
@@ -791,36 +803,34 @@ function EMA:MERCHANT_SHOW()
 	if EMA.db.autoSellItem == true then
 		EMA:DoMerchantSellItems()
 	end
-	-- Sell Other Items
-	if EMA.db.autoSellOtherItems == true then
-		EMA:ScheduleTimer( "DoMerchantSellOtherItems", 2 )
-	end
 end
 
 function EMA:DoMerchantSellItems()
 	local count = 0
 	local gold = 0
-	-- Iterate each bag the player has.		
-	for bag = EMA.BAG_PLAYER_BACKPACK, EMA.BAG_PLAYER_MAXIMUM do 
-		-- Iterate each slot in the bag.
-		numSlots = GetContainerNumSlots( bag )
-		for slot = 1, numSlots do 
-		local _, itemCount, locked, _, _, _, link, _, hasNoValue = GetContainerItemInfo(bag, slot)
-	
-		--for bag,slot,link in LibBagUtils:Iterate("BAGS") do
-			if bag ~= nil then
-				if link ~= nil then	
-				local canSell = false
-				local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, iconFileDataID, itemSellPrice = GetItemInfo( link )	
-				local _, itemCount = GetContainerItemInfo( bag, slot )
-				--EMA:Print("Test", itemLink, itemRarity )
+	for bagID = 0, NUM_BAG_SLOTS do
+		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+			--EMA:Print( "Bags OK. checking", itemLink )
+			local item = Item:CreateFromBagAndSlot(bagID, slotID)
+			if ( item ) then
+				local bagItemID = item:GetItemID()
+				if ( bagItemID ) then
+					local itemLink = item:GetItemLink()
+					local location = item:GetItemLocation()
+					local itemType = C_Item.GetItemInventoryType( location )
+					local isBop = C_Item.IsBound( location )
+					local itemRarity =  C_Item.GetItemQuality( location )
+					local iLvl = C_Item.GetCurrentItemLevel( location )
+					local _, itemCount = GetContainerItemInfo( bagID, slotID )
+					local _, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
+					--EMA:Print("ItemTest", itemLink, itemRarity, itemType, isBop, itemRarity, iLvl, itemSellPrice)
+					local canSell = false
+					local canDestroy = false
 					if EMA.db.autoSellPoor == true then
 						if itemRarity == EMA.ITEM_QUALITY_POOR then
 							canSell = true
 							if EMA.db.autoSellBoEPoor == true then 
-								local isBop = EMAUtilities:ToolTipBagScaner(link, bag, slot)
-								if isBop ~= ITEM_SOULBOUND then
-								 --EMA:Print("BoE", link )
+								if isBop == false then
 								 canSell = false
 								end
 							end	
@@ -829,131 +839,119 @@ function EMA:DoMerchantSellItems()
 					-- Green
 					if EMA.db.autoSellUncommon == true then
 						if itemRarity == EMA.ITEM_QUALITY_UNCOMMON then
-							if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
-								--EMA:Print("testGreen", link, itemRarity, "a", EMA.ITEM_QUALITY_UNCOMMON )
+							if itemType ~= 0 then
+								--EMA:Print("testGreen", itemLink, itemRarity, "a", EMA.ITEM_QUALITY_UNCOMMON )
 								local num = tonumber( EMA.db.autoSellIlvlUncommon )
-								local iLvl = ItemUpgradeInfo:GetUpgradedItemLevel(link)
-								--EMA:Print("test", num , "vs", iLvl, "item", link )
-								if num ~= nil and iLvl ~= nil and ( itemLevel > EMA.MIN_ITEM_LEVEL ) then
-									--if iLvl >= num then
+								--EMA:Print("testGreen", num , "vs", iLvl, "item", link )
+								if num ~= nil and iLvl ~= nil and ( iLvl > EMA.MIN_ITEM_LEVEL ) then
 									if num >= iLvl then	
-										--EMA:Print("ture", link )
+										--EMA:Print("canSell" )
 										canSell = true
 									end
 								end	
 								if EMA.db.autoSellBoEUncommon == true then 
-									local isBop = EMAUtilities:ToolTipBagScaner( link,bag,slot )
 									--EMA:Print("IsBoP", isBop)									
-									if isBop ~= ITEM_SOULBOUND then
+									if isBop == false then
+										canSell = false
+									end
+								
+								end
+							end
+						end
+					end	
+					--Blue
+					if EMA.db.autoSellRare == true then
+						if itemRarity == EMA.ITEM_QUALITY_RARE then
+							if itemType ~= 0 then
+								--EMA:Print("testGreen", itemLink, itemRarity, "a", EMA.ITEM_QUALITY_RARE )
+								local num = tonumber( EMA.db.autoSellIlvlRare )
+								--EMA:Print("testGreen", num , "vs", iLvl, "item", link )
+								if num ~= nil and iLvl ~= nil and ( iLvl > EMA.MIN_ITEM_LEVEL ) then
+									if num >= iLvl then	
+										--EMA:Print("canSell" )
+										canSell = true
+									end
+								end	
+								if EMA.db.autoSellBoERare == true then 
+									--EMA:Print("IsBoP", isBop)									
+									if isBop == false then
+										canSell = false
+									end
+								
+								end
+							end
+						end
+					end	
+						-- Epic
+					if EMA.db.autoSellEpic == true then
+						if itemRarity == EMA.ITEM_QUALITY_EPIC then
+							if itemType ~= 0 then
+								--EMA:Print("testGreen", itemLink, itemRarity, "a", EMA.ITEM_QUALITY_EPIC )
+								local num = tonumber( EMA.db.autoSellIlvlEpic )
+								--EMA:Print("testGreen", num , "vs", iLvl, "item", link )
+								if num ~= nil and iLvl ~= nil and ( iLvl > EMA.MIN_ITEM_LEVEL ) then
+									if num >= iLvl then	
+										--EMA:Print("canSell")
+										canSell = true
+									end
+								end	
+								if EMA.db.autoSellBoEEpic == true then 
+									--local isBop = EMAUtilities:ToolTipBagScaner( link,bag,slot )
+									--EMA:Print("IsBoP", isBop)									
+									if isBop == false then
 										canSell = false
 									end
 								end
 							end
 						end
-					end	
-						--Blue
-						if EMA.db.autoSellRare == true then
-							if itemRarity == EMA.ITEM_QUALITY_RARE then
-								if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
-									local num = tonumber( EMA.db.autoSellIlvlRare )
-									local iLvl = ItemUpgradeInfo:GetUpgradedItemLevel(link)
-									--EMA:Print("test", iLvl, "vs", num )
-									if num ~= nil and iLvl ~= nil and (itemLevel > EMA.MIN_ITEM_LEVEL ) then
-										if num >= iLvl then
-											canSell = true
-										end
-									end	
-									if EMA.db.autoSellBoERare == true then 
-										local isBop = EMAUtilities:ToolTipBagScaner( link,bag,slot )
-										--EMA:Print("IsBoP", isBop)
-										if isBop ~= ITEM_SOULBOUND then
-											canSell = false									
-										end
-									end
+					end		
+					-- Sell List/BackList
+					for position, itemInformation in pairs( EMA.db.autoSellOtherItemsList ) do
+						if EMAApi.IsCharacterInGroup( EMA.characterName, itemInformation.tag ) == true then
+							if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
+								--EMA:Print("DataTest", itemInformation.blackList, itemInformation.destroyItem )
+								--EMA:Print("test", itemLink)
+								canSell = true
+								if itemInformation.blackList == true then
+									canSell = false
 								end	
-							end	
-						end		
-						-- Epic
-						if EMA.db.autoSellEpic == true then
-							if itemRarity == EMA.ITEM_QUALITY_EPIC then
-								if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
-									local num = tonumber( EMA.db.autoSellIlvlEpic )
-									local iLvl = ItemUpgradeInfo:GetUpgradedItemLevel(link)
-									--EMA:Print("test", iLvl, "vs", num )
-									if num ~= nil and iLvl ~= nil and (itemLevel > EMA.MIN_ITEM_LEVEL ) then
-										if num >= iLvl then	
-											canSell = true
-										end
-									end	
-									if EMA.db.autoSellBoEEpic == true then 
-										local isBop = EMAUtilities:ToolTipBagScaner( link,bag,slot )
-										--EMA:Print("IsBoP", isBop)
-										if isBop ~= ITEM_SOULBOUND then
-											canSell = false
-										end
-									end
+								if itemInformation.destroyItem == true then
+									--canSell = false
+									canDestroy = true
 								end
-							end	
+							end
 						end
-						if canSell == true then 
-							if itemSellPrice ~= nil and itemSellPrice > 0 then
+					end
+					if canSell == true then 
+						--EMA:Print("END OF LOOT", canSell, itemLink)
+						if itemSellPrice ~= nil and itemSellPrice > 0 then
+							if MerchantFrame:IsVisible() == true then
+								if itemCount > 1 then
+									count = count + itemCount
+									gold = gold + itemSellPrice * itemCount
+								else	
+									count = count + 1
+									gold = gold + itemSellPrice
+								end
+								UseContainerItem( bagID, slotID )
+							end	
+						else	
+							if canDestroy == true then
 								if MerchantFrame:IsVisible() == true then
-									if itemCount > 1 then
-										count = count + itemCount
-										gold = gold + itemSellPrice * itemCount
-									else	
-										count = count + 1
-										gold = gold + itemSellPrice
-									end
-									UseContainerItem( bag, slot )	
-								end
-							end	
-						end
-					end	
-				end
+									PickupContainerItem(bagID,slotID)
+									DeleteCursorItem()
+									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["DELETE_ITEM"]( itemLink ), false )		
+								end	
+							end
+						end	
+					end
+				end	
 			end
 		end
+	end
 	if count > 0 then	
 		local formattedGoldAmount = GetCoinTextureString(gold)
 		EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_SOLD_ITEMS_PLUS_GOLD"]( count )..formattedGoldAmount, false )
-	end
-end
-
--- Sell Other Items! 
-function EMA:DoMerchantSellOtherItems()
-	-- Iterate all the wanted items...
-	for position, itemInformation in pairs( EMA.db.autoSellOtherItemsList ) do
-		-- Does this character have the item tag?  No, don't sell.
-		if EMAApi.IsCharacterInGroup( EMA.characterName, itemInformation.tag ) == true then
-			-- Attempt to sell any items in the players bags.
-			-- Iterate each bag the player has.		
-			for bag = EMA.BAG_PLAYER_BACKPACK, EMA.BAG_PLAYER_MAXIMUM do 
-				-- Iterate each slot in the bag.
-				for slot = 1, GetContainerNumSlots( bag ) do 
-					-- Get the item link for the item in this slot.
-					local bagItemLink = GetContainerItemLink( bag, slot )
-					local _, _, locked, _, _, _, bagItemLink, _, hasNoValue = GetContainerItemInfo(bag, slot)
-					-- If there is an item...
-					if bagItemLink ~= nil then
-						-- Does it match the item to sell?					
-						if EMAUtilities:DoItemLinksContainTheSameItem( bagItemLink, itemInformation.link ) then
-							-- Yes, sell this item.
-							if hasNoValue == false then	
-								if MerchantFrame:IsVisible() == true then	
-									UseContainerItem( bag, slot ) 
-								end
-							else
-								if 	locked == false then
-									PickupContainerItem(bag,slot)
-									DeleteCursorItem()
-									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["DELETE_ITEM"]( bagItemLink ), false )	
-								end	
-							end							
-						end
-					end
-				end
-			end
-		end
 	end
 end
 

@@ -4,9 +4,9 @@
 --																					--
 --				License: MIT License 2018 Jennifer Cally							--
 --																					--
---				Some Code Used from "EMA" that is 								--
+--				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
---				"EMA" Copyright 2008-2015  Michael "Jafula" Miller				--
+--				"Jamba" Copyright 2008-2015  Michael "Jafula" Miller				--
 --																					--
 -- ================================================================================ --
 

@@ -4,9 +4,9 @@
 --																					--
 --				License: MIT License 2018 Jennifer Cally							--
 --																					--
---				Some Code Used from "EMA" that is 								--
+--				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
---				"EMA" Copyright 2008-2015  Michael "Jafula" Miller				--
+--				"Jamba" Copyright 2008-2015  Michael "Jafula" Miller				--
 --																					--
 -- ================================================================================ --
 
@@ -67,8 +67,8 @@ BINDING_NAME_ITEMUSE20 = L["ITEM"]..L[" "]..L["20"]
 EMA.settings = {
 	profile = {
 		showItemUse = true,
-		showItemUseOnMasterOnly = false,
-		hideItemUseInCombat = false,
+		--showItemUseOnMasterOnly = false,
+		--hideItemUseInCombat = false,
 		showItemCount = true,
 		borderStyle = L["BLIZZARD_TOOLTIP"],
 		backgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
@@ -183,6 +183,8 @@ EMA.maximumNumberOfRows = 20
 -------------------------------------------------------------------------------------------------------------
 
 local function CanDisplayItemUse()
+	-- PHASEING OUT THE MASTER SYSTEM!
+	--[[
 	local canShow = false
 	if EMA.db.showItemUse == true then
 		if EMA.db.showItemUseOnMasterOnly == true then
@@ -193,7 +195,8 @@ local function CanDisplayItemUse()
 			canShow = true
 		end
 	end
-	return canShow
+	]]
+	return true
 end
 
 local function CreateEMAItemUseFrame()
@@ -286,7 +289,6 @@ function EMA:ShowTooltip(frame, info, show)
 	end
 end
 
-
 function EMA:UpdateHeight()											  
 	if EMA.db.hideClearButton == false then
 		EMA.db.itemUseTitleHeight = 2
@@ -362,15 +364,14 @@ function EMA:UpdateQuestItemsInBar()
 		local kind = itemInfo.kind
 		local action = itemInfo.action
 		if kind == "item" then
-			local itemLink,_,_,_,_,questItem = GetItemInfo( action )
-			--EMA:Print("Checking Item...", itemLink, action)
-			if questItem == "Quest" then
-				if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
-					if EMA:IsInInventory( itemLink ) == false then
-					--EMA:Print("NOT IN BAGS", itemLink)
-						EMA.db.itemsAdvanced[iterateItems] = nil	
-						EMA:EMASendUpdate( iterateItems, "empty", nil )						
-					end
+			local questitem = GetItemSpell( action )
+			--EMA:Print("Checking Item...", itemLink, action, questItem )
+			if ( questitem ) then
+				local IsInInventory = EMA:IsInInventory( action )
+				if IsInInventory == false then
+					EMA:Print("NOT IN BAGS", IsInInventory, action)
+					EMA.db.itemsAdvanced[iterateItems] = nil	
+					EMA:EMASendUpdate( iterateItems, "empty", nil )
 				end	
 			end
 		end
@@ -473,64 +474,21 @@ end
 --ebony test Using the wowapi and not the scanning of tooltips
 function EMA:CheckForQuestItemAndAddToBar()	
 	for iterateQuests = 1, GetNumQuestLogEntries() do
-		--EMA:AddQuestUseableItems() -- Adds Special Quest Useable Items
 		local questLogTitleText,_,_,isHeader, _, _, _, questID = GetQuestLogTitle(iterateQuests)
-		  	if not isHeader then
+		if not isHeader then
 			--EMA:Print("test", questItemLink, iterateQuests, questLogTitleText, questID )
 			local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )	
 			if questItemLink ~= nil then
 				local itemName = GetItemInfo(questItemLink)
 				local questname, rank = GetItemSpell(questItemLink) -- Only means to detect if the item is usable
 				if questname then
-					if EMAUtilities:DoItemLinksContainTheSameItem( questItemLink, questItemLink ) == true then
-						--EMA:Print("addItem", questItemLink )
-						EMA:AddAnItemToTheBarIfNotExists( questItemLink, false)				
-					end				
+					--EMA:Print("addItem", questItemLink )
+					EMA:AddAnItemToTheBarIfNotExists( questItemLink, false)						
 				end
 			end			
 		end
 	end
 end
-
-
-function EMA:AddQuestUseableItems()
-	for bag = 0, NUM_BAG_SLOTS do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local texture, count, locked, quality, readable, lootable, link, isFiltered, hasNoValue, itemID = GetContainerItemInfo(bag, slot)
-			if link then
-				local tooltipText = EMAUtilities:TooltipScaner( link )
-				if tooltipText == ITEM_BIND_QUEST then
-					local questname, rank = GetItemSpell( link ) -- Only means to detect if the item is usable
-					if questname then
-						EMA:AddAnItemToTheBarIfNotExists( link, false)
-					end
-				end
-			end
-		end				
-	end
-end
-
-
-
-
-
-
-
-
--- Add satchels to item bar.
-function EMA:CheckForSatchelsItemAndAddToBar()
-	for bag = 0, NUM_BAG_SLOTS do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local texture, count, locked, quality, readable, lootable, link, isFiltered, hasNoValue, itemID = GetContainerItemInfo(bag, slot)
-			if link then
-				local tooltipText = EMAUtilities:TooltipScaner( link )
-				if tooltipText == LOCKED then
-					EMA:AddAnItemToTheBarIfNotExists( link, false )
-				end
-			end
-		end
-	end
-end	
 
 -- Removes unused items.
 function EMA:ClearButton()
@@ -552,7 +510,7 @@ function EMA:ClearButton()
 				if tooltipTextTwo == nil or tooltipTextTwo ~= "Unique" then
 					if EMA:IsInInventory( name ) == false then
 						EMA.db.itemsAdvanced[iterateItems] = nil
-						EMA:EMASendUpdate( iterateItems, "empty", nil	)
+						EMA:EMASendUpdate( iterateItems, "empty", nil )
 						EMA:SettingsRefresh()
 					end		
 				end
@@ -586,7 +544,25 @@ function EMA:SyncButton()
 	end	
 end
 
+-- Add satchels to item bar.
+function EMA:CheckForSatchelsItemAndAddToBar()
+	for bag = 0, NUM_BAG_SLOTS do
+		for slot = 1, GetContainerNumSlots(bag) do
+			local _, _, _, _, _, lootable = GetContainerItemInfo(bag, slot)
+			if link then
+				local tooltipText = EMAUtilities:TooltipScaner( link )
+				if lootable == true then	
+					if tooltipText ~= LOCKED then
+						EMA:AddAnItemToTheBarIfNotExists( link, false )
+					end
+				end	
+			end
+		end
+	end
+end
 
+
+-- NOWW VENDER TRASH 8.0
 -- Adds artifact power items to item bar.
 function EMA:CheckForArtifactItemAndAddToBar()
 	for bag = 0, NUM_BAG_SLOTS do
@@ -602,24 +578,28 @@ function EMA:CheckForArtifactItemAndAddToBar()
 	end
 end		
 	
---Checks the item is in the Toon players bag
-function EMA:IsInInventory(itemLink)
-	for bag = 0,4,1 do 
-		for slot = 1,GetContainerNumSlots(bag),1 do 
-			--EMA:Debug( "Bags OK. checking", itemLink )
-			local _,_,_,_,_,_,_,_,_,Link = GetContainerItemInfo(bag,slot)
-			if Link then
-				--EMA:Debug( "Bags OK. checking", itemLink, Link )
-				local itemString = GetItemInfo( Link )
-				--EMA:Debug( "Bags OK. checking", itemLink, itemString )
-				if itemLink == itemString then
-					--EMA:Print( "True" )
-					return true
+--Checks the item is in the Toon players bag 8.0.1 using min/min code!
+function EMA:IsInInventory(itemID)
+	local InBags = false
+	for bagID = 0, NUM_BAG_SLOTS do
+		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+			--EMA:Print( "Bags OK. checking", itemLink )
+			local item = Item:CreateFromBagAndSlot(bagID, slotID)
+			if ( item ) then
+				local bagItemID = item:GetItemID()
+				if ( bagItemID ) then
+					local checkItemID = "item:"..bagItemID
+					--EMA:Print("Check", checkItemID, "vs", itemID )
+					if checkItemID == itemID then
+						--EMA:Print("We Have Item checkItemID in Bags" )
+						InBags = true
+						break 
+					end
 				end
 			end
-		end 
+		end
 	end
-	return false
+	return InBags
 end
 
 
@@ -767,6 +747,7 @@ local function SettingsCreateOptions( top )
 		EMA.SettingsToggleShowItemUse,
 		L["SHOW_ITEM_BAR_HELP"]
 	)
+	--[[
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	EMA.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -777,6 +758,7 @@ local function SettingsCreateOptions( top )
 		EMA.SettingsToggleShowItemUseOnlyOnMaster,
 		L["ONLY_ON_MASTER_HELP"]
 	)
+	]]
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	EMA.settingsControl.displayOptionsCheckBoxShowItemCount = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -807,6 +789,7 @@ local function SettingsCreateOptions( top )
 		EMA.SettingsToggleAutoAddQuestItem,
 		L["ADD_QUEST_ITEMS_TO_BAR_HELP"]
 	)
+	--[[
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -817,6 +800,7 @@ local function SettingsCreateOptions( top )
 		EMA.SettingsToggleAutoAddArtifactItem,
 		L["ADD_ARTIFACT_ITEMS_HELP"]
 	)	
+	]]
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -838,6 +822,7 @@ local function SettingsCreateOptions( top )
 		L["HIDE_BUTTONS_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing	
+	--[[
 	EMA.settingsControl.displayOptionsCheckBoxHideItemUseInCombat = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		headingWidth, 
@@ -848,6 +833,7 @@ local function SettingsCreateOptions( top )
 		L["HIDE_IN_COMBAT_HELP_IU"]
 	)	
 	movingTop = movingTop - checkBoxHeight - verticalSpacing	
+	]]
 	EMA.settingsControl.displayOptionsItemUseNumberOfItems = EMAHelperSettings:CreateSlider( 
 		EMA.settingsControl, 
 		headingWidth, 
@@ -988,13 +974,13 @@ end
 function EMA:SettingsRefresh()
 	-- Values.
 	EMA.settingsControl.displayOptionsCheckBoxShowItemUse:SetValue( EMA.db.showItemUse )
-	EMA.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster:SetValue( EMA.db.showItemUseOnMasterOnly )
-	EMA.settingsControl.displayOptionsCheckBoxHideItemUseInCombat:SetValue( EMA.db.hideItemUseInCombat )
+	--EMA.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster:SetValue( EMA.db.showItemUseOnMasterOnly )
+	--EMA.settingsControl.displayOptionsCheckBoxHideItemUseInCombat:SetValue( EMA.db.hideItemUseInCombat )
 	EMA.settingsControl.displayOptionsCheckBoxShowItemCount:SetValue( EMA.db.showItemCount )
 	EMA.settingsControl.displayOptionsItemUseNumberOfItems:SetValue( EMA.db.numberOfItems )
 	EMA.settingsControl.displayOptionsItemUseNumberOfRows:SetValue( EMA.db.numberOfRows )
 	EMA.settingsControl.displayOptionsCheckBoxAutoAddQuestItem:SetValue( EMA.db.autoAddQuestItemsToBar )
-	EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem:SetValue( EMA.db.autoAddArtifactItemsToBar )
+	--EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem:SetValue( EMA.db.autoAddArtifactItemsToBar )
 	EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem:SetValue( EMA.db.autoAddSatchelsItemsToBar )
 	EMA.settingsControl.displayOptionsCheckBoxHideClearButton:SetValue( EMA.db.hideClearButton )
 	EMA.settingsControl.displayOptionsCheckBoxItemBarsSynchronized:SetValue( EMA.db.itemBarsSynchronized )
@@ -1009,13 +995,13 @@ function EMA:SettingsRefresh()
 	-- Trying to change state in combat lockdown causes taint. Let's not do that. Eventually it would be nice to have a "proper state driven item list",
 	-- but this workaround is enough for now.
 	if not InCombatLockdown() then
-		EMA.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster:SetDisabled( not EMA.db.showItemUse )
-		EMA.settingsControl.displayOptionsCheckBoxHideItemUseInCombat:SetDisabled( not EMA.db.showItemUse )
+		--EMA.settingsControl.displayOptionsCheckBoxShowItemUseOnlyOnMaster:SetDisabled( not EMA.db.showItemUse )
+		--EMA.settingsControl.displayOptionsCheckBoxHideItemUseInCombat:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxShowItemCount:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsItemUseNumberOfItems:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsItemUseNumberOfRows:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxAutoAddQuestItem:SetDisabled( not EMA.db.showItemUse )
-		EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem:SetDisabled( not EMA.db.showItemUse )
+		--EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxHideClearButton:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxItemBarsSynchronized:SetDisabled( not EMA.db.showItemUse )
@@ -1168,7 +1154,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
-	EMA:RegisterEvent( "ITEM_PUSH" )
+	--EMA:RegisterEvent( "ITEM_PUSH" ) -- Using Bag Update this seems to be running a little more then it did < 8.0.3
 	EMA:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	EMA:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_UPDATE" )
 	EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_Registered" )
@@ -1196,8 +1182,8 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.showItemUse = settings.showItemUse
-		EMA.db.showItemUseOnMasterOnly = settings.showItemUseOnMasterOnly
-		EMA.db.hideItemUseInCombat = settings.hideItemUseInCombat
+		--EMA.db.showItemUseOnMasterOnly = settings.showItemUseOnMasterOnly
+		--EMA.db.hideItemUseInCombat = settings.hideItemUseInCombat
 		EMA.db.showItemCount = settings.showItemCount
 		EMA.db.borderStyle = settings.borderStyle
 		EMA.db.backgroundStyle = settings.backgroundStyle
@@ -1206,7 +1192,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.itemUseVerticalSpacing = settings.itemUseVerticalSpacing
 		EMA.db.itemUseHorizontalSpacing = settings.itemUseHorizontalSpacing
 		EMA.db.autoAddQuestItemsToBar = settings.autoAddQuestItemsToBar
-		EMA.db.autoAddArtifactItemsToBar = settings.autoAddArtifactItemsToBar
+		--EMA.db.autoAddArtifactItemsToBar = settings.autoAddArtifactItemsToBar
 		EMA.db.autoAddSatchelsItemsToBar = settings.autoAddSatchelsItemsToBar
 		EMA.db.hideClearButton = settings.hideClearButton
 		EMA.db.itemBarsSynchronized = settings.itemBarsSynchronized
@@ -1265,19 +1251,27 @@ function EMA:PLAYER_REGEN_DISABLED()
 end
 
 function EMA:BAG_UPDATE_DELAYED()
-	if not InCombatLockdown() then
-	--	EMA:UpdateItemsInBar()
-	--	EMA:UpdateQuestItemsInBar()
-		-- ItemCount 
+	if EMA.db.showItemUse == false and not InCombatLockdown() then
+		return
+	end
+	if EMA.db.autoAddQuestItemsToBar == true then
+		EMA:CheckForQuestItemAndAddToBar()
+	end	
+	if EMA.db.showItemCount == true then 
 		EMA:GetEMAItemCount()
 	end
+	if EMA.db.autoAddSatchelsItemsToBar == true then
+		EMA:CheckForSatchelsItemAndAddToBar()
+	end	
 end
+
 function EMA:QUEST_UPDATE()
 	if not InCombatLockdown() then
-		EMA:UpdateQuestItemsInBar()	
+		EMA:UpdateQuestItemsInBar()
 	end
 end
 
+-- More then Likey to be removed! using bag scan
 function EMA:ITEM_PUSH()
 	if EMA.db.showItemUse == false then
 		return
@@ -1285,9 +1279,11 @@ function EMA:ITEM_PUSH()
 	if EMA.db.autoAddQuestItemsToBar == true then
 		EMA:ScheduleTimer( "CheckForQuestItemAndAddToBar", 1 )
 	end
+	--[[
 	if EMA.db.autoAddArtifactItemsToBar == true then
 		EMA:ScheduleTimer( "CheckForArtifactItemAndAddToBar", 1 )
 	end
+	]]
 	if EMA.db.autoAddSatchelsItemsToBar == true then
 		EMA:ScheduleTimer( "CheckForSatchelsItemAndAddToBar", 1 )
 	end	
@@ -1379,7 +1375,6 @@ function EMA:ReceiveItemCount( characterName, dataTable )
 			EMA.sharedInvData[characterName..itemName] = {}
 		else
 			EMAUtilities:ClearTable( EMA.sharedInvData[characterName..itemName] )
-		
 		end
 		table.insert(EMA.sharedInvData[characterName..itemName], {name = characterName, item = data.itemID, itemCount = data.countBags, bankCount = data.countBank } )
 		end
@@ -1450,4 +1445,4 @@ end
 
 --EMA QUEST API
 EMAApi.GetMaxItemCountFromItemID = GetMaxItemCountFromItemID
-EMAApi.QuestTest = EMA.CheckForQuestItemAndAddToBar
+EMAApi.QuestTest = EMA.CheckForSatchelsItemAndAddToBar

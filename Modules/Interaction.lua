@@ -4,9 +4,9 @@
 --																					--
 --				License: MIT License 2018 Jennifer Cally							--
 --																					--
---				Some Code Used from "EMA" that is 								--
+--				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
---				"EMA" Copyright 2008-2015  Michael "Jafula" Miller				--
+--				"Jamba" Copyright 2008-2015  Michael "Jafula" Miller				--
 --																					--
 -- ================================================================================ --
 
@@ -433,7 +433,7 @@ function EMA:SettingsRefresh()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- EMATaxi Functionality.
+-- Taxi Functionality.
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:TAXIMAP_OPENED(event, ...)
@@ -541,6 +541,9 @@ end
 --EMA:UNIT_SPELLCAST_START(event, unitID, spell, rank, lineID, spellID, ...  )
 
 function EMA:PLAYER_ENTERING_WORLD(event, ... )
+	if EMA.db.autoLoot == true then 
+		EMA:EnableAutoLoot()
+	end	
 	if IsMounted() then	
 		local mountIDs = C_MountJournal.GetMountIDs()	
 		for i = 1, #mountIDs do
@@ -687,7 +690,7 @@ function EMA:AmNotMounted()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- EMALoot Functionality.
+-- Loot Functionality.
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:LOOT_READY( event, ... )
@@ -697,16 +700,15 @@ function EMA:LOOT_READY( event, ... )
 end
 
 function EMA:doLoot( tries )
-	--EMA:DisableAutoLoot()
 	if tries == nil then
 		tries = 0
 	end
 	local numloot = GetNumLootItems()
 	if numloot ~= 0 then
 		for slot = 1, numloot do
-			_, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
+			local _, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
 			--EMA:Print("items", slot, locked, name, tries)
-			if locked ~= nil and not locked then
+			if locked ~= nil and ( not locked ) then
 				if EMA.db.tellBoERare == true then
 					if lootQuality == 3 then
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
@@ -734,41 +736,55 @@ end
 
 function EMA:doLootLoop( tries )
 	--EMA:Print("loop", tries)
-	EMA:ScheduleTimer("doLoot", 0.8, tries )
+	EMA:ScheduleTimer("doLoot", 0.5, tries )
 end
 
-function EMA:DisableAutoLoot()
+function EMA:EnableAutoLoot()
 	if EMA.db.autoLoot == true then	
-		if GetCVar("autoLootDefault") == "1" then	
+		if GetCVar("autoLootDefault") == "0" then	
 			--EMA:Print("testSetOFF")
-			SetCVar( "autoLootDefault", 0 )
+			SetCVar( "autoLootDefault", 1 )
 		end	
 	end	
 end
 
-
 function EMA:TellTeamEpicBoE( name )
-	local _, itemName, itemRarity, _, _, itemType, itemSubType = GetItemInfo( name )
-	--EMA:Print("loottest", itemName, itemRarity , itemType , itemSubType )
-	if itemName ~= nil then
-		if itemType == WEAPON or itemType == ARMOR or itemSubType == EJ_LOOT_SLOT_FILTER_ARTIFACT_RELIC then
-			local _, isBop = EMAUtilities:TooltipScaner(itemName)
-			if isBop == ITEM_BIND_ON_EQUIP then
-				EMA:Print("test", isBop )
-				local rarity = nil
-				if itemRarity == 4 then
-					rarity = L["EPIC"]
-				else
-					rarity = L["RARE"]
+	--EMA:Print("loottest", name )
+		for bagID = 0, NUM_BAG_SLOTS do
+			for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+				--EMA:Print( "Bags OK. checking", itemLink )
+				local item = Item:CreateFromBagAndSlot(bagID, slotID)
+				if ( item ) then
+					local bagItemName = item:GetItemName()
+					if (  bagItemName ) then
+						if 	bagItemName == name then
+							--EMA:Print("test", bagItemName)
+							local location = item:GetItemLocation()
+							local itemLink = item:GetItemLink()
+							local itemType = C_Item.GetItemInventoryType( location )
+							local isBop = C_Item.IsBound( location )
+							local itemRarity =  C_Item.GetItemQuality( location )
+							if itemType ~= 0 then
+								--EMA:Print("loottest", itemLink, itemRarity , itemType )
+								if isBop == false then
+								--EMA:Print("test", isBop )
+								local rarity = nil
+								if itemRarity == 4 then
+									rarity = L["EPIC"]
+								else
+									rarity = L["RARE"]
+								end
+							--EMA:Print("I have looted a Epic BOE Item: ", rarity, itemName )
+							EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )
+							end	
+						end	
+					end
 				end
-				--EMA:Print("I have looted a Epic BOE Item: ", rarity, itemName )
-				EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemName ), false )
 			end	
 		end	
 	end
-end
-
-
+end	
+	
 -------------------------------------------------------------------------------------------------------------
 -- EMA Commands functionality.
 -------------------------------------------------------------------------------------------------------------

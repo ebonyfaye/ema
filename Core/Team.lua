@@ -1,10 +1,12 @@
 -- ================================================================================ --
---				EMA EE - ( The Awesome MultiBoxing Assistant Ebony's Edition )    --
+--				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
---				Copyright 2015 - 2018 Jennifer Cally "Ebony"						--
 --																					--
---				License: The MIT License (MIT)										--
---				Copyright (c) 2008-2015  Michael "Jafula" Miller					--
+--				License: MIT License 2018 Jennifer Cally							--
+--																					--
+--				Some Code Used from "Jamba" that is 								--
+--				Released under the MIT License 										--
+--				"Jamba" Copyright 2008-2015  Michael "Jafula" Miller				--
 --																					--
 -- ================================================================================ --
 
@@ -984,7 +986,8 @@ local function RemoveMember( importName )
 		EMA:SettingsRefresh()
 		-- Resets to Top of list!
 		EMA.db.newTeamList[characterName] = nil
-		EMA:SettingsTeamListRowClick( 1, 1 )
+		--EMA:Print("count", EMA.settingsControl.teamListHighlightRow - 1 )
+		EMA:SettingsTeamListRowClick( 1 , 1 )
 	else
 		EMA:Print("[PH] CAN NOT REMOVE SELF")
 	end
@@ -1463,7 +1466,6 @@ function EMA:SettingsRefresh()
 	-- Team/Group Control
 	local test = " "
 	--EMA.settingsControl.teamListCheckBoxSyncIsboxer:SetValue( EMA.db.isboxerSync )
-
 	-- Master Control.
 	EMA.settingsControl.masterControlCheckBoxMasterChange:SetValue( EMA.db.masterChangePromoteLeader )
 	EMA.settingsControl.masterControlCheckBoxMasterChangeClickToMove:SetValue( EMA.db.masterChangeClickToMove )
@@ -1613,11 +1615,10 @@ local function GetTagListMaxPosition()
 	return #EMA.characterGroupList
 end
 
-function EMA:SettingsTeamListRowClick( rowNumber, columnNumber )		
+function EMA:SettingsTeamListRowClick( rowNumber, columnNumber )
 	if EMA.settingsControl.teamListOffset + rowNumber <= GetTeamListMaximumOrder() then	
 		EMA.settingsControl.teamListHighlightRow = EMA.settingsControl.teamListOffset + rowNumber
 		EMA:SettingsTeamListScrollRefresh()
-		--EMA:SettingsGroupListScrollRefresh()
 		-- Group
 		EMA.settingsControl.groupListHighlightRow = 1
 		local characterName = GetCharacterNameAtOrderPosition( EMA.settingsControl.teamListHighlightRow )
@@ -1669,6 +1670,7 @@ function EMA:SettingsGroupListScrollRefresh()
 	end
 
 end	
+
 function EMA:SettingsGroupListRowClick( rowNumber, columnNumber )		
 	if EMA.settingsControl.groupListOffset + rowNumber <= GetTagListMaxPosition() then
 		EMA.settingsControl.groupListHighlightRow = EMA.settingsControl.groupListOffset + rowNumber

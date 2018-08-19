@@ -2,7 +2,34 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.0.1-Release(008)
+EMA Version: v8.0.1-Beta(0089)
+Game Version: 8.0.1
+Release Date: 19/8/2018
+
+## Core/Random
+	--Developer	Note: Am Going To Update GuildBank/Trade To Use The Same API.
+	
+## Sell
+	- Reworked The Sell System And Should Be A Lot Faster Sing The New Min/Max System.
+	- Added A BlackList To Stop Selling Items, Philosopher's Stones Comes to Mind
+	- The System Should Now Work With Ilvl System better?
+	- You Can Now Destroy Items In The Sell List As Well This Will Delete The Item On All Chars!
+		- Maybe You Nerver Wonnted The Heathstone After All!!
+	- TODO: Check if working with Tradeable Items?
+
+## Item-Use 
+	- Cleaned Up Some Code And Tracked Down A Small Lag Issue	
+	- Removed Artifact Power From Bars
+		- We Don't Seem To Have Useable Artifact Items In "Bfa" And Legion Ones Are "Vender" Trash
+		
+## Interaction
+	- Auto Loot
+		- Using New API to Find BoE Items You Loot!
+		- Fixed Tell Team If you get Rare Or Epic BoEs
+
+---------------------------
+
+EMA Version: v8.0.1-Release(0088)
 Game Version: 8.0.1
 Release Date: 18/8/2018
 

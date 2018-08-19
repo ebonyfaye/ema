@@ -224,7 +224,7 @@ function EbonyUtilities:TooltipScaner(item)
 	local text = nil
 	local text2 = nil	
 		if item ~= nil then
-			local tooltipName = "AJMScanner"
+			local tooltipName = "EMAScanner"
 			local tooltipScanner = CreateFrame("GameTooltip", tooltipName, nil, "GameTooltipTemplate")
 			tooltipScanner:SetOwner(UIParent, "ANCHOR_NONE")
 			tooltipScanner:SetHyperlink(item)
@@ -239,13 +239,13 @@ function EbonyUtilities:TooltipScaner(item)
 	return text, text2
 end
 
-
+-- We should Not need this anymore but its always here incase! using ItemMixIn
 function EbonyUtilities:ToolTipBagScaner(item, bag, slot)
 	--print("test", item, bag, slot )
 	if item ~= nil or bag ~= nil or slot ~= nil then
 		local boe = nil
 		local ilvl = nil
-		local tooltipName = "AJMBagScanner"
+		local tooltipName = "EMABagScanner"
 		local tooltipbagScanner = CreateFrame("GameTooltip", tooltipName , nil, "GameTooltipTemplate")
 			tooltipbagScanner:SetOwner(UIParent, "ANCHOR_NONE")
 			tooltipbagScanner:SetBagItem(bag, slot)
@@ -266,7 +266,7 @@ end
 function EbonyUtilities:getPetOwner( petName )
 	--print(petName)
 	if petName ~= nil then
-		local tooltipName = "AJMPetScanner"
+		local tooltipName = "EMAPetScanner"
 		local tooltipPetScanner = CreateFrame("GameTooltip", tooltipName, nil, "GameTooltipTemplate")
 		tooltipPetScanner:ClearLines()
 		tooltipPetScanner:SetOwner(WorldFrame, "ANCHOR_NONE")
