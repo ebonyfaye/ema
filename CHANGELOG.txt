@@ -2,30 +2,47 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.0.1-Beta(0089)
+EMA Version: v8.0.1-Beta(0090)
 Game Version: 8.0.1
-Release Date: 19/8/2018
+Release Date: 21/8/2018
+
+-- The Am Sorry About Everything Update!
 
 ## Core/Random
+	**-Team
+		**- Isboxer Sync! And Isboxer Add Team Members Coming Back Soon™!!
+		
 	--Developer	Note: Am Going To Update GuildBank/Trade To Use The Same API.
-	
+
 ## Sell
 	- Reworked The Sell System And Should Be A Lot Faster Sing The New Min/Max System.
+	**- Really This Time It Should Sell All Items In The Vender/Sell List And  Players Bag Without Stoping At Around 12 Items
 	- Added A BlackList To Stop Selling Items, Philosopher's Stones Comes to Mind
-	- The System Should Now Work With Ilvl System better?
-	- You Can Now Destroy Items In The Sell List As Well This Will Delete The Item On All Chars!
+	- Redesigned The Sell UI
+	- The Should Now Work With Blizzards Ilvl System better!
+	- You Can Now Destroy Items In The Sell List As Well This Will Delete The Item On All Chars At The Vender!
 		- Maybe You Nerver Wonnted The Heathstone After All!!
 	- TODO: Check if working with Tradeable Items?
 
 ## Item-Use 
-	- Cleaned Up Some Code And Tracked Down A Small Lag Issue	
+	- Cleaned Up Some Code And Tracked Down A "Small" Lag Issue	
 	- Removed Artifact Power From Bars
-		- We Don't Seem To Have Useable Artifact Items In "Bfa" And Legion Ones Are "Vender" Trash
+		- We Don't Seem To Have Useable Artifact Items In BFA And Legion Ones Are Vender "Trash"
 		
 ## Interaction
 	- Auto Loot
 		- Using New API to Find BoE Items You Loot!
+			--Developer	Note: Did not seem to "work"
 		- Fixed Tell Team If you get Rare Or Epic BoEs
+		
+## Toon
+	**- Follow
+		**- Added A Warning If A Membmer Of Your Team Is In PvP Combat Or You Have The Lack Of the Use Of Follow
+		**- Should Not Spam PvP Follow Warnings!
+	**- Requests
+		**- Added Toggle WarMode With Team!
+	**- Warnings
+		**- Fixed Full Bags Again!
 
 ---------------------------
 
@@ -35,8 +52,6 @@ Release Date: 18/8/2018
 
 ## Core/Random
 	-- Fixed a bug with "Some" keybindings not working
-
-
 
 ---------------------------
 

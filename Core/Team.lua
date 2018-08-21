@@ -23,7 +23,9 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 -- Load libraries.
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
 local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
-
+if IsAddOnLoaded("Isboxer" ) then
+	local isboxer = LibStub:GetLibrary("Isboxer" )
+end
 -- Constants required by EMAModule and Locale for this module.
 EMA.moduleName = "Team"
 EMA.settingsDatabaseName = "TeamProfileDB"
@@ -841,19 +843,30 @@ function EMA:AddPartyMembers()
 end
 
 -- Add all isboxer team members to the member list. does not worl cross rwalm todo
---[[
+
 function EMA:AddIsboxerMembers()
 	if IsAddOnLoaded("Isboxer" ) == true then 
-		for characterName, teamStatus in pairs( EMA.IsboxerSyncList ) do
-			if IsCharacterInTeam( characterName ) == false then
-				if teamStatus == "add" and characterName ~= EMA.characterName then 
-					AddMember( characterName )
+		EMA:Print("test")
+		--local _, teamName, members = isboxer.CharacterSet
+		for value, data in pairs( isboxer.CharacterSet ) do
+			EMA:Print("test",value, "data", data )
+			if value == "Members" then 
+			EMA:Print("testMembersList")
+			for name, members in pairs( data ) do
+			
+				EMA:Print( "test", name, members )
+				--if IsCharacterInTeam( characterName ) == false then
+					if teamStatus == "add" and characterName ~= EMA.characterName then 
+						--AddMember( characterName )
+					end	
 				end	
-			end	
+			end
+
 		end
+		
 	end	
 end
-]]
+
 -- Add a member to the member list.
 function EMA:AddMemberGUI( value )
 	AddMember( value )
@@ -1948,3 +1961,4 @@ EMAApi.GetClass = GetClass
 --EMAApi.SetClass = setClass
 EMAApi.GroupAreaList = EMA.GroupAreaList
 EMAApi.refreshDropDownList = refreshDropDownList
+EMAApi.addisboxermembers = EMA.AddIsboxerMembers

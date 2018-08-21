@@ -59,7 +59,7 @@ EMA.settings = {
 		warnWhenManaDropsAmount = "30",
 		warnManaDropsMessage = L["LOW_MANA"],
 		warnWhenDurabilityDropsBelowX = true,
-		warnWhenDurabilityDropsAmount = "20",
+		warnWhenDurabilityDropsAmount = "60",
 		warnDurabilityDropsMessage = L["DURABILITY_LOW_MSG"],		
 		warnBagsFull = true,
 		bagsFullMessage = L["BAGS_FULL"],	
@@ -81,6 +81,7 @@ EMA.settings = {
 		acceptReadyCheck = false,
 		teleportLFGWithTeam = false,
 		rollWithTeam = false,
+		toggleWarMode = false,
 		--Debug Suff
 		testAlwaysOff = true
 	},
@@ -119,7 +120,8 @@ EMA.COMMAND_RECOVER_TEAM = "EMAToonRecoverTeam"
 EMA.COMMAND_SOUL_STONE = "EMAToonSoulStone"
 EMA.COMMAND_READY_CHECK = "EMAReadyCheck"
 EMA.COMMAND_TELE_PORT = "EMAteleport"
-EMA.COMMAND_LOOT_ROLL = "JamabaLootRoll"
+EMA.COMMAND_LOOT_ROLL = "EMALootRoll"
+EMA.COMMAND_WAR_MODE = "EMAWarMode"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
@@ -129,7 +131,7 @@ EMA.COMMAND_LOOT_ROLL = "JamabaLootRoll"
 -- Variables used by module.
 -------------------------------------------------------------------------------------------------------------
 
-EMA.sharedInvData = {}
+--EMA.sharedInvData = {}
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
@@ -217,6 +219,8 @@ local function SettingsCreateToon( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
+	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L[""], movingTop, false )
+	movingTop = movingTop - headingHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["REQUESTS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControlToon.checkBoxAutoDenyDuels = EMAHelperSettings:CreateCheckBox( 
@@ -278,6 +282,17 @@ local function SettingsCreateToon( top )
 		EMA.SettingsToggleAutoAcceptSummonRequest,
 		L["SUMMON_REQUEST_HELP"]
 	)
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControlToon.checkBoxToggleWarMode = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlToon, 
+		halfWidth, 
+		left, 
+		movingTop, 
+		L["WAR_MODE"],
+		EMA.SettingsToggleWarMode,
+		L["WAR_MODE_HELP"]
+	)	
+	
 	movingTop = movingTop - checkBoxHeight			
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["GROUPTOOLS_HEADING"], movingTop, false )
 	movingTop = movingTop - headingHeight
@@ -624,6 +639,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlToon.checkBoxAcceptReadyCheck:SetValue( EMA.db.acceptReadyCheck )
 	EMA.settingsControlToon.checkBoxLFGTeleport:SetValue( EMA.db.teleportLFGWithTeam )
 	EMA.settingsControlToon.checkBoxLootWithTeam:SetValue( EMA.db.rollWithTeam )
+	EMA.settingsControlToon.checkBoxToggleWarMode:SetValue( EMA.db.toggleWarMode )
 	EMA.settingsControlToon.dropdownRequestArea:SetValue( EMA.db.requestArea )
 	EMA.settingsControlMerchant.checkBoxAutoRepair:SetValue( EMA.db.autoRepair )
 	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( EMA.db.autoRepairUseGuildFunds )
@@ -694,7 +710,6 @@ function EMA:SettingsToggleAutoRoleCheck( event, checked )
 	EMA:SettingsRefresh()
 end
 
-
 function EMA:SettingsToggleAcceptReadyCheck( event, checked )
 	EMA.db.acceptReadyCheck = checked 	
 	EMA:SettingsRefresh()
@@ -709,6 +724,11 @@ function EMA:SettingsToggleLootWithTeam( event, checked )
 	EMA.db.rollWithTeam = checked
 	EMA:SettingsRefresh()
 end
+
+function EMA:SettingsToggleWarMode(event, checked )
+	EMA.db.toggleWarMode = checked
+	EMA:SettingsRefresh()
+end	
 
 -- Warnings Toggles
 
@@ -878,7 +898,8 @@ function EMA:OnEnable()
 	EMA:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
-
+	EMA:RegisterEvent( "WAR_MODE_STATUS_UPDATE", "WARMODE" )
+	EMA:RegisterEvent( "PLAYER_FLAGS_CHANGED", "WARMODE" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
@@ -886,7 +907,6 @@ function EMA:OnEnable()
 	EMA:SecureHook( "ConfirmReadyCheck" )
 	EMA:SecureHook( "LFGTeleport" )
 	EMA:SecureHook( "RollOnLoot" )
-	
 end
 
 -- Called when the addon is disabled.
@@ -927,6 +947,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.acceptReadyCheck = settings.acceptReadyCheck
 		EMA.db.teleportLFGWithTeam = settings.teleportLFGWithTeam
 		EMA.db.rollWithTeam = settings.rollWithTeam
+		EMA.db.toggleWarMode = settings.toggleWarMode
 		EMA.db.autoRepair = settings.autoRepair
 		EMA.db.autoRepairUseGuildFunds = settings.autoRepairUseGuildFunds
 		EMA.db.warningArea = settings.warningArea
@@ -1317,6 +1338,28 @@ function EMA:CONFIRM_SUMMON( event, sender, location, ... )
 	end
 end
 
+function EMA:WARMODE(event, ...)
+	if EMA.db.toggleWarMode == false then
+		return
+	end
+	if C_PvP.IsWarModeFeatureEnabled() == true then
+		if C_PvP.CanToggleWarMode()	== true then
+			local isWarMode = C_PvP.IsWarModeDesired()
+			--EMA:Print("Send", isWarMode )
+			EMA:EMASendCommandToTeam( EMA.COMMAND_WAR_MODE, isWarMode )
+		end	
+	end
+end
+
+function EMA:DoWarMode( isWarMode )
+	local text = UnitFactionGroup("player") == PLAYER_FACTION_GROUP[0] and PVP_WAR_MODE_NOT_NOW_HORDE or PVP_WAR_MODE_NOT_NOW_ALLIANCE
+	if C_PvP.CanToggleWarMode()	== true and isWarMode ~= nil then
+		C_PvP.SetWarModeDesired( isWarMode )
+	else
+		EMA:EMASendMessageToTeam( EMA.db.requestArea, L["ERR_WARMODE"]( text ), false )
+	end
+end	
+
 function EMA:MERCHANT_SHOW( event, ... )	
 	-- Does the user want to auto repair?
 	if EMA.db.autoRepair == false then
@@ -1427,6 +1470,7 @@ function EMA:UPDATE_INVENTORY_DURABILITY(event, agr1)
 	if EMA.toldMasterAboutDurability == true then
 		if durability >= tonumber( EMA.db.warnWhenDurabilityDropsAmount ) then
 			EMA.toldMasterAboutDurability = false
+			EMA:ScheduleTimer("ResetDurability", 15, nil )
 		end
 	else
 		if durability < tonumber( EMA.db.warnWhenDurabilityDropsAmount ) then
@@ -1435,6 +1479,11 @@ function EMA:UPDATE_INVENTORY_DURABILITY(event, agr1)
 		end
 	end
 end
+
+function EMA:ResetDurability()
+	EMA.toldMasterAboutDurability = false
+	EMA:CancelAllTimers()
+end	
 
 function EMA:PLAYER_REGEN_ENABLED( event, ... )
 	EMA.haveBeenHit = false
@@ -1471,12 +1520,13 @@ function EMA:BAGS_FULL( event, arg1, message, ... )
 			return 
 		end
 		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
-		if  message == ERR_INV_FULL or message == INVENTORY_FULL then
+		if message == ERR_INV_FULL or message == INVENTORY_FULL then
+			EMA:Print("fullbag")
 			if numberFreeSlots == 0 then
 				if EMA.previousFreeBagSlotsCount == false then
 					EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.bagsFullMessage, false )
 					EMA.previousFreeBagSlotsCount = true
-					EMA:ScheduleTimer("ResetBagFull", 60, nil )
+					EMA:ScheduleTimer("ResetBagFull", 15, nil )
 				end
 			end
 		end	
@@ -1537,6 +1587,11 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	if commandName == EMA.COMMAND_LOOT_ROLL then
 		if characterName ~= self.characterName then
 			EMA.DoLootRoll( characterName, ... )
+		end	
+	end
+	if commandName == EMA.COMMAND_WAR_MODE then
+		if characterName ~= self.characterName then
+			EMA.DoWarMode( characterName, ... )
 		end	
 	end
 end

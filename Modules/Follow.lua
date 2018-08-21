@@ -53,6 +53,7 @@ EMA.settings = {
 		afterCombatDelay = "3",
 		strobeFrequencySeconds = "1",
 		strobeFrequencySecondsInCombat = "1",
+		warnFollowPvP = true,
 		doNotWarnFollowBreakInCombat = false,
 		doNotWarnFollowBreakMembersInCombat = false,
 		doNotWarnFollowStrobing = false,
@@ -65,6 +66,7 @@ EMA.settings = {
 		useFollowMaster = false,
 		overrideStrobeTargetWithMaster = false,
 		onlyWarnIfOutOfFollowRange = false,
+		
 	},
 }
 
@@ -288,7 +290,18 @@ local function SettingsCreateDisplayOptions( top )
 		left, 
 		movingTop, 
 		L["WARN_STOP_FOLLOWING"],
-		EMA.SettingsToggleWarnWhenFollowBreaks
+		EMA.SettingsToggleWarnWhenFollowBreaks,
+		L["WARN_STOP_FOLLOWING_HELP"]
+	)	
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxWarnInFollowPvP = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["WRAN_IN_PVP_COMBAT"],
+		EMA.SettingsToggleWarnWhenFollowPvP,
+		L["WRAN_IN_PVP_COMBAT_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.checkBoxOnlyWarnIfOutOfFollowRange = EMAHelperSettings:CreateCheckBox( 
@@ -472,6 +485,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxDelayAutoFollowAfterCombat:SetValue( EMA.db.useAfterCombatDelay )
 	EMA.settingsControl.editBoxFollowAfterCombatDelaySeconds:SetText( EMA.db.afterCombatDelay )
 	EMA.settingsControl.checkBoxWarnWhenFollowBreaks:SetValue( EMA.db.warnWhenFollowBreaks )
+	EMA.settingsControl.checkBoxWarnInFollowPvP:SetValue( EMA.db.warnFollowPvP )
 	EMA.settingsControl.checkBoxOnlyWarnIfOutOfFollowRange:SetValue( EMA.db.onlyWarnIfOutOfFollowRange )
 	EMA.settingsControl.editBoxFollowBrokenMessage:SetText( EMA.db.followBrokenMessage )
 	EMA.settingsControl.checkBoxDoNotWarnInCombat:SetValue( EMA.db.doNotWarnFollowBreakInCombat )
@@ -492,6 +506,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.editBoxFollowAfterCombatDelaySeconds:SetDisabled( not EMA.db.autoFollowAfterCombat or not EMA.db.useAfterCombatDelay )
 	EMA.settingsControl.dropdownFollowMaster:SetDisabled( not EMA.db.useFollowMaster )
 	EMA.settingsControl.editBoxFollowBrokenMessage:SetDisabled( not EMA.db.warnWhenFollowBreaks )
+	EMA.settingsControl.checkBoxWarnInFollowPvP:SetDisabled( not EMA.db.warnWhenFollowBreaks )
 	EMA.settingsControl.checkBoxOnlyWarnIfOutOfFollowRange:SetDisabled( not EMA.db.warnWhenFollowBreaks )
 	EMA.settingsControl.checkBoxDoNotWarnInCombat:SetDisabled( not EMA.db.warnWhenFollowBreaks )
 	EMA.settingsControl.checkBoxDoNotWarnMembersInCombat:SetDisabled( not EMA.db.warnWhenFollowBreaks )
@@ -526,6 +541,11 @@ end
 
 function EMA:SettingsToggleWarnWhenFollowBreaks( event, checked )
 	EMA.db.warnWhenFollowBreaks = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleWarnWhenFollowPvP( event, checked )
+	EMA.db.warnFollowPvP = checked
 	EMA:SettingsRefresh()
 end
 
@@ -661,6 +681,7 @@ function EMA:OnInitialize()
 	EMA.EMASetFollowTarget = false
 	-- Following flag.
 	EMA.isFollowing = false
+	EMA.warnFollowPvPCombat = true
 	-- Strobing follow.
 	EMA.currentFollowStrobeTarget = EMAApi.GetMasterName()
 	EMA.followingStrobing = false
@@ -699,7 +720,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_CONTROL_GAINED" )
 	EMA:RegisterEvent( "UNIT_ENTERING_VEHICLE" )
 	EMA:RegisterEvent( "UNIT_EXITING_VEHICLE" )
-	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "TEST_FOLLOW" )
+	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "PVP_FOLLOW" )
 	-- Initialise key bindings.
 	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
 	EMA:RegisterEvent( "UPDATE_BINDINGS" )		
@@ -715,14 +736,6 @@ function EMA:OnEnable()
 end
 
 
-function EMA:TEST_FOLLOW(event, arg1, message, ...  )
-	--EMA:Print("test", message )
-	if message == ERR_INVALID_FOLLOW_TARGET_PVP_COMBAT or message == ERR_INVALID_FOLLOW_PVP_COMBAT then
-		--EMA:Print("test", message )
-		
-		EMA:EMASendMessageToTeam( EMA.db.warningArea, "I can't follow You, Am engaged in PVP", false )
-	end
-end
 -- Called when the addon is disabled.
 function EMA:OnDisable()
 end
@@ -738,6 +751,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.strobeFrequencySecondsInCombat = settings.strobeFrequencySecondsInCombat
 		EMA.db.doNotWarnFollowBreakInCombat = settings.doNotWarnFollowBreakInCombat
 		EMA.db.doNotWarnFollowBreakMembersInCombat = settings.doNotWarnFollowBreakMembersInCombat
+		EMA.db.warnFollowPvP = settings.warnFollowPvP
 		EMA.db.strobePauseInCombat = settings.strobePauseInCombat
 		EMA.db.strobePauseIfInVehicle = settings.strobePauseIfInVehicle
 		EMA.db.strobePauseIfDrinking = settings.strobePauseIfDrinking
@@ -960,7 +974,30 @@ function EMA:PLAYER_REGEN_DISABLED()
 			end
 		end
 	end
+	if EMA.db.doNotWarnFollowPvP == true then
+		EMA.warnFollowPvPCombat = true
+	end	
 end
+
+function EMA:PVP_FOLLOW(event, arg1, message, ...  )
+	--EMA:Print("test", message, EMA.warnFollowPvPCombat )
+	if EMA.db.doNotWarnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false then
+		return
+	end
+	if message == ERR_INVALID_FOLLOW_TARGET_PVP_COMBAT or message == ERR_INVALID_FOLLOW_PVP_COMBAT then
+		
+		if EMA.warnFollowPvPCombat == true then
+			EMA:EMASendMessageToTeam( EMA.db.warningArea, L["PVP_FOLLOW_ERR"], false )
+			EMA.warnFollowPvPCombat = false
+			EMA:ScheduleTimer("ResetPvpWarn", 10, nil )
+		end
+	end
+end
+
+function EMA:ResetPvpWarn()
+	EMA.warnFollowPvPCombat = true
+	EMA:CancelAllTimers()
+end	
 
 function EMA:AutoFollowAfterCombatCommand( info, parameters )
 	-- Get the on/off state and the tag of who to send to.
@@ -1070,7 +1107,6 @@ function EMA:ReceiveCommandFollowMe( characterName, tag )
 		FollowUnit( Ambiguate( characterName, "none" ), true )	
 	end
 end
-
 
 function EMA:CommandSetFollowMaster( info, parameters )
 	local target, tag = strsplit( " ", parameters )

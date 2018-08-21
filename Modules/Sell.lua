@@ -289,7 +289,7 @@ local function SettingsCreateMain( top )
 	EMA.settingsControl.listButtonRemove = EMAHelperSettings:CreateButton(
 		EMA.settingsControl, 
 		buttonControlWidth, 
-		left, 
+		left2 + 50, 
 		movingTop,
 		L["REMOVE"],
 		EMA.SettingslistRemoveClick
@@ -337,7 +337,7 @@ local function SettingsCreateMain( top )
 	EMA.settingsControl.listButtonAdd = EMAHelperSettings:CreateButton(	
 		EMA.settingsControl, 
 		buttonControlWidth, 
-		left, 
+		left2 + 50, 
 		movingTop, 
 		L["ADD"],
 		EMA.SettingslistAddClick
@@ -706,6 +706,10 @@ end
 function EMA:OnInitialize()
 	EMA.autoSellOtherItemLink = nil
 	EMA.autoSellOtherItemTag = EMAApi.AllTag()
+	EMA.TrySellIAgainCount = 15
+	EMA.sellCountTotal = 0
+	EMA.sellGoldTotal = 0
+	EMA.SellFristTime = true
 	-- Create the settings control.
 	SettingsCreate()
 	-- Initialise the EMAModule part of this module.
@@ -714,12 +718,12 @@ function EMA:OnInitialize()
 	EMA:SettingsRefresh()	
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()	
-	
 end
 
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	EMA:RegisterEvent( "MERCHANT_SHOW" )
+	EMA:RegisterEvent( "MERCHANT_CLOSED" )
 	-- Hook the item click event.
 	EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
@@ -805,6 +809,16 @@ function EMA:MERCHANT_SHOW()
 	end
 end
 
+function EMA:MERCHANT_CLOSED()
+	if EMA.db.autoSellItem == true then
+		EMA.TrySellIAgainCount = 10
+		EMA.sellCountTotal = 0
+		EMA.sellGoldTotal = 0
+		EMA.SellFristTime = true
+	end
+end	
+
+
 function EMA:DoMerchantSellItems()
 	local count = 0
 	local gold = 0
@@ -854,7 +868,6 @@ function EMA:DoMerchantSellItems()
 									if isBop == false then
 										canSell = false
 									end
-								
 								end
 							end
 						end
@@ -949,9 +962,33 @@ function EMA:DoMerchantSellItems()
 			end
 		end
 	end
-	if count > 0 then	
-		local formattedGoldAmount = GetCoinTextureString(gold)
-		EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_SOLD_ITEMS_PLUS_GOLD"]( count )..formattedGoldAmount, false )
+	if count > 0 then
+		EMA.sellCountTotal = EMA.sellCountTotal + count
+		EMA.sellGoldTotal = EMA.sellGoldTotal + gold
+	end
+	if MerchantFrame:IsVisible() == true and EMA.TrySellIAgainCount > 0 then
+		EMA:ScheduleTimer("TrySellIAgain", 1.0, count, gold )
+	end
+end
+
+function EMA:TrySellIAgain( count, gold )
+	local sellGoldTotal = EMA.sellGoldTotal
+	local sellCountTotal = EMA.sellCountTotal	
+	--EMA:Print("test", count, gold,  sellGoldTotal, sellCountTotal, EMA.SellFristTime, EMA.TrySellIAgainCount )
+	if count <= 0 and EMA.SellFristTime == false then 
+		--EMA:Print("Can SELL ALL ITEMS", "count", sellCountTotal, "gold", sellGoldTotal )
+		if sellGoldTotal > 0 then
+			local formattedGoldAmount = GetCoinTextureString(sellGoldTotal)
+			EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_SOLD_ITEMS_PLUS_GOLD"]( sellCountTotal )..formattedGoldAmount, false )
+		end
+		EMA.TrySellIAgainCount = 0
+		sellCountTotal = sellCountTotal - count
+		sellGoldTotal = sellGoldTotal - gold
+	end	
+	if EMA.TrySellIAgainCount > 0 then
+		EMA.SellFristTime = false
+		EMA.TrySellIAgainCount = EMA.TrySellIAgainCount - 1
+		EMA:DoMerchantSellItems()
 	end
 end
 
