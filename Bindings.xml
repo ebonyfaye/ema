@@ -50,7 +50,7 @@
 	<Binding name="ITEMUSE6" category="EMA">
 		--[[dummy]]
 	</Binding>
-	<Binding name="JITEMUSE7" category="EMA">
+	<Binding name="ITEMUSE7" category="EMA">
 		--[[dummy]]
 	</Binding>
 	<Binding name="ITEMUSE8" category="EMA">
