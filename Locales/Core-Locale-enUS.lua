@@ -874,6 +874,7 @@ L["REMOVE_GUILD_LIST"] = "Are You Sure You Wish To Remove The Selected Item From
 L["ISBOXER_LIST_HEADER"] = "Your Current ISBoxer Team"
 L["CHECKBOX_ISBOXER_SYNC"] = "Sync With ISBoxer"
 L["CHECKBOX_ISBOXER_SYNC_HELP"] = "Sync With ISBoxer TeamList \nAdd/Remove Characters No Longer In ISBoxer Team"
+
 L["ISBOXER_SYNC_HEADER"] = "Sync With ISBoxer"
 L["SYNCINFORMATIONONE"] = "|cFFFF0000 This Will Remove All Your Team Members!"
 L["SYNCINFORMATIONTWO"] = "|cFFFF0000 And Will Sync WIth The ISBoxer TeamList"
@@ -881,8 +882,8 @@ L["SYNCINFORMATIONTHREE"] =  "|cFFFF0000 Note: Some Parts Of EMA Is Not Supporte
 L["REMOVE_ISBOXER_LIST"] = ""
 L["ISBOXER_COMMAND_LINE_HELP"] = "PH For Isboxer Use Only"
 L["ISBOXER_SET_MASTER"] = "ISBoxer Set Master"
-
 L["ISBOXER_SET_STROBEONME"] = "ISBoxer Set Strobe On Me"
+L["ISBOXER_SET_SNW"] = "ISBoxer Set snw PH"
 L["ISBOXER_COMMAND_LINE_HELP_TWO"] = "PH For Isboxer Use Only"
 L["ISBOXER_SET_STROBEOFF"] = "ISBoxer Set Strobe Off"
 

@@ -95,6 +95,15 @@ function EMA:GetConfiguration()
 				set = "FollowStrobeOffCommandIsboxer",
 				guiHidden = true,
 			},
+			snw = {
+				type = "input",
+				name = L["ISBOXER_SET_SNW"],
+				desc = L["ISBOXER_COMMAND_LINE_HELP"],
+				usage = "/ema-isboxer snw",
+				get = false,
+				set = "FollowStrobeOffCommandSnw",
+				guiHidden = true,
+			},
 		},
 	}
 	return configuration
@@ -131,6 +140,10 @@ end
 
 function EMA:FollowStrobeOffCommandIsboxer( info, parameters )
 	EMAApi.FollowStrobeOffCommand( parameters )
+end
+
+function EMA:FollowStrobeOffCommandSnw( info, parameters )
+	
 end
 
 -------------------------------------------------------------------------------------------------------------
