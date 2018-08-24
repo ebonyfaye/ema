@@ -91,13 +91,15 @@ end
 
 -- Handle the chat command.
 function EMAModule:EMAChatCommand( input )
-    if not input or input:trim() == "" then
+   print("test", input, self.chatCommand, self.moduleName )
+	if not input or input:trim() == "" then
 		EMAPrivate.SettingsFrame.Widget:Show()
 		EMAPrivate.SettingsFrame.TreeGroupStatus.groups[self.parentDisplayName] = true
 		EMAPrivate.SettingsFrame.WidgetTree:SelectByPath( self.parentDisplayName, self.moduleDisplayName )
 		EMAPrivate.SettingsFrame.Tree.ButtonClick( nil, nil, self.moduleDisplayName, false)
     else
         LibStub( "AceConfigCmd-3.0" ):HandleCommand( self.chatCommand, self.moduleName, input )
+		--LibStub( "AceConfigCmd-3.0" ):HandleCommand( self.chatCommandTwo, self.moduleName, input )
     end    
 end
 
@@ -114,7 +116,18 @@ function EMAModule:EMAModuleInitialize( settingsFrame )
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( self.moduleName, self:GetConfiguration() )
 	self.settingsFrame = settingsFrame
 	-- Register the chat command for this module.
-	self:RegisterChatCommand( self.chatCommand, "EMAChatCommand" )
+	--print("EMAChatCommand", self.chatCommand, self.chatCommandTwo, self.chatCommandThree )
+	if self.chatCommand then
+		self:RegisterChatCommand( self.chatCommand, "EMAChatCommand" )
+	end
+	--[[
+	if self.chatCommandTwo then
+		self:RegisterChatCommand( self.chatCommandTwo, "EMAChatCommand" )
+	end
+	if self.chatCommandThree then
+		--self:RegisterChatCommand( self.chatCommandThree, "EMAChatCommandThree" )
+	end
+	]]
 	-- Remember the characters name.
 	-- If server has a space in realm name GetRealmName() will show space this will not work with blizzard API so we need to hack this to work --ebony
 	--local _, k = UnitFullName("player")

@@ -27,4 +27,5 @@
 	<Script file="DisplayTeam.lua" />
 	<Script file="Information.lua" />
 	<Script file="ItemUse.lua" />
+	<Script file="ISBoxer.lua" />
 </Ui>

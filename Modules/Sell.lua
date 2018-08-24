@@ -24,7 +24,6 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
 local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local AceGUI = LibStub:GetLibrary( "AceGUI-3.0" )
---local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
 local ItemUpgradeInfo = LibStub:GetLibrary( "LibItemUpgradeInfo-1.0" )
 
 --  Constants and Locale for this module.
@@ -344,7 +343,7 @@ local function SettingsCreateMain( top )
 	)
 	movingTop = movingTop -	buttonHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL_ITEMS"], movingTop, false )
-	movingTop = movingTop - headingHeight
+	--movingTop = movingTop - headingHeight
 	-- Gray
 	movingTop = movingTop - checkBoxHeight - 3
 	EMA.settingsControl.checkBoxAutoSellPoor = EMAHelperSettings:CreateCheckBox( 
@@ -705,7 +704,7 @@ end
 -- Initialise the module.
 function EMA:OnInitialize()
 	EMA.autoSellOtherItemLink = nil
-	EMA.autoSellOtherItemTag = EMAApi.AllTag()
+	EMA.autoSellOtherItemTag = EMAApi.AllGroup()
 	EMA.TrySellIAgainCount = 15
 	EMA.sellCountTotal = 0
 	EMA.sellGoldTotal = 0

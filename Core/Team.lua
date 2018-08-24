@@ -23,9 +23,7 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 -- Load libraries.
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
 local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
-if IsAddOnLoaded("Isboxer" ) then
-	local isboxer = LibStub:GetLibrary("Isboxer" )
-end
+
 -- Constants required by EMAModule and Locale for this module.
 EMA.moduleName = "Team"
 EMA.settingsDatabaseName = "TeamProfileDB"
@@ -51,7 +49,6 @@ EMA.settings = {
 		master = "",
         teamList = {},
 		newTeamList = {},
-	--	isboxerSync = true,
 		masterChangePromoteLeader = false,
 		inviteAcceptTeam = true,
 		inviteAcceptFriends = false,
@@ -327,7 +324,6 @@ local function SettingsCreateTeamList()
 		EMA.SettingsAddPartyClick,
 		L["BUTTON_ADDALL_HELP"]
 	)
---[[
 	EMA.settingsControl.teamListButtonAddIsboxerList = EMAHelperSettings:Icon( 
 		EMA.settingsControl, 
 		iconSize,
@@ -337,9 +333,8 @@ local function SettingsCreateTeamList()
 		topOfList - verticalSpacing - iconHight * 2, 
 		L[""], 
 		EMA.SettingsAddIsboxerListClick,
-		L["BUTTON_ISBOXERADD_HELP"]
-	)	
-]]
+		L["BUTTON_ISBOXER_ADD_HELP"]
+	)
 	EMA.settingsControl.teamListButtonMoveUp = EMAHelperSettings:Icon( 
 		EMA.settingsControl, 
 		iconSize,
@@ -404,19 +399,7 @@ local function SettingsCreateTeamList()
 		L["GROUP_LIST"]
 	)
 	EMA.settingsControl.teamListDropDownList:SetList( EMA.GroupAreaList() )
-	EMA.settingsControl.teamListDropDownList:SetCallback( "OnValueChanged",  EMA.TeamListDropDownList )
---[[
-	-- IsboxerSync
-	EMA.settingsControl.teamListCheckBoxSyncIsboxer = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		checkBoxWidth, 
-		lefticon, 
-		bottomOfList - 11,
-		L["CHECKBOX_ISBOXER_ADD"],
-		EMA.SettingsSyncIsboxerToggle,
-		L["CHECKBOX_ISBOXER_ADD_HELP"]
-	)	
-]]	
+	EMA.settingsControl.teamListDropDownList:SetCallback( "OnValueChanged",  EMA.TeamListDropDownList )	
 	return bottomOfSection
 end
 
@@ -754,6 +737,7 @@ end
 
 -- Add a member to the member list.
 local function AddMember( importName, class )
+	EMA:Print("testAddMembers", importName, class)
 	local name = nil
 	local singleName, realm = strsplit( "-" , importName, 2 )
 	local characterName = nil
@@ -842,30 +826,6 @@ function EMA:AddPartyMembers()
 	end
 end
 
--- Add all isboxer team members to the member list. does not worl cross rwalm todo
-
-function EMA:AddIsboxerMembers()
-	if IsAddOnLoaded("Isboxer" ) == true then 
-		EMA:Print("test")
-		--local _, teamName, members = isboxer.CharacterSet
-		for value, data in pairs( isboxer.CharacterSet ) do
-			EMA:Print("test",value, "data", data )
-			if value == "Members" then 
-			EMA:Print("testMembersList")
-			for name, members in pairs( data ) do
-			
-				EMA:Print( "test", name, members )
-				--if IsCharacterInTeam( characterName ) == false then
-					if teamStatus == "add" and characterName ~= EMA.characterName then 
-						--AddMember( characterName )
-					end	
-				end	
-			end
-
-		end
-		
-	end	
-end
 
 -- Add a member to the member list.
 function EMA:AddMemberGUI( value )
@@ -875,15 +835,9 @@ end
 
 -- Add member from the command line.
 function EMA:AddMemberCommand( info, parameters )
-	--local characterName = EMAUtilities:Capitalise(parameters)
-	-- EMA-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
-	if info == nil then
-		--EMA:Print("isboxerContralRemove", parameters )
-		EMA.IsboxerSyncList[characterName] = "add"
-		return
-	end
-	-- Add the character.
-	AddMember( parameters )
+	if info ~= nil then
+		AddMember( parameters )
+	end	
 end
 
 -- Get the character name at a specific position.
@@ -901,12 +855,15 @@ end
 -- Get the position for a specific character.
 local function GetPositionForCharacterName( findCharacterName )
 	local positionForCharacterName = 0
-	for characterName, characterPosition in EMAApi.TeamList() do
-		if characterName == findCharacterName then
-			positionForCharacterName = characterPosition
+	for name, info in pairs (EMA.db.newTeamList) do
+		for _, charInfo in pairs (info) do
+			if name == findCharacterName then	
+				positionForCharacterName = charInfo.order
 			break
+			end
 		end
 	end
+	
 	return positionForCharacterName
 end
 
@@ -967,25 +924,23 @@ local function RemoveMember( importName )
 	local singleName, singleRealm = strsplit( "-" , importName, 2 )
 	local characterName = nil
 	local name = EMAUtilities:Capitalise( singleName )
-	local realm = EMAUtilities:Capitalise( singleRealm )
-	if realm ~= nil then
-		characterName = name.."-"..realm
+	
+	if singleRealm ~= nil then
+		characterName = name.."-"..singleRealm
 	else
 		characterName = name
 	end
 	-- Is character in team?
 	if IsCharacterInTeam( characterName ) == true and characterName ~= EMA.characterName then
 		-- Remove character from list.
-		local characterPosition = EMAApi.GetPositionForCharacterName( characterName )		
+	local characterPosition = EMAApi.GetPositionForCharacterName( characterName )		
+	-- REMOVES THE CHAR!
+	EMA.db.newTeamList[characterName] = nil	
 		-- If any character had an order greater than this character's order, then shift their order down by one.
-		for name, position in EMAApi.TeamList() do	
-			if position > characterPosition then
-				for checkName, info in pairs (EMA.db.newTeamList) do
-					for _, charInfo in pairs (info) do
-						if name == checkName then
-							charInfo.order = position - 1
-						end	
-					end
+		for checkCharacterName, info in pairs (EMA.db.newTeamList) do
+			for _, charInfo in pairs (info) do
+				if charInfo.order > characterPosition then	
+					charInfo.order = charInfo.order - 1
 				end
 			end
 		end
@@ -998,9 +953,11 @@ local function RemoveMember( importName )
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		-- Resets to Top of list!
-		EMA.db.newTeamList[characterName] = nil
-		--EMA:Print("count", EMA.settingsControl.teamListHighlightRow - 1 )
-		EMA:SettingsTeamListRowClick( 1 , 1 )
+		if EMA.settingsControl.teamListHighlightRow > 1 then
+			EMA:SettingsTeamListRowClick( EMA.settingsControl.teamListHighlightRow - 1 , 1 )
+		else 
+			EMA:SettingsTeamListRowClick( 1 , 1 )
+		end	
 	else
 		EMA:Print("[PH] CAN NOT REMOVE SELF")
 	end
@@ -1009,26 +966,22 @@ end
 -- Provides a GUI for a user to confirm removing selected members from the member list.
 function EMA:RemoveMemberGUI()
 	local characterName = GetCharacterNameAtOrderPosition( EMA.settingsControl.teamListHighlightRow )
-	RemoveMember( characterName )
-	EMA.settingsControl.teamListHighlightRow = 1	
+	RemoveMember( characterName )	
 	EMA:SettingsTeamListScrollRefresh()
 	EMA:SettingsGroupListScrollRefresh()
+	--EMA:Print("count", EMA.settingsControl.teamListHighlightRow)
+	--EMA:SettingsTeamListRowClick( EMA.settingsControl.teamListHighlightRow - 1 , 1 )
 end
 
 
 -- Remove member from the command line.
 function EMA:RemoveMemberCommand( info, parameters )
 	local characterName = EMAUtilities:Capitalise(parameters)
-	-- EMA-EE we No-longer remove character's from a team list when isboxer set's up the team we sync!
-	if info == nil then
-		--EMA.IsboxerSyncList[characterName] = "remove"
-		return
-	end		
-	--EMA:Print("testremove", info, parameters )
-	-- Wow names are at least two characters.
-	if characterName ~= nil and characterName:trim() ~= "" and characterName:len() > 1 then
-		-- Remove the character.
-		RemoveMember( characterName )
+	if info ~= nil then
+		if characterName ~= nil and characterName:trim() ~= "" and characterName:len() > 1 then
+			-- Remove the character.
+			RemoveMember( characterName )
+		end
 	end
 end
 
@@ -1069,30 +1022,6 @@ function EMA:ReceiveCommandSetMaster( target, tag )
 		SetMaster( target )
 	end
 end
-
--- Test Isboxer Contral EbonyTest
-
---[[
-function EMA:IsboxerSyncTeamList()
-	if EMA.db.isboxerSync == true and IsAddOnLoaded("Isboxer" ) == true then
-		for characterName, teamStatus in pairs( EMA.IsboxerSyncList ) do
-			--EMA:Print("syncList", characterName, teamStatus )
-			--if teamStatus == "remove" then 
-			--	if IsCharacterInTeam( characterName ) == true and (characterName ~= EMA.characterName ) then	
-			--		--EMA:Print("memberNoLongerInIsboxerTeamDelete", characterName, teamStatus )
-			--		RemoveMember( characterName )
-			--	end	
-			else
-			if teamStatus == "add" and characterName ~= EMA.characterName then
-				if IsCharacterInTeam( characterName ) == false then
-					--EMA:Print("Isboxer-AddMember", characterName, teamStatus )
-					AddMember( characterName )
-				end	
-			end
-		end
-	end
-end
-]]
 
 -------------------------------------------------------------------------------------------------------------
 -- Character online status.
@@ -1387,14 +1316,23 @@ function EMA:OnMasterChange( message, characterName )
 	end
 end
 
+function EMA:AddIsboxerMembers()
+	if IsAddOnLoaded("Isboxer" ) then
+		for slot, characterName in EMAApi.IsboxerTeamList() do
+			EMAApi.AddMember( characterName )
+		end	
+	else
+		EMA:Print(L["ISBOXER_ADDON_NOT_LOADED"])
+	end	
+end
+
+
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
 -------------------------------------------------------------------------------------------------------------
 
 -- Initialise the module.
 function EMA:OnInitialize()
-	-- Table to Store IsboxerTeamList
-	EMA.IsboxerSyncList = {}
 	-- Create the settings control.
 	SettingsCreate()
 	-- Initialise the EMAModule part of this module.
@@ -1425,10 +1363,9 @@ function EMA:OnInitialize()
 	EMATeamSecureButtonMaster:SetAttribute( "type", "macro" )
 	EMATeamSecureButtonMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
 	EMATeamSecureButtonMaster:Hide()
---Sets The class of the char.
---	setClass()
-	-- Click the first row in the team list table to populate the tag list table.
-	--EMA:SettingsTeamListRowClick( 1, 1 )
+	--Sets The class of the char.
+	--	setClass()
+
 end
 
 -- Called when the addon is enabled.
@@ -1478,7 +1415,6 @@ end
 function EMA:SettingsRefresh()
 	-- Team/Group Control
 	local test = " "
-	--EMA.settingsControl.teamListCheckBoxSyncIsboxer:SetValue( EMA.db.isboxerSync )
 	-- Master Control.
 	EMA.settingsControl.masterControlCheckBoxMasterChange:SetValue( EMA.db.masterChangePromoteLeader )
 	EMA.settingsControl.masterControlCheckBoxMasterChangeClickToMove:SetValue( EMA.db.masterChangeClickToMove )
@@ -1491,8 +1427,6 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetValue( EMA.db.inviteSetAllAssistant )
 	-- Ensure correct state.
 	EMA.settingsControl.partyInviteControlCheckBoxSetAllAssist:SetDisabled (not EMA.db.inviteConvertToRaid )
---	EMA.settingsControl.teamListCheckBoxSyncIsboxer:SetDisabled ( not IsAddOnLoaded("Isboxer" ) )
---	EMA.settingsControl.teamListButtonAddIsboxerList:SetDisabled ( not IsAddOnLoaded("Isboxer" ) )
 	-- Update the settings team list.
 	EMA:SettingsTeamListScrollRefresh()
 	-- Check the opt out of loot settings.
@@ -1504,7 +1438,6 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then	
 	-- Update the settings.
 		EMA.db.newTeamList = EMAUtilities:CopyTable( settings.newTeamList )
-	--	EMA.db.isboxerSync = settings.isboxerSync
 		EMA.db.masterChangePromoteLeader = settings.masterChangePromoteLeader 
 		EMA.db.inviteAcceptTeam = settings.inviteAcceptTeam 
 		EMA.db.inviteAcceptFriends = settings.inviteAcceptFriends 
@@ -1525,13 +1458,7 @@ end
 function EMA:PLAYER_ENTERING_WORLD(event, ...)
 	-- trying this
 	-- Click the first row in the team list table to populate the tag list table.
-	local initialLogin, reloadingUI = ...
 	EMA:SettingsTeamListRowClick( 1, 1 )
-	if initialLogin then
-		--EMA:Print("test")
-		--EMA:IsboxerSyncTeamList()
-		--EMA:ScheduleTimer( "IsboxerSyncTeamList", 0.5 )
-	end	
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1612,10 +1539,11 @@ function EMA:SettingsTeamListScrollRefresh()
 end
 
 local function DisplayGroupsForCharacterInGroupsList( characterName )
-	--if not EMA.characterGroupList then
-		EMA.characterGroupList = EMAApi.GetGroupListForCharacter( characterName )
-		table.sort( EMA.characterGroupList )
-		EMA:SettingsGroupListScrollRefresh()
+	if characterName == nil then return end
+	--EMA:Print("test", characterName )
+	EMA.characterGroupList = EMAApi.GetGroupListForCharacter( characterName )
+	table.sort( EMA.characterGroupList )
+	EMA:SettingsGroupListScrollRefresh()
 	--end	
 end
 
@@ -1631,7 +1559,7 @@ end
 function EMA:SettingsTeamListRowClick( rowNumber, columnNumber )
 	if EMA.settingsControl.teamListOffset + rowNumber <= GetTeamListMaximumOrder() then	
 		EMA.settingsControl.teamListHighlightRow = EMA.settingsControl.teamListOffset + rowNumber
-		EMA:SettingsTeamListScrollRefresh()
+		EMA:SettingsTeamListScrollRefresh()	
 		-- Group
 		EMA.settingsControl.groupListHighlightRow = 1
 		local characterName = GetCharacterNameAtOrderPosition( EMA.settingsControl.teamListHighlightRow )
@@ -1645,7 +1573,6 @@ function EMA:SettingsTeamListRowClick( rowNumber, columnNumber )
 				setOnline( characterName )
 			end	
 		end
-		
 	end
 end											   
 
@@ -1785,11 +1712,11 @@ end
 function EMA.SettingsAddPartyClick( event )
 	EMA:AddPartyMembers()
 end
---[[
+
 function EMA:SettingsAddIsboxerListClick( event )
 	EMA:AddIsboxerMembers()
 end
-]]
+
 function EMA:SettingsInviteClick( event )
 	EMA:InviteTeamToParty(nil)
 end
@@ -1797,12 +1724,7 @@ end
 function EMA:SettingsDisbandClick( event )
 	EMA:DisbandTeamFromParty()
 end
---[[
-function EMA:SettingsSyncIsboxerToggle( event, checked)
-	EMA.db.isboxerSync = checked
-	EMA:SettingsRefresh()
-end	
-]]
+
 function EMA:SettingsSetMasterClick( event )
 	local characterName = GetCharacterNameAtOrderPosition( EMA.settingsControl.teamListHighlightRow )
 	EMA:EMASendCommandToTeam( EMA.COMMAND_SET_MASTER, characterName, "all" )
@@ -1958,7 +1880,9 @@ EMAApi.GetTeamListMaximumOrderOnline = GetTeamListMaximumOrderOnline
 EMAApi.TeamListOrderedOnline = TeamListOrderedOnline
 EMAApi.GetPositionForCharacterNameOnline = GetPositionForCharacterNameOnline
 EMAApi.GetClass = GetClass
+EMAApi.AddMember = AddMember
+EMAApi.RemoveMember = RemoveMember
+EMAApi.CommandIAmMaster = EMA.CommandIAmMaster
 --EMAApi.SetClass = setClass
 EMAApi.GroupAreaList = EMA.GroupAreaList
 EMAApi.refreshDropDownList = refreshDropDownList
-EMAApi.addisboxermembers = EMA.AddIsboxerMembers

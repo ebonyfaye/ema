@@ -1345,3 +1345,5 @@ EMAApi.Follow.IsFollowingStrobingPaused = EMA.IsFollowingStrobingPaused
 EMAApi.Follow.GetCurrentFollowTarget = EMA.GetCurrentFollowTarget
 EMAApi.Follow.GetCurrentFollowStrobeTarget = EMA.GetCurrentFollowStrobeTarget
 EMAApi.Follow.SuppressNextFollowWarning = EMA.SuppressNextFollowWarning
+EMAApi.FollowStrobeOnCommand = EMA.FollowStrobeOnCommand
+EMAApi.FollowStrobeOffCommand = EMA.FollowStrobeOffCommand

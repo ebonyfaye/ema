@@ -46,7 +46,7 @@ L["CTRL"] = "Ctrl"
 L["SHIFT"] = "Shift"
 L["ALT"] = "Alt"
 L["UPDATE"] = "Update"
-
+L["ISBOXER_ADDON_NOT_LOADED"] = "ISBoxer Addon Not Installed Or Loaded"
 
 -- Display Options
 L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
@@ -119,7 +119,7 @@ L["TALK"] = "Talk"
 L["QUEST"] = "Quest" 
 L["COMPLETION"] = "Completion"
 L["TRACKER"] = "Tracker"
-
+L["ISBOXER"] = "ISBoxer"
 --------------------------
 -- Pecoded String Formats
 L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
@@ -217,14 +217,11 @@ L["GROUPS_HEADER"] = "Groups"
 L["BUTTON_ADD_HELP"] = "Adds A Member To The Team List\nYou can Use:\nCharacterName\nCharacterName-realm\nTarget\nMouseover"
 L["BUTTON_ADDALL_HELP"] = "Adds all Party/Raid members to the team list"
 L["BUTTON_UP_HELP"] = "Move The Character Up A Place In The Team List"
-
-L["BUTTON_ISBoxerADD_HELP"] = "Adds ISBoxer Team Members To The Team List"
+L["BUTTON_ISBOXER_ADD_HELP"] = "Adds ISBoxer Team Members To The Team List"
 L["BUTTON_DOWN_HELP"] = "Move The Character Down A Place In The Team List"
 L["BUTTON_REMOVE_HELP"] = "Removes Selected Member From The Team List"
 L["BUTTON_MASTER_HELP"] = "Set The Selected Member To Be The Master Of The Group"
 L["BUTTON_GROUP_REMOVE_HELP"] = "Removes The Group From The Selected Character"
-L["CHECKBOX_ISBOXER_SYNC"] = "Sync With ISBoxer"
-L["CHECKBOX_ISBOXER_SYNC_HELP"] = "Sync With ISBoxer TeamList \nAdd/Remove Characters No Longer In ISBoxer Team"
 L["CHECKBOX_ISBOXER_ADD"] = "Auto Add ISBoxer Team List"
 L["CHECKBOX_ISBOXER_ADD_HELP"] = "Automatically Adds ISBoxer Team List Members \nNOTE:\nDoes Not Remove Members No Longer In The Isboxer Team"
 L["MASTER_CONTROL"] = "Master Control"
@@ -585,11 +582,11 @@ L["REMOVE_TRADE_LIST"] = "Are You Sure You Wish To Remove The Selected Item From
 L["TRADE_LIST_HEADER"] = "Trade Item List"
 L["TRADE_LIST"] = "Trade The List Of Items With The EMA-Group Member"
 L["TRADE_LIST_HELP"] = "The List Will Trade With The Selected EMA-Group Member"
-L["TRADE_BOE_ITEMS"] = "Trades Binds When Equipped Items With Master \nSelect Minion To Trade To Master Character"
-L["TRADE_BOE_ITEMS_HELP"] = "Trade All Binds When Equipped Items with the Current Master"
-L["TRADE_REAGENTS"] = "Trades Crafting Reagents Items With Master"
-L["TRADE_REAGENTS_HELP"] = "Trades All Crafting Reagent Items Current Master"
-L["TRADE_OPTIONS"] = "Trade To \"Master\" Options"
+L["TRADE_BOE_ITEMS"] = "Trades Binds When Equipped Items With:"
+L["TRADE_BOE_ITEMS_HELP"] = "Trade All Binds When Equipped Items with EMA Group"
+L["TRADE_REAGENTS"] = "Trades Crafting Reagents Items With:"
+L["TRADE_REAGENTS_HELP"] = "Trades All Crafting Reagent Items"
+L["TRADE_OPTIONS"] = "Trade To Options"
 L["TRADE_GOLD"] = "Trade Excess Gold To Master From Minion"
 L["TRADE_GOLD_HELP"] = "Trade Excess Gold To Master From Minions \nAlways Be Careful When Auto Trading."
 L["GOLD_TO_KEEP"] = "Amount of Gold To Keep On Current Minion"
@@ -873,4 +870,22 @@ L["GB_GOLD_HELP"] = "Adjust Characters Money While Visiting A Guild Bank"
 L["REMOVE_GUILD_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Guild Items List?"
 
 ------------------------
+-- ISBOXER Locale
+L["ISBOXER_LIST_HEADER"] = "Your Current ISBoxer Team"
+L["CHECKBOX_ISBOXER_SYNC"] = "Sync With ISBoxer"
+L["CHECKBOX_ISBOXER_SYNC_HELP"] = "Sync With ISBoxer TeamList \nAdd/Remove Characters No Longer In ISBoxer Team"
+L["ISBOXER_SYNC_HEADER"] = "Sync With ISBoxer"
+L["SYNCINFORMATIONONE"] = "|cFFFF0000 This Will Remove All Your Team Members!"
+L["SYNCINFORMATIONTWO"] = "|cFFFF0000 And Will Sync WIth The ISBoxer TeamList"
+L["SYNCINFORMATIONTHREE"] =  "|cFFFF0000 Note: Some Parts Of EMA Is Not Supported Useing This Method Currently"
+L["REMOVE_ISBOXER_LIST"] = ""
+L["ISBOXER_COMMAND_LINE_HELP"] = "PH For Isboxer Use Only"
+L["ISBOXER_SET_MASTER"] = "ISBoxer Set Master"
+
+L["ISBOXER_SET_STROBEONME"] = "ISBoxer Set Strobe On Me"
+L["ISBOXER_COMMAND_LINE_HELP_TWO"] = "PH For Isboxer Use Only"
+L["ISBOXER_SET_STROBEOFF"] = "ISBoxer Set Strobe Off"
+
+
+-----------------------
 -- X Locale
