@@ -737,7 +737,7 @@ end
 
 -- Add a member to the member list.
 local function AddMember( importName, class )
-	EMA:Print("testAddMembers", importName, class)
+	--EMA:Print("testAddMembers", importName, class)
 	local name = nil
 	local singleName, realm = strsplit( "-" , importName, 2 )
 	local characterName = nil

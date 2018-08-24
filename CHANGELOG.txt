@@ -2,22 +2,22 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.0.1-Beta(0091)
+EMA Version: v8.0.1-Release(0092)
 Game Version: 8.0.1
 Release Date: 24/8/2018
 
 -- The Am Sorry About Everything Update!
 
 ## Core/Random
-
-
+	-Fixed a Typo In Bindings.xml issue #7
+	- Should No Longer Get silly lag when looting issue #1
+	- Fixed issue #6
 
 ## Team
 	- Fixed A Bug Where The Character Position Got Reset To 0 When Removing A Ream Member!	
 	- Team List Selecting Should No Longer Reset To Top Of List To Top Of List When Removing A Character
 	- ISBoxer Added Team Members Is Back!
-	
-	
+
 ## Sell
 	- Reworked The Sell System And Should Be A Lot Faster uing The New Min/Max System.
 	**- Really This Time It Should Sell All Items In The Vender/Sell List And  Players Bag Without Stoping At Around 12 Items
@@ -34,7 +34,14 @@ Release Date: 24/8/2018
 	- Added A BlackList To Stop Selling Tradeing Items
 	- Redesigned The Trade UI
 	- Trade List Selecting Should No Longer Reset To Top Of List When Removing A Item 	
-	
+
+## Guild
+	- Reworked The Guild System.
+	- Will Only Place in BoE Gear! and CraftingReagent has been Updated both Now Have Groups!
+	- Added A BlackList To Stop Placeing In Items
+	- Redesigned The Guild UI
+	- Guild List Selecting Should No Longer Reset To Top Of List When Removing A Item 
+
 ## Item-Use 
 	- Cleaned Up Some Code And Tracked Down A "Small" Lag Issue	
 	- Removed Artifact Power From Bars
@@ -53,13 +60,17 @@ Release Date: 24/8/2018
 	**- Requests
 		**- Added Toggle WarMode With Team!
 	**- Warnings
-		**- Fixed Full Bags Again!
-		
-## ISBoxer 
+		**- Fixed Full Bags Again! Issue #5 
+## Taxi
+	- Fixed A Bug That Was Closeing The Taxi Window issue #4 		
+
+## ISBoxer New
 	- Shows The Current ISBoxer Team In A List
 	- Isboxer New Sync Systsm!
 	- Adds /jamba-team iammaster and /jamba-follow commands for ISBoxer to use.	
 
+	
+	
 ---------------------------
 
 EMA Version: v8.0.1-Release(0088)

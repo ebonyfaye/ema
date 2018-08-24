@@ -256,6 +256,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.areas = EMAUtilities:CopyTable( settings.areas )
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
+		EMA:SendMessage( EMA.MESSAGE_MESSAGE_AREAS_CHANGED )
 		-- Tell the player.
 		EMA:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
@@ -703,6 +704,7 @@ end
 
 function EMA:SettingsPushSettingsClick( event )
 	EMA:EMASendSettings()
+	--EMA:SendMessage( EMA.MESSAGE_MESSAGE_AREAS_CHANGED )
 end
 
 function EMA:SettingsUpdateClick( event )

@@ -363,6 +363,7 @@ local function RemoveGroup( tag )
 	RemoveFromGroupList( tag )
 	EMA:SettingsGroupListScrollRefresh()
 	EMAPrivate.Team.RefreshGroupList()
+	EMA:SettingsGroupListRowClick( EMA.settingsControl.groupListHighlightRow - 1, 1 )
 	EMA:SendMessage( EMA.GROUP_LIST_CHANGED )
 end
 

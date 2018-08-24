@@ -176,11 +176,12 @@ function EMA:SettingsCreateTrade( top )
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
 	local tradeWidth = headingWidth
 	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4
-	local movingTop = top
+	
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local thirdWidth = (headingWidth - indentContinueLabel) / 3
 	local left2 = left + thirdWidth +  horizontalSpacing
 	local left3 = left2 + thirdWidth +  horizontalSpacing
+	local movingTop = top
 	local movingTopEdit = - 10
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
@@ -190,7 +191,7 @@ function EMA:SettingsCreateTrade( top )
 	EMA.settingsControl.checkBoxShowEMATradeWindow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		headingWidth, 
-		left, 
+		left + 130, 
 		movingTop, 
 		L["TRADE_LIST"],
 		EMA.SettingsToggleShowEMATradeWindow,
@@ -217,7 +218,7 @@ function EMA:SettingsCreateTrade( top )
 	list.columnInformation[2].alignment = "LEFT"
 	list.columnInformation[3] = {}
 	list.columnInformation[3].width = 20
-	list.columnInformation[3].alignment = "LEFT"	
+	list.columnInformation[3].alignment = "LEFT"		
 	list.scrollRefreshCallback = EMA.SettingsScrollRefresh
 	list.rowClickCallback = EMA.SettingsTradeItemsRowClick
 	EMA.settingsControl.tradeItems = list
@@ -253,7 +254,6 @@ function EMA:SettingsCreateTrade( top )
 		EMA.SettingsToggleBlackListItem,
 		L["BLACKLIST_ITEM_HELP"]
 	)
-	
 	EMA.settingsControl.tradeItemsEditBoxToonTag = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		thirdWidth,	
@@ -263,7 +263,6 @@ function EMA:SettingsCreateTrade( top )
 	)
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetCallback( "OnValueChanged",  EMA.TradeGroupListDropDownList )
-
 	movingTop = movingTop - editBoxHeight	
 	EMA.settingsControl.tradeItemsButtonAdd = EMAHelperSettings:CreateButton(	
 		EMA.settingsControl, 
@@ -313,7 +312,6 @@ function EMA:SettingsCreateTrade( top )
 	)
 	EMA.settingsControl.tradeTradeCRItemsTag:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.tradeTradeCRItemsTag:SetCallback( "OnValueChanged",  EMA.TradeGroupListItemsCRDropDown )
-	
 	-- Trade Gold! Keep
 	movingTop = movingTop - editBoxHeight
 	EMA.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade = EMAHelperSettings:CreateCheckBox( 
@@ -427,7 +425,7 @@ end
 
 function EMA:SettingsTradeItemsAddClick( event )
 	if EMA.autoTradeItemLink ~= nil and EMA.autoTradeItemTag ~= nil then
-		EMA:Print("test",  EMA.db.blackListItem )
+		--EMA:Print("test",  EMA.db.blackListItem )
 		EMA:AddItem( EMA.autoTradeItemLink, EMA.autoTradeItemTag, EMA.db.blackListItem )
 		EMA.autoTradeItemLink = nil
 		EMA.settingsControl.tradeItemsEditBoxTradeItem:SetText( "" )
@@ -441,6 +439,8 @@ end
 
 function EMA:OnGroupAreasChanged( message )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.tradeTradeCRItemsTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.tradeTradeBoEItemsTag:SetList( EMAApi.GroupList() )
 end
 
 function EMA:SettingsSetMessageArea( event, value )
@@ -458,7 +458,7 @@ function EMA:SettingsToggleTradeBoEItems(event, checked )
 	EMA:SettingsRefresh()
 end
 
-function EMA:TradeGroupListItemsBoEDropDown(event, checked )
+function EMA:TradeGroupListItemsBoEDropDown(event, value )
 	if value == " " or value == nil then 
 		return 
 	end
@@ -476,7 +476,7 @@ function EMA:SettingsToggleTradeCRItems(event, checked )
 	EMA:SettingsRefresh()
 end
 
-function EMA:TradeGroupListItemsCRDropDown(event, checked )
+function EMA:TradeGroupListItemsCRDropDown(event, value )
 	if value == " " or value == nil then 
 		return 
 	end
@@ -551,16 +551,22 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxTradeCRItems:SetValue( EMA.db.tradeCRItems)
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetText( EMA.autoSellOtherItemTag )
-	EMA.settingsControl.tradeTradeBoEItemsTag:SetText( EMA.autoSellOtherItemTag )
-	EMA.settingsControl.tradeTradeCRItemsTag:SetText( EMA.autoSellOtherItemTag )
+	EMA.settingsControl.tradeTradeBoEItemsTag:SetText( EMA.db.autoBoEItemTag )
+	EMA.settingsControl.tradeTradeCRItemsTag:SetText( EMA.db.autoCRItemTag )
 	EMA.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade:SetValue( EMA.db.adjustMoneyWithMasterOnTrade )
+	
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetText( tostring( EMA.db.goldAmountToKeepOnToonTrade ) )
+	
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetDisabled( not EMA.db.adjustMoneyWithMasterOnTrade )
 	EMA.settingsControl.tradeItemsEditBoxTradeItem:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetDisabled( not EMA.db.showEMATradeWindow )	
 	EMA.settingsControl.tradeItemsButtonRemove:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA.settingsControl.tradeItemsButtonAdd:SetDisabled( not EMA.db.showEMATradeWindow )	
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.showEMATradeWindow )
+	EMA.settingsControl.checkBoxTradeBoEItems:SetDisabled( not EMA.db.showEMATradeWindow )
+	EMA.settingsControl.tradeTradeBoEItemsTag:SetDisabled( not EMA.db.showEMATradeWindow )
+	EMA.settingsControl.checkBoxTradeCRItems:SetDisabled( not EMA.db.showEMATradeWindow )
+	EMA.settingsControl.tradeTradeCRItemsTag:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA:SettingsScrollRefresh()
 end
 
@@ -587,7 +593,7 @@ end
 
 function EMA:AddItem( itemLink, itemTag, blackList )
 	-- Get some more information about the item.
-	EMA:Print("test", itemLink, itemTag, blackList )
+	--EMA:Print("test", itemLink, itemTag, blackList )
 	local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo( itemLink )
 	-- If the item could be found.
 	if name ~= nil then
@@ -598,14 +604,14 @@ function EMA:AddItem( itemLink, itemTag, blackList )
 		itemInformation.blackList = blackList
 		table.insert( EMA.db.autoTradeItemsList, itemInformation )
 		EMA:SettingsRefresh()			
-		EMA:SettingsTradeItemsRowClick( 1, 1 )
+		EMA:SettingsTradeItemsRowClick( 1 , 1 )
 	end	
 end
 
 function EMA:RemoveItem()
 	table.remove( EMA.db.autoTradeItemsList, EMA.settingsControl.tradeItemsHighlightRow )
 	EMA:SettingsRefresh()
-	EMA:SettingsTradeItemsRowClick( 1, 1 )		
+	EMA:SettingsTradeItemsRowClick( EMA.settingsControl.tradeItemsHighlightRow -1 , 1 )		
 end
 
 function EMA:TRADE_SHOW( event, ... )	

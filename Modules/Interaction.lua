@@ -106,8 +106,8 @@ EMA.MESSAGE_TAXI_TAKEN = "EMATaxiTaxiTaken"
 -- Initialise the module.
 function EMA:OnInitialize()
 	-- Taxi
-	EMA.EMATakesTaxi = false
-	EMA.EMALeavsTaxi = false
+	EMA.TakesTaxi = false
+	EMA.LeavsTaxi = false
 	EMA.TaxiFrameName = TaxiFrame
 	-- Mount
 	EMA.castingMount = nil
@@ -134,7 +134,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED" )
 	EMA:RegisterEvent( "LOOT_READY" )
 	EMA:RegisterEvent( "TAXIMAP_OPENED" )
-	EMA:RegisterEvent("TAXIMAP_CLOSED")
+	EMA:RegisterEvent( "TAXIMAP_CLOSED" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 end
 
@@ -464,7 +464,7 @@ local function TakeTaxi( sender, nodeName )
 				-- Send a message to any listeners that a taxi is being taken.
 				EMA:SendMessage( EMA.MESSAGE_TAXI_TAKEN )
 				-- Take a taxi.
-				EMA.EMATakesTaxi = true
+				EMA.TakesTaxi = true
 				EMA:ScheduleTimer( "TakeTimedTaxi", EMA.db.changeTexiTime , nodeIndex )
 				--GetNumRoutes( nodeIndex )
 				--TakeTaxiNode( nodeIndex )
@@ -489,18 +489,18 @@ function EMA:TakeTaxiNode( taxiNodeIndex )
 	if EMA.db.takeMastersTaxi == true then
 		-- Get the name of the node flown to.
 		local nodeName = TaxiNodeName( taxiNodeIndex )
-		if EMA.EMATakesTaxi == false then
+		if EMA.TakesTaxi == false then
 			-- Tell the other characters about the taxi.
 			EMA:EMASendCommandToTeam( EMA.COMMAND_TAKE_TAXI, nodeName )
 		end
-		EMA.EMATakesTaxi = false
+		EMA.TakesTaxi = false
 	end
 end
 
 local function LeaveTaxi ( sender )
 	if EMA.db.requestTaxiStop == true then
 		if sender ~= EMA.characterName then
-			EMA.EMALeavsTaxi = true
+			EMA.LeavsTaxi = true
 			TaxiRequestEarlyLanding()
 			EMA:EMASendMessageToTeam( EMA.db.messageArea,  L["REQUESTED_STOP_X"]( sender ), false )	
 		end
@@ -512,24 +512,24 @@ function EMA.TaxiRequestEarlyLanding( sender )
 	--EMA:Print("test")
 	if EMA.db.requestTaxiStop == true then
 		if UnitOnTaxi( "player" ) and CanExitVehicle() == true then
-			if EMA.EMALeavsTaxi == false then
+			if EMA.LeavsTaxi == false then
 				-- Send a message to any listeners that a taxi is being taken.
 				EMA:EMASendCommandToTeam ( EMA.COMMAND_EXIT_TAXI )
 			end
 		end
-		EMA.EMALeavsTaxi = false
+		EMA.LeavsTaxi = false
 	end
 end
 
 function EMA:TAXIMAP_CLOSED( event, ... )
-	local EMATaxiFrame = EMA.TaxiFrameName
-	if EMATaxiFrame:IsVisible() then
+	local TaxiFrame = EMA.TaxiFrameName
+	if not TaxiFrame:IsVisible() then
 		EMA:EMASendCommandToTeam ( EMA.COMMAND_CLOSE_TAXI )
 	end
 end
 
 local function CloseTaxiMapFrame()
-	if EMA.EMATakesTaxi == false then
+	if EMA.TakesTaxi == false then
 		CloseTaxiMap()
 	end
 end
@@ -798,8 +798,8 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 			-- If not already on a taxi...
 			if not UnitOnTaxi( "player" ) then
 				-- And if the taxi frame is open...
-				local EMATaxiFrame = EMA.TaxiFrameName
-				if EMATaxiFrame:IsVisible() then
+				local TaxiFrame = EMA.TaxiFrameName
+				if TaxiFrame:IsVisible() then
 					TakeTaxi( characterName, ... )
 				end	
 			end

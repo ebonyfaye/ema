@@ -447,14 +447,6 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 	end
 end
 
-function EMA:IsboxerSyncTeamList()
-	if EMA.db.isboxerSync == true and IsAddOnLoaded("Isboxer" ) == true then
-		for characterName, TeamSlot in pairs( EMA.db.isboxerTeamList ) do
-			EMA:Print("test", characterName, TeamSlot )
-		end
-	end
-end
-
 function EMA:AddIsboxerMembers()
 	--table.wipe( EMA.db.isboxerTeamList )
 	if IsAddOnLoaded("Isboxer" ) == true then 
@@ -470,7 +462,7 @@ function EMA:AddIsboxerMembers()
 					end					
 				end
 			else
-				EMA:Print("testTeamListName", data )
+				--EMA:Print("testTeamListName", data )
 				EMA.db.isboxerTeamName = data
 			end	
 		end
