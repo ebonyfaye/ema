@@ -2,7 +2,7 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.0.1-Release(0093)
+EMA Version: v8.0.1-Release(0094)
 Game Version: 8.0.1
 Release Date: 26/8/2018
 
