@@ -169,7 +169,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.listButtonAdd:SetDisabled( not EMA.db.autoSellItem )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
 	EMA.settingsControl.listCheckBoxBoxOtherDestroy:SetDisabled( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
-	
+	--EMA.settingsControl.listEditBoxOtherItem:RegisterForClicks( "RightButtonDown" )
 	
 	
 	EMA:SettingslistScrollRefresh()

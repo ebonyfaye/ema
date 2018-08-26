@@ -457,6 +457,7 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 	local initialLogin, reloadingUI = ...
 	if initialLogin then
 		EMA:ScheduleTimer( "IsboxerSyncTeamList", 0.5 )
+		EMA:AddIsboxerMembers()
 	end
 end
 

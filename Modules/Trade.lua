@@ -671,13 +671,16 @@ function EMA:TradeAllItems()
 					local location = item:GetItemLocation()
 					local itemType = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
+					local itemRarity =  C_Item.GetItemQuality( location )
 					local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
 					local canTrade = false
 					if EMA.db.tradeBoEItems == true then
 						if itemType ~= 0 then
 							if EMAApi.IsCharacterInGroup( characterName, EMA.db.autoBoEItemTag ) == true then
 								if isBop == false then
-									canTrade = true	
+									if itemRarity == 2 or itemRarity == 3 or itemRarity == 4 then	
+										canTrade = true	
+									end	
 								end
 							end										
 						end									

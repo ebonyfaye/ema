@@ -91,7 +91,7 @@ end
 
 -- Handle the chat command.
 function EMAModule:EMAChatCommand( input )
-   print("test", input, self.chatCommand, self.moduleName )
+   --print("test", input, self.chatCommand, self.moduleName )
 	if not input or input:trim() == "" then
 		EMAPrivate.SettingsFrame.Widget:Show()
 		EMAPrivate.SettingsFrame.TreeGroupStatus.groups[self.parentDisplayName] = true

@@ -1185,7 +1185,7 @@ function EMA:InviteTeamToParty( info, tag )
 			EMA.inviteList = {}
 			EMA.inviteCount = 0
 			for index, characterName in TeamListOrderedOnline() do
-				if EMAApi.IsCharacterInGroup( characterName, tag ) then
+				if EMAApi.IsCharacterInGroup( characterName, tag ) == true then
 					--EMA:Print("HasTag", characterName, tag )
 					-- As long as they are not the player doing the inviting.
 					if characterName ~= EMA.characterName then
@@ -1202,6 +1202,17 @@ function EMA:InviteTeamToParty( info, tag )
 	end	
 end
 
+function EMA:doTagParty(event, characterName, tag, ...)
+	--EMA:Print("test", characterName, tag )
+	if EMA.characterName == characterName then
+	 --EMA:Print("this msg is for me", characterName )
+		if EMAApi.IsCharacterInGroup( AJM.characterName, tag ) == true then
+			EMA:InviteTeamToParty( nil, tag)
+		else 
+			return
+		end
+	 end
+end
 
 function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
 	--EMA:Print("Inviter", inviter)
@@ -1831,7 +1842,7 @@ function EMA:EMAOnCommandReceived( sender, commandName, ... )
 	end
 	if commandName == EMA.COMMAND_TAG_PARTY then
 		if IsCharacterInTeam( sender ) == true then
-			EMA.TagParty( characterName, tag, ... )
+			EMA.doTagParty( characterName, tag, ... )
 		end	
 	end	
 end

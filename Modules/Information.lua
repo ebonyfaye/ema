@@ -79,6 +79,12 @@ EMA.currTypes.CoinsOfAir = 1416
 --7.3
 EMA.currTypes.WakeningEssence = 1533
 EMA.currTypes.VeiledArgunite = 1508
+--8.0
+EMA.currTypes.WarResources = 1560
+EMA.currTypes.RichAzeriteFragment = 1565
+EMA.currTypes.SeafarersDubloon = 1710
+EMA.currTypes.SealofWartornFate = 1580
+EMA.currTypes.WarSupplies = 1587
 
 -------------------------------------- End of edit --------------------------------------------------------------
 

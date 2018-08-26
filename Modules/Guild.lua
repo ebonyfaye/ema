@@ -46,18 +46,12 @@ EMA.settings = {
 		messageArea = EMAApi.DefaultMessageArea(),
 		showEMAGuildWindow = false,
 		blackListItem = false,
-		
 		guildBoEItems = false,
 		autoGuildBankTabBoE = "1",
-		autoBoEItemTag = EMAApi.AllGroup(),
-		
-		
+		autoBoEItemTag = EMAApi.AllGroup(),	
 		guildCRItems = false,
 		autoGuildBankTabCR = "1",
 		autoCRItemTag = EMAApi.AllGroup(),
-		
-		
-		
 		autoGuildItemsList = {},
 		adjustMoneyWithGuildBank = false,
 		goldAmountToKeepOnToon = 250,
@@ -741,6 +735,7 @@ function EMA:AddAllToGuildBank()
 					local location = item:GetItemLocation()
 					local itemType = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
+					local itemRarity =  C_Item.GetItemQuality( location )
 					local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
 					local canPlace = false
 					local bankTab = 0
@@ -748,8 +743,10 @@ function EMA:AddAllToGuildBank()
 						if itemType ~= 0 then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoBoEItemTag ) == true then
 								if isBop == false then
-									canPlace = true
-									bankTab = EMA.db.autoGuildBankTabBoE		
+									if itemRarity == 2 or itemRarity == 3 or itemRarity == 4 then	
+										canPlace = true
+										bankTab = EMA.db.autoGuildBankTabBoE
+									end			
 								end
 							end										
 						end									
@@ -778,12 +775,8 @@ function EMA:AddAllToGuildBank()
 						end
 					end	
 					if canPlace == true and bankTab ~= 0 then
-						--for iterateTradeSlots = 1, ( MAX_TRADE_ITEMS - 1 ) do	
-							--if GetTradePlayerItemLink( iterateTradeSlots ) == nil then
-								delay = delay + 3
-								EMA:ScheduleTimer("PlaceItemInGuildBank", delay , bagID, slotID, bankTab )	
-							--end
-						--end	
+						delay = delay + 3
+						EMA:ScheduleTimer("PlaceItemInGuildBank", delay , bagID, slotID, bankTab )	
 					end
 				end	
 			end

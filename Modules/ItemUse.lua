@@ -183,8 +183,6 @@ EMA.maximumNumberOfRows = 20
 -------------------------------------------------------------------------------------------------------------
 
 local function CanDisplayItemUse()
-	-- PHASEING OUT THE MASTER SYSTEM!
-	--[[
 	local canShow = false
 	if EMA.db.showItemUse == true then
 		if EMA.db.showItemUseOnMasterOnly == true then
@@ -195,8 +193,7 @@ local function CanDisplayItemUse()
 			canShow = true
 		end
 	end
-	]]
-	return true
+	return canShow
 end
 
 local function CreateEMAItemUseFrame()
@@ -369,7 +366,7 @@ function EMA:UpdateQuestItemsInBar()
 			if ( questitem ) then
 				local IsInInventory = EMA:IsInInventory( action )
 				if IsInInventory == false then
-					EMA:Print("NOT IN BAGS", IsInInventory, action)
+					--EMA:Print("NOT IN BAGS", IsInInventory, action)
 					EMA.db.itemsAdvanced[iterateItems] = nil	
 					EMA:EMASendUpdate( iterateItems, "empty", nil )
 				end	

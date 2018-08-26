@@ -2,6 +2,32 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Release(0093)
+Game Version: 8.0.1
+Release Date: 26/8/2018
+
+## Core/Random
+	-Cleaned Up Some Debug Code
+
+## Team
+	- Invite GroupTag Should Work Again	
+	- Should Set To Raid if over 5 members!
+	- Set Assistant Is now working ( was it ever? )
+	
+## Trade
+	- Should Not Trade White Items (tools) When Have On Trade BoE items	
+
+## Guild
+	- Should Not Place White Items (tools) in Guild Bank When Have On BoE items		
+	
+## ISBoxer
+	- Fixed A Bug Where The Isboxer Teamlist Registering Right With EMA
+
+##Currency
+	- Added All BFA Currencys.
+	
+---------------------------
+
 EMA Version: v8.0.1-Release(0092)
 Game Version: 8.0.1
 Release Date: 24/8/2018
