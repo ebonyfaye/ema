@@ -2,6 +2,17 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Release(0095)
+Game Version: 8.0.1
+Release Date: 26/8/2018
+
+
+## Team
+	- Seems somewhere along the lines the code for "invite <Tag> went MIA!!!
+	
+	
+---------------------------
+
 EMA Version: v8.0.1-Release(0094)
 Game Version: 8.0.1
 Release Date: 26/8/2018

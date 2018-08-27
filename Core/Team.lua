@@ -1151,7 +1151,7 @@ function EMA.DoTeamPartyInvite()
 	EMA.currentInviteCount = EMA.currentInviteCount + 1
 	if EMA.currentInviteCount < EMA.inviteCount then
 		--if GetTeamListMaximumOrderOnline() > 5 and EMA.db.inviteConvertToRaid == true then
-		if EMA.inviteCount > 5 and EMA.db.inviteConvertToRaid == true then
+		if EMA.inviteCount > 4 and EMA.db.inviteConvertToRaid == true then
 			if EMA.db.inviteSetAllAssistant == true then	
 				ConvertToRaid()
 				SetEveryoneIsAssistant(true)
@@ -1206,7 +1206,7 @@ function EMA:doTagParty(event, characterName, tag, ...)
 	--EMA:Print("test", characterName, tag )
 	if EMA.characterName == characterName then
 	 --EMA:Print("this msg is for me", characterName )
-		if EMAApi.IsCharacterInGroup( AJM.characterName, tag ) == true then
+		if EMAApi.IsCharacterInGroup( EMA.characterName, tag ) == true then
 			EMA:InviteTeamToParty( nil, tag)
 		else 
 			return
