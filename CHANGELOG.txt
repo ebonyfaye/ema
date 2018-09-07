@@ -2,6 +2,28 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Release(0096)
+Game Version: 8.0.1
+Release Date: 07/09/2018
+
+## Core
+	- Updated License To "All Rights Reserved" To Stop People Stealing My Code For There Own Non-Public "Releases" - Without My permission
+		- To Match CurseForge 
+## Follow
+	- Fixed issues #24 ( Follow Strobe Getting Canceled Out When Pvp Follow Warning Goes Off )
+	
+## Mail 
+	- New Module sends a List/BoE/Reagents To A Character.
+		- Will Only Trade BoE Gear! and CraftingReagent has been Updated both Now Have Groups!
+		- Added A BlackList To Stop Mailing Items
+	
+
+	
+	
+	
+	
+---------------------------
+
 EMA Version: v8.0.1-Release(0095)
 Game Version: 8.0.1
 Release Date: 26/8/2018

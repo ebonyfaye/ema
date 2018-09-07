@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: MIT License 2018 Jennifer Cally							--
+--				License: All Rights Reserved 2018 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -682,6 +682,7 @@ function EMA:OnInitialize()
 	-- Following flag.
 	EMA.isFollowing = false
 	EMA.warnFollowPvPCombat = true
+	EMA.PvPTimerReset = nil
 	-- Strobing follow.
 	EMA.currentFollowStrobeTarget = EMAApi.GetMasterName()
 	EMA.followingStrobing = false
@@ -990,13 +991,14 @@ function EMA:PVP_FOLLOW(event, arg1, message, ...  )
 			EMA:EMASendMessageToTeam( EMA.db.warningArea, L["PVP_FOLLOW_ERR"], false )
 			EMA.warnFollowPvPCombat = false
 			EMA:ScheduleTimer("ResetPvpWarn", 10, nil )
+			EMA.PvPTimerReset = EMA:EMASendMessageToTeam( EMA.db.warningArea, L["PVP_FOLLOW_ERR"], false )
 		end
 	end
 end
 
 function EMA:ResetPvpWarn()
 	EMA.warnFollowPvPCombat = true
-	EMA:CancelAllTimers()
+	EMA:CancelTimer( EMA.PvPTimerReset )
 end	
 
 function EMA:AutoFollowAfterCombatCommand( info, parameters )
@@ -1222,7 +1224,7 @@ function EMA:FollowStrobeOffReceiveCommand( tag )
 	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
 		-- Then follow the target specified - turn off strobing.
 		EMA:FollowStrobeOff()
-		FollowUnit( "Player", true )
+		--FollowUnit( "Player", true )
 	end
 end	
 
