@@ -32,6 +32,7 @@
 	<Script file="Libs\LibButtonGlow-1.0\LibButtonGlow-1.0.lua" />
 	<Script file="Libs\UTF8\utf8data.lua" />
 	<Script file="Libs\UTF8\utf8.lua" />
+	<Script file="Libs\libdatabroker-1-1-1.1.4\LibDataBroker-1.1.lua" />
 	<Script file="GUI\AceGUIContainer-EMAWindow.lua" />
 	<Script file="GUI\AceGUIContainer-EMATreeGroup.lua" />
 	<Script file="GUI\AceGUIWidget-EMANormalLabel.lua" />

@@ -47,6 +47,7 @@ EMA.settings = {
 		blackListItem = false,
 		tradeBoEItems = false,
 		tradeCRItems = false,
+		autoSellOtherItemTag = EMAApi.MasterGroup(),
 		autoBoEItemTag = EMAApi.MasterGroup(),
 		autoCRItemTag = EMAApi.MasterGroup(),
 		autoTradeItemsList = {},
@@ -117,8 +118,8 @@ function EMA:OnInitialize()
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
 	EMA.autoTradeItemLink = nil
-	EMA.autoSellOtherItemTag = EMAApi.MasterGroup ()
-	EMA.autoTradeItemTag = EMAApi.MasterGroup ()
+	--EMA.autoSellOtherItemTag = EMAApi.MasterGroup ()
+	--EMA.autoTradeItemTag = EMAApi.MasterGroup ()
 	-- Create the settings control.
 	EMA:SettingsCreate()
 	-- Initialse the EMAModule part of this module.
@@ -242,7 +243,7 @@ function EMA:SettingsCreateTrade( top )
 		movingTop,
 		L["ITEM_DROP"]
 	)
-
+	--EMA.settingsControl.tradeItemsEditBoxTradeItem:SetCallback( "OnTextChanged", EMA.SettingsEditBoxChangedTradeItem )
 	EMA.settingsControl.tradeItemsEditBoxTradeItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedTradeItem )
 	movingTop = movingTop - editBoxHeight
 		EMA.settingsControl.listCheckBoxBoxOtherBlackListItem = EMAHelperSettings:CreateCheckBox( 
@@ -411,7 +412,7 @@ function EMA:TradeGroupListDropDownList (event, value )
 	end
 	for index, groupName in ipairs( EMAApi.GroupList() ) do
 		if index == value then
-			EMA.autoTradeItemTag = groupName
+			EMA.db.autoSellOtherItemTag = groupName
 			break
 		end
 	end
@@ -424,9 +425,9 @@ function EMA:SettingsToggleBlackListItem( event, checked )
 end	
 
 function EMA:SettingsTradeItemsAddClick( event )
-	if EMA.autoTradeItemLink ~= nil and EMA.autoTradeItemTag ~= nil then
+	if EMA.autoTradeItemLink ~= nil and EMA.db.autoSellOtherItemTag ~= nil then
 		--EMA:Print("test",  EMA.db.blackListItem )
-		EMA:AddItem( EMA.autoTradeItemLink, EMA.autoTradeItemTag, EMA.db.blackListItem )
+		EMA:AddItem( EMA.autoTradeItemLink, EMA.db.autoSellOtherItemTag, EMA.db.blackListItem )
 		EMA.autoTradeItemLink = nil
 		EMA.settingsControl.tradeItemsEditBoxTradeItem:SetText( "" )
 		EMA:SettingsRefresh()
@@ -522,6 +523,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		-- Update the settings.
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.showEMATradeWindow = settings.showEMATradeWindow
+		EMA.db.autoSellOtherItemTag = settings.autoSellOtherItemTag
 		EMA.db.blackListItem = settings.blackListItem
 		EMA.db.tradeBoEItems = settings.tradeBoEItems
 		EMA.db.tradeCRItems = settings.tradeCRItems
@@ -550,13 +552,11 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxTradeBoEItems:SetValue( EMA.db.tradeBoEItems)
 	EMA.settingsControl.checkBoxTradeCRItems:SetValue( EMA.db.tradeCRItems)
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
-	EMA.settingsControl.tradeItemsEditBoxToonTag:SetText( EMA.autoSellOtherItemTag )
+	EMA.settingsControl.tradeItemsEditBoxToonTag:SetText( EMA.db.autoSellOtherItemTag )
 	EMA.settingsControl.tradeTradeBoEItemsTag:SetText( EMA.db.autoBoEItemTag )
 	EMA.settingsControl.tradeTradeCRItemsTag:SetText( EMA.db.autoCRItemTag )
 	EMA.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade:SetValue( EMA.db.adjustMoneyWithMasterOnTrade )
-	
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetText( tostring( EMA.db.goldAmountToKeepOnToonTrade ) )
-	
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetDisabled( not EMA.db.adjustMoneyWithMasterOnTrade )
 	EMA.settingsControl.tradeItemsEditBoxTradeItem:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetDisabled( not EMA.db.showEMATradeWindow )	
@@ -636,30 +636,21 @@ function EMA:TradeShowAdjustMoneyWithMaster()
 		return
 	end
 	if moneyToDepositOrWithdraw > 0 then
-		for index, character in EMAApi.TeamListOrderedOnline() do
-			--EMA:Print("Team", character )
-			local teamCharacterName = ( Ambiguate( character, "short" ) )
-			local tradePlayersName = GetUnitName("NPC")
-			if tradePlayersName == teamCharacterName then
-					--EMA:Print("found", tradePlayersName, teamCharacterName, character )
-					if EMAApi.IsCharacterTheMaster(character) == true and EMAUtilities:CheckIsFromMyRealm(character) == true then	
-						MoneyInputFrame_SetCopper(TradePlayerInputMoneyFrame, moneyToDepositOrWithdraw)
-						break
-					end	
-			else
-				--EMA:Print(tradePlayersName, L["Is Not a Member of the team, Will not trade Gold."])
-			end
+		local tradePlayersName = GetUnitName("NPC", true)
+		local characterName = EMAUtilities:AddRealmToNameIfMissing( tradePlayersName )
+		if EMAApi.IsCharacterTheMaster(characterName) == true and EMAUtilities:CheckIsFromMyRealm(characterName) == true then	
+			MoneyInputFrame_SetCopper(TradePlayerInputMoneyFrame, moneyToDepositOrWithdraw)
 		end
-		
 	end
 end
 
 function EMA:TradeAllItems()	
-	local tradePlayersName = GetUnitName("NPC")	
+	local tradePlayersName = GetUnitName("NPC", true)
 	local characterName = EMAUtilities:AddRealmToNameIfMissing( tradePlayersName )
-	if EMAApi.IsCharacterInTeam ( characterName ) == false then
+	--EMA:Print("testTradeName", characterName)
+	if EMAApi.IsCharacterInTeam ( characterName ) == false and EMAUtilities:CheckIsFromMyRealm(characterName) == false then
 		return
-	end	
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )

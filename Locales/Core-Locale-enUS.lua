@@ -41,7 +41,6 @@ L["MESSAGES_HEADER"] = "Messages"
 L["MESSAGE_AREA"]  = "Message Area"
 L["SEND_WARNING_AREA"] = "Warning Area"
 L["PH"] = "PH"
-L["GUILD"] = "Guild"
 L["CTRL"] = "Ctrl"
 L["SHIFT"] = "Shift"
 L["ALT"] = "Alt"
@@ -114,12 +113,15 @@ L["PURCHASE"] = "Purchase"
 L["WARNINGS"] = "Warnings"
 L["QUEST"] = "Quest"
 L["TRADE"] = "Trade"
+L["GUILD"] = "Guild"
+L["Mail"] = "Mail"
 L["REPAIR"] = "Repair"
 L["TALK"] = "Talk"
 L["QUEST"] = "Quest" 
 L["COMPLETION"] = "Completion"
 L["TRACKER"] = "Tracker"
 L["ISBOXER"] = "ISBoxer"
+
 --------------------------
 -- Pecoded String Formats
 L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
@@ -169,7 +171,7 @@ L["COPYRIGHTTWO"] = "Released Under License: The MIT License"
 L["FRAME_RESET"] = "Frame Reset"
 -- Msg 8000
 L["ALL_SETTINGS_RESET"] = "Thank You For Using EMA \nYour settings have been reset. \n\nPlease report any bugs to the source control issue tracker."
-
+L["CAN_NOT_RUN_JAMBA_AND_EMA"] = "|cFFFF0000 You Can Not Run \"Jamba\" With EMA \nDisabling Jamba Addon \n\nThis Will Reload Your UI"
 --------------------------
 -- Communications Locale
 
@@ -887,6 +889,32 @@ L["ISBOXER_SET_SNW"] = "ISBoxer Set snw PH"
 L["ISBOXER_COMMAND_LINE_HELP_TWO"] = "PH For Isboxer Use Only"
 L["ISBOXER_SET_STROBEOFF"] = "ISBoxer Set Strobe Off"
 
+-----------------------
+-- Mail Locale
+L["REMOVE_MAIL_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Mail Items List?"
+L["MAIL_LIST_HEADER"] = "Mail Sending List"
+L["MAIL_LIST"] = "Send Mail To The Selected Character"
+L["MAIL_LIST_HELP"] = "Send Mail To The Selected Character"
+L["MAILTOON"] = "Send Mail To:"
+L["MAIL_BOE_ITEMS"] = "Mail All BoE Items To:"
+L["MAIL_BOE_ITEMS_HELP"] = "Mail All BoE Items To The Selected Character"
+L["MAIL_REAGENTS"] = "Mail All Reagents To:"
+L["MAIL_REAGENTS_HELP"] = "Mails All Crafting Reagents Items To The Selected Character"
+L["MAIL_GOLD"] = "Adjust Characters Money While Visiting A Mail Box"
+L["MAIL_GOLD_HELP"] = "Adjust Characters Money While Visiting A Mail Box"
+L["SENT_AUTO_MAILER"] = "Sent By EMA Auto Mailer" 
+L["Mail_OPTIONS"] = "Mail Options"
+--PH
+L["MAIL_GOLD_COMING_SOON"]  = "Mail Gold Options Coming Soon™"
+
+-----------------------
+-- LDBBar Locale
+L["LDBBAR_LEFT_CLICK"] = "Left Click"
+L["LDBBAR_MIDDLE_CLICK"] = "Middle Click"
+L["LDBBAR_RIGHT_CLICK"] = "Right Click"
+L["LDBBAR_CONFIG"] = "To Open Main Config"
+L["LDBBAR_CONFIG_TEAM"] = "To Open Team Settings"
+L["LDBBAR_PUSH"] = "To Push All Settings"
 
 -----------------------
 -- X Locale

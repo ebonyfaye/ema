@@ -64,6 +64,10 @@ EMAPrivate.SettingsFrame.Widget:AddChild( EMAPrivate.SettingsFrame.WidgetTree )
 
 
 function EMA:OnEnable()
+	local Jamba = IsAddOnLoaded("Jamba")
+	if Jamba == true then
+		StaticPopup_Show( "CAN_NOT_RUN_JAMBA_AND_EMA" )
+	end
 	if EMA.db.showStartupMessage8000 then
 		StaticPopup_Show( "ALL_SETTINGS HAVE BEEN RESET" )
 	end
@@ -83,6 +87,19 @@ local function InitializePopupDialogs()
 		timeout = 0,
 		exclusive = 1,
 		hideOnEscape = 1,
+		whileDead = 1,	
+	}
+	StaticPopupDialogs["CAN_NOT_RUN_JAMBA_AND_EMA"] = {
+		text = L["CAN_NOT_RUN_JAMBA_AND_EMA"],
+		button1 = OKAY,
+		OnAccept = function()
+			DisableAddOn("jamba")
+			ReloadUI()
+		end,
+		showAlert = 1,
+		timeout = 0,
+		exclusive = 1,
+		hideOnEscape = 0,
 		whileDead = 1,	
 	}
 end
@@ -196,7 +213,7 @@ EMAPrivate.SettingsFrame.Widget:Hide()
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
-	showStartupMessage8000 = true,
+	showStartupMessage8000 = false,
 	},
 }
 
@@ -840,3 +857,4 @@ EMAPrivate.Core.SendCommandToToon = SendCommandToToon
 EMAPrivate.Core.OnCommandReceived = OnCommandReceived
 EMAPrivate.Core.isBetaBuild = isBetaBuild
 EMAPrivate.Core.isEmaAlphaBuild = isEmaAlphaBuild
+EMAPrivate.Core.SendSettingsAllModules = EMA.SendSettingsAllModules

@@ -20,6 +20,7 @@
 	<Script file="Interaction.lua" />	
 	<Script file="Trade.lua" />
 	<Script file="Guild.lua" />
+	<Script file="Mail.lua" />
 	
 	<Script file="Quest.lua" /> 
 	<Script file="QuestWatcher.lua" /> 
@@ -28,4 +29,5 @@
 	<Script file="Information.lua" />
 	<Script file="ItemUse.lua" />
 	<Script file="ISBoxer.lua" />
+	<Script file="LDBBar.lua" />
 </Ui>

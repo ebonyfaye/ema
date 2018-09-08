@@ -4,24 +4,38 @@ ChangeLogs:
 
 EMA Version: v8.0.1-Release(0096)
 Game Version: 8.0.1
-Release Date: 07/09/2018
+Release Date: 08/09/2018
 
 ## Core
 	- Updated License To "All Rights Reserved" To Stop People Stealing My Code For There Own Non-Public "Releases" - Without My permission
 		- To Match CurseForge 
+	- Added 	
+		Libdatabroker-1.1
+	- Added A Check To See If you Running EMA and Jamba Twogather Thia will Disable "Jamba"
+		-- Developer Note: Really You Don't Want To Do This! Kittens Will Die!!!
+		
 ## Follow
 	- Fixed issues #24 ( Follow Strobe Getting Canceled Out When Pvp Follow Warning Goes Off )
 	
 ## Mail 
-	- New Module sends a List/BoE/Reagents To A Character.
+	- New Module sends a List/BoE/Reagents Items To A Character.
 		- Will Only Trade BoE Gear! and CraftingReagent has been Updated both Now Have Groups!
 		- Added A BlackList To Stop Mailing Items
-	
-
-	
-	
-	
-	
+		
+## Trade
+	- Fixed Issues #23
+		- Trade > Not Working With Connected Realms
+		- Fixed A Bug That Was Not Setting Grouplist Right.
+		
+## Guild
+		- Fixed A Bug That Was Not Setting Grouplist Right.
+		
+## LDBBar
+	- Some Code Help From Jabberie a few EMA Options Edited and made to Look better by ME!
+		- Click To open EMA Config
+		- Middle Click To Open Team Config
+		- Right Click to Push "ALL" settings
+		
 ---------------------------
 
 EMA Version: v8.0.1-Release(0095)
@@ -30,7 +44,7 @@ Release Date: 26/8/2018
 
 
 ## Team
-	- Seems somewhere along the lines the code for "invite <Tag> went MIA!!!
+	- Seems somewhere along the lines the code for "invite" <Tag> went MIA!!!
 	
 	
 ---------------------------
