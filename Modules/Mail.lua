@@ -134,6 +134,7 @@ end
 function EMA:OnEnable()
 	EMA:RegisterEvent( "MAIL_SHOW" )
 	EMA:RegisterEvent( "MAIL_CLOSED" )
+	EMA:RegisterEvent( "MAIL_SEND_SUCCESS")
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -619,6 +620,7 @@ end
 function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxShowEMAMailWindow:SetValue( EMA.db.showEMAMailWindow )
 	EMA.settingsControl.MailItemsEditBoxMailTag:SetText( EMA.db.MailTagName )
+	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
 	EMA.settingsControl.checkBoxMailBoEItems:SetValue( EMA.db.MailBoEItems )
 	EMA.settingsControl.tabNumListDropDownListBoE:SetText( EMA.db.autoMailToonNameBoE )
 	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetText( EMA.db.autoBoEItemTag )
@@ -693,7 +695,7 @@ end
 function EMA:MAIL_SHOW(event, ...)
 	--EMA:Print("test")
 	if EMA.db.showEMAMailWindow == true then
-		EMA:ScheduleRepeatingTimer("AddAllToMailBox", 1, nil )
+		EMA:AddAllToMailBox()
 	end
 	--[[
 	if EMA.db.adjustMoneyWithMailBank == true then
@@ -710,6 +712,7 @@ function EMA:AddAllToMailBox()
 	--EMA:Print("run")
 	MailFrameTab_OnClick(nil, "2")
 	SendMailNameEditBox:SetText( "" )
+	local count = 1 
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
@@ -760,20 +763,30 @@ function EMA:AddAllToMailBox()
 							end
 						end
 					end
-					if canSend == true and toonName ~= "" then	
+					if canSend == true and toonName ~= "" and toonName ~= nil then	
+						local currentMailToon = SendMailNameEditBox:GetText()
 						local characterName = EMAUtilities:AddRealmToNameIfMissing( toonName )
-						if characterName ~= EMA.characterName then
-							SendMailNameEditBox:SetText( toonName )
-							SendMailSubjectEditBox:SetText( L["SENT_AUTO_MAILER"] )
-							PickupContainerItem( bagID, slotID )
-							UseContainerItem( bagID , slotID  )
+						if toonName == currentMailToon or currentMailToon == "" and characterName ~= EMA.characterName then
+							if count <= ATTACHMENTS_MAX_SEND then	
+								--EMA:Print("sending Mail:", count)
+								count = count + 1
+								SendMailNameEditBox:SetText( toonName )
+								SendMailSubjectEditBox:SetText( L["SENT_AUTO_MAILER"] )
+								PickupContainerItem( bagID, slotID )
+								UseContainerItem( bagID , slotID  )
+							end	
 						end	
 					end
 				end	
 			end
 		end
 	end	
-	EMA:ScheduleTimer( "DoSendMail", 2, nil )
+	EMA:ScheduleTimer( "DoSendMail", 0.5, nil )
+end
+
+function EMA:MAIL_SEND_SUCCESS( event, ... )
+	--EMA:Print("try sendMail Again")
+	EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
 end
 
 function EMA:DoSendMail()
@@ -782,8 +795,6 @@ function EMA:DoSendMail()
 		if HasSendMailItem( iterateMailSlots ) == true then
 			SendMailFrame_SendMail()	
 			break
-		else
-			EMA:CancelAllTimers()
 		end
 	end						
 end	

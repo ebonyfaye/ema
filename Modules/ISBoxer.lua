@@ -135,11 +135,11 @@ function EMA:CommandIAmMasterIsboxer( info, parameters )
 end
 	
 function EMA:FollowStrobeOnMeCommandIsboxer( info, parameters )
-	EMAApi.FollowStrobeOnCommand( parameters )
+	EMAApi.Follow.StrobeOnMeCommand( parameters )
 end
 
 function EMA:FollowStrobeOffCommandIsboxer( info, parameters )
-	EMAApi.FollowStrobeOffCommand( parameters )
+	EMAApi.Follow.StrobeOffCommand( parameters )
 end
 
 function EMA:FollowStrobeOffCommandSnw( info, parameters )

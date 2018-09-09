@@ -1167,6 +1167,16 @@ function EMA:FollowTargetReceiveCommand( target, tag )
 	end
 end
 
+local function FollowStrobeOnMeCommandIsboxer( tag )
+	EMA:Print("testaa", tag )
+	if tag ~= nil and tag:trim() ~= "" then
+		EMA:FollowStrobeOnSendCommand( EMA.characterName, tag )
+	else
+		EMA:FollowStrobeOn( EMA.characterName )
+	end
+end
+
+
 function EMA:FollowStrobeOnMeCommand( info, parameters )
 	local tag = parameters
 	if tag ~= nil and tag:trim() ~= "" then
@@ -1202,8 +1212,16 @@ function EMA:FollowStrobeOnReceiveCommand( target, tag )
 	-- If this character responds to this tag...
 	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
 		-- Then follow the target specified - strobing.
-		EMA:FollowStrobeOn( target )
+		EMA:FollowStrobeOn( target )	
 	end
+end
+
+local function FollowStrobeOffCommandIsboxer( tag )
+	if tag ~= nil and tag:trim() ~= "" then
+		EMA:FollowStrobeOffSendCommand( tag )
+	else		
+		EMA:FollowStrobeOffSendCommand( "all" )
+	end	
 end
 
 function EMA:FollowStrobeOffCommand( info, parameters )
@@ -1211,7 +1229,7 @@ function EMA:FollowStrobeOffCommand( info, parameters )
 	if tag ~= nil and tag:trim() ~= "" then
 		EMA:FollowStrobeOffSendCommand( tag )
 	else		
-		EMA:FollowStrobeOff()
+		EMA:FollowStrobeOffSendCommand( "all" )
 	end	
 end
 
@@ -1292,6 +1310,7 @@ function EMA:FollowStrobeOff()
 	-- Stop the timer from doing another follow command.
 	if EMA.followingStrobing == true then
 		EMA.followingStrobing = false
+		FollowUnit("player")
 		EMA:CancelTimer( EMA.followStrobeTimer )
 	end	
 end
@@ -1347,5 +1366,5 @@ EMAApi.Follow.IsFollowingStrobingPaused = EMA.IsFollowingStrobingPaused
 EMAApi.Follow.GetCurrentFollowTarget = EMA.GetCurrentFollowTarget
 EMAApi.Follow.GetCurrentFollowStrobeTarget = EMA.GetCurrentFollowStrobeTarget
 EMAApi.Follow.SuppressNextFollowWarning = EMA.SuppressNextFollowWarning
-EMAApi.FollowStrobeOnCommand = EMA.FollowStrobeOnCommand
-EMAApi.FollowStrobeOffCommand = EMA.FollowStrobeOffCommand
+EMAApi.Follow.StrobeOnMeCommand = FollowStrobeOnMeCommandIsboxer
+EMAApi.Follow.StrobeOffCommand = FollowStrobeOffCommandIsboxer

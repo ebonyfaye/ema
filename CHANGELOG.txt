@@ -2,6 +2,25 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Release(0097)
+Game Version: 8.0.1
+Release Date: 09/09/2018
+
+## Follow/isboxer
+	-- The old jamba comamnds /jamba-follow should work again with EMA
+
+## Guild 
+	-- Fix a bug where the BlackList Option was not Setting on the GUI Right
+
+## Mail
+	-- Fix a bug where the BlackList Option was not Setting on the GUI Right
+	-- Should Now Send The Right Items To The Right Toon
+		-Developer Note: The Goblins Really Massed Up The Itemsmatic7se So We Added More Booom!!!
+	-- Will Not Try And Send More Then Attachments_Max_Send( 12 Items ) At A Time!
+	-- Does Not Try And Send Mail Again Before The The 1st Mail Is Send.
+
+---------------------------
+
 EMA Version: v8.0.1-Release(0096)
 Game Version: 8.0.1
 Release Date: 08/09/2018

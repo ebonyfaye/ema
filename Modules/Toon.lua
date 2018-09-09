@@ -1521,7 +1521,7 @@ function EMA:BAGS_FULL( event, arg1, message, ... )
 		end
 		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
 		if message == ERR_INV_FULL or message == INVENTORY_FULL then
-			EMA:Print("fullbag")
+			--EMA:Print("fullbag")
 			if numberFreeSlots == 0 then
 				if EMA.previousFreeBagSlotsCount == false then
 					EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.bagsFullMessage, false )
