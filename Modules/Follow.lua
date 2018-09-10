@@ -1168,7 +1168,7 @@ function EMA:FollowTargetReceiveCommand( target, tag )
 end
 
 local function FollowStrobeOnMeCommandIsboxer( tag )
-	EMA:Print("testaa", tag )
+	--EMA:Print("testaa", tag )
 	if tag ~= nil and tag:trim() ~= "" then
 		EMA:FollowStrobeOnSendCommand( EMA.characterName, tag )
 	else
