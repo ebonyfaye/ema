@@ -681,22 +681,25 @@ end
 		
 local function IsCharacterInTeam( name )
 	local characterName = EMAUtilities:Lowercase( name )
+	local fullCharacterName = nil
 	local isMember = false
 	if not isMember then
-		for fullCharacterName, position in EMAApi.TeamList() do 
-			local checkFullName = EMAUtilities:Lowercase( fullCharacterName )
+		for fullTeamCharacterName, position in EMAApi.TeamList() do 
+			local checkFullName = EMAUtilities:Lowercase( fullTeamCharacterName )
 			local name, realm = strsplit("-", checkFullName, 2 )
 			--EMA:Print('checking', name, 'vs', characterName, "or", checkFullName )
 			if name == characterName or checkFullName == characterName then
 				--EMA:Print('match found')
 				isMember = true
+				fullCharacterName = fullTeamCharacterName
 				break
 			end
 		end
 	end
 	--EMA:Print('returning', isMember)
-	return isMember
+	return isMember, fullCharacterName
 end
+
 
 
 -- Get the master for this character.

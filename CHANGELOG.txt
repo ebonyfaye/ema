@@ -2,6 +2,18 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Release(0099)
+Game Version: 8.0.1
+Release Date: 10/09/2018
+
+## Group/tag
+	-- CommandLine /EMA AddCharacterToGroup <name> <Group> Should Do Something Now
+
+## 	isboxer
+	-- will now update teamlist on login!
+
+---------------------------
+
 EMA Version: v8.0.1-Release(0098)
 Game Version: 8.0.1
 Release Date: 10/09/2018

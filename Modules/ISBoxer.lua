@@ -453,12 +453,9 @@ end
 -- ISBoxer functionality.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:PLAYER_ENTERING_WORLD(event, ... )	
-	local initialLogin, reloadingUI = ...
-	if initialLogin then
-		EMA:ScheduleTimer( "IsboxerSyncTeamList", 0.5 )
-		EMA:AddIsboxerMembers()
-	end
+function EMA:PLAYER_ENTERING_WORLD(event, ... )
+	EMA:ScheduleTimer( "IsboxerSyncTeamList", 0.5 )
+	EMA:AddIsboxerMembers()
 end
 
 function EMA:AddIsboxerMembers()

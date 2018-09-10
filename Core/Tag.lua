@@ -456,16 +456,7 @@ end
 
 local function CharacterAlreadyInGroup( characterName, tag )
 	local canAdd = false
-	for name, tagList in pairs( EMA.db.tagList ) do
-		if characterName == name then
-			for index, tagIterated in pairs( tagList ) do
-				if tag == tagIterated then
-					canAdd = true
-				end	
-			end		
-		end
-	return canAdd	
-	end
+	return canAdd
 end	
 
 local function AddCharacterToGroup( characterName, tag )
@@ -475,11 +466,12 @@ local function AddCharacterToGroup( characterName, tag )
 	-- We Add The GroupName To The characterName in the list!
 	for name, tagList in pairs( EMA.db.tagList ) do
 		if characterName == name then
-			local allReadyInGroup = CharacterAlreadyInGroup( characterName, tag )
+			local allReadyInGroup = IsCharacterInGroup( characterName, tag )
 			--EMA:Print("hereWeAddTOTagList", characterName, tag, allReadyInGroup)
 			if allReadyInGroup == false then
 				table.insert(  tagList, tag )
 				table.sort ( tagList )
+				EMAPrivate.Team.RefreshGroupList()
 			end	
 		end
 	end
@@ -526,7 +518,7 @@ local function CheckSystemTagsAreCorrect()
 			AddCharacterToGroup( characterName, AllTag() )
 		end
 		-- Find Class and add If Known.
-		
+		-- TODO ADD HERE
 		
 		
 		-- Master or minion?
@@ -603,10 +595,12 @@ end
 function EMA:AddToGroupCommand( info, parameters )
 	--local inputText = EMAUtilities:Lowercase( parameters )
 	local characterName, tag = strsplit( " ", parameters )
-	EMA:Print("test", characterName, tag )
 	if characterName ~= nil or tag ~= nil then
-		if DoesGroupExist( tag ) == false then
-			EMA:SettingsGroupListScrollRefresh()
+		local group = EMAUtilities:Lowercase( tag )
+		if DoesGroupExist( group ) == true then
+			local isInTeam, fullCharacterName = EMAPrivate.Team.IsCharacterInTeam( characterName )
+			--EMA:Print("isInTeam", isInTeam, fullCharacterName, group )
+			AddCharacterToGroup( fullCharacterName, group )
 		end	
 	else
 	EMA:Print("[PH]"..L["WRONG_TEXT_INPUT_GROUP"] )
@@ -618,7 +612,7 @@ end
 function EMA:RemoveTagCommand( info, parameters )
 	local inputText = EMAUtilities:Lowercase( parameters )
 	local characterName, tag = strsplit( " ", inputText )
-	
+		
 
 end
 
@@ -648,7 +642,6 @@ function EMA:SettingsGroupListScrollRefresh()
 		EMA.settingsControl.groupList.rowsToDisplay, 
 		EMA.settingsControl.groupList.rowHeight
 	)
-	
 	EMA.settingsControl.groupListOffset = FauxScrollFrame_GetOffset( EMA.settingsControl.groupList.listScrollFrame )
 	for iterateDisplayRows = 1, EMA.settingsControl.groupList.rowsToDisplay do
 		-- Reset.
@@ -756,7 +749,7 @@ EMAApi.GetGroupListForCharacter = GetGroupListForCharacter
 EMAApi.CharacterMaxGroups = CharacterMaxGroups
 EMAApi.AddCharacterToGroup = AddCharacterToGroup
 EMAApi.RemoveGroupFromCharacter = RemoveGroupFromCharacter
-EMAApi.CharacterAlreadyInGroup = CharacterAlreadyInGroup
+--EMAApi.CharacterAlreadyInGroup = CharacterAlreadyInGroup
 EMAApi.PushGroupSettings = EMA.SettingsPushSettingsClick
 
 -- SystemTags API
