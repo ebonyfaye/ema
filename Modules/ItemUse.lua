@@ -183,7 +183,8 @@ EMA.maximumNumberOfRows = 20
 -------------------------------------------------------------------------------------------------------------
 
 local function CanDisplayItemUse()
-	local canShow = false
+	local canShow = true
+	--[[
 	if EMA.db.showItemUse == true then
 		if EMA.db.showItemUseOnMasterOnly == true then
 			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
@@ -193,6 +194,7 @@ local function CanDisplayItemUse()
 			canShow = true
 		end
 	end
+	]]
 	return canShow
 end
 
@@ -361,9 +363,10 @@ function EMA:UpdateQuestItemsInBar()
 		local kind = itemInfo.kind
 		local action = itemInfo.action
 		if kind == "item" then
-			local questitem = GetItemSpell( action )
+			local itemLink,_,_,_,_,questItem = GetItemInfo( action )
+			local canUse = GetItemSpell( action )
 			--EMA:Print("Checking Item...", itemLink, action, questItem )
-			if ( questitem ) then
+			if ( canUse ) and questItem == QUEST then
 				local IsInInventory = EMA:IsInInventory( action )
 				if IsInInventory == false then
 					--EMA:Print("NOT IN BAGS", IsInInventory, action)
@@ -1396,7 +1399,6 @@ function EMA:GetItemCountFromItemID( characterName, itemID )
 		end
 	end
 	return count, countBank
-	
 end	
 
 function EMA:UPDATE_BINDINGS()
@@ -1416,8 +1418,6 @@ function EMA:UPDATE_BINDINGS()
 		end	
 	end
 end
-
-
 
 function EMA:LibSharedMedia_Registered()
 end

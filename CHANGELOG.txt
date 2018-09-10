@@ -2,6 +2,21 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Release(0098)
+Game Version: 8.0.1
+Release Date: 10/09/2018
+
+## Trade
+	-- Fixed issues #32
+	
+## ItemUse
+	-- Should not remove Non-Quest items from the bar!	
+	
+## Mail
+	-- Holding Down Shift Key  when you open the MailBox Will Stop You Sending Mail!
+
+---------------------------
+
 EMA Version: v8.0.1-Release(0097)
 Game Version: 8.0.1
 Release Date: 09/09/2018

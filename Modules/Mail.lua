@@ -121,6 +121,7 @@ function EMA:OnInitialize()
 	EMA.autoMailItemLink = nil
 	EMA.autoMailToonName = nil
 	EMA.MailItemTable = {}
+	EMA.ShiftkeyDown = false
 	--EMA.putItemsInGB = {}
 	-- Create the settings control.
 	EMA:SettingsCreate()
@@ -695,7 +696,11 @@ end
 function EMA:MAIL_SHOW(event, ...)
 	--EMA:Print("test")
 	if EMA.db.showEMAMailWindow == true then
-		EMA:AddAllToMailBox()
+		if not IsShiftKeyDown() then
+			EMA:AddAllToMailBox()
+		else 
+			EMA.ShiftkeyDown = true
+		end	
 	end
 	--[[
 	if EMA.db.adjustMoneyWithMailBank == true then
@@ -705,7 +710,7 @@ function EMA:MAIL_SHOW(event, ...)
 end
 
 function EMA:MAIL_CLOSED(event, ...)
-	EMA:CancelAllTimers()
+	EMA.ShiftkeyDown = false
 end
 
 function EMA:AddAllToMailBox()
@@ -786,7 +791,9 @@ end
 
 function EMA:MAIL_SEND_SUCCESS( event, ... )
 	--EMA:Print("try sendMail Again")
-	EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
+	if EMA.ShiftkeyDown == false then
+		EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
+	end	
 end
 
 function EMA:DoSendMail()
