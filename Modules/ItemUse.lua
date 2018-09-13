@@ -183,18 +183,16 @@ EMA.maximumNumberOfRows = 20
 -------------------------------------------------------------------------------------------------------------
 
 local function CanDisplayItemUse()
-	local canShow = true
-	--[[
+	local canShow = false
 	if EMA.db.showItemUse == true then
-		if EMA.db.showItemUseOnMasterOnly == true then
-			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
-				canShow = true
-			end
-		else
-			canShow = true
-		end
+		--if EMA.db.showItemUseOnMasterOnly == true then
+		--	if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
+		--		canShow = true
+		--	end
+		--else
+		canShow = true
+		--end
 	end
-	]]
 	return canShow
 end
 
