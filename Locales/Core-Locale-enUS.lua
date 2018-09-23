@@ -870,7 +870,9 @@ L["GB_OPTIONS"] = "Guild Bank Options"
 L["GB_GOLD"] = "Adjust Characters Money While Visiting A Guild Bank"
 L["GB_GOLD_HELP"] = "Adjust Characters Money While Visiting A Guild Bank"
 L["REMOVE_GUILD_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Guild Items List?"
-
+L["I_HAVE_DEPOSITED_X_TO_GB"] = function( gold )
+	return string.format("Deposited %s To The Guild Bank", gold )
+end
 ------------------------
 -- ISBOXER Locale
 L["ISBOXER_LIST_HEADER"] = "Your Current ISBoxer Team"

@@ -478,8 +478,8 @@ function EMA:CheckForQuestItemAndAddToBar()
 			local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )	
 			if questItemLink ~= nil then
 				local itemName = GetItemInfo(questItemLink)
-				local questname, rank = GetItemSpell(questItemLink) -- Only means to detect if the item is usable
-				if questname then
+				local questName, rank = GetItemSpell(questItemLink) -- Only means to detect if the item is usable
+				if questName then
 					--EMA:Print("addItem", questItemLink )
 					EMA:AddAnItemToTheBarIfNotExists( questItemLink, false)						
 				end

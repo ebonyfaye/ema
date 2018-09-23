@@ -1400,7 +1400,7 @@ function EMA:MERCHANT_SHOW( event, ... )
 	end
 	if repairCost > 0 then
 		-- Tell the boss how much that cost.
-		local costString = EMAUtilities:FormatMoneyString( repairCost )
+		local costString = GetCoinTextureString( repairCost )
 		EMA:EMASendMessageToTeam( EMA.db.merchantArea, L["REPAIRING_COST_ME_X"]( costString ), false )
 	end
 end

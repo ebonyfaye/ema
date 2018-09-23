@@ -102,13 +102,13 @@ EMA.settings = {
 		currGoldInGuildBank = false,
 		-- Currency default's
 		CcurrTypeOne = EMA.currTypes.OrderResources,
-		CcurrTypeOneName = EMA:CurrencyIconAndName(EMA.currTypes.OrderResources),
+		CcurrTypeOneName = EMA:CurrencyIconAndName(EMA.currTypes.WarResources),
 		CcurrTypeTwo = EMA.currTypes.AncientMana,
-		CcurrTypeTwoName = EMA:CurrencyIconAndName(EMA.currTypes.AncientMana),
+		CcurrTypeTwoName = EMA:CurrencyIconAndName(EMA.currTypes.WarSupplies),
 		CcurrTypeThree = EMA.currTypes.TimeWalker,
 		CcurrTypeThreeName = EMA:CurrencyIconAndName(EMA.currTypes.TimeWalker),
 		CcurrTypeFour = EMA.currTypes.SightlessEye,
-		CcurrTypeFourName = EMA:CurrencyIconAndName(EMA.currTypes.SightlessEye),
+		CcurrTypeFourName = EMA:CurrencyIconAndName(EMA.currTypes.SealofWartornFate),
 		CcurrTypeFive = 1,
 		CcurrTypeFiveName = "",
 		CcurrTypeSix = 1,
@@ -500,12 +500,12 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxCurrencyGold:SetValue( EMA.db.currGold )
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank:SetValue( EMA.db.currGoldInGuildBank )
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank:SetDisabled( not EMA.db.currGold )
-	EMA.settingsControl.editBoxCurrencyTypeOneID:SetValue( EMA.db.CcurrTypeOneName )
-	EMA.settingsControl.editBoxCurrencyTypeTwoID:SetValue ( EMA.db.CcurrTypeTwoName )	
-	EMA.settingsControl.editBoxCurrencyTypeThreeID:SetValue ( EMA.db.CcurrTypeThreeName )
-	EMA.settingsControl.editBoxCurrencyTypeFourID:SetValue ( EMA.db.CcurrTypeFourName )
-	EMA.settingsControl.editBoxCurrencyTypeFiveID:SetValue ( EMA.db.CcurrTypeFiveName )	
-	EMA.settingsControl.editBoxCurrencyTypeSixID:SetValue ( EMA.db.CcurrTypeSixName )
+	EMA.settingsControl.editBoxCurrencyTypeOneID:SetValue( EMA.db.CcurrTypeOne )
+	EMA.settingsControl.editBoxCurrencyTypeTwoID:SetValue ( EMA.db.CcurrTypeTwo )	
+	EMA.settingsControl.editBoxCurrencyTypeThreeID:SetValue ( EMA.db.CcurrTypeThree )
+	EMA.settingsControl.editBoxCurrencyTypeFourID:SetValue ( EMA.db.CcurrTypeFour )
+	EMA.settingsControl.editBoxCurrencyTypeFiveID:SetValue ( EMA.db.CcurrTypeFive )	
+	EMA.settingsControl.editBoxCurrencyTypeSixID:SetValue ( EMA.db.CcurrTypeSix )
 	--state
 	EMA.settingsControl.checkBoxCurrencyOpenStartUpMaster:SetValue( EMA.db.currOpenStartUpMaster )
 	EMA.settingsControl.currencyTransparencySlider:SetValue( EMA.db.currencyFrameAlpha )
@@ -546,59 +546,54 @@ function EMA:SettingsToggleCurrencyGoldInGuildBank( event, checked )
 	EMA:SettingsRefresh()
 end
 
-
 function EMA:EditBoxChangedCurrencyTypeOneID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
-		EMA.db.CcurrTypeOne = id
-		EMA.db.CcurrTypeOneName = currName
-		EMA:EMAToonRequestCurrency()
-		EMA:SettingsRefresh()
+	EMA.db.CcurrTypeOne = id
+	EMA.db.CcurrTypeOneName = currName
+	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
 end
-
 
 function EMA:EditBoxChangedCurrencyTypeTwoID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
-		EMA.db.CcurrTypeTwo = id
-		EMA.db.CcurrTypeTwoName = currName
-		EMA:EMAToonRequestCurrency()
-		EMA:SettingsRefresh()
+	EMA.db.CcurrTypeTwo = id
+	EMA.db.CcurrTypeTwoName = currName
+	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
 end
-
 
 function EMA:EditBoxChangedCurrencyTypeThreeID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
-		EMA.db.CcurrTypeThree = id
-		EMA.db.CcurrTypeThreeName = currName
-		EMA:EMAToonRequestCurrency()
-		EMA:SettingsRefresh()
+	EMA.db.CcurrTypeThree = id
+	EMA.db.CcurrTypeThreeName = currName
+	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
 end
-
 
 function EMA:EditBoxChangedCurrencyTypeFourID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
-		EMA.db.CcurrTypeFour = id
-		EMA.db.CcurrTypeFourName = currName
-		EMA:EMAToonRequestCurrency()
-		EMA:SettingsRefresh()
+	EMA.db.CcurrTypeFour = id
+	EMA.db.CcurrTypeFourName = currName
+	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
 end
-
 
 function EMA:EditBoxChangedCurrencyTypeFiveID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
-		EMA.db.CcurrTypeFive = id
-		EMA.db.CcurrTypeFiveName = currName
-		EMA:EMAToonRequestCurrency()
-		EMA:SettingsRefresh()
+	
+	EMA.db.CcurrTypeFive = id
+	EMA.db.CcurrTypeFiveName = currName
+	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
 end
-
 
 function EMA:EditBoxChangedCurrencyTypeSixID( event, value )
 	--EMA:Print("test", value)
 	local currName, id = EMA:MatchCurrValue(value)
-		EMA.db.CcurrTypeSix = id
-		EMA.db.CcurrTypeSixName = currName
-		EMA:EMAToonRequestCurrency()
-		EMA:SettingsRefresh()
+	EMA.db.CcurrTypeSix = id
+	EMA.db.CcurrTypeSixName = currName
+	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
 end
 
 function EMA:SettingsToggleCurrencyOpenStartUpMaster( event, checked )
@@ -762,24 +757,40 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	end
 end
 
+function pairsByKeys (t, f)
+    local a = {}
+    for n in pairs(t) do table.insert(a, n) end
+    table.sort(a, f)
+    local i = 0      -- iterator variable
+    local iter = function ()   -- iterator function
+        i = i + 1
+        if a[i] == nil then return nil
+        else return a[i], t[a[i]]
+        end
+     end
+     return iter
+end
+
 function EMA:CurrDropDownBox()
 	for name, id in pairs( EMA.currTypes ) do
+		--EMA:Print("test", name, id)
 		local currName = EMA:CurrencyIconAndName( id )
-		EMA.simpleCurrList[currName] = currName		
+		EMA.simpleCurrList[id] = currName		
 	end
-	EMA.simpleCurrList[""] = ""
-	table.sort( EMA.simpleCurrList )
+	EMA.simpleCurrList[0] = ""
+	table.sort(EMA.simpleCurrList, function(a,b) return a<b end)
+	table.concat(EMA.simpleCurrList, ", ")
 	return EMA.simpleCurrList
 end	
 
 
 function EMA:MatchCurrValue(value)
-	if value == "" then	
+	if value == 0 then	
 		return "", 0
 	end
 	for name, id in pairs( EMA.currTypes ) do
 		local currName = EMA:CurrencyIconAndName( id )
-		if value == currName then
+		if value == id then
 			return currName, id
 		end	
 	end

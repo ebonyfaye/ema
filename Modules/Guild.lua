@@ -830,6 +830,8 @@ end
 
 function EMA:SendMoneyToGuild( money )
 	DepositGuildBankMoney( money )
+	local formattedGoldAmount = GetCoinTextureString(money)
+	EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_DEPOSITED_X_TO_GB"]( formattedGoldAmount ), false )
 end
 
 function EMA:TakeMoneyOut( money )

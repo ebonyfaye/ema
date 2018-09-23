@@ -717,6 +717,7 @@ function EMA:AddAllToMailBox()
 	--EMA:Print("run")
 	MailFrameTab_OnClick(nil, "2")
 	SendMailNameEditBox:SetText( "" )
+	SendMailNameEditBox:ClearFocus()
 	local count = 1 
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
