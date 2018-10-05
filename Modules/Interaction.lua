@@ -453,10 +453,13 @@ local function TakeTaxi( sender, nodeName )
 		if sender ~= EMA.characterName then
 			-- Find the index of the taxi node to fly to.
 			local nodeIndex = nil
+			--EMA:Print("test23", nodeName )
 			for iterateNodes = 1, NumTaxiNodes() do
-				if TaxiNodeName( iterateNodes ) == nodeName then
+				local mapNodeName = TaxiNodeName( iterateNodes )
+				if mapNodeName == nodeName then
+					--EMA:Print("test24", nodeName, "vs", mapNodeName, "ID", iterateNodes)
 					nodeIndex = iterateNodes
-					break
+					--break
 				end
 			end	
 			-- If a node index was found...
@@ -489,6 +492,7 @@ function EMA:TakeTaxiNode( taxiNodeIndex )
 	if EMA.db.takeMastersTaxi == true then
 		-- Get the name of the node flown to.
 		local nodeName = TaxiNodeName( taxiNodeIndex )
+		--EMA:Print("testTake", taxiNodeIndex, nodeName )
 		if EMA.TakesTaxi == false then
 			-- Tell the other characters about the taxi.
 			EMA:EMASendCommandToTeam( EMA.COMMAND_TAKE_TAXI, nodeName )

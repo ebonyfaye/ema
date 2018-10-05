@@ -1352,11 +1352,11 @@ function EMA:WARMODE(event, ...)
 end
 
 function EMA:DoWarMode( isWarMode )
-	local text = UnitFactionGroup("player") == PLAYER_FACTION_GROUP[0] and PVP_WAR_MODE_NOT_NOW_HORDE or PVP_WAR_MODE_NOT_NOW_ALLIANCE
+	--local text = UnitFactionGroup("player") == PLAYER_FACTION_GROUP[0] and PVP_WAR_MODE_NOT_NOW_HORDE or PVP_WAR_MODE_NOT_NOW_ALLIANCE
 	if C_PvP.CanToggleWarMode()	== true and isWarMode ~= nil then
 		C_PvP.SetWarModeDesired( isWarMode )
 	else
-		EMA:EMASendMessageToTeam( EMA.db.requestArea, L["ERR_WARMODE"]( text ), false )
+	--	EMA:EMASendMessageToTeam( EMA.db.requestArea, L["ERR_WARMODE"]( text ), false )
 	end
 end	
 
