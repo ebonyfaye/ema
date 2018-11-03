@@ -1212,7 +1212,7 @@ function EMA:FollowStrobeOnReceiveCommand( target, tag )
 	-- If this character responds to this tag...
 	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
 		-- Then follow the target specified - strobing.
-		EMA:FollowStrobeOn( target )	
+		EMA:FollowStrobeOn( target )
 	end
 end
 
@@ -1242,7 +1242,6 @@ function EMA:FollowStrobeOffReceiveCommand( tag )
 	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
 		-- Then follow the target specified - turn off strobing.
 		EMA:FollowStrobeOff()
-		--FollowUnit( "Player", true )
 	end
 end	
 
@@ -1310,7 +1309,7 @@ function EMA:FollowStrobeOff()
 	-- Stop the timer from doing another follow command.
 	if EMA.followingStrobing == true then
 		EMA.followingStrobing = false
-		FollowUnit("player")
+		--FollowUnit("player")
 		EMA:CancelTimer( EMA.followStrobeTimer )
 	end	
 end
