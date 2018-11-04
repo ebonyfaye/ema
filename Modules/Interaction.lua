@@ -446,7 +446,7 @@ function EMA:TAXIMAP_OPENED(event, ...)
 end	
 
 -- Take a taxi.
-local function TakeTaxi( sender, nodeName )
+local function TakeTaxi( sender, nodeName, taxiNodeIndex )
 	-- If the take masters taxi option is on.
 	if EMA.db.takeMastersTaxi == true then
 		-- If the sender was not this character and is the master then...
@@ -456,10 +456,19 @@ local function TakeTaxi( sender, nodeName )
 			--EMA:Print("test23", nodeName )
 			for iterateNodes = 1, NumTaxiNodes() do
 				local mapNodeName = TaxiNodeName( iterateNodes )
-				if mapNodeName == nodeName then
+				if EMA.TaxiFrameName == FlightMapFrame then
+					--EMA:Print("test240", nodeName, "vs", mapNodeName, "ID", iterateNodes)
+					if mapNodeName == nodeName and iterateNodes == taxiNodeIndex then
+						--EMA:Print("test24", nodeName, "vs", mapNodeName, "ID", iterateNodes)
+						nodeIndex = iterateNodes
+						break
+					end
+				else
+					if mapNodeName == nodeName then
 					--EMA:Print("test24", nodeName, "vs", mapNodeName, "ID", iterateNodes)
-					nodeIndex = iterateNodes
-					--break
+						nodeIndex = iterateNodes
+						break
+					end
 				end
 			end	
 			-- If a node index was found...
@@ -469,8 +478,6 @@ local function TakeTaxi( sender, nodeName )
 				-- Take a taxi.
 				EMA.TakesTaxi = true
 				EMA:ScheduleTimer( "TakeTimedTaxi", EMA.db.changeTexiTime , nodeIndex )
-				--GetNumRoutes( nodeIndex )
-				--TakeTaxiNode( nodeIndex )
 			else
 				-- Tell the master that this character could not take the same flight.
 				EMA:EMASendMessageToTeam( EMA.db.messageArea,  L["I_AM_UNABLE_TO_FLY_TO_A"]( nodeName ), false )
@@ -495,7 +502,7 @@ function EMA:TakeTaxiNode( taxiNodeIndex )
 		--EMA:Print("testTake", taxiNodeIndex, nodeName )
 		if EMA.TakesTaxi == false then
 			-- Tell the other characters about the taxi.
-			EMA:EMASendCommandToTeam( EMA.COMMAND_TAKE_TAXI, nodeName )
+			EMA:EMASendCommandToTeam( EMA.COMMAND_TAKE_TAXI, nodeName, taxiNodeIndex )
 		end
 		EMA.TakesTaxi = false
 	end
@@ -735,6 +742,8 @@ function EMA:doLoot( tries )
 		else	
 			CloseLoot()
 		end	
+	else
+		CloseLoot()
 	end	
 end
 

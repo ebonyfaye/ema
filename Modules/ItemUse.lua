@@ -506,7 +506,7 @@ function EMA:ClearButton()
 			if itemLink and itemLink:match("item:%d") then
 				local _ , tooltipTextTwo = EMAUtilities:TooltipScaner( itemLink )
 				if tooltipTextTwo == nil or tooltipTextTwo ~= "Unique" then
-					if EMA:IsInInventory( name ) == false then
+					if EMA:IsInInventory( action ) == false then
 						EMA.db.itemsAdvanced[iterateItems] = nil
 						EMA:EMASendUpdate( iterateItems, "empty", nil )
 						EMA:SettingsRefresh()

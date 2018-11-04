@@ -2,6 +2,25 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.0.1-Beta(0104)
+Game Version: 8.0.1
+Release Date: 04/11/2018
+
+## Interaction
+	# Loot
+		- Should Close Loot Window If There is no Items to Loot! issue #13
+	#Taxi
+		- Taxi service changed to try and deal better with the Newer FightMap with the Same Point NAME! issue #38
+		
+## Quest
+	- Fixed a bug Lua Error on quest when the clone does not have more then one item to pick issue #17
+
+## Item-Bar
+	- Fixed A Bug Where It Was Clearing Items In The Players Bag! issue #46
+
+
+---------------------------
+
 EMA Version: v8.0.1-Release(0103)
 Game Version: 8.0.1
 Release Date: 23/10/2018
