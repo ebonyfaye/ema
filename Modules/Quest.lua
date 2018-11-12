@@ -1445,7 +1445,9 @@ function EMA:DoChooseQuestReward( sender, questIndex, modifierKeysPressed, rewar
 			if numberOfQuestRewards <= 1 then
 				-- One or less.
 				if EMA.db.noChoiceSlaveCompleteQuestWithMaster == true then
-					GetQuestReward( 1 )
+					QuestInfoFrame.itemChoice = 1
+					--GetQuestReward( 1 )
+					GetQuestReward( QuestInfoFrame.itemChoice )
 				end
 			else
 				-- More than one.

@@ -2,9 +2,9 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.0.1-Beta(0105)
+EMA Version: v8.0.1-Beta(0106)
 Game Version: 8.0.1
-Release Date: 04/11/2018
+Release Date: 12/11/2018
 
 ## Interaction
 	# Loot
@@ -13,7 +13,7 @@ Release Date: 04/11/2018
 		- Taxi service changed to try and deal better with the Newer FightMap with the Same Point NAME! issue #38
 		
 ## Quest
-	- Fixed a bug Lua Error on quest when the clone does not have more then one item to pick issue #17
+	- Fixed a bug Lua Error on quest when the clone does not have more then one item to pick issue #17 ***** Trying again in ( 0106 ) 
 
 ## Item-Bar
 	- Fixed A Bug Where It Was Clearing Items In The Players Bag! issue #46
