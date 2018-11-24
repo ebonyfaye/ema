@@ -591,7 +591,7 @@ L["TRADE_REAGENTS_HELP"] = "Trades All Crafting Reagent Items"
 L["TRADE_OPTIONS"] = "Trade To Options"
 L["TRADE_GOLD"] = "Trade Excess Gold To Master From Minion"
 L["TRADE_GOLD_HELP"] = "Trade Excess Gold To Master From Minions \nAlways Be Careful When Auto Trading."
-L["GOLD_TO_KEEP"] = "Amount of Gold To Keep On Current Minion"
+L["GOLD_TO_KEEP"] = "Amount of Gold To Keep:"
 L["TRADE_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
 L["ERR_WILL_NOT_TRADE"] = "Is Not A Member Of The Team, Will Not Trade Items."
 L["ADD_ITEMS"] = "Add Items"
@@ -906,8 +906,20 @@ L["MAIL_GOLD"] = "Adjust Characters Money While Visiting A Mail Box"
 L["MAIL_GOLD_HELP"] = "Adjust Characters Money While Visiting A Mail Box"
 L["SENT_AUTO_MAILER"] = "Sent By EMA Auto Mailer" 
 L["Mail_OPTIONS"] = "Mail Options"
---PH
-L["MAIL_GOLD_COMING_SOON"]  = "Mail Gold Options Coming Soon™"
+L["MAIL_GOLD_OPTIONS"]  = "Mail Gold Options"
+
+L["SENT_AUTO_MAILER_GOLD"] = function( gold )
+	return string.format("EMA Auto Gold Mailer: %s", gold )
+end
+
+
+-----------------------
+-- Bank Locale
+L["BANK"] = "Bank"
+L["REMOVE_BANK_LIST"] = "Remove Item From Bank List"
+
+
+
 
 -----------------------
 -- LDBBar Locale

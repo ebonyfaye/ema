@@ -13,7 +13,7 @@
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
-	"Mail", 
+	"Bank", 
 	"Module-1.0", 
 	"AceConsole-3.0", 
 	"AceEvent-3.0",
@@ -28,14 +28,14 @@ local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local AceGUI = LibStub( "AceGUI-3.0" )
 
 --  Constants and Locale for this module.
-EMA.moduleName = "Mail"
-EMA.settingsDatabaseName = "MailProfileDB"
-EMA.chatCommand = "ema-Mail"
+EMA.moduleName = "Bank"
+EMA.settingsDatabaseName = "BankProfileDB"
+EMA.chatCommand = "ema-Bank"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["INTERACTION"]
-EMA.moduleDisplayName = L["Mail"]
+EMA.moduleDisplayName = L["BANK"]
 -- Icon 
-EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\MailIcon.tga"
+EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\BankIcon.tga"
 -- order
 EMA.moduleOrder = 20
 
@@ -43,21 +43,18 @@ EMA.moduleOrder = 20
 EMA.settings = {
 	profile = {
 		messageArea = EMAApi.DefaultMessageArea(),
-		showEMAMailWindow = false,
+		showEMABankWindow = false,
 		blackListItem = false,
-		MailBoEItems = false,
-		autoMailToonNameBoE = "",
-		MailTagName = EMAApi.AllGroup(),
+		BankBoEItems = false,
+		autoBankToonNameBoE = "",
+		BankTagName = EMAApi.AllGroup(),
 		autoBoEItemTag = EMAApi.AllGroup(),	
-		MailCRItems = false,
-		autoMailToonNameCR = "",
+		BankCRItems = false,
+		autoBankToonNameCR = "",
 		autoCRItemTag = EMAApi.AllGroup(),
-		autoMailItemsList = {},
-		
-		adjustMoneyWithMail = false,
+		autoBankItemsList = {},
+		adjustMoneyWithBankBank = false,
 		goldAmountToKeepOnToon = 250,
-		autoMailToonNameGold = "",
-		autoMailMoneyTag = EMAApi.AllGroup(),
 	},
 }
 
@@ -75,7 +72,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_ALL_SETTINGS"],
-				usage = "/EMA-Mail push",
+				usage = "/EMA-Bank push",
 				get = false,
 				set = "EMASendSettings",
 				guiHidden = true,
@@ -100,8 +97,8 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 local function InitializePopupDialogs()
-	StaticPopupDialogs["EMAMail_CONFIRM_REMOVE_MAIL_ITEMS"] = {
-        text = L["REMOVE_MAIL_LIST"],
+	StaticPopupDialogs["EMABANK_CONFIRM_REMOVE_BANK_ITEMS"] = {
+        text = L["REMOVE_BANK_LIST"],
         button1 = YES,
         button2 = NO,
         timeout = 0,
@@ -121,12 +118,11 @@ end
 function EMA:OnInitialize()
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
-	EMA.autoMailItemLink = nil
-	EMA.autoMailToonName = nil
-	EMA.MailItemTable = {}
+	EMA.autoBankItemLink = nil
+	EMA.autoBankToonName = nil
+	EMA.BankItemTable = {}
 	EMA.ShiftkeyDown = false
-	EMA.OldMailName = ""
-	EMA.Count = 0
+	--EMA.putItemsInGB = {}
 	-- Create the settings control.
 	EMA:SettingsCreate()
 	-- Initialse the EMAModule part of this module.
@@ -137,9 +133,8 @@ end
 
 -- Called when the addon is enabled.
 function EMA:OnEnable()
-	EMA:RegisterEvent( "MAIL_SHOW" )
-	EMA:RegisterEvent( "MAIL_CLOSED" )
-	EMA:RegisterEvent( "MAIL_SEND_SUCCESS")
+	EMA:RegisterEvent( "BANKFRAME_OPENED" )
+	EMA:RegisterEvent( "BANKFRAME_CLOSED" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -160,7 +155,7 @@ function EMA:SettingsCreate()
 		EMA.moduleIcon,
 		EMA.moduleOrder		
 	)
-	local bottomOfInfo = EMA:SettingsCreateMail( EMAHelperSettings:TopOfSettings() )
+	local bottomOfInfo = EMA:SettingsCreateBank( EMAHelperSettings:TopOfSettings() )
 	EMA.settingsControl.widgetSettings.content:SetHeight( -bottomOfInfo )
 	-- Help
 	local helpTable = {}
@@ -171,7 +166,7 @@ function EMA:SettingsPushSettingsClick( event )
 	EMA:EMASendSettings()
 end
 
-function EMA:SettingsCreateMail( top )
+function EMA:SettingsCreateBank( top )
 	local buttonControlWidth = 85
 	local checkBoxHeight = EMAHelperSettings:GetCheckBoxHeight()
 	local editBoxHeight = EMAHelperSettings:GetEditBoxHeight()
@@ -183,7 +178,7 @@ function EMA:SettingsCreateMail( top )
 	local horizontalSpacing = EMAHelperSettings:GetHorizontalSpacing()
 	local indentContinueLabel = horizontalSpacing * 18
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
-	local MailWidth = headingWidth
+	local BankWidth = headingWidth
 	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local thirdWidth = (headingWidth - indentContinueLabel) / 3
@@ -194,26 +189,26 @@ function EMA:SettingsCreateMail( top )
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["MAIL_LIST_HEADER"], movingTop, false )
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["Bank_LIST_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.checkBoxShowEMAMailWindow = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl.checkBoxShowEMABankWindow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		headingWidth, 
 		left2, 
 		movingTop, 
-		L["MAIL_LIST"],
-		EMA.SettingsToggleShowEMAMailWindow,
-		L["MAIL_LIST_HELP"]
+		L["Bank_LIST"],
+		EMA.SettingsToggleShowEMABankWindow,
+		L["Bank_LIST_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.MailItemsHighlightRow = 1
-	EMA.settingsControl.MailItemsOffset = 1
+	EMA.settingsControl.BankItemsHighlightRow = 1
+	EMA.settingsControl.BankItemsOffset = 1
 	local list = {}
-	list.listFrameName = "EMAMailIteamsSettingsFrame"
+	list.listFrameName = "EMABankIteamsSettingsFrame"
 	list.parentFrame = EMA.settingsControl.widgetSettings.content
 	list.listTop = movingTop
 	list.listLeft = left
-	list.listWidth = MailWidth
+	list.listWidth = BankWidth
 	list.rowHeight = 15
 	list.rowsToDisplay = 10
 	list.columnsToDisplay = 4
@@ -231,30 +226,30 @@ function EMA:SettingsCreateMail( top )
 	list.columnInformation[4].width = 20
 	list.columnInformation[4].alignment = "LEFT"
 	list.scrollRefreshCallback = EMA.SettingsScrollRefresh
-	list.rowClickCallback = EMA.SettingsMailItemsRowClick
-	EMA.settingsControl.MailItems = list
-	EMAHelperSettings:CreateScrollList( EMA.settingsControl.MailItems )
+	list.rowClickCallback = EMA.SettingsBankItemsRowClick
+	EMA.settingsControl.BankItems = list
+	EMAHelperSettings:CreateScrollList( EMA.settingsControl.BankItems )
 	movingTop = movingTop - list.listHeight - verticalSpacing
-	EMA.settingsControl.MailItemsButtonRemove = EMAHelperSettings:CreateButton(
+	EMA.settingsControl.BankItemsButtonRemove = EMAHelperSettings:CreateButton(
 		EMA.settingsControl, 
 		buttonControlWidth, 
 		left2 + 50,  
 		movingTop,
 		L["REMOVE"],
-		EMA.SettingsMailItemsRemoveClick
+		EMA.SettingsBankItemsRemoveClick
 	)
 	movingTop = movingTop -	buttonHeight - verticalSpacing
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["ADD_ITEMS"], movingTop, false )
 	
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.MailItemsEditBoxMailItem = EMAHelperSettings:CreateEditBox( 
+	EMA.settingsControl.BankItemsEditBoxBankItem = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl,
 		thirdWidth,
 		left2,
 		movingTop,
 		L["ITEM_DROP"]
 	)
-	EMA.settingsControl.MailItemsEditBoxMailItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedMailItem )
+	EMA.settingsControl.BankItemsEditBoxBankItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedBankItem )
 	movingTop = movingTop - editBoxHeight	
 
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem = EMAHelperSettings:CreateCheckBox( 
@@ -272,135 +267,117 @@ function EMA:SettingsCreateMail( top )
 		thirdWidth,	
 		left2,
 		movingTop,
-		L["MAILTOON"]
+		L["BankTOON"]
 	)
-	EMA.settingsControl.tabNumListDropDownList:SetCallback( "OnEnterPressed",  EMA.EditMailToonName )
+	EMA.settingsControl.tabNumListDropDownList:SetCallback( "OnEnterPressed",  EMA.EditBankToonName )
 	--Group
-	EMA.settingsControl.MailItemsEditBoxMailTag = EMAHelperSettings:CreateDropdown(
+	EMA.settingsControl.BankItemsEditBoxBankTag = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left3,
 		movingTop, 
 		L["GROUP_LIST"]
 	)
-	EMA.settingsControl.MailItemsEditBoxMailTag:SetList( EMAApi.GroupList() )
-	EMA.settingsControl.MailItemsEditBoxMailTag:SetCallback( "OnValueChanged",  EMA.GroupListDropDownList )
+	EMA.settingsControl.BankItemsEditBoxBankTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.BankItemsEditBoxBankTag:SetCallback( "OnValueChanged",  EMA.GroupListDropDownList )
 	movingTop = movingTop - editBoxHeight	
-	EMA.settingsControl.MailItemsButtonAdd = EMAHelperSettings:CreateButton(	
+	EMA.settingsControl.BankItemsButtonAdd = EMAHelperSettings:CreateButton(	
 		EMA.settingsControl, 
 		buttonControlWidth, 
 		left2 + 50, 
 		movingTop, 
 		L["ADD"],
-		EMA.SettingsMailItemsAddClick
+		EMA.SettingsBankItemsAddClick
 	)
 	movingTop = movingTop -	buttonHeight		
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["Mail_OPTIONS"], movingTop, false )
-	movingTop = movingTop - headingHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["Bank_OPTIONS"], movingTop, false )
+	movingTop = movingTop - editBoxHeight - 3
 	
-	EMA.settingsControl.checkBoxMailBoEItems = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl.checkBoxBankBoEItems = EMAHelperSettings:CreateCheckBox( 
 	EMA.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop + movingTopEdit,
-		L["MAIL_BOE_ITEMS"],
-		EMA.SettingsToggleMailBoEItems,
-		L["MAIL_BOE_ITEMS_HELP"]
+		L["Bank_BOE_ITEMS"],
+		EMA.SettingsToggleBankBoEItems,
+		L["Bank_BOE_ITEMS_HELP"]
 	)	
 	EMA.settingsControl.tabNumListDropDownListBoE = EMAHelperSettings:CreateEditBox(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left2,
 		movingTop,
-		L["MAILTOON"]
+		L["BankTOON"]
 	)
-	EMA.settingsControl.tabNumListDropDownListBoE:SetCallback( "OnEnterPressed",  EMA.EditMailToonNameBoE )	
-	EMA.settingsControl.MailTradeBoEItemsTagBoE = EMAHelperSettings:CreateDropdown(
+	EMA.settingsControl.tabNumListDropDownListBoE:SetCallback( "OnEnterPressed",  EMA.EditBankToonNameBoE )	
+	EMA.settingsControl.BankTradeBoEItemsTagBoE = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left3,
 		movingTop, 
 		L["GROUP_LIST"]
 	)
-	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetList( EMAApi.GroupList() )
-	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetCallback( "OnValueChanged",  EMA.GroupListDropDownListBoE)	
+	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetCallback( "OnValueChanged",  EMA.GroupListDropDownListBoE)	
 	
 	movingTop = movingTop - editBoxHeight - 3
-	EMA.settingsControl.checkBoxMailCRItems = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl.checkBoxBankCRItems = EMAHelperSettings:CreateCheckBox( 
 	EMA.settingsControl, 
 		thirdWidth, 
 		left, 
 		movingTop + movingTopEdit, 
-		L["MAIL_REAGENTS"],
-		EMA.SettingsToggleMailCRItems,
-		L["MAIL_REAGENTS_HELP"]
+		L["Bank_REAGENTS"],
+		EMA.SettingsToggleBankCRItems,
+		L["Bank_REAGENTS_HELP"]
 	)
 	EMA.settingsControl.tabNumListDropDownListCR = EMAHelperSettings:CreateEditBox(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left2,
 		movingTop,
-		L["MAILTOON"]
+		L["BankTOON"]
 	)
-	EMA.settingsControl.tabNumListDropDownListCR:SetCallback( "OnEnterPressed",  EMA.EditMailToonNameCR )	
-	EMA.settingsControl.MailTradeCRItemsTagCR = EMAHelperSettings:CreateDropdown(
+	EMA.settingsControl.tabNumListDropDownListCR:SetCallback( "OnEnterPressed",  EMA.EditBankToonNameCR )	
+	EMA.settingsControl.BankTradeCRItemsTagCR = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left3,
 		movingTop, 
 		L["GROUP_LIST"]
 	)
-	EMA.settingsControl.MailTradeCRItemsTagCR:SetList( EMAApi.GroupList() )
-	EMA.settingsControl.MailTradeCRItemsTagCR:SetCallback( "OnValueChanged",  EMA.GroupListDropDownListCR )	
+	EMA.settingsControl.BankTradeCRItemsTagCR:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.BankTradeCRItemsTagCR:SetCallback( "OnValueChanged",  EMA.GroupListDropDownListCR )	
 		
-	movingTop = movingTop - editBoxHeight - headingHeight
---	movingTop = movingTop - editBoxHeight
-
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["MAIL_GOLD_OPTIONS"] , movingTop, false )
-	movingTop = movingTop - headingHeight
+	movingTop = movingTop - editBoxHeight
+	movingTop = movingTop - editBoxHeight
 	
-	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaMail = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl.labelComingSoon = EMAHelperSettings:CreateContinueLabel( 
 		EMA.settingsControl, 
 		headingWidth, 
-		left, 
+		left2, 
+		movingTop,
+		L["Bank_GOLD_COMING_SOON"] 
+	)	
+--[[	
+	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaBankBank = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left + 110, 
 		movingTop, 
-		L["MAIL_GOLD"],
-		EMA.SettingsToggleAdjustMoneyOnToonViaMail,
-		L["MAIL_GOLD_HELP"]
+		L["Bank_GOLD"],
+		EMA.SettingsToggleAdjustMoneyOnToonViaBankBank,
+		L["Bank_GOLD_HELP"]
 	)
-	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl,
 		dropBoxWidth,
-		left,
+		left2,
 		movingTop,
 		L["GOLD_TO_KEEP"]
 	)
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetCallback( "OnEnterPressed", EMA.EditBoxChangedGoldAmountToLeaveOnToon )
-	
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonName = EMAHelperSettings:CreateEditBox(
-		EMA.settingsControl, 
-		thirdWidth,	
-		left2,
-		movingTop,
-		L["MAILTOON"]
-	)
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonName:SetCallback( "OnEnterPressed",  EMA.EditMailToonNameGold )		
-	
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonTag = EMAHelperSettings:CreateDropdown(
-		EMA.settingsControl, 
-		thirdWidth,	
-		left3,
-		movingTop, 
-		L["GROUP_LIST"]
-	)
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonTag:SetList( EMAApi.GroupList() )
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonTag:SetCallback( "OnValueChanged",  EMA.GroupListDropDownListGold )		
-	
-	
-
-	
+]]	
 	movingTop = movingTop - editBoxHeight	
 	
 	EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown( 
@@ -423,64 +400,64 @@ end
 
 function EMA:SettingsScrollRefresh()
 	FauxScrollFrame_Update(
-		EMA.settingsControl.MailItems.listScrollFrame, 
-		EMA:GetMailItemsMaxPosition(),
-		EMA.settingsControl.MailItems.rowsToDisplay, 
-		EMA.settingsControl.MailItems.rowHeight
+		EMA.settingsControl.BankItems.listScrollFrame, 
+		EMA:GetBankItemsMaxPosition(),
+		EMA.settingsControl.BankItems.rowsToDisplay, 
+		EMA.settingsControl.BankItems.rowHeight
 	)
-	EMA.settingsControl.MailItemsOffset = FauxScrollFrame_GetOffset( EMA.settingsControl.MailItems.listScrollFrame )
-	for iterateDisplayRows = 1, EMA.settingsControl.MailItems.rowsToDisplay do
+	EMA.settingsControl.BankItemsOffset = FauxScrollFrame_GetOffset( EMA.settingsControl.BankItems.listScrollFrame )
+	for iterateDisplayRows = 1, EMA.settingsControl.BankItems.rowsToDisplay do
 		-- Reset.
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[3].textString:SetText( "" )
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[4].textString:SetText( "" )
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[4].textString:SetTextColor( 1.0, 0, 0, 1.0 )		
-		EMA.settingsControl.MailItems.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[3].textString:SetText( "" )
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[4].textString:SetText( "" )
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[4].textString:SetTextColor( 1.0, 0, 0, 1.0 )		
+		EMA.settingsControl.BankItems.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		-- Get data.
-		local dataRowNumber = iterateDisplayRows + EMA.settingsControl.MailItemsOffset
-		if dataRowNumber <= EMA:GetMailItemsMaxPosition() then
+		local dataRowNumber = iterateDisplayRows + EMA.settingsControl.BankItemsOffset
+		if dataRowNumber <= EMA:GetBankItemsMaxPosition() then
 			-- Put data information into columns.
-			local MailItemsInformation = EMA:GetMailItemsAtPosition( dataRowNumber )
+			local BankItemsInformation = EMA:GetBankItemsAtPosition( dataRowNumber )
 			local blackListText = ""
-			if MailItemsInformation.blackList == true then
+			if BankItemsInformation.blackList == true then
 				blackListText = L["ITEM_ON_BLACKLIST"]
 			end
-			EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[1].textString:SetText( MailItemsInformation.name )
-			EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[2].textString:SetText( MailItemsInformation.GBTab )
-			EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[3].textString:SetText( MailItemsInformation.tag )
-			EMA.settingsControl.MailItems.rows[iterateDisplayRows].columns[4].textString:SetText( blackListText )
+			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[1].textString:SetText( BankItemsInformation.name )
+			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[2].textString:SetText( BankItemsInformation.GBTab )
+			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[3].textString:SetText( BankItemsInformation.tag )
+			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[4].textString:SetText( blackListText )
 			-- Highlight the selected row.
-			if dataRowNumber == EMA.settingsControl.MailItemsHighlightRow then
-				EMA.settingsControl.MailItems.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
+			if dataRowNumber == EMA.settingsControl.BankItemsHighlightRow then
+				EMA.settingsControl.BankItems.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
 			end
 		end
 	end
 end
 
-function EMA:SettingsMailItemsRowClick( rowNumber, columnNumber )		
-	if EMA.settingsControl.MailItemsOffset + rowNumber <= EMA:GetMailItemsMaxPosition() then
-		EMA.settingsControl.MailItemsHighlightRow = EMA.settingsControl.MailItemsOffset + rowNumber
+function EMA:SettingsBankItemsRowClick( rowNumber, columnNumber )		
+	if EMA.settingsControl.BankItemsOffset + rowNumber <= EMA:GetBankItemsMaxPosition() then
+		EMA.settingsControl.BankItemsHighlightRow = EMA.settingsControl.BankItemsOffset + rowNumber
 		EMA:SettingsScrollRefresh()
 	end
 end
 
-function EMA:SettingsMailItemsRemoveClick( event )
-	StaticPopup_Show( "EMAMail_CONFIRM_REMOVE_MAIL_ITEMS" )
+function EMA:SettingsBankItemsRemoveClick( event )
+	StaticPopup_Show( "EMABank_CONFIRM_REMOVE_Bank_ITEMS" )
 end
 
-function EMA:SettingsEditBoxChangedMailItem( event, text )
-	EMA.autoMailItemLink = text
+function EMA:SettingsEditBoxChangedBankItem( event, text )
+	EMA.autoBankItemLink = text
 	EMA:SettingsRefresh()
 end
 
-function EMA:SettingsMailItemsAddClick( event )
-	if EMA.autoMailItemLink ~= nil and EMA.autoMailToonName ~= nil and EMA.db.MailTagName ~= nil then
-		EMA:AddItem( EMA.autoMailItemLink, EMA.autoMailToonName, EMA.db.MailTagName, EMA.db.blackListItem )
-		EMA.autoMailItemLink = nil
+function EMA:SettingsBankItemsAddClick( event )
+	if EMA.autoBankItemLink ~= nil and EMA.autoBankToonName ~= nil and EMA.db.BankTagName ~= nil then
+		EMA:AddItem( EMA.autoBankItemLink, EMA.autoBankToonName, EMA.db.BankTagName, EMA.db.blackListItem )
+		EMA.autoBankItemLink = nil
 		EMA:SettingsRefresh()
 	end
 end
@@ -492,7 +469,7 @@ function EMA:GroupListDropDownList (event, value )
 	end
 	for index, groupName in ipairs( EMAApi.GroupList() ) do
 		if index == value then
-			EMA.db.MailTagName = groupName
+			EMA.db.BankTagName = groupName
 			break
 		end
 	end
@@ -505,27 +482,27 @@ function EMA:SettingsToggleBlackListItem( event, checked )
 end	
 
 
-function EMA:EditMailToonName (event, value )
+function EMA:EditBankToonName (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
 		return 
 	end
-	EMA.autoMailToonName = value
+	EMA.autoBankToonName = value
 	EMA:SettingsRefresh()
 end
 
-function EMA:SettingsToggleMailBoEItems(event, checked )
-	EMA.db.MailBoEItems = checked
+function EMA:SettingsToggleBankBoEItems(event, checked )
+	EMA.db.BankBoEItems = checked
 	EMA:SettingsRefresh()
 end
 
 
-function EMA:EditMailToonNameBoE (event, value )
+function EMA:EditBankToonNameBoE (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
 		return 
 	end
-	EMA.db.autoMailToonNameBoE = value
+	EMA.db.autoBankToonNameBoE = value
 	EMA:SettingsRefresh()
 end
 
@@ -544,17 +521,17 @@ function EMA:GroupListDropDownListBoE (event, value )
 end
 
 
-function EMA:SettingsToggleMailCRItems(event, checked )
-	EMA.db.MailCRItems = checked
+function EMA:SettingsToggleBankCRItems(event, checked )
+	EMA.db.BankCRItems = checked
 	EMA:SettingsRefresh()
 end
 
-function EMA:EditMailToonNameCR (event, value )
+function EMA:EditBankToonNameCR (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
 		return 
 	end
-	EMA.db.autoMailToonNameCR = value
+	EMA.db.autoBankToonNameCR = value
 	EMA:SettingsRefresh()
 end
 
@@ -577,9 +554,9 @@ function EMA:OnMessageAreasChanged( message )
 end
 
 function EMA:OnGroupAreasChanged( message )
-	EMA.settingsControl.MailItemsEditBoxMailTag:SetList( EMAApi.GroupList() )
-	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetList( EMAApi.GroupList() )
-	EMA.settingsControl.MailTradeCRItemsTagCR:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.BankItemsEditBoxBankTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.BankTradeCRItemsTagCR:SetList( EMAApi.GroupList() )
 end
 
 function EMA:SettingsSetMessageArea( event, value )
@@ -587,15 +564,18 @@ function EMA:SettingsSetMessageArea( event, value )
 	EMA:SettingsRefresh()
 end
 
-function EMA:SettingsToggleShowEMAMailWindow( event, checked )
-	EMA.db.showEMAMailWindow = checked
+function EMA:SettingsToggleShowEMABankWindow( event, checked )
+	EMA.db.showEMABankWindow = checked
 	EMA:SettingsRefresh()
 end
 
--- Gold Stuff!
+function EMA:SettingsToggleAdjustMoneyOnToonViaBankBank( event, checked )
+	EMA.db.adjustMoneyWithBankBank = checked
+	EMA:SettingsRefresh()
+end
 
-function EMA:SettingsToggleAdjustMoneyOnToonViaMail( event, checked )
-	EMA.db.adjustMoneyWithMail = checked
+function EMA:SettingsToggleAdjustMoneyWithMasterOnBank( event, checked )
+	EMA.db.adjustMoneyWithMasterOnBank = checked
 	EMA:SettingsRefresh()
 end
 
@@ -607,48 +587,22 @@ function EMA:EditBoxChangedGoldAmountToLeaveOnToon( event, text )
 	EMA:SettingsRefresh()
 end
 
-function EMA:GroupListDropDownListGold (event, value )
-	-- if nil or the blank group then don't get Name.
-	if value == " " or value == nil then 
-		return 
-	end
-	for index, groupName in ipairs( EMAApi.GroupList() ) do
-		if index == value then
-			EMA.db.autoMailMoneyTag = groupName
-			break
-		end
-	end
-	EMA:SettingsRefresh()
-end
-
-function EMA:EditMailToonNameGold (event, value )
-	-- if nil or the blank group then don't get Name.
-	if value == " " or value == nil then 
-		return 
-	end
-	EMA.db.autoMailToonNameGold = value
-	EMA:SettingsRefresh()
-end
-
-
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.messageArea = settings.messageArea
-		EMA.db.showEMAMailWindow = settings.showEMAMailWindow
-		EMA.db.MailTagName = settings.MailTagName
-		EMA.db.MailBoEItems = settings.MailBoEItems
-		EMA.db.autoMailToonNameBoE = settings.autoMailToonNameBoE
+		EMA.db.showEMABankWindow = settings.showEMABankWindow
+		EMA.db.BankTagName = settings.BankTagName
+		EMA.db.BankBoEItems = settings.BankBoEItems
+		EMA.db.autoBankToonNameBoE = settings.autoBankToonNameBoE
 		EMA.db.autoBoEItemTag = settings.autoBoEItemTag
-		EMA.db.MailCRItems = settings.MailCRItems
-		EMA.db.autoMailToonNameCR = settings.autoMailToonNameCR
+		EMA.db.BankCRItems = settings.BankCRItems
+		EMA.db.autoBankToonNameCR = settings.autoBankToonNameCR
 		EMA.db.autoCRItemTag = settings.autoCRItemTag
-		EMA.db.autoMailItemsList = EMAUtilities:CopyTable( settings.autoMailItemsList )
-		EMA.db.adjustMoneyWithMail = settings.adjustMoneyWithMail
+		EMA.db.autoBankItemsList = EMAUtilities:CopyTable( settings.autoBankItemsList )
+		EMA.db.adjustMoneyWithBankBank = settings.adjustMoneyWithBankBank
 		EMA.db.goldAmountToKeepOnToon = settings.goldAmountToKeepOnToon
-		EMA.db.autoMailToonNameGold = settings.autoMailToonNameGold
-		EMA.db.autoMailMoneyTag = settings.autoMailMoneyTag
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		-- Tell the player.
@@ -664,37 +618,31 @@ function EMA:OnEMAProfileChanged()
 end
 
 function EMA:SettingsRefresh()
-	EMA.settingsControl.checkBoxShowEMAMailWindow:SetValue( EMA.db.showEMAMailWindow )
-	EMA.settingsControl.MailItemsEditBoxMailTag:SetText( EMA.db.MailTagName )
+	EMA.settingsControl.checkBoxShowEMABankWindow:SetValue( EMA.db.showEMABankWindow )
+	EMA.settingsControl.BankItemsEditBoxBankTag:SetText( EMA.db.BankTagName )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
-	EMA.settingsControl.checkBoxMailBoEItems:SetValue( EMA.db.MailBoEItems )
-	EMA.settingsControl.tabNumListDropDownListBoE:SetText( EMA.db.autoMailToonNameBoE )
-	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetText( EMA.db.autoBoEItemTag )
-	EMA.settingsControl.checkBoxMailCRItems:SetValue( EMA.db.MailCRItems )
-	EMA.settingsControl.tabNumListDropDownListCR:SetText( EMA.db.autoMailToonNameCR )
-	EMA.settingsControl.MailTradeCRItemsTagCR:SetText( EMA.db.autoCRItemTag )
+	EMA.settingsControl.checkBoxBankBoEItems:SetValue( EMA.db.BankBoEItems )
+	EMA.settingsControl.tabNumListDropDownListBoE:SetText( EMA.db.autoBankToonNameBoE )
+	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetText( EMA.db.autoBoEItemTag )
+	EMA.settingsControl.checkBoxBankCRItems:SetValue( EMA.db.BankCRItems )
+	EMA.settingsControl.tabNumListDropDownListCR:SetText( EMA.db.autoBankToonNameCR )
+	EMA.settingsControl.BankTradeCRItemsTagCR:SetText( EMA.db.autoCRItemTag )
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
-	
-	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaMail:SetValue( EMA.db.adjustMoneyWithMail )
-	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( EMA.db.goldAmountToKeepOnToon ) )
-	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetDisabled( not EMA.db.adjustMoneyWithMail )
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonName:SetText( EMA.db.autoMailToonNameGold )
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonName:SetDisabled( not EMA.db.adjustMoneyWithMail )
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonTag:SetText( EMA.db.autoMailMoneyTag )
-	EMA.settingsControl.SettingsToggleAdjustMoneyOnToonTag:SetDisabled( not EMA.db.adjustMoneyWithMail )
-	
-	EMA.settingsControl.MailItemsEditBoxMailItem:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.MailItemsEditBoxMailTag:SetDisabled( not EMA.db.showEMAMailWindow )	
-	EMA.settingsControl.tabNumListDropDownList:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.MailItemsButtonRemove:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.MailItemsButtonAdd:SetDisabled( not EMA.db.showEMAMailWindow )	
-	EMA.settingsControl.checkBoxMailBoEItems:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.tabNumListDropDownListBoE:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.checkBoxMailCRItems:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.tabNumListDropDownListCR:SetDisabled( not EMA.db.showEMAMailWindow )
-	EMA.settingsControl.MailTradeCRItemsTagCR:SetDisabled( not EMA.db.showEMAMailWindow )
+--	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaBankBank:SetValue( EMA.db.adjustMoneyWithBankBank )
+--	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( EMA.db.goldAmountToKeepOnToon ) )
+--	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetDisabled( not EMA.db.adjustMoneyWithBankBank )
+	EMA.settingsControl.BankItemsEditBoxBankItem:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.BankItemsEditBoxBankTag:SetDisabled( not EMA.db.showEMABankWindow )	
+	EMA.settingsControl.tabNumListDropDownList:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.BankItemsButtonRemove:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.BankItemsButtonAdd:SetDisabled( not EMA.db.showEMABankWindow )	
+	EMA.settingsControl.checkBoxBankBoEItems:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.tabNumListDropDownListBoE:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.checkBoxBankCRItems:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.tabNumListDropDownListCR:SetDisabled( not EMA.db.showEMABankWindow )
+	EMA.settingsControl.BankTradeCRItemsTagCR:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA:SettingsScrollRefresh()
 
 end
@@ -708,15 +656,15 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 end
 
 -------------------------------------------------------------------------------------------------------------
--- Mail functionality.
+-- Bank functionality.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:GetMailItemsMaxPosition()
-	return #EMA.db.autoMailItemsList
+function EMA:GetBankItemsMaxPosition()
+	return #EMA.db.autoBankItemsList
 end
 
-function EMA:GetMailItemsAtPosition( position )
-	return EMA.db.autoMailItemsList[position]
+function EMA:GetBankItemsAtPosition( position )
+	return EMA.db.autoBankItemsList[position]
 end
 
 function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
@@ -731,48 +679,45 @@ function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
 		itemInformation.GBTab = GBTab
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
-			table.insert( EMA.db.autoMailItemsList, itemInformation )
+			table.insert( EMA.db.autoBankItemsList, itemInformation )
 			EMA:SettingsRefresh()			
-			EMA:SettingsMailItemsRowClick( 1, 1 )
+			EMA:SettingsBankItemsRowClick( 1, 1 )
 	end	
 end
 
 function EMA:RemoveItem()
-	table.remove( EMA.db.autoMailItemsList, EMA.settingsControl.MailItemsHighlightRow )
+	table.remove( EMA.db.autoBankItemsList, EMA.settingsControl.BankItemsHighlightRow )
 	EMA:SettingsRefresh()
-	EMA:SettingsMailItemsRowClick( EMA.settingsControl.MailItemsHighlightRow  - 1, 1 )		
+	EMA:SettingsBankItemsRowClick( EMA.settingsControl.BankItemsHighlightRow  - 1, 1 )		
 end
 
 
-function EMA:MAIL_SHOW(event, ...)
+function EMA:Bank_SHOW(event, ...)
 	--EMA:Print("test")
-	if EMA.db.showEMAMailWindow == true then
+	if EMA.db.showEMABankWindow == true then
 		if not IsShiftKeyDown() then
-			EMA:AddAllToMailBox()
+			EMA:AddAllToBankBox()
 		else 
 			EMA.ShiftkeyDown = true
 		end	
 	end
-	if EMA.db.adjustMoneyWithMail == true then
-		EMA:ScheduleTimer( "AddGoldToMailBox", 0.1 )
-		-- AddGoldToMailBox()
+	--[[
+	if EMA.db.adjustMoneyWithBankBank == true then
+		 AddGoldToBankBox()
 	end
+	]]
 end
 
-function EMA:MAIL_CLOSED(event, ...)
+function EMA:Bank_CLOSED(event, ...)
 	EMA.ShiftkeyDown = false
 end
 
-function EMA:AddAllToMailBox()
+function EMA:AddAllToBankBox()
 	--EMA:Print("run")
-	MailFrameTab_OnClick(nil, "2")
-	--EMA.OldMailName = SendMailNameEditBox:GetText()
-	SendMailNameEditBox:SetText( "" )	
-	SendMailMoneyGold:SetText( "" )
-	SendMailMoneySilver:SetText( "" )
-	SendMailMoneyCopper:SetText( "" )
-	SendMailNameEditBox:ClearFocus()
-	EMA.Count = 1 
+	BankFrameTab_OnClick(nil, "2")
+	SendBankNameEditBox:SetText( "" )
+	SendBankNameEditBox:ClearFocus()
+	local count = 1 
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
@@ -788,29 +733,29 @@ function EMA:AddAllToMailBox()
 					local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
 					local canSend = false
 					local toonName = nil
-					if EMA.db.MailBoEItems == true then
+					if EMA.db.BankBoEItems == true then
 						if itemType ~= 0 then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoBoEItemTag ) == true then
 								if isBop == false then
 									if itemRarity == 2 or itemRarity == 3 or itemRarity == 4 then	
 										canSend = true
-										toonName = EMA.db.autoMailToonNameBoE
+										toonName = EMA.db.autoBankToonNameBoE
 									end			
 								end
 							end										
 						end									
 					end	
-					if EMA.db.MailCRItems == true then
+					if EMA.db.BankCRItems == true then
 						if isCraftingReagent == true then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoCRItemTag ) == true then
 								if isBop == false then
 									canSend = true
-									toonName = EMA.db.autoMailToonNameCR		
+									toonName = EMA.db.autoBankToonNameCR		
 								end
 							end										
 						end
 					end
-					for position, itemInformation in pairs( EMA.db.autoMailItemsList ) do
+					for position, itemInformation in pairs( EMA.db.autoBankItemsList ) do
 						if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, itemInformation.tag ) == true then
 								--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )
@@ -824,76 +769,56 @@ function EMA:AddAllToMailBox()
 						end
 					end
 					if canSend == true and toonName ~= "" and toonName ~= nil then	
-						local currentMailToon = SendMailNameEditBox:GetText()
+						local currentBankToon = SendBankNameEditBox:GetText()
 						local characterName = EMAUtilities:AddRealmToNameIfMissing( toonName )
-						if toonName == currentMailToon or currentMailToon == "" and characterName ~= EMA.characterName then
-							if EMA.Count <= ATTACHMENTS_MAX_SEND then	
-								--EMA:Print("sending Mail:", count)
-								EMA.Count = EMA.Count + 1
-								SendMailNameEditBox:SetText( toonName )
-								SendMailSubjectEditBox:SetText( L["SENT_AUTO_MAILER"] )
+						if toonName == currentBankToon or currentBankToon == "" and characterName ~= EMA.characterName then
+							if count <= ATTACHMENTS_MAX_SEND then	
+								--EMA:Print("sending Bank:", count)
+								count = count + 1
+								SendBankNameEditBox:SetText( toonName )
+								SendBankSubjectEditBox:SetText( L["SENT_AUTO_BankER"] )
 								PickupContainerItem( bagID, slotID )
 								UseContainerItem( bagID , slotID  )
 							end	
-						end				
+						end	
 					end
 				end	
 			end
 		end
 	end	
-	EMA:ScheduleTimer( "DoSendMail", 0.8, nil )
+	EMA:ScheduleTimer( "DoSendBank", 0.5, nil )
 end
 
-function EMA:MAIL_SEND_SUCCESS( event, ... )
-	--EMA:Print("try sendMail Again")
-	if EMA.ShiftkeyDown == false and EMA.Count < 1 then
-		EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
+function EMA:Bank_SEND_SUCCESS( event, ... )
+	--EMA:Print("try sendBank Again")
+	if EMA.ShiftkeyDown == false then
+		EMA:ScheduleTimer( "AddAllToBankBox", 1, nil )
 	end	
 end
 
-function EMA:DoSendMail( gold )
+function EMA:DoSendBank()
 	--EMA:Print("newSendRun")
-	for iterateMailSlots = 1, ATTACHMENTS_MAX_SEND do
-		if HasSendMailItem( iterateMailSlots ) == true or gold == true then
-			--EMA:Print("canSend")
-			--SendMailFrame_SendMail()
-			SendMailMailButton:Click() 
-			EMA.Count = 0		
+	for iterateBankSlots = 1, ATTACHMENTS_MAX_SEND do
+		if HasSendBankItem( iterateBankSlots ) == true then
+			SendBankFrame_SendBank()	
 			break
 		end
-	end	
-	local gold =  SendMailMoneyCopper:GetText()
-	--EMA:Print("test", gold)
-	if HasSendMailItem( "1" ) == false and gold == "" then
-		MailFrameTab_OnClick(nil, 1)
-	end	
+	end						
 end	
 
 -- gold
-function EMA:AddGoldToMailBox()
-	local moneyToKeepOnToon = tonumber( EMA.db.goldAmountToKeepOnToon ) * 10000
-	local moneyOnToon = GetMoney() - 30
+function AddGoldToBankBox()
+	local moneyToKeepOnToon = tonumber( EMA.db.goldAmountToKeepOnToon ) 
+	local moneyOnToon = GetMoney()
 	local moneyToDepositOrWithdraw = moneyOnToon - moneyToKeepOnToon
-	local toonName = EMA.db.autoMailToonNameGold
-	--EMA:Print("i have", moneyOnToon, "keep", moneyToKeepOnToon, "send", moneyToDepositOrWithdraw )
 	if moneyToDepositOrWithdraw == 0 then
 		return
 	end
-	if moneyToDepositOrWithdraw > 0 and HasSendMailItem("1") == false then
-		local currentMailToon = SendMailNameEditBox:GetText()
-		local characterName = EMAUtilities:AddRealmToNameIfMissing( toonName )
-		if toonName == currentMailToon or currentMailToon == "" and characterName ~= EMA.characterName then
-			if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoMailMoneyTag ) == true then	
-				local gold, silver, copper = EMAUtilities:MoneyString( moneyToDepositOrWithdraw )
-				local coinText = GetCoinText( moneyToDepositOrWithdraw )
-				--EMA:Print("Send", "gold", gold, "silver", silver, "copper", copper )
-				SendMailSubjectEditBox:SetText( (L["SENT_AUTO_MAILER_GOLD"](coinText) ) )
-				SendMailNameEditBox:SetText( toonName )
-				SendMailMoneyGold:SetText(gold)
-				SendMailMoneySilver:SetText(silver)
-				SendMailMoneyCopper:SetText(copper)
-				EMA:ScheduleTimer( "DoSendMail", 0.8, true )
-			end
-		end		
+	if moneyToDepositOrWithdraw > 0 then
+		--local tradePlayersName = GetUnitName("NPC", true)
+		--local characterName = EMAUtilities:AddRealmToNameIfMissing( tradePlayersName )
+		--if EMAApi.IsCharacterTheMaster(characterName) == true and EMAUtilities:CheckIsFromMyRealm(characterName) == true then	
+			SendBankMoneyGold:SetText(moneyToDepositOrWithdraw)
+		--end
 	end
 end

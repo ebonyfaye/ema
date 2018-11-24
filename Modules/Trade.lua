@@ -615,9 +615,6 @@ function EMA:RemoveItem()
 end
 
 function EMA:TRADE_SHOW( event, ... )	
-	
-	
-	
 	--Keep for tradeing gold!
 	if EMA.db.adjustMoneyWithMasterOnTrade == true then
 		EMA:ScheduleTimer( "TradeShowAdjustMoneyWithMaster", 0.3 )

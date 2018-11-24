@@ -110,6 +110,21 @@ function EbonyUtilities:FormatMoneyString( value )
 	return strtrim(goldFormat.." "..silverFormat.." "..copperFormat)	
 end
 
+-- A little toy to retun Gold,  silver and copper for mail use
+function EbonyUtilities:MoneyString( value )
+	local gold = floor( value / ( EbonyUtilities.COPPER_PER_SILVER * EbonyUtilities.SILVER_PER_GOLD ) );
+	local silver = floor( ( value - ( gold * EbonyUtilities.COPPER_PER_SILVER * EbonyUtilities.SILVER_PER_GOLD ) ) / EbonyUtilities.COPPER_PER_SILVER );
+	local copper = mod( value, EbonyUtilities.COPPER_PER_SILVER );
+	if gold <=0 then
+		goldFormat = ""
+		if silver <= 0 then
+			silverFormat = ""
+		end
+	end
+	return gold, silver, copper	
+end
+
+
 -- itemLink - the item link to extract an item id from.
 -- Gets an item id from an item link.  Returns nil, if an item id could not be found.
 function EbonyUtilities:GetItemIdFromItemLink( itemLink )
