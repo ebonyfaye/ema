@@ -753,7 +753,7 @@ function EMA:MAIL_SHOW(event, ...)
 			EMA.ShiftkeyDown = true
 		end	
 	end
-	if EMA.db.adjustMoneyWithMail == true then
+	if EMA.db.adjustMoneyWithMail == true and EMA.db.showEMAMailWindow == true then
 		EMA:ScheduleTimer( "AddGoldToMailBox", 0.1 )
 		-- AddGoldToMailBox()
 	end
