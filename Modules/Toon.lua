@@ -898,7 +898,6 @@ function EMA:OnEnable()
 	EMA:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
-	EMA:RegisterEvent( "WAR_MODE_STATUS_UPDATE", "WARMODE" )
 	EMA:RegisterEvent( "PLAYER_FLAGS_CHANGED", "WARMODE" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
@@ -1343,21 +1342,24 @@ function EMA:WARMODE(event, ...)
 		return
 	end
 	if C_PvP.IsWarModeFeatureEnabled() == true then
-		if C_PvP.CanToggleWarMode()	== true then
-			local isWarMode = C_PvP.IsWarModeDesired()
-			--EMA:Print("Send", isWarMode )
-			EMA:EMASendCommandToTeam( EMA.COMMAND_WAR_MODE, isWarMode )
+		local isWarMode = C_PvP.IsWarModeDesired()
+		if C_PvP.CanToggleWarMode(isWarMode) == true then
+			--EMA:Print("Send", isWarMode, EMA.isInternalCommand )
+			if EMA.isInternalCommand == false then	
+				EMA:EMASendCommandToTeam( EMA.COMMAND_WAR_MODE, isWarMode )
+				EMA.isInternalCommand = true
+			end	
 		end	
 	end
 end
 
 function EMA:DoWarMode( isWarMode )
-	--local text = UnitFactionGroup("player") == PLAYER_FACTION_GROUP[0] and PVP_WAR_MODE_NOT_NOW_HORDE or PVP_WAR_MODE_NOT_NOW_ALLIANCE
-	if C_PvP.CanToggleWarMode()	== true and isWarMode ~= nil then
+	--EMA:Print("testwarmode", isWarMode )
+	EMA.isInternalCommand = true
+	if C_PvP.CanToggleWarMode( isWarMode ) == true and isWarMode ~= nil then
 		C_PvP.SetWarModeDesired( isWarMode )
-	else
-	--	EMA:EMASendMessageToTeam( EMA.db.requestArea, L["ERR_WARMODE"]( text ), false )
 	end
+	EMA.isInternalCommand = false
 end	
 
 function EMA:MERCHANT_SHOW( event, ... )	
@@ -1590,7 +1592,9 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		end	
 	end
 	if commandName == EMA.COMMAND_WAR_MODE then
-		if characterName ~= self.characterName then
+		if characterName == self.characterName then
+			EMA.isInternalCommand = false
+		else	
 			EMA.DoWarMode( characterName, ... )
 		end	
 	end

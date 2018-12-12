@@ -2,6 +2,16 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.1.0-Release(0108)
+Game Version: 8.1.0
+Release Date: 12/12/2018
+
+# Toon
+	-- Fixed some API changes in WarMode that was changed in patch 8.1
+
+
+---------------------------
+
 EMA Version: v8.0.1-Release(0107)
 Game Version: 8.0.1
 Release Date: 02/12/2018
