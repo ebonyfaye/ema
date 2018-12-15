@@ -110,8 +110,9 @@ end
 -- Initialise the module.
 function EMAModule:EMAModuleInitialize( settingsFrame )
     -- Create the settings database supplying the settings values along with defaults.
-    self.completeDatabase = LibStub( "AceDB-3.0" ):New( self.settingsDatabaseName, self.settings )
+	self.completeDatabase = LibStub( "AceDB-3.0" ):New( self.settingsDatabaseName, self.settings )
 	self.db = self.completeDatabase.profile
+	self.db.global = self.completeDatabase.global
 	-- Create the settings.
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( self.moduleName, self:GetConfiguration() )
 	self.settingsFrame = settingsFrame

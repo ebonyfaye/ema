@@ -199,6 +199,19 @@ function EbonyUtilities:FixValueToRange( value, minValue, maxValue )
 	return value
 end
 
+function EbonyUtilities:MerchantFrameIsShown()
+	local Show = false
+	if MerchantFrame:IsVisible() == true then
+		Show = true
+	else
+		if IsAddOnLoaded("TradeSkillMaster" ) == true then
+			if TSM_API.IsUIVisible("VENDORING") == true then
+				Show = true
+			end
+		end
+	end	
+	return Show
+end	
 
 function EbonyUtilities:CheckIsFromMyRealm( name )
 	--print("test", name)

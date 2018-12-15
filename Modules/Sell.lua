@@ -42,11 +42,17 @@ EMA.moduleListOrder	 = 1
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	 global = {
+		['**'] = {
+			autoSellOtherItemsListGlobal = {},
+		},
+	 },	
 	profile = {
 		sellItemOnAllWithAltKey = false,
 		-- Other Items
 		autoSellOtherItemsList = {},
 		messageArea = EMAApi.DefaultMessageArea(),
+		globalSellList = false,
 		autoSellItem = false,
 		blackListItem = false,
 		destroyItem = false,
@@ -65,6 +71,7 @@ EMA.settings = {
 		autoSellEpic = false,
 		autoSellIlvlEpic = 0,
 		autoSellBoEEpic	=  false,		
+
 	},
 }
 
@@ -85,6 +92,14 @@ function EMA:GetConfiguration()
 				usage = "/EMA-sell push",
 				get = false,
 				set = "EMASendSettings",
+			},
+			copy = {
+				type = "input",
+				name = L["COPY"],
+				desc = L["COPY_HELP"],
+				usage = "/ema-sell copy",
+				get = false,
+				set = "CopyListCommmand",
 			},
 		},
 	}
@@ -129,8 +144,11 @@ end
 function EMA:SettingsRefresh()
 	-- Sell on all with alt key.
 	EMA.settingsControl.checkBoxSellItemOnAllWithAltKey:SetValue( EMA.db.sellItemOnAllWithAltKey )
+	-- global Sell CheckBox
+	EMA.settingsControl.checkBoxGlobalSellList:SetValue( EMA.db.globalSellList )
+	EMA.settingsControl.checkBoxGlobalSellList:SetDisabled( not EMA.db.autoSellItem )
 	-- Auto sell Quality and Ilvl items.
-	EMA.settingsControl.checkBoxAutoSellItems:SetValue( EMA.db.autoSellItem )
+	EMA.settingsControl.checkBoxAutoSellItems:SetValue( EMA.db.autoSellItem )	
 	-- Poor
 	EMA.settingsControl.checkBoxAutoSellPoor:SetValue ( EMA.db.autoSellPoor )
 	EMA.settingsControl.checkBoxAutoSellBoEPoor:SetValue ( EMA.db.autoSellBoEPoor )
@@ -180,6 +198,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.sellItemOnAllWithAltKey = settings.sellItemOnAllWithAltKey
+		EMA.db.globalSellList = settings.globalSellList
 		EMA.db.autoSellItem = settings.autoSellItem
 		EMA.db.autoSellPoor = settings.autoSellPoor
 		EMA.db.autoSellBoEPoor = settings.autoSellBoEPoor
@@ -196,6 +215,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.destroyItem = settings.destroyItem 
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.autoSellOtherItemsList = EMAUtilities:CopyTable( settings.autoSellOtherItemsList )
+		EMA.db.global.autoSellOtherItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoSellOtherItemsListGlobal )
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		-- Tell the player.
@@ -248,13 +268,24 @@ local function SettingsCreateMain( top )
 	movingTop = movingTop - headingHeight	
 	EMA.settingsControl.checkBoxAutoSellItems = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left2, 
+		halfWidth, 
+		left, 
 		movingTop, 
 		L["AUTO_SELL_ITEMS"],
 		EMA.SettingsToggleAutoSellItems,
 		L["AUTO_SELL_ITEMS_HELP"]
 	)	
+	EMA.settingsControl.checkBoxGlobalSellList = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		left3, 
+		movingTop, 
+		L["GLOBAL_LIST"],
+		EMA.SettingsToggleGlobalSellList,
+		L["GLOBAL_SETTINGS_LIST_HELP"]
+	)	
+	
+	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.listHighlightRow = 1
 	EMA.settingsControl.listOffset = 1
@@ -301,7 +332,7 @@ local function SettingsCreateMain( top )
 		thirdWidth,
 		left2,
 		movingTop,
-		L["SELL_LIST_DROP_ITEM"]
+		L["ITEM_DROP"]
 	)
 	EMA.settingsControl.listEditBoxOtherItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedOtherItem )
 	movingTop = movingTop - editBoxHeight
@@ -528,7 +559,6 @@ function EMA:SettingslistScrollRefresh()
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetText( listInformation.tag )
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetText( blackListText )
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetText( destroyText )	
-			
 			-- Highlight the selected row.
 			if dataRowNumber == EMA.settingsControl.listHighlightRow then
 				EMA.settingsControl.list.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
@@ -555,6 +585,11 @@ end
 
 function EMA:SettingsToggleAutoSellItems( event, checked )
 	EMA.db.autoSellItem = checked
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleGlobalSellList( event, checked )
+	EMA.db.globalSellList = checked
 	EMA:SettingsRefresh()
 end	
 
@@ -678,6 +713,12 @@ function EMA:SettingslistAddClick( event )
 	end
 end
 
+function EMA:CopyListCommmand()
+	EMA:Print("Copying Local List To Global List")
+	EMA.db.global.autoSellOtherItemsListGlobal = EMAUtilities:CopyTable( EMA.db.autoSellOtherItemsList )
+	EMA:SettingsRefresh()
+end
+
 -------------------------------------------------------------------------------------------------------------
 -- Popup Dialogs.
 -------------------------------------------------------------------------------------------------------------
@@ -739,7 +780,7 @@ end
 
 -- The ContainerFrameItemButton_OnModifiedClick hook.
 function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
-	if EMA.db.sellItemOnAllWithAltKey == true and IsAltKeyDown() and MerchantFrame:IsVisible() then
+	if EMA.db.sellItemOnAllWithAltKey == true and IsAltKeyDown() and EMAUtilities:MerchantFrameIsShown() then
 		local bag, slot = self:GetParent():GetID(), self:GetID()
 		local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo( bag, slot )
 		EMA:EMASendCommandToTeam( EMA.COMMAND_SELL_ITEM, link )
@@ -757,7 +798,7 @@ function EMA:DoSellItem( itemlink )
 				local bagItemName = item:GetItemName()
 				if (bagItemLink ) then
 					if EMAUtilities:DoItemLinksContainTheSameItem( bagItemLink, itemlink ) then
-						if MerchantFrame:IsVisible() == true then	
+						if EMAUtilities:MerchantFrameIsShown() == true then	
 							UseContainerItem( bagID, slotID ) 
 							-- Tell the Boss.
 							EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_SOLD_X"]( bagItemLink ), false )
@@ -770,11 +811,19 @@ function EMA:DoSellItem( itemlink )
 end	
 
 function EMA:GetlistMaxPosition()
-	return #EMA.db.autoSellOtherItemsList
+	if EMA.db.globalSellList == true then
+		return #EMA.db.global.autoSellOtherItemsListGlobal
+	else
+		return #EMA.db.autoSellOtherItemsList
+	end
 end
 
 function EMA:GetOtherAtPosition( position )
-	return EMA.db.autoSellOtherItemsList[position]
+	if EMA.db.globalSellList == true then
+		return EMA.db.global.autoSellOtherItemsListGlobal[position]
+	else
+		return EMA.db.autoSellOtherItemsList[position]
+	end
 end
 
 function EMA:AddOther( itemLink, itemTag, blackList, destroy )
@@ -789,14 +838,22 @@ function EMA:AddOther( itemLink, itemTag, blackList, destroy )
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
 		itemInformation.destroyItem = destroy
-		table.insert( EMA.db.autoSellOtherItemsList, itemInformation )
+		if EMA.db.globalSellList == true then
+			table.insert( EMA.db.global.autoSellOtherItemsListGlobal, itemInformation )
+		else
+			table.insert( EMA.db.autoSellOtherItemsList, itemInformation )
+		end
 		EMA:SettingsRefresh()
 		EMA:SettingslistRowClick( EMA:GetlistMaxPosition() , 1 )
 	end	
 end
 
 function EMA:RemoveOther()
-	table.remove( EMA.db.autoSellOtherItemsList, EMA.settingsControl.listHighlightRow )
+	if EMA.db.globalSellList == true then
+		table.remove( EMA.db.global.autoSellOtherItemsListGlobal, EMA.settingsControl.listHighlightRow )
+	else
+		table.remove( EMA.db.autoSellOtherItemsList, EMA.settingsControl.listHighlightRow )
+	end
 	EMA:SettingsRefresh()
 	EMA:SettingslistRowClick( EMA.settingsControl.listHighlightRow -1,  1 )		
 end
@@ -804,7 +861,7 @@ end
 function EMA:MERCHANT_SHOW()
 	-- Sell Items
 	if EMA.db.autoSellItem == true then
-		EMA:DoMerchantSellItems()
+		EMA:ScheduleTimer("DoMerchantSellItems", 0.5 ) 
 	end
 end
 
@@ -918,7 +975,13 @@ function EMA:DoMerchantSellItems()
 						end
 					end		
 					-- Sell List/BackList
-					for position, itemInformation in pairs( EMA.db.autoSellOtherItemsList ) do
+					if EMA.db.globalSellList == true then
+						itemTable = EMA.db.global.autoSellOtherItemsListGlobal
+					else
+						itemTable = EMA.db.autoSellOtherItemsList
+					end	
+						for position, itemInformation in pairs( itemTable ) do
+						
 						if EMAApi.IsCharacterInGroup( EMA.characterName, itemInformation.tag ) == true then
 							if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
 								--EMA:Print("DataTest", itemInformation.blackList, itemInformation.destroyItem )
@@ -935,9 +998,9 @@ function EMA:DoMerchantSellItems()
 						end
 					end
 					if canSell == true then 
-						--EMA:Print("END OF LOOT", canSell, itemLink)
+						--EMA:Print("END OF LOOT", canSell, itemLink, itemCount)
 						if itemSellPrice ~= nil and itemSellPrice > 0 then
-							if MerchantFrame:IsVisible() == true then
+							if EMAUtilities:MerchantFrameIsShown() == true then	
 								if itemCount > 1 then
 									count = count + itemCount
 									gold = gold + itemSellPrice * itemCount
@@ -945,11 +1008,12 @@ function EMA:DoMerchantSellItems()
 									count = count + 1
 									gold = gold + itemSellPrice
 								end
-								UseContainerItem( bagID, slotID )
+								--EMA:Print("can sell now", bagID, slotID )
+								EMA:ScheduleTimer("SellItem", count, bagID, slotID, itemCount )
 							end	
 						else	
 							if canDestroy == true then
-								if MerchantFrame:IsVisible() == true then
+								if EMAUtilities:MerchantFrameIsShown() == true then
 									PickupContainerItem(bagID,slotID)
 									DeleteCursorItem()
 									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["DELETE_ITEM"]( itemLink ), false )		
@@ -960,34 +1024,26 @@ function EMA:DoMerchantSellItems()
 				end	
 			end
 		end
-	end
+	end	
 	if count > 0 then
-		EMA.sellCountTotal = EMA.sellCountTotal + count
-		EMA.sellGoldTotal = EMA.sellGoldTotal + gold
-	end
-	if MerchantFrame:IsVisible() == true and EMA.TrySellIAgainCount > 0 then
-		EMA:ScheduleTimer("TrySellIAgain", 1.0, count, gold )
+		EMA:ScheduleTimer("TellTeam", count + 1 , count, gold )
 	end
 end
 
-function EMA:TrySellIAgain( count, gold )
-	local sellGoldTotal = EMA.sellGoldTotal
-	local sellCountTotal = EMA.sellCountTotal	
-	--EMA:Print("test", count, gold,  sellGoldTotal, sellCountTotal, EMA.SellFristTime, EMA.TrySellIAgainCount )
-	if count <= 0 and EMA.SellFristTime == false then 
-		--EMA:Print("Can SELL ALL ITEMS", "count", sellCountTotal, "gold", sellGoldTotal )
-		if sellGoldTotal > 0 then
-			local formattedGoldAmount = GetCoinTextureString(sellGoldTotal)
-			EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_SOLD_ITEMS_PLUS_GOLD"]( sellCountTotal )..formattedGoldAmount, false )
-		end
-		EMA.TrySellIAgainCount = 0
-		sellCountTotal = sellCountTotal - count
-		sellGoldTotal = sellGoldTotal - gold
+
+function EMA:SellItem( bagID, slotID, itemCount )
+	--EMA:Print("sellItem", bagID, slotID )
+	if EMAUtilities:MerchantFrameIsShown() == true then	
+		UseContainerItem( bagID, slotID )		
 	end	
-	if EMA.TrySellIAgainCount > 0 then
-		EMA.SellFristTime = false
-		EMA.TrySellIAgainCount = EMA.TrySellIAgainCount - 1
-		EMA:DoMerchantSellItems()
+end
+
+
+function EMA:TellTeam( count, gold )
+	--EMA:Print("tellTeam", count, gold )
+	if count > 0 then 
+		local formattedGoldAmount = GetCoinTextureString(gold)
+		EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_SOLD_ITEMS_PLUS_GOLD"]( count )..formattedGoldAmount, false )	
 	end
 end
 

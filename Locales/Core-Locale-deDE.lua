@@ -337,6 +337,7 @@ L["ITEM_BAR_CLEARED"] = "Gegenstands Anzeige geleert"
 L["TEAM_BAGS"] = "Gegenstände des Teams"
 L["BAG_BANK"] = "Taschen (Bank)"
 
+
 --------------------------
 -- EMA-Sell Locale
 L["SELL"] = "Verkauf"

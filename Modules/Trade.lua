@@ -41,9 +41,15 @@ EMA.moduleOrder = 10
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	 global = {
+		['**'] = {
+			autoTradeItemsListGlobal = {},
+		},
+	 },		
 	profile = {
 		messageArea = EMAApi.DefaultMessageArea(),
 		showEMATradeWindow = false,
+		globalTadeList = false,
 		blackListItem = false,
 		tradeBoEItems = false,
 		tradeCRItems = false,
@@ -70,12 +76,20 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_ALL_SETTINGS"],
-				usage = "/EMA-trade push",
+				usage = "/ema-trade push",
 				get = false,
 				set = "EMASendSettings",
 				guiHidden = true,
 			},
-		},
+		copy = {
+				type = "input",
+				name = L["COPY"],
+				desc = L["COPY_HELP"],
+				usage = "/ema-trade copy",
+				get = false,
+				set = "CopyListCommmand",
+			},
+		},	
 	}
 	return configuration
 end
@@ -191,12 +205,21 @@ function EMA:SettingsCreateTrade( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxShowEMATradeWindow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left + 130, 
+		halfWidth, 
+		left, --+ 130, 
 		movingTop, 
 		L["TRADE_LIST"],
 		EMA.SettingsToggleShowEMATradeWindow,
 		L["TRADE_LIST_HELP"]
+	)	
+	EMA.settingsControl.checkBoxGlobalTradeList = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		left3, 
+		movingTop, 
+		L["GLOBAL_LIST"],
+		EMA.SettingsToggleGlobalTradeList,
+		L["GLOBAL_SETTINGS_LIST_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.tradeItemsHighlightRow = 1
@@ -449,6 +472,11 @@ function EMA:SettingsSetMessageArea( event, value )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleGlobalTradeList( event, checked )
+	EMA.db.globalTradeList = checked
+	EMA:SettingsRefresh()
+end	
+
 function EMA:SettingsToggleShowEMATradeWindow( event, checked )
 	EMA.db.showEMATradeWindow = checked
 	EMA:SettingsRefresh()
@@ -517,17 +545,25 @@ function EMA:EditBoxChangedGoldAmountToLeaveOnToonTrade( event, text )
 	EMA:SettingsRefresh()
 end
 
+function EMA:CopyListCommmand()
+	EMA:Print("Copying Local List To Global List")
+	EMA.db.global.autoTradeItemsListGlobal = EMAUtilities:CopyTable( EMA.db.autoTradeItemsList )
+	EMA:SettingsRefresh()
+end
+
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.showEMATradeWindow = settings.showEMATradeWindow
+		EMA.db.globalTradeList = settings.globalTradeList
 		EMA.db.autoSellOtherItemTag = settings.autoSellOtherItemTag
 		EMA.db.blackListItem = settings.blackListItem
-		EMA.db.tradeBoEItems = settings.tradeBoEItems
+		EMA.db.tradeBoEItems = settings.tradeBoEItFems
 		EMA.db.tradeCRItems = settings.tradeCRItems
 		EMA.db.autoTradeItemsList = EMAUtilities:CopyTable( settings.autoTradeItemsList )
+		EMA.db.global.autoTradeItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoTradeItemsListGlobal )
 		EMA.db.adjustMoneyWithGuildBank = settings.adjustMoneyWithGuildBank
 		EMA.db.goldAmountToKeepOnToon = settings.goldAmountToKeepOnToon
 		EMA.db.adjustMoneyWithMasterOnTrade = settings.adjustMoneyWithMasterOnTrade
@@ -548,6 +584,9 @@ end
 
 function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxShowEMATradeWindow:SetValue( EMA.db.showEMATradeWindow )
+	-- global CheckBox
+	EMA.settingsControl.checkBoxGlobalTradeList:SetValue( EMA.db.globalTradeList )
+	EMA.settingsControl.checkBoxGlobalTradeList:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
 	EMA.settingsControl.checkBoxTradeBoEItems:SetValue( EMA.db.tradeBoEItems)
 	EMA.settingsControl.checkBoxTradeCRItems:SetValue( EMA.db.tradeCRItems)
@@ -584,11 +623,19 @@ end
 
 -- New Trade stuff
 function EMA:GetTradeItemsMaxPosition()
-	return #EMA.db.autoTradeItemsList
+	if EMA.db.globalTradeList == true then
+		return #EMA.db.global.autoTradeItemsListGlobal
+	else
+		return #EMA.db.autoTradeItemsList
+	end	
 end
 
 function EMA:GetTradeItemsAtPosition( position )
-	return EMA.db.autoTradeItemsList[position]
+	if EMA.db.globalTradeList == true then
+		return EMA.db.global.autoTradeItemsListGlobal[position]
+	else
+		return EMA.db.autoTradeItemsList[position]
+	end	
 end
 
 function EMA:AddItem( itemLink, itemTag, blackList )
@@ -602,14 +649,22 @@ function EMA:AddItem( itemLink, itemTag, blackList )
 		itemInformation.name = name
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
-		table.insert( EMA.db.autoTradeItemsList, itemInformation )
+		if EMA.db.globalTradeList == true then
+			table.insert( EMA.db.global.autoTradeItemsListGlobal, itemInformation )
+		else
+			table.insert( EMA.db.autoTradeItemsList, itemInformation )
+		end
 		EMA:SettingsRefresh()			
 		EMA:SettingsTradeItemsRowClick( 1 , 1 )
 	end	
 end
 
 function EMA:RemoveItem()
-	table.remove( EMA.db.autoTradeItemsList, EMA.settingsControl.tradeItemsHighlightRow )
+	if EMA.db.globalTradeList == true then
+		table.remove( EMA.db.global.autoTradeItemsListGlobal, EMA.settingsControl.listHighlightRow )
+	else	
+		table.remove( EMA.db.autoTradeItemsList, EMA.settingsControl.tradeItemsHighlightRow )
+	end
 	EMA:SettingsRefresh()
 	EMA:SettingsTradeItemsRowClick( EMA.settingsControl.tradeItemsHighlightRow -1 , 1 )		
 end
@@ -685,7 +740,12 @@ function EMA:TradeAllItems()
 							end										
 						end
 					end
-					for position, itemInformation in pairs( EMA.db.autoTradeItemsList ) do
+					if EMA.db.globalTradeList == true then
+						itemTable = EMA.db.global.autoTradeItemsListGlobal
+					else
+						itemTable = EMA.db.autoTradeItemsList
+					end
+					for position, itemInformation in pairs( itemTable ) do
 						if EMAApi.IsCharacterInGroup( characterName, itemInformation.tag ) == true then	
 							if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
 								--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )

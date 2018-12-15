@@ -2,6 +2,45 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.1.0-Beta(0109)
+Game Version: 8.1.0
+Release Date: 15/12/2018
+
+# Core
+	- Fixed ToC files to support 8.1 
+		-- Dev Note: This Was Hotfixed Into The Game As There Was No Toc Change At The Start Of The Patch Grrrr!
+	-Fixed Some Text Placements
+		
+# Vender
+	- Should Now Work With The TradeSkill Master 4 UI Issue#26
+	- Now Sells One Item At A Item Then Trying To Loop The Bag!
+	- Fixed The Sell Items, And Gold Prices In Chat
+	- Added A Global Sell List, This Works Across "All" Characters
+		-- Dev Note: Use "/EMA-purchase Sell" To Copy From The Local List To The Global List
+
+# Purchase
+	- Updated GUI
+	- Added A Global Sell List, This Works Across "All" Characters
+		-- Dev Note: Use "/EMA-purchase copy" To Copy From The Local List To The Global List
+	
+	
+# Trade
+	- Added A Global Sell List, This Works Across "All" Characters
+		-- Dev Note: Use "/EMA-trade copy" To Copy From The Local List To The Global List
+
+# Mail
+	- Added A Global Sell List, This Works Across "All" Characters
+		-- Dev Note: Use "/EMA-Mail copy" To Copy From The Local List To The Global List
+
+# GuildBank
+	- Added A Global Sell List, This Works Across "All" Characters
+		-- Dev Note: Use "/EMA-Sell copy" To Copy From The Local List To The Global List
+
+# Item-Use
+	- Should Remove Quest Items On Its Own From The Item Bar Again
+
+---------------------------
+
 EMA Version: v8.1.0-Release(0108)
 Game Version: 8.1.0
 Release Date: 12/12/2018

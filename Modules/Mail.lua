@@ -41,9 +41,15 @@ EMA.moduleOrder = 20
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	 global = {
+		['**'] = {
+			autoMailItemsListGlobal = {},
+		},
+	 },	
 	profile = {
 		messageArea = EMAApi.DefaultMessageArea(),
 		showEMAMailWindow = false,
+		globalMailList = false,
 		blackListItem = false,
 		MailBoEItems = false,
 		autoMailToonNameBoE = "",
@@ -79,6 +85,14 @@ function EMA:GetConfiguration()
 				get = false,
 				set = "EMASendSettings",
 				guiHidden = true,
+			},
+			copy = {
+				type = "input",
+				name = L["COPY"],
+				desc = L["COPY_HELP"],
+				usage = "/ema-mail copy",
+				get = false,
+				set = "CopyListCommmand",
 			},
 		},
 	}
@@ -198,13 +212,22 @@ function EMA:SettingsCreateMail( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxShowEMAMailWindow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left2, 
+		halfWidth, 
+		left, 
 		movingTop, 
 		L["MAIL_LIST"],
 		EMA.SettingsToggleShowEMAMailWindow,
 		L["MAIL_LIST_HELP"]
 	)	
+	EMA.settingsControl.checkBoxGlobalMailList = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		left3, 
+		movingTop, 
+		L["GLOBAL_LIST"],
+		EMA.SettingsToggleGlobalMailList,
+		L["GLOBAL_SETTINGS_LIST_HELP"]
+	)		
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.MailItemsHighlightRow = 1
 	EMA.settingsControl.MailItemsOffset = 1
@@ -592,6 +615,11 @@ function EMA:SettingsToggleShowEMAMailWindow( event, checked )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleGlobalMailList( event, checked )
+	EMA.db.globalMailList = checked
+	EMA:SettingsRefresh()
+end	
+
 -- Gold Stuff!
 
 function EMA:SettingsToggleAdjustMoneyOnToonViaMail( event, checked )
@@ -630,6 +658,11 @@ function EMA:EditMailToonNameGold (event, value )
 	EMA:SettingsRefresh()
 end
 
+function EMA:CopyListCommmand()
+	EMA:Print("Copying Local List To Global List")
+	EMA.db.global.autoMailItemsListGlobal = EMAUtilities:CopyTable( EMA.db.autoMailItemsList )
+	EMA:SettingsRefresh()
+end
 
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )	
@@ -637,6 +670,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		-- Update the settings.
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.showEMAMailWindow = settings.showEMAMailWindow
+		EMA.db.globalMailList = settings.globalMailList
 		EMA.db.MailTagName = settings.MailTagName
 		EMA.db.MailBoEItems = settings.MailBoEItems
 		EMA.db.autoMailToonNameBoE = settings.autoMailToonNameBoE
@@ -645,6 +679,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoMailToonNameCR = settings.autoMailToonNameCR
 		EMA.db.autoCRItemTag = settings.autoCRItemTag
 		EMA.db.autoMailItemsList = EMAUtilities:CopyTable( settings.autoMailItemsList )
+		EMA.db.global.autoMailItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoMailItemsListGlobal )
 		EMA.db.adjustMoneyWithMail = settings.adjustMoneyWithMail
 		EMA.db.goldAmountToKeepOnToon = settings.goldAmountToKeepOnToon
 		EMA.db.autoMailToonNameGold = settings.autoMailToonNameGold
@@ -665,6 +700,9 @@ end
 
 function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxShowEMAMailWindow:SetValue( EMA.db.showEMAMailWindow )
+-- global CheckBox
+	EMA.settingsControl.checkBoxGlobalMailList:SetValue( EMA.db.globalMailList )
+	EMA.settingsControl.checkBoxGlobalMailList:SetDisabled( not EMA.db.showEMAMailWindow )
 	EMA.settingsControl.MailItemsEditBoxMailTag:SetText( EMA.db.MailTagName )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
 	EMA.settingsControl.checkBoxMailBoEItems:SetValue( EMA.db.MailBoEItems )
@@ -712,11 +750,19 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:GetMailItemsMaxPosition()
-	return #EMA.db.autoMailItemsList
+	if EMA.db.globalMailList == true then
+		return #EMA.db.global.autoMailItemsListGlobal
+	else
+		return #EMA.db.autoMailItemsList
+	end	
 end
 
 function EMA:GetMailItemsAtPosition( position )
-	return EMA.db.autoMailItemsList[position]
+	if EMA.db.globalMailList == true then
+		return EMA.db.global.autoMailItemsListGlobal[position]
+	else	
+		return EMA.db.autoMailItemsList[position]
+	end	
 end
 
 function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
@@ -731,14 +777,22 @@ function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
 		itemInformation.GBTab = GBTab
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
+		if EMA.db.globalMailList == true then
+			table.insert( EMA.db.global.autoMailItemsListGlobal, itemInformation )
+		else	
 			table.insert( EMA.db.autoMailItemsList, itemInformation )
-			EMA:SettingsRefresh()			
-			EMA:SettingsMailItemsRowClick( 1, 1 )
+		end	
+		EMA:SettingsRefresh()			
+		EMA:SettingsMailItemsRowClick( 1, 1 )
 	end	
 end
 
 function EMA:RemoveItem()
-	table.remove( EMA.db.autoMailItemsList, EMA.settingsControl.MailItemsHighlightRow )
+	if EMA.db.globalMailList == true then
+		table.remove( EMA.db.global.autoMailItemsListGlobal, EMA.settingsControl.listHighlightRow )
+	else
+		table.remove( EMA.db.autoMailItemsList, EMA.settingsControl.MailItemsHighlightRow )
+	end
 	EMA:SettingsRefresh()
 	EMA:SettingsMailItemsRowClick( EMA.settingsControl.MailItemsHighlightRow  - 1, 1 )		
 end
@@ -754,8 +808,7 @@ function EMA:MAIL_SHOW(event, ...)
 		end	
 	end
 	if EMA.db.adjustMoneyWithMail == true and EMA.db.showEMAMailWindow == true then
-		EMA:ScheduleTimer( "AddGoldToMailBox", 0.1 )
-		-- AddGoldToMailBox()
+		EMA:ScheduleTimer( "AddGoldToMailBox", 0.3 )
 	end
 end
 
@@ -810,7 +863,12 @@ function EMA:AddAllToMailBox()
 							end										
 						end
 					end
-					for position, itemInformation in pairs( EMA.db.autoMailItemsList ) do
+					if EMA.db.globalMailList == true then
+						itemTable = EMA.db.global.autoMailItemsListGlobal
+					else
+						itemTable = EMA.db.autoMailItemsList
+					end
+					for position, itemInformation in pairs( itemTable ) do
 						if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, itemInformation.tag ) == true then
 								--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )
@@ -882,18 +940,24 @@ function EMA:AddGoldToMailBox()
 	if moneyToDepositOrWithdraw > 0 and HasSendMailItem("1") == false then
 		local currentMailToon = SendMailNameEditBox:GetText()
 		local characterName = EMAUtilities:AddRealmToNameIfMissing( toonName )
-		if toonName == currentMailToon or currentMailToon == "" and characterName ~= EMA.characterName then
-			if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoMailMoneyTag ) == true then	
-				local gold, silver, copper = EMAUtilities:MoneyString( moneyToDepositOrWithdraw )
-				local coinText = GetCoinText( moneyToDepositOrWithdraw )
-				--EMA:Print("Send", "gold", gold, "silver", silver, "copper", copper )
-				SendMailSubjectEditBox:SetText( (L["SENT_AUTO_MAILER_GOLD"](coinText) ) )
-				SendMailNameEditBox:SetText( toonName )
-				SendMailMoneyGold:SetText(gold)
-				SendMailMoneySilver:SetText(silver)
-				SendMailMoneyCopper:SetText(copper)
-				EMA:ScheduleTimer( "DoSendMail", 0.8, true )
-			end
-		end		
-	end
+		if MailFrame:IsVisible() == true then
+			--EMA:Print("blizzardFarme")
+			if toonName == currentMailToon or currentMailToon == "" and characterName ~= EMA.characterName then
+				if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoMailMoneyTag ) == true then	
+					local gold, silver, copper = EMAUtilities:MoneyString( moneyToDepositOrWithdraw )
+					local coinText = GetCoinText( moneyToDepositOrWithdraw )
+					--EMA:Print("Send", "gold", gold, "silver", silver, "copper", copper )
+					MailFrameTab_OnClick(nil, "2")
+					SendMailSubjectEditBox:SetText( (L["SENT_AUTO_MAILER_GOLD"](coinText) ) )
+					SendMailNameEditBox:SetText( toonName )
+					SendMailMoneyGold:SetText(gold)
+					SendMailMoneySilver:SetText(silver)
+					SendMailMoneyCopper:SetText(copper)
+					EMA:ScheduleTimer( "DoSendMail", 1, true )
+				end
+			end	
+		else
+			EMA:Print("[PH] Can Only Mail From BlizzardUI Mail Frame!")
+		end
+	end	
 end

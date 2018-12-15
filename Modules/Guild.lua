@@ -41,9 +41,15 @@ EMA.moduleOrder = 20
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	 global = {
+		['**'] = {
+			autoGuildItemsListGlobal = {},
+		},
+	 },
 	profile = {
 		messageArea = EMAApi.DefaultMessageArea(),
 		showEMAGuildWindow = false,
+		globalGuildList = false,
 		blackListItem = false,
 		guildBoEItems = false,
 		autoGuildBankTabBoE = "1",
@@ -72,10 +78,18 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_ALL_SETTINGS"],
-				usage = "/EMA-Guild push",
+				usage = "/ema-Guild push",
 				get = false,
 				set = "EMASendSettings",
 				guiHidden = true,
+			},
+			copy = {
+				type = "input",
+				name = L["COPY"],
+				desc = L["COPY_HELP"],
+				usage = "/ema-guild copy",
+				get = false,
+				set = "CopyListCommmand",
 			},
 		},
 	}
@@ -216,13 +230,22 @@ function EMA:SettingsCreateGuild( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxShowEMAGuildWindow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left2, 
+		halfWidth, 
+		left, 
 		movingTop, 
 		L["GUILD_LIST"],
 		EMA.SettingsToggleShowEMAGuildWindow,
 		L["GUILD_LIST_HELP"]
 	)	
+	EMA.settingsControl.checkBoxGlobalGuildList = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		left3, 
+		movingTop, 
+		L["GLOBAL_LIST"],
+		EMA.SettingsToggleGlobalGuildList,
+		L["GLOBAL_SETTINGS_LIST_HELP"]
+	)
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.GuildItemsHighlightRow = 1
 	EMA.settingsControl.GuildItemsOffset = 1
@@ -580,6 +603,11 @@ function EMA:SettingsSetMessageArea( event, value )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleGlobalGuildList( event, checked )
+	EMA.db.globalGuildList = checked
+	EMA:SettingsRefresh()
+end	
+
 function EMA:SettingsToggleShowEMAGuildWindow( event, checked )
 	EMA.db.showEMAGuildWindow = checked
 	EMA:SettingsRefresh()
@@ -603,12 +631,20 @@ function EMA:EditBoxChangedGoldAmountToLeaveOnToon( event, text )
 	EMA:SettingsRefresh()
 end
 
+function EMA:CopyListCommmand()
+	EMA:Print("Copying Local List To Global List")
+	EMA.db.global.autoGuildItemsListGlobal = EMAUtilities:CopyTable( EMA.db.autoGuildItemsList )
+	EMA:SettingsRefresh()
+end
+
+
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.showEMAGuildWindow = settings.showEMAGuildWindow
+		EMA.db.globalGuildList = settings.globalGuildList
 		EMA.db.guildTagName = settings.guildTagName
 		EMA.db.guildBoEItems = settings.guildBoEItems
 		EMA.db.autoGuildBankTabBoE = settings.autoGuildBankTabBoE
@@ -617,6 +653,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoGuildBankTabCR = settings.autoGuildBankTabCR
 		EMA.db.autoCRItemTag = settings.autoCRItemTag
 		EMA.db.autoGuildItemsList = EMAUtilities:CopyTable( settings.autoGuildItemsList )
+		EMA.db.global.autoGuildItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoGuildItemsListGlobal )
 		EMA.db.adjustMoneyWithGuildBank = settings.adjustMoneyWithGuildBank
 		EMA.db.goldAmountToKeepOnToon = settings.goldAmountToKeepOnToon
 		-- Refresh the settings.
@@ -635,6 +672,9 @@ end
 
 function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxShowEMAGuildWindow:SetValue( EMA.db.showEMAGuildWindow )
+	-- global CheckBox
+	EMA.settingsControl.checkBoxGlobalGuildList:SetValue( EMA.db.globalGuildList )
+	EMA.settingsControl.checkBoxGlobalGuildList:SetDisabled( not EMA.db.showEMAGuildWindow )
 	EMA.settingsControl.GuildItemsEditBoxGuildTag:SetText( EMA.db.guildTagName )
 	EMA.settingsControl.checkBoxGuildBoEItems:SetValue( EMA.db.guildBoEItems )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
@@ -676,11 +716,19 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:GetGuildItemsMaxPosition()
-	return #EMA.db.autoGuildItemsList
+	if EMA.db.globalGuildList == true then
+		return #EMA.db.global.autoGuildItemsListGlobal
+	else
+		return #EMA.db.autoGuildItemsList
+	end	
 end
 
 function EMA:GetGuildItemsAtPosition( position )
-	return EMA.db.autoGuildItemsList[position]
+	if EMA.db.globalGuildList == true then
+		return EMA.db.global.autoGuildItemsListGlobal[position]
+	else
+		return EMA.db.autoGuildItemsList[position]
+	end	
 end
 
 function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
@@ -695,14 +743,22 @@ function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
 		itemInformation.GBTab = GBTab
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
+		if EMA.db.globalGuildList == true then
+			table.insert( EMA.db.global.autoGuildItemsListGlobal, itemInformation )
+		else	
 			table.insert( EMA.db.autoGuildItemsList, itemInformation )
-			EMA:SettingsRefresh()			
-			EMA:SettingsGuildItemsRowClick( 1, 1 )
+		end
+		EMA:SettingsRefresh()			
+		EMA:SettingsGuildItemsRowClick( 1, 1 )
 	end	
 end
 
 function EMA:RemoveItem()
-	table.remove( EMA.db.autoGuildItemsList, EMA.settingsControl.GuildItemsHighlightRow )
+	if EMA.db.globalGuildList == true then
+		table.remove( EMA.db.global.autoGuildItemsListGlobal, EMA.settingsControl.listHighlightRow )
+	else
+		table.remove( EMA.db.autoGuildItemsList, EMA.settingsControl.GuildItemsHighlightRow )
+	end
 	EMA:SettingsRefresh()
 	EMA:SettingsGuildItemsRowClick( EMA.settingsControl.GuildItemsHighlightRow  - 1, 1 )		
 end
@@ -755,7 +811,12 @@ function EMA:AddAllToGuildBank()
 							end										
 						end
 					end
-					for position, itemInformation in pairs( EMA.db.autoGuildItemsList ) do
+					if EMA.db.globalGuildList == true then
+						itemTable = EMA.db.global.autoGuildItemsListGlobal
+					else
+						itemTable = EMA.db.autoGuildItemsList
+					end
+					for position, itemInformation in pairs( itemTable  ) do
 						if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, itemInformation.tag ) == true then
 								--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )

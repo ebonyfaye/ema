@@ -38,9 +38,15 @@ EMA.moduleOrder = 60
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	global = {
+		['**'] = {
+			autoBuyItemsListGlobal = {},
+		},
+	 },
 	profile = {
 		autoBuy = false,
 		autoBuyOverflow = true,
+		globalBuyList = false,
 		messageArea = EMAApi.DefaultMessageArea(),
 		autoBuyItems = {}
 	},
@@ -63,6 +69,14 @@ function EMA:GetConfiguration()
 				usage = "/EMA-purchase push",
 				get = false,
 				set = "EMASendSettings",
+			},
+			copy = {
+				type = "input",
+				name = L["COPY"],
+				desc = L["COPY_HELP"],
+				usage = "/EMA-purchase copy",
+				get = false,
+				set = "CopyListCommmand",
 			},
 		},
 	}
@@ -90,6 +104,9 @@ end
 
 function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxAutoBuy:SetValue( EMA.db.autoBuy )
+	-- global CheckBox
+	EMA.settingsControl.checkBoxGlobalBuyList:SetValue( EMA.db.globalBuyList )
+	EMA.settingsControl.checkBoxGlobalBuyList:SetDisabled( not EMA.db.autoBuy )	
 	EMA.settingsControl.checkBoxAutoBuyOverflow:SetValue( EMA.db.autoBuyOverflow )
 	EMA.settingsControl.editBoxTag:SetText( EMA.autoBuyItemTag )
 	EMA.settingsControl.editBoxAmount:SetText( EMA.autoBuyAmount )
@@ -108,9 +125,11 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.autoBuy = settings.autoBuy
+		EMA.db.globalBuyList = settings.globalBuyList	
 		EMA.db.autoBuyOverflow = settings.autoBuyOverflow
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.autoBuyItems = EMAUtilities:CopyTable( settings.autoBuyItems )
+		EMA.db.global.autoBuyItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoBuyItemsListGlobal )		
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		-- Tell the player.
@@ -133,10 +152,14 @@ local function SettingsCreateOptions( top )
 	local headingHeight = EMAHelperSettings:HeadingHeight()
 	local headingWidth = EMAHelperSettings:HeadingWidth( false )
 	local horizontalSpacing = EMAHelperSettings:GetHorizontalSpacing()
+	local indentContinueLabel = horizontalSpacing * 18
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
-	local left2 = left + halfWidth + horizontalSpacing
+	local thirdWidth = (headingWidth - indentContinueLabel) / 3	
+	local left2 = left + thirdWidth +  horizontalSpacing
+	local left3 = left2 + thirdWidth +  horizontalSpacing
 	local dropBoxWidth = (headingWidth - horizontalSpacing) / 4	
+	
 	local movingTop = top
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
@@ -145,7 +168,7 @@ local function SettingsCreateOptions( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxAutoBuy = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
+		thirdWidth, 
 		left, 
 		movingTop, 
 		L["AUTO_BUY_ITEMS"],
@@ -153,12 +176,21 @@ local function SettingsCreateOptions( top )
 	)	
 	EMA.settingsControl.checkBoxAutoBuyOverflow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		halfWidth, 
+		thirdWidth, 
 		left2, 
 		movingTop, 
 		L["OVERFLOW"],
 		EMA.SettingsToggleAutoBuyItemsOverflow
 	)	
+	EMA.settingsControl.checkBoxGlobalBuyList = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left3, 
+		movingTop, 
+		L["GLOBAL_LIST"],
+		EMA.SettingsToggleGlobalBuyList,
+		L["GLOBAL_SETTINGS_LIST_HELP"]
+	)
 	movingTop = movingTop - checkBoxHeight	
 	EMA.settingsControl.highlightRow = 1
 	EMA.settingsControl.offset = 1
@@ -189,7 +221,7 @@ local function SettingsCreateOptions( top )
 	EMA.settingsControl.buttonRemove = EMAHelperSettings:CreateButton(
 		EMA.settingsControl, 
 		buttonControlWidth, 
-		left, 
+		left2 + 50, 
 		movingTop,
 		L["REMOVE"],
 		EMA.SettingsRemoveClick,
@@ -200,8 +232,8 @@ local function SettingsCreateOptions( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.editBoxItem = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl,
-		headingWidth,
-		left,
+		thirdWidth,
+		left2,
 		movingTop,
 		L["ITEM_DROP"]
 	)
@@ -209,7 +241,7 @@ local function SettingsCreateOptions( top )
 	movingTop = movingTop - editBoxHeight		
 	EMA.settingsControl.editBoxTag = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
-		dropBoxWidth,	
+		thirdWidth,	
 		left,
 		movingTop, 
 		L["GROUP_LIST"]
@@ -219,7 +251,7 @@ local function SettingsCreateOptions( top )
 	EMA.settingsControl.editBoxAmount = EMAHelperSettings:CreateEditBox( 
 		EMA.settingsControl,
 		dropBoxWidth,
-		left + dropBoxWidth + horizontalSpacing,
+		left3,
 		movingTop,
 		L["AMOUNT"]
 	)
@@ -228,7 +260,7 @@ local function SettingsCreateOptions( top )
 	EMA.settingsControl.buttonAdd = EMAHelperSettings:CreateButton(	
 		EMA.settingsControl, 
 		buttonControlWidth, 
-		left, 
+		left2 + 50, 
 		movingTop, 
 		L["ADD"],
 		EMA.SettingsAddClick
@@ -337,6 +369,11 @@ function EMA:SettingsToggleAutoBuyItemsOverflow( event, checked )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleGlobalBuyList( event, checked )
+	EMA.db.globalBuyList = checked
+	EMA:SettingsRefresh()
+end
+
 function EMA:SettingsRemoveClick( event )
 	StaticPopup_Show( "EMAPURCHASE_CONFIRM_REMOVE_AUTO_BUY_ITEM" )
 end
@@ -360,10 +397,6 @@ function EMA:GroupDropDownList (event, value )
 	EMA:SettingsRefresh()
 end
 
-
-
-
-
 function EMA:SettingsEditBoxChangedAmount( event, text )
 	if not text or text:trim() == "" or text:find( "^(%d+)$" ) == nil then
 		EMA:Print( L["NUM_ERROR"] )
@@ -380,6 +413,12 @@ function EMA:SettingsAddClick( event )
 		EMA.settingsControl.editBoxItem:SetText( "" )
 		EMA:SettingsRefresh()
 	end
+end
+
+function EMA:CopyListCommmand()
+	EMA:Print("Copying Local List To Global List")
+	EMA.db.global.autoBuyItemsListGlobal = EMAUtilities:CopyTable( EMA.db.autoBuyItems )
+	EMA:SettingsRefresh()
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -436,11 +475,19 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:GetItemsMaxPosition()
-	return #EMA.db.autoBuyItems
+	if EMA.db.globalBuyList == true then
+		return #EMA.db.global.autoBuyItemsListGlobal
+	else	
+		return #EMA.db.autoBuyItems
+	end	
 end
 
 function EMA:GetItemAtPosition( position )
-	return EMA.db.autoBuyItems[position]
+	if EMA.db.globalBuyList == true then
+		return EMA.db.global.autoBuyItemsListGlobal[position]
+	else
+		return EMA.db.autoBuyItems[position]
+	end	
 end
 
 function EMA:AddItem( itemLink, itemTag, amountToBuy )
@@ -453,14 +500,22 @@ function EMA:AddItem( itemLink, itemTag, amountToBuy )
 		itemInformation.name = name
 		itemInformation.tag = itemTag
 		itemInformation.amount = amountToBuy
-		table.insert( EMA.db.autoBuyItems, itemInformation )
+		if EMA.db.globalBuyList == true then
+			table.insert( EMA.db.global.autoBuyItemsListGlobal, itemInformation )
+		else	
+			table.insert( EMA.db.autoBuyItems, itemInformation )
+		end
 		EMA:SettingsRefresh()			
 		EMA:SettingsRowClick( 1, 1 )
 	end	
 end
 
 function EMA:RemoveItem()
-	table.remove( EMA.db.autoBuyItems, EMA.settingsControl.highlightRow )
+	if EMA.db.globalBuyList == true then
+		table.remove( EMA.db.global.autoBuyItemsListGlobal, EMA.settingsControl.listHighlightRow )
+	else	
+		table.remove( EMA.db.autoBuyItems, EMA.settingsControl.highlightRow )
+	end
 	EMA:SettingsRefresh()
 	EMA:SettingsRowClick( 1, 1 )		
 end
@@ -481,7 +536,13 @@ function EMA:DoMerchantAutoBuy()
 	local outOfMoney = false
 	local outOfOtherCurrency = false
 	-- Iterate all the wanted items...
-	for position, itemInfoTable in pairs( EMA.db.autoBuyItems ) do	
+	if EMA.db.globalBuyList == true then
+		itemTable = EMA.db.global.autoBuyItemsListGlobal
+	else
+		itemTable = EMA.db.autoBuyItems
+	end
+	for position, itemInfoTable in pairs( itemTable ) do	
+		
 		local maxItemAmount = tonumber( itemInfoTable.amount )
 		local itemTag = itemInfoTable.tag
 		local itemLink = itemInfoTable.link
