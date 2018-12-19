@@ -877,9 +877,10 @@ end
 
 function EMA:DoMerchantSellItems()
 	local count = 0
+	local sellCount = 0
 	local gold = 0
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1,GetContainerNumSlots( bagID ) do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -1008,8 +1009,11 @@ function EMA:DoMerchantSellItems()
 									count = count + 1
 									gold = gold + itemSellPrice
 								end
+								sellCount = sellCount + 0.4
+								--UseContainerItem( bagID, slotID )	
+								
 								--EMA:Print("can sell now", bagID, slotID )
-								EMA:ScheduleTimer("SellItem", count, bagID, slotID, itemCount )
+								EMA:ScheduleTimer("SellItem", sellCount, bagID, slotID, itemCount )
 							end	
 						else	
 							if canDestroy == true then
@@ -1026,7 +1030,7 @@ function EMA:DoMerchantSellItems()
 		end
 	end	
 	if count > 0 then
-		EMA:ScheduleTimer("TellTeam", count + 1 , count, gold )
+		EMA:ScheduleTimer("TellTeam", sellCount + 1 , count, gold )
 	end
 end
 

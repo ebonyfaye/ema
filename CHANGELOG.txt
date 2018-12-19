@@ -2,7 +2,7 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.1.0-Beta(0109)
+EMA Version: v8.1.0-Beta(0110)
 Game Version: 8.1.0
 Release Date: 15/12/2018
 
@@ -17,6 +17,7 @@ Release Date: 15/12/2018
 	- Fixed The Sell Items, And Gold Prices In Chat
 	- Added A Global Sell List, This Works Across "All" Characters
 		-- Dev Note: Use "/EMA-purchase Sell" To Copy From The Local List To The Global List
+	-- Fixed Items gettting stuck/selling very very slow when in a stack.	
 
 # Purchase
 	- Updated GUI
@@ -31,6 +32,7 @@ Release Date: 15/12/2018
 # Mail
 	- Added A Global Sell List, This Works Across "All" Characters
 		-- Dev Note: Use "/EMA-Mail copy" To Copy From The Local List To The Global List
+	- Should Send Gold After its send all items issue#52	
 
 # GuildBank
 	- Added A Global Sell List, This Works Across "All" Characters

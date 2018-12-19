@@ -899,13 +899,16 @@ function EMA:AddAllToMailBox()
 			end
 		end
 	end	
-	EMA:ScheduleTimer( "DoSendMail", 0.8, nil )
+	EMA:ScheduleTimer( "DoSendMail", 1, nil )
 end
 
 function EMA:MAIL_SEND_SUCCESS( event, ... )
 	--EMA:Print("try sendMail Again")
 	if EMA.ShiftkeyDown == false and EMA.Count < 1 then
 		EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
+	end
+	if EMA.db.adjustMoneyWithMail == true and EMA.db.showEMAMailWindow == true then
+		EMA:ScheduleTimer( "AddGoldToMailBox", 2 )
 	end	
 end
 
