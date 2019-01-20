@@ -892,15 +892,15 @@ end
 
 -- Handle the chat command.
 function EMA:EMAChatCommand( inputBefore )
-	if InCombatLockdown() then
-		print( L["CANNOT_OPEN_IN_COMBAT"] )
-		return
-	end
 	input = string.lower( inputBefore )
 	--EMA:Print("test", input )
-    --local test = {}
-	local CommandExist = DoesTheChatCommandExist( GetConfiguration().args, input ) 
+	local inputString, tag = strsplit( " ", inputBefore )
+	local CommandExist = DoesTheChatCommandExist( GetConfiguration().args, inputString ) 
 	if input == "config" then
+		if InCombatLockdown() then
+			print( L["CANNOT_OPEN_IN_COMBAT"] )
+		return
+	end
 		-- Show Config
 		EMAPrivate.SettingsFrame.Widget:Show()
 		EMAPrivate.SettingsFrame.WidgetTree:SelectByValue( L["NEWS"] )

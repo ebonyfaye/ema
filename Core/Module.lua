@@ -93,6 +93,7 @@ end
 local function DoesTheChatCommandExist( configuration, command )
 	local exist = false
 	for key, info in pairs( configuration ) do
+		--print("aa", key, "vs", command )
 		if info.type == "input" then
 			if key == command then	
 				exist = true
@@ -105,14 +106,15 @@ end
 
 -- Handle the chat command v2 EMA.
 function EMAModule:EMAChatCommand( inputBefore )
-   	if InCombatLockdown() then
-		print( L["CANNOT_OPEN_IN_COMBAT"] )
+	input = string.lower( inputBefore )
+	--print("test2", "input", input, "command", self.chatCommand, "module", self.moduleName )
+	local inputString, tag = strsplit( " ", inputBefore )
+	local CommandExist = DoesTheChatCommandExist( self:GetConfiguration().args, inputString ) 
+	if input == "config" then
+		if InCombatLockdown() then
+			print( L["CANNOT_OPEN_IN_COMBAT"] )
 		return
 	end
-   input = string.lower( inputBefore )
-   --print("test2", "input", input, "command", self.chatCommand, "module", self.moduleName )
-	local CommandExist = DoesTheChatCommandExist( self:GetConfiguration().args, input ) 
-	if input == "config" then
 		-- Show Config
 		EMAPrivate.SettingsFrame.Widget:Show()
 		EMAPrivate.SettingsFrame.TreeGroupStatus.groups[self.parentDisplayName] = true

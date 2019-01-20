@@ -657,7 +657,7 @@ function EMA:UPDATE_BINDINGS()
 	if key2 then 
 		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowStrobeOff" ) 
 	end
-		local key1, key2 = GetBindingKey( "FOLLOWTEAIN" )		
+	local key1, key2 = GetBindingKey( "FOLLOWTEAIN" )		
 	if key1 then 
 		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowTrain" ) 
 	end
