@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -94,11 +94,19 @@ function EMA:GetConfiguration()
 		handler = EMA,
 		type = 'group',
 		args = {
+				config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-toon config",
+				get = false,
+				set = "",				
+			},
 				push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_ALL_SETTINGS"],
-				usage = "/EMA-toon push",
+				usage = "/ema-toon push",
 				get = false,
 				set = "EMASendSettings",
 			},											

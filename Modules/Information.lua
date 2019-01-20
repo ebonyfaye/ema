@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -85,6 +85,11 @@ EMA.currTypes.RichAzeriteFragment = 1565
 EMA.currTypes.SeafarersDubloon = 1710
 EMA.currTypes.SealofWartornFate = 1580
 EMA.currTypes.WarSupplies = 1587
+--8.1
+EMA.currTypes.SeventhLegionService = 1717
+EMA.currTypes.HonorboundService = 1716
+EMA.currTypes.TitanResiduum = 1718
+
 
 -------------------------------------- End of edit --------------------------------------------------------------
 
@@ -150,11 +155,19 @@ function EMA:GetConfiguration()
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",		
 		args = {
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-curr config",
+				get = false,
+				set = "",				
+			},
 			show = {
 				type = "input",
 				name = L["SHOW_CURRENCY"],
 				desc = L["SHOW_CURRENCY_HELP"],
-				usage = "/EMA-curr show",
+				usage = "/ema-curr show",
 				get = false,
 				set = "EMAToonRequestCurrency",
 			},
@@ -162,7 +175,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["HIDE_CURRENCY"],
 				desc = L["HIDE_CURRENCY_HELP"],
-				usage = "/EMA-curr hide",
+				usage = "/ema-curr hide",
 				get = false,
 				set = "EMAToonHideCurrency",
 			},			
@@ -170,7 +183,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_ALL_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-curr push",
+				usage = "/ema-curr push",
 				get = false,
 				set = "EMASendSettings",
 			},											

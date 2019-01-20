@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -14,7 +14,7 @@
 --[[
 File modified from AceGUI TreeGroup container.  Used under Ace3 modified BSD licence.
 
-Version 2 Support for the new Jamba EE 8.0 Build
+Version 2 For EMA
  
  
 ]]--

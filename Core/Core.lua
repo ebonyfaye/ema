@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -68,8 +68,13 @@ function EMA:OnEnable()
 	if Jamba == true then
 		StaticPopup_Show( "CAN_NOT_RUN_JAMBA_AND_EMA" )
 	end
-	if EMA.db.showStartupMessage8000 then
+	--[[
+	if EMA.db.global.showStartupMessage8000 then
 		StaticPopup_Show( "ALL_SETTINGS HAVE BEEN RESET" )
+	end
+	]]
+	if EMA.db.global.showStartupMessage2000 then
+		StaticPopup_Show( "UpgradeTo_v2" )
 	end
 end
 
@@ -81,7 +86,7 @@ local function InitializePopupDialogs()
 		text = L["ALL_SETTINGS_RESET"],
 		button1 = OKAY,
 		OnAccept = function()
-			EMA.db.showStartupMessage8000 = false
+			EMA.db.global.showStartupMessage8000 = false
 		end,
 		showAlert = 1,
 		timeout = 0,
@@ -95,6 +100,18 @@ local function InitializePopupDialogs()
 		OnAccept = function()
 			DisableAddOn("jamba")
 			ReloadUI()
+		end,
+		showAlert = 1,
+		timeout = 0,
+		exclusive = 1,
+		hideOnEscape = 0,
+		whileDead = 1,	
+	}
+	StaticPopupDialogs["UpgradeTo_v2"] = {
+		text = L["v2_NEWS"],
+		button1 = OKAY,
+		OnAccept = function()
+			EMA.db.global.showStartupMessage2000 = false
 		end,
 		showAlert = 1,
 		timeout = 0,
@@ -212,9 +229,14 @@ EMAPrivate.SettingsFrame.Widget:Hide()
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	global = {
+		['**'] = {
+			showStartupMessage8000 = false,
+			showStartupMessage2000 = true,
+		},
+	 },	
 	profile = {
-	showStartupMessage8000 = false,
-	},
+	},	
 }
 
 -- Configuration.
@@ -227,11 +249,21 @@ local function GetConfiguration()
 		get = "ConfigurationGetSetting",
 		set = "ConfigurationSetSetting",
 		args = {	
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema config",
+				get = false,
+				set = "",
+				order = 5,
+				guiHidden = true,				
+			},
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA push",
+				usage = "/ema push",
 				get = false,
 				set = "SendSettingsAllModules",
 				order = 4,
@@ -241,7 +273,7 @@ local function GetConfiguration()
 				type = "input",
 				name = L["RESET_SETTINGS_FRAME"],
 				desc = L["RESET_SETTINGS_FRAME"],
-				usage = "/EMA resetsettingsframe",
+				usage = "/ema resetsettingsframe",
 				get = false,
 				set = "ResetSettingsFrame",
 				order = 5,
@@ -304,6 +336,20 @@ local function RegisterModule( moduleAddress, moduleName )
 	EMA.registeredModulesByName[moduleName] = moduleAddress
 	EMA.registeredModulesByAddress[moduleAddress] = moduleName
 end
+
+local function UnRegisterModule( moduleAddress, moduleName )
+	print("unRegister", moduleAddress, moduleName )
+	if EMA.registeredModulesByName == nil then
+		EMA.registeredModulesByName = {}
+	end
+	if EMA.registeredModulesByAddress == nil then
+		EMA.registeredModulesByAddress = {}
+	end
+	
+	EMA.registeredModulesByName[moduleName] = nil
+	EMA.registeredModulesByAddress[moduleAddress] = nil
+end
+
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings sending and receiving.
@@ -507,13 +553,14 @@ function EMA:OnInitialize()
 	EMA.registeredModulesByName = {}
 	EMA.registeredModulesByAddress = {}
 	-- Create the settings database supplying the settings values along with defaults.
-   EMA.completeDatabase = LibStub( "AceDB-3.0" ):New( EMA.settingsDatabaseName, EMA.settings )
+    EMA.completeDatabase = LibStub( "AceDB-3.0" ):New( EMA.settingsDatabaseName, EMA.settings )
 	EMA.completeDatabase.RegisterCallback( EMA, "OnProfileChanged", "OnProfileChanged" )
 	EMA.completeDatabase.RegisterCallback( EMA, "OnProfileCopied", "OnProfileCopied" )	
 	EMA.completeDatabase.RegisterCallback( EMA, "OnProfileReset", "OnProfileReset" )	
 	EMA.completeDatabase.RegisterCallback( EMA, "OnProfileDeleted", "OnProfileDeleted" )	
-	
+
 	EMA.db = EMA.completeDatabase.profile
+	EMA.db.global = EMA.completeDatabase.global
 	-- Create the settings.
 	LibStub( "AceConfig-3.0" ):RegisterOptionsTable( 
 		EMA.moduleName, 
@@ -775,6 +822,7 @@ function EMA:CoreSettingsCreateInfo( top )
 		movingTop,
 		L["COPYRIGHTTWO"]
 	)	
+	movingTop = movingTop - labelContinueHeight
 	return movingTop	
 end
 
@@ -828,15 +876,52 @@ function EMA:LoadEMASettings()
 end
 ]]
 
+--	Does the Chat Command Exist
+local function DoesTheChatCommandExist( configuration, command )
+	local exist = false
+	for key, info in pairs( configuration ) do
+		if info.type == "input" then
+			if key == command then	
+				exist = true
+				break
+			end
+		end
+	end
+	return exist	
+end
+
 -- Handle the chat command.
-function EMA:EMAChatCommand( input )
-    if not input or input:trim() == "" then
+function EMA:EMAChatCommand( inputBefore )
+	if InCombatLockdown() then
+		print( L["CANNOT_OPEN_IN_COMBAT"] )
+		return
+	end
+	input = string.lower( inputBefore )
+	--EMA:Print("test", input )
+    --local test = {}
+	local CommandExist = DoesTheChatCommandExist( GetConfiguration().args, input ) 
+	if input == "config" then
+		-- Show Config
 		EMAPrivate.SettingsFrame.Widget:Show()
 		EMAPrivate.SettingsFrame.WidgetTree:SelectByValue( L["NEWS"] )
 		EMAPrivate.SettingsFrame.Tree.ButtonClick( nil, nil, EMA.moduleDisplayName, false)
-    else
-        LibStub( "AceConfigCmd-3.0" ):HandleCommand( EMA.chatCommand, EMA.moduleName, input )
-    end
+	elseif CommandExist then			
+		--Command Found now Handle IT!
+		--print("Command Found", input )
+		LibStub( "AceConfigCmd-3.0" ):HandleCommand( EMA.chatCommand, EMA.moduleName, input )
+	else	
+		-- hell knows what to do so HELP!!!
+		--print("No found Command Found HELP", input )
+		for key, info in pairs( GetConfiguration().args ) do
+			if info.type == "input" then
+				print("|cFFFFFF00"..info.usage, "|cFFFFFFFF".." [ "..info.desc.." ]" )
+			end
+		end
+		print( L["MODULE_LIST"] )
+		for moduleName, moduleAddress in pairs( EMA.registeredModulesByName ) do
+			print("|cFFFFFF00/"..EMA.chatCommand.."-"..moduleName )
+		end	
+	end 
 end
 
 function EMA:ResetSettingsFrame()
@@ -847,8 +932,16 @@ function EMA:ResetSettingsFrame()
 	EMAPrivate.SettingsFrame.Widget:Show()
 end
 
+function EMA:SettingsTestBox( event, checked)
+	print("test", checked , EMA.db.testBox)
+	EMA.db.testBox = checked
+	EMA:SettingsRefresh()
+
+end
+
 -- Functions available from EMA Core for other EMA internal objects.
 EMAPrivate.Core.RegisterModule = RegisterModule
+EMAPrivate.Core.UnRegisterModule = UnRegisterModule
 EMAPrivate.Core.SendSettings = SendSettings
 EMAPrivate.Core.OnSettingsReceived = OnSettingsReceived
 EMAPrivate.Core.SendCommandToTeam = SendCommandToTeam

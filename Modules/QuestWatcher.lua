@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -88,11 +88,19 @@ function EMA:GetConfiguration()
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
 		args = {
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-quest-watcher config",
+				get = false,
+				set = "",				
+			},
 			show = {
 				type = "input",
 				name = L["SHOW_QUEST_WATCHER"],
 				desc = L["SHOW_QUEST_WATCHER_HELP"],
-				usage = "/EMA-quest-watcher show",
+				usage = "/ema-quest-watcher show",
 				get = false,
 				set = "ShowFrameCommand",
 			},		
@@ -100,7 +108,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["HIDE_QUEST_WATCHER"] ,
 				desc = L["HIDE_QUEST_WATCHER_HELP"] ,
-				usage = "/EMA-quest-watcher hide",
+				usage = "/ema-quest-watcher hide",
 				get = false,
 				set = "HideFrameCommand",
 			},		
@@ -108,7 +116,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-quest-watcher push",
+				usage = "/ema-quest-watcher push",
 				get = false,
 				set = "EMASendSettings",
 			},	

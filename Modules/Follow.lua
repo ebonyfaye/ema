@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -80,11 +80,19 @@ function EMA:GetConfiguration()
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
 		args = {	
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-team config",
+				get = false,
+				set = "",				
+			},
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-follow push",
+				usage = "/ema-follow push",
 				get = false,
 				set = "EMASendSettings",
 			},											
@@ -92,7 +100,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_MASTER"],
 				desc = L["FOLLOW_MASTER_HELP"],
-				usage = "/EMA-follow master <tag>",
+				usage = "/ema-follow master <group>",
 				get = false,
 				set = "FollowMasterCommand",
 			},					
@@ -100,7 +108,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_TARGET"],
 				desc = L["FOLLOW_TARGET_HELP"],
-				usage = "/EMA-follow target <target> <tag>",
+				usage = "/ema-follow target <target> <group>",
 				get = false,
 				set = "FollowTargetCommand",
 			},					
@@ -108,13 +116,13 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_AFTER_COMBAT"],
 				desc = L["FOLLOW_AFTER_COMBAT_HELP"],
-				usage = "/EMA-follow aftercombat <on|off> <tag>",
+				usage = "/ema-follow aftercombat <on|off> <group>",
 			},															
 			strobeOn = {
 				type = "input",
 				name = L["FOLLOW_STROBING"],
 				desc = L["FOLLOW_STROBING_HELP"],
-				usage = "/EMA-follow strobeon <target> <tag>",
+				usage = "/ema-follow strobeon <target> <group>",
 				get = false,
 				set = "FollowStrobeOnCommand",
 			},	
@@ -122,7 +130,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_STROBING_ME"],
 				desc = L["FOLLOW_STROBING_ME_HELP"],
-				usage = "/EMA-follow strobeonme <tag>",
+				usage = "/ema-follow strobeonme <group>",
 				get = false,
 				set = "FollowStrobeOnMeCommand",
 			},												
@@ -130,7 +138,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_STROBING_END"],
 				desc = L["FOLLOW_STROBING_END_HELP"],
-				usage = "/EMA-follow strobeoff <tag>",
+				usage = "/ema-follow strobeoff <group>",
 				get = false,
 				set = "FollowStrobeOffCommand",
 			},	
@@ -138,7 +146,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_SET_MASTER"],
 				desc = L["FOLLOW_SET_MASTER_HELP"],
-				usage = "/EMA-follow setmaster <name> <tag>",
+				usage = "/ema-follow setmaster <name> <group>",
 				get = false,
 				set = "CommandSetFollowMaster",
 			},
@@ -146,7 +154,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["TRAIN"],
 				desc = L["TRAIN_HELP"],
-				usage = "/EMA-follow train <tag>",
+				usage = "/ema-follow train <group>",
 				get = false,
 				set = "CommandFollowTrain",
 			},
@@ -154,7 +162,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["FOLLOW_ME"],
 				desc = L["FOLLOW_ME_HELP"],
-				usage = "/EMA-follow me <tag>",
+				usage = "/ema-follow me <group>",
 				get = false,
 				set = "CommandFollowMe",
 			},			
@@ -162,7 +170,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["SNW"],
 				desc = L["SNW_HELP"],
-				usage = "/EMA-follow snw",
+				usage = "/ema-follow snw",
 				get = false,
 				set = "SuppressNextFollowWarningCommand",
 			},								

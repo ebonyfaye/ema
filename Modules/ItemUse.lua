@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -109,11 +109,19 @@ function EMA:GetConfiguration()
 		handler = EMA,
 		type = 'group',
 		args = {	
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-team config",
+				get = false,
+				set = "",				
+			},
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-item-use push",
+				usage = "/ema-item-use push",
 				get = false,
 				set = "EMASendSettings",
 			},											
@@ -121,7 +129,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["HIDE_ITEM_BAR"],
 				desc = L["HIDE_ITEM_BAR_HELP"],
-				usage = "/EMA-item-use hide",
+				usage = "/ema-item-use hide",
 				get = false,
 				set = "HideItemUseCommand",
 			},	
@@ -129,7 +137,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["SHOW_ITEM_BAR"],
 				desc = L["SHOW_ITEM_BAR_HELP"],
-				usage = "/EMA-item-use show",
+				usage = "/ema-item-use show",
 				get = false,
 				set = "ShowItemUseCommand",
 			},
@@ -137,7 +145,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["CLEAR_ITEM_BAR"],
 				desc = L["CLEAR_ITEM_BAR_HELP"],
-				usage = "/EMA-item-use clear",
+				usage = "/ema-item-use clear",
 				get = false,
 				set = "ClearItemUseCommand",
 			},				

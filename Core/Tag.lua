@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -53,11 +53,19 @@ function EMA:GetConfiguration()
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
 		args = {	
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-group confg",
+				get = false,
+				set = "",				
+			},
 			add = {
 				type = "input",
 				name = L["ADD"],
 				desc = L["ADD_TAG_HELP"],
-				usage = "/EMA-group add <NewGroupName>",
+				usage = "/ema-group add <NewGroupName>",
 				get = false,
 				set = "AddTagCommand",
 			},					
@@ -65,7 +73,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["REMOVE"],
 				desc = L["REMMOVE_TAG_HELP"],
-				usage = "/EMA-group remove <NewGroupName>",
+				usage = "/ema-group remove <NewGroupName>",
 				get = false,
 				set = "RemoveTagCommand",
 			},						
@@ -73,7 +81,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["ADD_TO_GROUP"],
 				desc = L["ADD_TO_GROUP_HELP"],
-				usage = "/EMA-group addtogroup <characterName> <GroupName>",
+				usage = "/ema-group addtogroup <characterName> <GroupName>",
 				get = false,
 				set = "AddToGroupCommand",
 			},					
@@ -81,7 +89,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["REMOVE_FROM_GROUP"],
 				desc = L["REMOVE_FROM_GROUP_HELP"],
-				usage = "/EMA-group removefromgroup <characterName> <NewGroupName>",
+				usage = "/ema-group removefromgroup <characterName> <NewGroupName>",
 				get = false,
 				set = "RemovefromGroupCommand",
 			},				
@@ -89,7 +97,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_ALL_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-tag push",
+				usage = "/ema-group push",
 				get = false,
 				set = "EMASendSettings",
 			},	

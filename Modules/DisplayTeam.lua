@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -129,11 +129,19 @@ function EMA:GetConfiguration()
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
 		args = {	
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-display config",
+				get = false,
+				set = "",				
+			},
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-display-team push",
+				usage = "/ema-display-team push",
 				get = false,
 				set = "EMASendSettings",
 			},	
@@ -141,7 +149,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["HIDE_TEAM_DISPLAY"],
 				desc = L["HIDE_TEAM_DISPLAY_HELP"],
-				usage = "/EMA-display-team hide",
+				usage = "/ema-display-team hide",
 				get = false,
 				set = "HideTeamListCommand",
 			},	
@@ -149,7 +157,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["SHOW_TEAM_DISPLAY"],
 				desc = L["SHOW_TEAM_DISPLAY_HELP"],
-				usage = "/EMA-display-team show",
+				usage = "/ema-display-team show",
 				get = false,
 				set = "ShowTeamListCommand",
 			},				

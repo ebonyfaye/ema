@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -12,14 +12,11 @@
 
 local L = LibStub("AceLocale-3.0"):NewLocale( "Core", "enUS", true )
 
-
-
 -- NewLocales
   
 --PreCoded ALL
 L["JAMBA"] = "Jamba"
 L["JAMBA EE"] = "Jamba EE"
-
 L["EMA"] = "EMA"
 L[""] = true
 L[" "] = true
@@ -30,6 +27,8 @@ L[" / "] = true
 L["/"] = true
 L["%"] = true
 L["N/A"] = true
+L["OPEN_CONFIG"] = "Opens The Config"
+L["OPEN_CONFIG_HELP"] = "Opens The Configuration GUI"
 L["PUSH_SETTINGS"] = "Push Settings"
 L["PUSH_ALL_SETTINGS"] = "Push All Settings"
 L["PUSH_SETTINGS_INFO"] = "Push Settings To Team Members" 
@@ -41,6 +40,7 @@ L["MESSAGES_HEADER"] = "Messages"
 L["MESSAGE_AREA"]  = "Message Area"
 L["SEND_WARNING_AREA"] = "Warning Area"
 L["PH"] = "PH"
+L["PH_HELP"] = "Place Holder"
 L["CTRL"] = "Ctrl"
 L["SHIFT"] = "Shift"
 L["ALT"] = "Alt"
@@ -50,6 +50,8 @@ L["GLOBAL_LIST"] = "Use Global List"
 L["GLOBAL_SETTINGS_LIST_HELP"] = "Use A Global List \nThis Works Across All Characters"
 L["COPY"] = "Copy"
 L["COPY_HELP"] = "Copy From Local To Global List"
+L["MODULE_LIST"] = "Module List"
+L["CANNOT_OPEN_IN_COMBAT"] = "|cFFFFFF00 Cannot Open The GUI Conig In Combat"
 
 -- Display Options
 L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
@@ -137,7 +139,7 @@ L["A_IS_NOT_IN_TEAM"] = function( characterName )
 end
 --------------------------
 -- Core Locale
-L["STATUSTEXT"] = "EMA: The Even More Awesome MultiBoxing Assistant"
+L["STATUSTEXT"] = "EMA: Ebony's MultiBoxing Assistant"
 L["RESET_SETTINGS_FRAME"] = "Reset Settings Frame"
 L["MODULE_NOT_LOADED"] = "Module Not Loaded Or Is Out Of Date"
 L["RELEASE_NOTES"] = "Release Notes "
@@ -148,9 +150,9 @@ L["RESETTING_PROFILE"] = "Resetting profile: "
 L["PROFILE_DELETED"] = "Profile deleted - iterating all modules."
 L["DELETING_PROFILE"] = "Deleting profile: "
 L["Failed_LOAD_MODULE"] =  "Failed to load EMA Module: "
-L["TEXT1"] = "Ebony's MultiBoxing Assistant v8 For BFA!" 
+L["TEXT1"] = "Ebony's MultiBoxing Assistant v2.0 For 8.1.0!" 
 L["TEXT2"] = ""
-L["TEXT3"] = "This Build Is Beta!"
+L["TEXT3"] = "Welcome To v2! 2019!"
 L["TEXT4"] = ""
 L["TEXT5"] = ""
 L["TEXT6"] = "Read The ChangeLog For More Information"
@@ -159,7 +161,7 @@ L["TEXT8"] = ""
 L["TEXT9"] = ""
 L["TEXT10"] = ""
 L["SPECIAL_THANKS"] = "Special Thanks:"
-L["THANKS1"] = "Michael \"Jafula\" Miller For Making Jamba That Some Of This Code Is Based Of"
+L["THANKS1"] = "Michael \"Jafula\" Miller For Making Jamba That Some Of This Code Is Based On"
 L["THANKS2"] = "tk911 For Translating EMA To German (DE)"
 L["THANKS3"] = ""
 L["WEBSITES"] = "Websites"
@@ -170,12 +172,15 @@ L["ISB"] = ""
 L["TEMP_WEBSITE1"] = ""
 L["TEMP_WEBSITE2"] = ""
 L["TEMP_WEBSITE3"] = ""
-L["COPYRIGHT"] = "Copyright (c) 2015-2018  Jennifer Cally"
-L["COPYRIGHTTWO"] = "Released Under License: The MIT License"
+L["COPYRIGHT"] = "Copyright (c) 2015-2019  Jennifer Cally"
+L["COPYRIGHTTWO"] = "Released Under License: All Rights Reserved unless otherwise explicitly stated"
 L["FRAME_RESET"] = "Frame Reset"
 -- Msg 8000
 L["ALL_SETTINGS_RESET"] = "Thank You For Using EMA \nYour settings have been reset. \n\nPlease report any bugs to the source control issue tracker."
 L["CAN_NOT_RUN_JAMBA_AND_EMA"] = "|cFFFF0000 You Can Not Run \"Jamba\" With EMA \nDisabling Jamba Addon \n\nThis Will Reload Your UI"
+-- BETA CHANGE ME!!!
+L["v2_NEWS"] = "|cFFFFFF00Thank You For Upgrading EMA \nYou Are Now On Beta v2.0 \n\n|cFFFFFFFFRead Changelog For More Information"
+
 --------------------------
 -- Communications Locale
 

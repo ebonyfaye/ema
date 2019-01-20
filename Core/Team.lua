@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2019 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -69,11 +69,19 @@ function EMA:GetConfiguration()
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
 		args = {	
+			config = {
+				type = "input",
+				name = L["OPEN_CONFIG"],
+				desc = L["OPEN_CONFIG_HELP"],
+				usage = "/ema-team config",
+				get = false,
+				set = "",				
+			},
 			add = {
 				type = "input",
 				name = L["ADD"],
 				desc = L["ADD_HELP"],
-				usage = "/EMA-team add <name>",
+				usage = "/ema-team add <name>",
 				get = false,
 				set = "AddMemberCommand",
 			},			
@@ -81,7 +89,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["REMOVE"],
 				desc = L["REMOVE_REMOVE"],
-				usage = "/EMA-team remove <name>",
+				usage = "/ema-team remove <name>",
 				get = false,
 				set = "RemoveMemberCommand",
 			},						
@@ -89,7 +97,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["MASTER"],
 				desc = L["MASTER_HELP"],
-				usage = "/EMA-team master <name> <tag>",
+				usage = "/ema-team master <name> <tag>",
 				get = false,
 				set = "CommandSetMaster",
 			},						
@@ -97,7 +105,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["I_AM_MASTER"],
 				desc = L["I_AM_MASTER_HELP"],
-				usage = "/EMA-team iammaster <tag>",
+				usage = "/ema-team iammaster <tag>",
 				get = false,
 				set = "CommandIAmMaster",
 			},	
@@ -105,7 +113,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["INVITE"],
 				desc = L["INVITE_HELP"],
-				usage = "/EMA-team invite",
+				usage = "/ema-team invite",
 				get = false,
 				set = "InviteTeamToParty",
 			},				
@@ -113,7 +121,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["DISBAND"],
 				desc = L["DISBAND_HELP"],
-				usage = "/EMA-team disband",
+				usage = "/ema-team disband",
 				get = false,
 				set = "DisbandTeamFromParty",
 			},
@@ -121,7 +129,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["ADD_GROUPS_MEMBERS"],
 				desc = L["ADD_GROUPS_MEMBERS_HELP"],
-				usage = "/EMA-team addparty",
+				usage = "/ema-team addparty",
 				get = false,
 				set = "AddPartyMembers",
 			},
@@ -129,7 +137,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["REMOVE_ALL_MEMBERS"],
 				desc = L["REMOVE_ALL_MEMBERS_HELP"],
-				usage = "/EMA-team removeall",
+				usage = "/ema-team removeall",
 				get = false,
 				set = "DoRemoveAllMembersFromTeam",
 			},
@@ -137,7 +145,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["SET_TEAM_OFFLINE"],
 				desc = L["SET_TEAM_OFFLINE_HELP"] ,
-				usage = "/EMA-team setalloffline",
+				usage = "/ema-team setalloffline",
 				get = false,
 				set = "SetAllMembersOffline",
 			},
@@ -145,7 +153,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["SET_TEAM_ONLINE"],
 				desc = L["SET_TEAM_ONLINE_HELP"],
-				usage = "/EMA-team setallonline",
+				usage = "/ema-team setallonline",
 				get = false,
 				set = "SetAllMembersOnline",
 			},
@@ -153,7 +161,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "/EMA-team push",
+				usage = "/ema-team push",
 				get = false,
 				set = "EMASendSettings",
 			},				
@@ -989,7 +997,7 @@ function EMA:RemoveMemberCommand( info, parameters )
 end
 
 local function RemoveAllMembersFromTeam()
-	for characterName, characterPosition in pairs( EMA.db.teamList ) do
+	for characterName, position in EMAApi.TeamList() do
 		RemoveMember( characterName )
 	end
 end
