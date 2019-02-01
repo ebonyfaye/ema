@@ -2,9 +2,9 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.1.0-Beta-v2.0(0113)
+EMA Version: v8.1.0-Beta-v2.0(0114)
 Game Version: 8.1.0
-Release Date: 06/1/2019
+Release Date: 20/1/2019
 
 Beta EMA V2 
 

@@ -93,9 +93,10 @@ end
 local function DoesTheChatCommandExist( configuration, command )
 	local exist = false
 	for key, info in pairs( configuration ) do
-		--print("aa", key, "vs", command )
+		stringName = string.lower( key )
+		--print("aa", stringName, "vs", command )
 		if info.type == "input" then
-			if key == command then	
+			if stringName == command then	
 				exist = true
 				break
 			end
