@@ -568,7 +568,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.globalTradeList = settings.globalTradeList
 		EMA.db.autoSellOtherItemTag = settings.autoSellOtherItemTag
 		EMA.db.blackListItem = settings.blackListItem
-		EMA.db.tradeBoEItems = settings.tradeBoEItFems
+		EMA.db.tradeBoEItems = settings.tradeBoEItems
 		EMA.db.tradeCRItems = settings.tradeCRItems
 		EMA.db.autoTradeItemsList = EMAUtilities:CopyTable( settings.autoTradeItemsList )
 		EMA.db.global.autoTradeItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoTradeItemsListGlobal )
