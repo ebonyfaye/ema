@@ -912,9 +912,11 @@ end
 
 function EMA:MAIL_SEND_SUCCESS( event, ... )
 	--EMA:Print("try sendMail Again")
-	if EMA.ShiftkeyDown == false and EMA.Count < 1 then
-		EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
-	end
+	if EMA.db.showEMAMailWindow == true then	
+		if EMA.ShiftkeyDown == false and EMA.Count < 1 then
+			EMA:ScheduleTimer( "AddAllToMailBox", 1, nil )
+		end
+	end	
 	if EMA.db.adjustMoneyWithMail == true and EMA.db.showEMAMailWindow == true then
 		EMA:ScheduleTimer( "AddGoldToMailBox", 2 )
 	end	
