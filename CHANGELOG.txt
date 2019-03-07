@@ -38,11 +38,14 @@ Beta EMA V2
 ## Trade
 	- Added A Global Sell List, This Works Across "All" Characters
 		-- Dev Note: Use "/EMA-trade copy" To Copy From The Local List To The Global List
+	- fixed issue #61
 
 ## Mail
 	- Added A Global Sell List, This Works Across "All" Characters
 		-- Dev Note: Use "/EMA-Mail copy" To Copy From The Local List To The Global List
-	- Should Send Gold After its send all items issue#52	
+	- Should Send Gold After its send all items issue #52
+	- Fixed issue #59
+	
 
 ## GuildBank
 	- Added A Global Sell List, This Works Across "All" Characters

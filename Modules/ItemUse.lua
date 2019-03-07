@@ -1274,7 +1274,7 @@ end
 
 function EMA:QUEST_UPDATE()
 	if not InCombatLockdown() then
-		EMA:UpdateQuestItemsInBar()
+		--EMA:UpdateQuestItemsInBar()
 	end
 end
 
