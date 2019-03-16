@@ -57,7 +57,7 @@ EMA.settings = {
 		autoBoEItemTag = EMAApi.AllGroup(),	
 		guildCRItems = false,
 		autoGuildBankTabCR = "1",
-		autoCRItemTag = EMAApi.AllGroup(),
+		autoGuildCRItemTag = EMAApi.AllGroup(),
 		autoGuildItemsList = {},
 		adjustMoneyWithGuildBank = false,
 		goldAmountToKeepOnToon = 250,
@@ -578,7 +578,7 @@ function EMA:GBTabDropDownListCR (event, value )
 	if value == " " or value == nil then 
 		return 
 	end
-	EMA.db.autoGuildBankTabCR = value
+	EMA.db.autoGuildBankTabCR = tonumber(value)
 	EMA:SettingsRefresh()
 end
 
@@ -589,7 +589,7 @@ function EMA:GroupListDropDownListCR (event, value )
 	end
 	for index, groupName in ipairs( EMAApi.GroupList() ) do
 		if index == value then
-			EMA.db.autoCRItemTag = groupName
+			EMA.db.autoGuildCRItemTag = groupName
 			break
 		end
 	end
@@ -659,7 +659,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoBoEItemTag = settings.autoBoEItemTag
 		EMA.db.guildCRItems = settings.guildCRItems
 		EMA.db.autoGuildBankTabCR = settings.autoGuildBankTabCR
-		EMA.db.autoCRItemTag = settings.autoCRItemTag
+		EMA.db.autoGuildCRItemTag = settings.autoGuildCRItemTag
 		EMA.db.autoGuildItemsList = EMAUtilities:CopyTable( settings.autoGuildItemsList )
 		EMA.db.global.autoGuildItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoGuildItemsListGlobal )
 		EMA.db.adjustMoneyWithGuildBank = settings.adjustMoneyWithGuildBank
@@ -690,7 +690,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.guildTradeBoEItemsTagBoE:SetText( EMA.db.autoBoEItemTag )
 	EMA.settingsControl.checkBoxGuildCRItems:SetValue( EMA.db.guildCRItems )
 	EMA.settingsControl.tabNumListDropDownListCR:SetText( EMA.db.autoGuildBankTabCR )
-	EMA.settingsControl.guildTradeCRItemsTagCR:SetText( EMA.db.autoCRItemTag )
+	EMA.settingsControl.guildTradeCRItemsTagCR:SetText( EMA.db.autoGuildCRItemTag )
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaGuildBank:SetValue( EMA.db.adjustMoneyWithGuildBank )
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( EMA.db.goldAmountToKeepOnToon ) )
@@ -781,7 +781,7 @@ function EMA:GUILDBANKFRAME_OPENED()
 end
 
 function EMA:AddAllToGuildBank()
-	local delay = 1
+	local delay = 0
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
@@ -811,14 +811,15 @@ function EMA:AddAllToGuildBank()
 					end	
 					if EMA.db.guildCRItems == true then
 						if isCraftingReagent == true then
-							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoCRItemTag ) == true then
+							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoGuildCRItemTag ) == true then
 								if isBop == false then
 									canPlace = true
-									bankTab = EMA.db.autoGuildBankTabCR		
+									bankTab = EMA.db.autoGuildBankTabCR
 								end
 							end										
 						end
 					end
+				
 					if EMA.db.globalGuildList == true then
 						itemTable = EMA.db.global.autoGuildItemsListGlobal
 					else
@@ -837,8 +838,9 @@ function EMA:AddAllToGuildBank()
 							end
 						end
 					end	
+					--	EMA:Print("tester", canPlace, bankTab, itemLink, "a", bagID, slotID )
 					if canPlace == true and bankTab ~= 0 then
-						delay = delay + 3
+						delay = delay + 1
 						EMA:ScheduleTimer("PlaceItemInGuildBank", delay , bagID, slotID, bankTab )	
 					end
 				end	
@@ -863,10 +865,10 @@ function EMA:PlaceItemInGuildBank(bagID, slotID, tab)
 				for slot = 1, MAX_GUILDBANK_SLOTS_PER_TAB or 98 do 
 					local texture, count, locked = GetGuildBankItemInfo(tab, slot)
 					if not locked then
-						PickupContainerItem( bagID ,slotID  )
+						--PickupContainerItem( bagID ,slotID  )
 						UseContainerItem( bagID ,slotID  )
 					end
-				end		
+				end				
 			end
 		end	
 	end

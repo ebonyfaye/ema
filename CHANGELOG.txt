@@ -50,7 +50,8 @@ Beta EMA V2
 ## GuildBank
 	- Added A Global Sell List, This Works Across "All" Characters
 		-- Dev Note: Use "/EMA-Sell copy" To Copy From The Local List To The Global List
-
+	- Fixed Bug #65
+		
 ## Item-Use
 	- Should Remove Quest Items On Its Own From The Item Bar Again
 
