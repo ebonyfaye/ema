@@ -51,7 +51,7 @@ L["GLOBAL_SETTINGS_LIST_HELP"] = "Use A Global List \nThis Works Across All Char
 L["COPY"] = "Copy"
 L["COPY_HELP"] = "Copy From Local To Global List"
 L["MODULE_LIST"] = "Module List"
-L["CANNOT_OPEN_IN_COMBAT"] = "|cFFFFFF00 Cannot Open The GUI Conig In Combat"
+L["CANNOT_OPEN_IN_COMBAT"] = "|cFFFF0000Cannot Open The GUI Config In Combat"
 
 -- Display Options
 L["APPEARANCE_LAYOUT_HEALDER"] = "Appearance & Layout"
@@ -374,6 +374,10 @@ L["SELL_RARE"] = "|cff0070dd Sell Rare Items"
 L["SELL_RARE_HELP"] = "Sell All Rare(Blue) Items"
 L["SELL_EPIC"] = "|cffa335ee Sell Epic Items"
 L["SELL_EPIC_HELP"]	= "Sell All Epic(Purple) Items"
+L["AUTO_SELL_TOYS"] = "|cff00ccff Sell Already Known Toys"
+L["AUTO_SELL_TOYS_HELP"] = "Sell Or Destroy Already Known Toys"
+L["AUTO_SELL_MOUNTS"] = "|cff00ccff Already Known Mounts"
+L["AUTO_SELL_MOUNTS_HELP"] = "Sell Or Destroy Already Known Mounts"
 L["SELL_LIST_DROP_ITEM"] = "Sell Other Item (DRAG ITEM TO BOX)"
 L["ITEM_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
 L["POPUP_REMOVE_ITEM"] = "Are You Sure You Wish To Remove The Selected Item From The Auto Sell: Items List?"
@@ -422,6 +426,8 @@ L["TELL_TEAM_BOE_RARE"] = "Tell Team BoE Rare"
 L["TELL_TEAM_BOE_RARE_HELP"] = "Tell The Team If I Loot A BoE Rare"
 L["TELL_TEAM_BOE_EPIC"] = "Tell Team BoE Epic"
 L["TELL_TEAM_BOE_EPIC_HELP"] = "Tell The Team If I Loot A BoE Epic"
+L["TELL_TEAM_BOE_MOUNT"] = "Tell Team Mount"
+L["TELL_TEAM_BOE_MOUNT_HELP"] = "Tell The Team If I Loot A BoE Mount"
 L["I_HAVE_LOOTED_X_Y_ITEM"] = function( rarity, itemName )
 	return string.format( "I Have Looted A %q BoE Item: %s", rarity, itemName )
 end

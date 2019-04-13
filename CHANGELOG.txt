@@ -2,14 +2,14 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.1.0-Beta-v2.0(0118)
-Game Version: 8.1.0
-Release Date: 20/1/2019
+EMA Version: v8.1.5-Release-v2.0(0120)
+Game Version: 8.1.5
+Release Date: 13/4/2019
 
-Beta EMA V2 
+EMA V2 
 
 ## Core
-	- Fixed ToC files to support 8.1 
+	- Fixed ToC files to support 8.1.5 
 		-- Dev Note: This Was Hotfixed Into The Game As There Was No Toc Change At The Start Of The Patch Grrrr!
 	- Fixed Some Text Placements
 	- Command Line v2
@@ -28,7 +28,8 @@ Beta EMA V2
 	- Fixed The Sell Items, And Gold Prices In Chat
 	- Added A Global Sell List, This Works Across "All" Characters
 		-- Dev Note: Use "/EMA-purchase Sell" To Copy From The Local List To The Global List	
-
+	- Added Support To Sell or Destroy Already Known Toys and Mounts
+		
 ## Purchase
 	- Updated GUI
 	- Added A Global Sell List, This Works Across "All" Characters
@@ -60,6 +61,9 @@ Beta EMA V2
 		-- 7th Legion Service
 		-- Honorbound Service
 		-- Titan Residuum
+
+## Interaction
+	-- Added Tells The Team If They Looted A BoE Mount!
 	
 ---------------------------
 

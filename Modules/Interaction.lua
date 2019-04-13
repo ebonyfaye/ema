@@ -51,7 +51,8 @@ EMA.settings = {
 		--Loot
 		autoLoot = false,
 		tellBoERare = false,
-		tellBoEEpic = false,		
+		tellBoEEpic = false,
+		tellBoEMount = false,
 		messageArea = EMAApi.DefaultMessageArea(),
 		warningArea = EMAApi.DefaultWarningArea()
 	},
@@ -298,6 +299,16 @@ function EMA:SettingsCreateTaxi( top )
 		EMA.SettingsToggleTellBoEEpic,
 		L["TELL_TEAM_BOE_EPIC_HELP"]
 	)
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxTellBoEMount = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		movingTop,
+		L["TELL_TEAM_BOE_MOUNT"] ,
+		EMA.SettingsToggleTellBoEMount,
+		L["TELL_TEAM_BOE_MOUNT_HELP"]
+	)	
 	movingTop = movingTop - sliderHeight - verticalSpacing
 	EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown( 
 		EMA.settingsControl, 
@@ -388,6 +399,11 @@ function EMA:SettingsToggleTellBoEEpic( event, checked )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleTellBoEMount( event, checked )
+	EMA.db.tellBoEMount = checked
+	EMA:SettingsRefresh()
+end
+
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
@@ -404,7 +420,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoLoot = settings.autoLoot
 		EMA.db.tellBoERare = settings.tellBoERare
 		EMA.db.tellBoEEpic = settings.tellBoEEpic
-		
+		EMA.db.tellBoEMount = settings.tellBoEMount 
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.warningArea = settings.warningArea	
 		-- Refresh the settings.
@@ -434,6 +450,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxAutoLoot:SetValue( EMA.db.autoLoot )
 	EMA.settingsControl.checkBoxTellBoERare:SetValue( EMA.db.tellBoERare )
 	EMA.settingsControl.checkBoxTellBoEEpic:SetValue( EMA.db.tellBoEEpic )
+	EMA.settingsControl.checkBoxTellBoEMount:SetValue( EMA.db.tellBoEMount )
 	-- Set state.
 	EMA.settingsControl.checkBoxDismountWithTeam:SetDisabled( not EMA.db.mountWithTeam )
 	EMA.settingsControl.checkBoxDismountWithMaster:SetDisabled( not EMA.db.dismountWithTeam or not EMA.db.mountWithTeam )
@@ -728,19 +745,21 @@ function EMA:doLoot( tries )
 			local _, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
 			--EMA:Print("items", slot, locked, name, tries)
 			if locked ~= nil and ( not locked ) then
+				--DEBUG
+					--EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , "Minion of Grumpus")
+				--
 				if EMA.db.tellBoERare == true then
 					if lootQuality == 3 then
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
 				end		
-				if EMA.db.tellBoEEpic == true then
+				if EMA.db.tellBoEEpic == true or EMA.db.tellBoEMount == true then
 					if lootQuality == 4 then
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
-				end
+				end		
 				---EMA:Print("canLoot", "slot", slot, "name", name )
 				LootSlot(slot)
-				
 				numloot = GetNumLootItems()
 			end	
 		end
@@ -757,7 +776,7 @@ end
 
 function EMA:doLootLoop( tries )
 	--EMA:Print("loop", tries)
-	EMA:ScheduleTimer("doLoot", 0.5, tries )
+	EMA:ScheduleTimer("doLoot", 0.6, tries )
 end
 
 function EMA:EnableAutoLoot()
@@ -770,6 +789,7 @@ function EMA:EnableAutoLoot()
 end
 
 function EMA:TellTeamEpicBoE( name )
+	local rarity = nil
 	--EMA:Print("loottest", name )
 		for bagID = 0, NUM_BAG_SLOTS do
 			for slotID = 1,GetContainerNumSlots( bagID ),1 do 
@@ -777,8 +797,8 @@ function EMA:TellTeamEpicBoE( name )
 				local item = Item:CreateFromBagAndSlot(bagID, slotID)
 				if ( item ) then
 					local bagItemName = item:GetItemName()
-					if (  bagItemName ) then
-						if 	bagItemName == name then
+					if ( bagItemName ) then
+						if bagItemName == name then
 							--EMA:Print("test", bagItemName)
 							local location = item:GetItemLocation()
 							local itemLink = item:GetItemLink()
@@ -789,16 +809,31 @@ function EMA:TellTeamEpicBoE( name )
 								--EMA:Print("loottest", itemLink, itemRarity , itemType )
 								if isBop == false then
 								--EMA:Print("test", isBop )
-								local rarity = nil
-								if itemRarity == 4 then
-									rarity = L["EPIC"]
-								else
-									rarity = L["RARE"]
-								end
-							--EMA:Print("I have looted a Epic BOE Item: ", rarity, itemName )
-							EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )
-							end	
-						end	
+									if itemRarity == 4 then
+										rarity = L["EPIC"]
+									else
+										rarity = L["RARE"]
+									end
+								end	
+							else
+								if EMA.db.tellBoEMount == true then 
+									if isBop == false then
+										local mountIDs = C_MountJournal.GetMountIDs()	
+										for i = 1, #mountIDs do
+											local creatureName, mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])	
+											--EMA:Print("test2", itemLink)
+											if name == creatureName then
+												--EMA:Print("FoundAMount", bagItemName)
+												rarity = L["MOUNT"]
+											end
+										end
+									end
+								end	
+							--EMA:Print("I have looted a Epic BOE Item: ", rarity, itemLink )
+							if rarity ~= nil then 
+								EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )			
+							end
+						end
 					end
 				end
 			end	

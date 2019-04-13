@@ -71,7 +71,9 @@ EMA.settings = {
 		autoSellEpic = false,
 		autoSellIlvlEpic = 0,
 		autoSellBoEEpic	=  false,		
-
+		-- Toys
+		autoSellToys = false,
+		autoSellMounts = false, 
 	},
 }
 
@@ -183,6 +185,11 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxAutoSellEpic:SetDisabled ( not EMA.db.autoSellItem )
 	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetDisabled ( not EMA.db.autoSellEpic or not EMA.db.autoSellItem )
 	EMA.settingsControl.checkBoxAutoSellBoEEpic:SetDisabled ( not EMA.db.autoSellEpic or not EMA.db.autoSellItem )		
+	-- Toys
+	EMA.settingsControl.checkBoxAutoSellToys:SetValue( EMA.db.autoSellToys )
+	EMA.settingsControl.checkBoxAutoSellToys:SetDisabled ( not EMA.db.autoSellItem )
+EMA.settingsControl.checkBoxAutoSellMounts:SetValue( EMA.db.autoSellMounts )
+	EMA.settingsControl.checkBoxAutoSellMounts:SetDisabled ( not EMA.db.autoSellItem )	
 	-- Messages.
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	-- list. 
@@ -219,6 +226,8 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoSellEpic = settings.autoSellEpic
 		EMA.db.autoSellIlvlEpic = settings.autoSellIlvlEpic
 		EMA.db.autoSellBoEEpic = settings.autoSellBoEEpic
+		EMA.db.autoSellToys = settings.autoSellToys
+		EMA.db.autoSellMounts = settings.autoSellMounts
 		EMA.db.blackListItem = settings.blackListItem
 		EMA.db.destroyItem = settings.destroyItem 
 		EMA.db.messageArea = settings.messageArea
@@ -271,7 +280,7 @@ local function SettingsCreateMain( top )
 		EMA.SettingsToggleSellItemOnAllWithAltKey,
 		L["ALT_SELL_ALL_HELP"]
 	)	
-	movingTop = movingTop - checkBoxHeight	
+	movingTop = movingTop - checkBoxHeight		
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL_LIST"], movingTop, false )
 	movingTop = movingTop - headingHeight	
 	EMA.settingsControl.checkBoxAutoSellItems = EMAHelperSettings:CreateCheckBox( 
@@ -490,6 +499,26 @@ local function SettingsCreateMain( top )
 		L["iLVL_HELP"]
 	)	
 	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedIlvlEpic )		
+-- Toy	
+	movingTop = movingTop - editBoxHeight - 3	
+	EMA.settingsControl.checkBoxAutoSellToys = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left, 
+		movingTop + movingTopEdit, 
+		L["AUTO_SELL_TOYS"],
+		EMA.SettingsToggleAutoSellToys,
+		L["AUTO_SELL_TOYS_HELP"]
+	)
+EMA.settingsControl.checkBoxAutoSellMounts = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left2, 
+		movingTop + movingTopEdit, 
+		L["AUTO_SELL_MOUNTS"],
+		EMA.SettingsToggleAutoSellMounts,
+		L["AUTO_SELL_MOUNTS_HELP"]
+	)		
 	movingTop = movingTop - editBoxHeight - 3	
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL"]..L[" "]..L["MESSAGES_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight	
@@ -590,6 +619,16 @@ function EMA:SettingsToggleSellItemOnAllWithAltKey( event, checked )
 	EMA.db.sellItemOnAllWithAltKey = checked
 	EMA:SettingsRefresh()
 end
+
+function EMA:SettingsToggleAutoSellToys( event, checked )
+	EMA.db.autoSellToys = checked
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleAutoSellMounts( event, checked )
+	EMA.db.autoSellMounts = checked
+	EMA:SettingsRefresh()
+end	
 
 function EMA:SettingsToggleAutoSellItems( event, checked )
 	EMA.db.autoSellItem = checked
@@ -901,8 +940,9 @@ function EMA:DoMerchantSellItems()
 					local itemRarity =  C_Item.GetItemQuality( location )
 					local iLvl = C_Item.GetCurrentItemLevel( location )
 					local _, itemCount = GetContainerItemInfo( bagID, slotID )
-					local _, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
-					--EMA:Print("ItemTest", itemLink, itemRarity, itemType, isBop, itemRarity, iLvl, itemSellPrice)
+					local itemName, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
+					local hasToy = PlayerHasToy(bagItemID)
+					--EMA:Print("ItemTest", bagItemID, itemLink, itemRarity, itemType, isBop, itemRarity, iLvl, itemSellPrice)
 					local canSell = false
 					local canDestroy = false
 					if EMA.db.autoSellPoor == true then
@@ -960,7 +1000,7 @@ function EMA:DoMerchantSellItems()
 							end
 						end
 					end	
-						-- Epic
+					-- Epic
 					if EMA.db.autoSellEpic == true then
 						if itemRarity == EMA.ITEM_QUALITY_EPIC then
 							if itemType ~= 0 then
@@ -983,6 +1023,41 @@ function EMA:DoMerchantSellItems()
 							end
 						end
 					end		
+					-- Toys
+					if EMA.db.autoSellToys == true then
+						if hasToy == true and isBop == true then
+							--EMA:Print("ToyTest", hasToy, itemSellPrice )
+							if itemSellPrice > 0 then 
+								--EMA:Print("canSellToy")
+								canSell = true
+							else
+								--EMA:Print("canNotSellToy")
+								canSell = true
+								canDestroy = true
+							end						
+						end
+					end
+					-- Mounts
+					if EMA.db.autoSellMounts == true then	
+						local mountIDs = C_MountJournal.GetMountIDs()	
+						for i = 1, #mountIDs do
+							local creatureName,mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
+							if itemName == creatureName then
+								--EMA:Print("found a mount", creatureName)
+								if isCollected == true and isBop == true then
+									--EMA:Print("Mount is Known!", creatureName )
+									if itemSellPrice > 0 then 
+										--EMA:Print("canSellToy")
+										canSell = true
+									else
+										--EMA:Print("canNotSellToy")
+										canSell = true
+										canDestroy = true
+									end				
+								end
+							end
+						end		
+					end
 					-- Sell List/BackList
 					if EMA.db.globalSellList == true then
 						itemTable = EMA.db.global.autoSellOtherItemsListGlobal

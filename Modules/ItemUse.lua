@@ -370,10 +370,11 @@ function EMA:UpdateQuestItemsInBar()
 		local action = itemInfo.action
 		if kind == "item" then
 			--local itemLink,_,_,_,_,questItem = GetItemInfo( action )
-			local text, text2 = EMAUtilities:TooltipScaner( action )
+			--local text, text2 = EMAUtilities:TooltipScaner( action )
+			local _, _, _, _, _, _ , _, _, _, _, _, _, _, bindType = GetItemInfo( action )
 			local canUse = GetItemSpell( action )
-			--EMA:Print("Checking Item...", action, canUse, "a", text )
-			if ( canUse ) and ( text == L["QUEST_ITEM"] ) then
+			--EMA:Print("Checking Item...", action, canUse, "a",  bindType )
+			if ( canUse ) and ( bindType == 4 ) then
 				local IsInInventory = EMA:IsInInventory( action )
 				if IsInInventory == false then
 					--EMA:Print("NOT IN BAGS", IsInInventory, action)
@@ -1274,7 +1275,7 @@ end
 
 function EMA:QUEST_UPDATE()
 	if not InCombatLockdown() then
-		--EMA:UpdateQuestItemsInBar()
+		EMA:UpdateQuestItemsInBar()
 	end
 end
 
