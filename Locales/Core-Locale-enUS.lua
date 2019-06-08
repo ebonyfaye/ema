@@ -375,9 +375,9 @@ L["SELL_RARE_HELP"] = "Sell All Rare(Blue) Items"
 L["SELL_EPIC"] = "|cffa335ee Sell Epic Items"
 L["SELL_EPIC_HELP"]	= "Sell All Epic(Purple) Items"
 L["AUTO_SELL_TOYS"] = "|cff00ccff Sell Already Known Toys"
-L["AUTO_SELL_TOYS_HELP"] = "Sell Or Destroy Already Known Toys"
+L["AUTO_SELL_TOYS_HELP"] = "Sell Or Destroy Already Known SoulBound Toys"
 L["AUTO_SELL_MOUNTS"] = "|cff00ccff Already Known Mounts"
-L["AUTO_SELL_MOUNTS_HELP"] = "Sell Or Destroy Already Known Mounts"
+L["AUTO_SELL_MOUNTS_HELP"] = "Sell Or Destroy Already Known SoulBound Mounts"
 L["SELL_LIST_DROP_ITEM"] = "Sell Other Item (DRAG ITEM TO BOX)"
 L["ITEM_TAG_ERR"] = "Item Tags Must Only Be Made Up Of Letters And Numbers."
 L["POPUP_REMOVE_ITEM"] = "Are You Sure You Wish To Remove The Selected Item From The Auto Sell: Items List?"
@@ -434,10 +434,7 @@ end
 L["EPIC"] = "Epic"
 L["RARE"] = "Rare"
 L["REQUESTED_STOP_X"] = function( sender )
-	return string.format( "I Have Requested a Stop From %s", sender )
-end
-L["SETTINGS_RECEIVED_FROM_A"] = function( characterName )
-	return string.format( "Settings Received From %s.", characterName )
+	return string.format( "I Have Requested A Taxi Stop From %s", sender )
 end
 L["I_AM_UNABLE_TO_FLY_TO_A"] = function( nodename )
 	return string.format( "I Am Unable To Fly To %s.", nodename )

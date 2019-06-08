@@ -1199,7 +1199,7 @@ function UpdateCount(self)
 	if self:IsConsumableOrStackable() then
 		local count = self:GetCount()
 		if count ~= 0 then	
-			if count > (self.maxDisplayCount or 999) then
+			if count > (self.maxDisplayCount or 9999) then
 				--TODO: Relly this should show digits then * if over 999
 				self.Count:SetText("*")
 			else
@@ -1558,7 +1558,7 @@ Item.GetActionText           = function(self) return "" end
 Item.GetTexture              = function(self) return GetItemIcon(self._state_action) end
 Item.GetCharges              = function(self) return nil end
 --Item.GetCount                = function(self) return GetItemCount(self._state_action, nil, true) end
--- Ebony changes for Ema-EE to count the stacks all chars and display in the bar!
+-- Ebony changes for Ema to count the stacks all chars and display in the bar!
 Item.GetCount                = function(self) return EMAApi.GetMaxItemCountFromItemID( self._state_action ) end
 Item.GetCooldown             = function(self) return GetItemCooldown(getItemId(self._state_action)) end
 Item.IsAttack                = function(self) return nil end

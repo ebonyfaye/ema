@@ -2,15 +2,32 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.1.5-Release-v2.0(0123)
+Game Version: 8.1.5
+Release Date: 8/6/2019
+
+## Core
+	- Updated Ace3
+	- Updated LibSharedMedia-3.0
+
+## Item-Use
+	- Will now Disaply Item count to 9999 before it * out Issue #20
+	
+## Interaction
+	- Fixed a Bug not telling Team when you loot a Epic/Rare BoE items
+
+## Toon
+	- Fixed Issue #70
+
+ 	
+---------------------------
+
 EMA Version: v8.1.5-Release-v2.0(0121)
 Game Version: 8.1.5
 Release Date: 16/4/2019
 
 ## information (curr)
 	- Fixed a bug with it still reporting to use old Command lines "help"
-
-
-
 
 ---------------------------
 

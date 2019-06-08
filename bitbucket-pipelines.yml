@@ -1,8 +1,0 @@
-image: maven:3.3.3
-
-pipelines:
-  default:
-    - step:
-        script:
-          - mvn -B clean install
-          - curl -X POST --user "${BB_AUTH_STRING}" "https://api.bitbucket.org/2.0/repositories/${blossom_ebony}/${ema}/downloads" --form files=@"target/EMA.zip"

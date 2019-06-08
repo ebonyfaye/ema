@@ -743,7 +743,7 @@ function EMA:doLoot( tries )
 	if numloot ~= 0 then
 		for slot = 1, numloot do
 			local _, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
-			--EMA:Print("items", slot, locked, name, tries)
+			EMA:Print("items", slot, locked, name, tries)
 			if locked ~= nil and ( not locked ) then
 				--DEBUG
 					--EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , "Minion of Grumpus")
@@ -755,6 +755,7 @@ function EMA:doLoot( tries )
 				end		
 				if EMA.db.tellBoEEpic == true or EMA.db.tellBoEMount == true then
 					if lootQuality == 4 then
+						--EMA:Print("Can Tell")
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
 				end		
@@ -789,11 +790,11 @@ function EMA:EnableAutoLoot()
 end
 
 function EMA:TellTeamEpicBoE( name )
-	local rarity = nil
 	--EMA:Print("loottest", name )
 		for bagID = 0, NUM_BAG_SLOTS do
 			for slotID = 1,GetContainerNumSlots( bagID ),1 do 
 				--EMA:Print( "Bags OK. checking", itemLink )
+				local rarity = nil
 				local item = Item:CreateFromBagAndSlot(bagID, slotID)
 				if ( item ) then
 					local bagItemName = item:GetItemName()
@@ -815,6 +816,9 @@ function EMA:TellTeamEpicBoE( name )
 										rarity = L["RARE"]
 									end
 								end	
+								if rarity ~= nil then 
+									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )			
+								end
 							else
 								if EMA.db.tellBoEMount == true then 
 									if isBop == false then
