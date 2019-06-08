@@ -1468,7 +1468,7 @@ function EMA:UPDATE_INVENTORY_DURABILITY(event, agr1)
 	for i = 1, 18 do
 		local curItemDurability, maxItemDurability = GetInventoryItemDurability(i)
 		if (curItemDurability ~= nil) and (maxItemDurability ~= nil ) then
-			EMA:Print("£test", i, curItemDurability, maxItemDurability )
+			--EMA:Print("£test", i, curItemDurability, maxItemDurability )
 			curTotal = curTotal + curItemDurability
 			maxTotal = maxTotal + maxItemDurability
 			if maxItemDurability > 0 and curItemDurability == 0 then
@@ -1476,12 +1476,12 @@ function EMA:UPDATE_INVENTORY_DURABILITY(event, agr1)
 			end
 		end
 	end
-	EMA:Print( curTotal, maxTotal )
+	--EMA:Print( curTotal, maxTotal )
 	if maxTotal > 0 then
 		durability = (curTotal / maxTotal) * 100
 	end
 	local durabilityText = tostring(gsub( durability, "%.[^|]+", "") )
-	EMA:Print("Test Durability", durability, durabilityText,"%")
+	--EMA:Print("Test Durability", durability, durabilityText,"%")
 	if EMA.toldMasterAboutDurability == true then
 		if durability >= tonumber( EMA.db.warnWhenDurabilityDropsAmount ) then
 			EMA.toldMasterAboutDurability = false
