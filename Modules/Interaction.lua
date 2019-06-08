@@ -743,7 +743,7 @@ function EMA:doLoot( tries )
 	if numloot ~= 0 then
 		for slot = 1, numloot do
 			local _, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
-			EMA:Print("items", slot, locked, name, tries)
+			--EMA:Print("items", slot, locked, name, tries)
 			if locked ~= nil and ( not locked ) then
 				--DEBUG
 					--EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , "Minion of Grumpus")
