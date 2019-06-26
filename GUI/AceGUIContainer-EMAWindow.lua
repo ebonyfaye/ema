@@ -50,7 +50,7 @@ Scripts
 -------------------------------------------------------------------------------]]
 local function Button_OnClick(frame)
 	--7.3 PlaySound Update.
-	PlaySound(PlaySoundKitID and "gsTitleOptionExit" or 799) -- SOUNDKIT.GS_TITLE_OPTION_EXIT
+	PlaySound(799) -- SOUNDKIT.GS_TITLE_OPTION_EXIT
 	frame.obj:Hide()
 end
 

@@ -28,8 +28,8 @@ local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local Media = LibStub("LibSharedMedia-3.0")
 
 -- Built in Sounds
-Media:Register("sound", "EMA: RaidWarning", "Sound\\interface\\RaidWarning.ogg")
-
+Media:Register("sound", "EMA: RaidWarning", "Interface\\Addons\\EMA\\Media\\Sounds\\raidwarning.ogg" )
+Media:Register("sound", "EMA: Warning", "Interface\\Addons\\EMA\\Media\\Sounds\\Warning.ogg")
  
 -- Constants and Locale for this module.
 EMA.moduleName = "Message"
@@ -886,6 +886,7 @@ end
 		
 
 local function PlayMessageSound( soundToPlay )	
+	--EMA:Print("test", Media:Fetch( 'sound', soundToPlay  ) )
 	PlaySoundFile( Media:Fetch( 'sound', soundToPlay ), "Ambience" )
 end
 
@@ -946,7 +947,8 @@ local function ProcessReceivedMessage( sender, areaName, message, suppressSender
 		-- Do nothing! Mute means eat the message.
 	end
 	if areaType.usesSound == true and area.soundToPlay ~= "None" then
-		PlayMessageSound(area.soundToPlay)
+		--EMA:Print("test", area.soundToPlay )
+		PlayMessageSound(area.soundToPlay )
 	end	
 end
 
