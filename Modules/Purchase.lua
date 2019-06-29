@@ -486,19 +486,23 @@ end
 
 function EMA:ContainerFrameItemButton_OnClick(self, event, ... )
 	--EMA:Print("tester")
-	local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
-	local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
-	--EMA:Print("test2", GUIPanel, "vs", currentModule )
-	if currentModule ~= nil then
-		local itemID, itemLink = GameTooltip:GetItem()
-			--EMA:Print("test1", itemID, itemLink )
-		if itemLink ~= nil then
-			EMA.settingsControl.editBoxItem:SetText( itemLink )
-			EMA.autoBuyItemLink = itemLink	
+	if EMAPrivate.SettingsFrame.Widget:IsVisible() == true then		
+		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+		local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+		--EMA:Print("test2", GUIPanel, "vs", currentModule )
+		if currentModule ~= nil then
+			local itemID, itemLink = GameTooltip:GetItem()
+				--EMA:Print("test1", itemID, itemLink )
+			if itemLink ~= nil then
+				EMA.settingsControl.editBoxItem:SetText( itemLink )
+				EMA.autoBuyItemLink = itemLink	
+			end
+		else
+			return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
 		end
 	else
 		return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
-	end
+	end		
 end
 
 
