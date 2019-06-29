@@ -154,6 +154,7 @@ end
 function EMA:OnEnable()
 	EMA:RegisterEvent( "TRADE_SHOW" )
 	EMA:RegisterEvent( "TRADE_CLOSED" ) -- Unsued but we keep it for now!
+	EMA:RawHook( "ContainerFrameItemButton_OnClick", true)
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -274,7 +275,6 @@ function EMA:SettingsCreateTrade( top )
 		movingTop,
 		L["ITEM_DROP"]
 	)
-	--EMA.settingsControl.tradeItemsEditBoxTradeItem:SetCallback( "OnTextChanged", EMA.SettingsEditBoxChangedTradeItem )
 	EMA.settingsControl.tradeItemsEditBoxTradeItem:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedTradeItem )
 	movingTop = movingTop - editBoxHeight
 		EMA.settingsControl.listCheckBoxBoxOtherBlackListItem = EMAHelperSettings:CreateCheckBox( 
@@ -629,6 +629,23 @@ end
 -- Trade functionality.
 -------------------------------------------------------------------------------------------------------------
 
+function EMA:ContainerFrameItemButton_OnClick(self, event, ... )
+	--EMA:Print("tester")
+	local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+	local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+	--EMA:Print("test2", GUIPanel, "vs", currentModule )
+	if currentModule ~= nil then
+		local itemID, itemLink = GameTooltip:GetItem()
+			--EMA:Print("test1", itemID, itemLink )
+		if itemLink ~= nil then
+			EMA.settingsControl.tradeItemsEditBoxTradeItem:SetText( itemLink )
+			EMA.autoTradeItemLink = itemLink	
+		end
+	else
+		return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
+	end
+end
+
 -- New Trade stuff
 function EMA:GetTradeItemsMaxPosition()
 	if EMA.db.globalTradeList == true then
@@ -680,11 +697,15 @@ end
 function EMA:TRADE_SHOW( event, ... )	
 	--Keep for tradeing gold!
 	if EMA.db.adjustMoneyWithMasterOnTrade == true then
-		EMA:ScheduleTimer( "TradeShowAdjustMoneyWithMaster", 0.3 )
+		if not IsShiftKeyDown() then
+			EMA:ScheduleTimer( "TradeShowAdjustMoneyWithMaster", 0.3 )
+		end	
 	end	
 	-- do trade list with Gold!
 	if EMA.db.showEMATradeWindow == true then
-		EMA:ScheduleTimer("TradeAllItems", 0.5 )
+		if not IsShiftKeyDown() then
+			EMA:ScheduleTimer("TradeAllItems", 0.5 )
+		end
 	end
 end
 

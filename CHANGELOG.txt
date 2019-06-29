@@ -2,7 +2,20 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.20.0-Release-v2.1(0127)
+EMA Version: v8.2.0-Beta-v2.2(0127)
+Game Version: 8.2.0
+Release Date: 29/6/2019
+
+## Trade, Vender, Purchase, Mail, Guild
+	-- Nolonger Need To Drang Items To The EditBox To Add To The List.
+
+## Trade
+	-- Holding "Shift Key" will not trade items to master. (If for some reason u did not want to use EMA-Trade)
+
+
+---------------------------
+
+EMA Version: v8.2.0-Release-v2.1(0127)
 Game Version: 8.2.0
 Release Date: 26/6/2019
 
@@ -10,18 +23,13 @@ Release Date: 26/6/2019
 	- Updated Ace3
 	- Updated SharedMediaWidgets
 	- Updated LibSharedMedia-3.0
+	
 
 
 ## Message
 	- Fixed 8.2 Sound changes
 		- Added new sound EMA Warning (from jamba-extras)
-		- Had to added blizzard own Riad warning Sound for libsheardmedia to work. (hacky)
-		
-
-
-
-
-
+		- Had to added blizzard own Raid warning Sound for libsheardmedia to work. (hacky)
 ---------------------------
 
 EMA Version: v8.1.5-Release-v2.1(0126)

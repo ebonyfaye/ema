@@ -15,7 +15,8 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 	"Purchase", 
 	"Module-1.0", 
 	"AceConsole-3.0", 
-	"AceEvent-3.0"
+	"AceEvent-3.0",
+	"AceHook-3.0"
 )
 
 -- Load libraries.
@@ -470,6 +471,7 @@ end
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	EMA:RegisterEvent( "MERCHANT_SHOW" )
+	EMA:RawHook( "ContainerFrameItemButton_OnClick", true)
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -479,8 +481,26 @@ function EMA:OnDisable()
 end
 
 -------------------------------------------------------------------------------------------------------------
--- EMAPurchase functionality.
+-- Purchase functionality.
 -------------------------------------------------------------------------------------------------------------
+
+function EMA:ContainerFrameItemButton_OnClick(self, event, ... )
+	--EMA:Print("tester")
+	local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+	local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+	--EMA:Print("test2", GUIPanel, "vs", currentModule )
+	if currentModule ~= nil then
+		local itemID, itemLink = GameTooltip:GetItem()
+			--EMA:Print("test1", itemID, itemLink )
+		if itemLink ~= nil then
+			EMA.settingsControl.editBoxItem:SetText( itemLink )
+			EMA.autoBuyItemLink = itemLink	
+		end
+	else
+		return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
+	end
+end
+
 
 function EMA:GetItemsMaxPosition()
 	if EMA.db.globalBuyList == true then

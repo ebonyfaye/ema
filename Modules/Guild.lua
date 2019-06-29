@@ -178,6 +178,7 @@ end
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	EMA:RegisterEvent( "GUILDBANKFRAME_OPENED" )
+	EMA:RawHook( "ContainerFrameItemButton_OnClick", true)
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 	-- Update DropDownList
@@ -504,6 +505,7 @@ function EMA:SettingsGuildItemsAddClick( event )
 	if EMA.autoGuildItemLink ~= nil and EMA.autoGuildBankTab ~= nil and EMA.db.guildTagName ~= nil then
 		EMA:AddItem( EMA.autoGuildItemLink, EMA.autoGuildBankTab, EMA.db.guildTagName, EMA.db.blackListItem )
 		EMA.autoGuildItemLink = nil
+		EMA.settingsControl.GuildItemsEditBoxGuildItem:SetText( "" )
 		EMA:SettingsRefresh()
 	end
 end
@@ -722,6 +724,24 @@ end
 -------------------------------------------------------------------------------------------------------------
 -- Guild functionality.
 -------------------------------------------------------------------------------------------------------------
+
+function EMA:ContainerFrameItemButton_OnClick(self, event, ... )
+	--EMA:Print("tester")
+	local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+	local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+	--EMA:Print("test2", GUIPanel, "vs", currentModule )
+	if currentModule ~= nil then
+		local itemID, itemLink = GameTooltip:GetItem()
+			--EMA:Print("test1", itemID, itemLink )
+		if itemLink ~= nil then
+			EMA.settingsControl.GuildItemsEditBoxGuildItem:SetText( itemLink )
+			EMA.autoGuildItemLink = itemLink	
+		end
+	else
+		return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
+	end
+end
+
 
 function EMA:GetGuildItemsMaxPosition()
 	if EMA.db.globalGuildList == true then
