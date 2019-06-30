@@ -162,7 +162,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "MAIL_SHOW" )
 	EMA:RegisterEvent( "MAIL_CLOSED" )
 	EMA:RegisterEvent( "MAIL_SEND_SUCCESS")
-	EMA:RawHook( "ContainerFrameItemButton_OnClick", true)
+	EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true)
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -759,26 +759,26 @@ end
 -- Mail functionality.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:ContainerFrameItemButton_OnClick(self, event, ... )
-	--EMA:Print("tester")
-	if EMAPrivate.SettingsFrame.Widget:IsVisible() == true then
-		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected 
+function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
+	local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
+	if isConfigOpen == true and IsShiftKeyDown() == true then
+		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
 		local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
 		--EMA:Print("test2", GUIPanel, "vs", currentModule )
 		if currentModule ~= nil then
 			local itemID, itemLink = GameTooltip:GetItem()
-				--EMA:Print("test1", itemID, itemLink )
+			--EMA:Print("test1", itemID, itemLink )
 			if itemLink ~= nil then
+				EMA.settingsControl.MailItemsEditBoxMailItem:SetText( "" )
 				EMA.settingsControl.MailItemsEditBoxMailItem:SetText( itemLink )
 				EMA.autoMailItemLink = itemLink	
+				return
 			end
-		else
-			return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
-		end
-	else
-		return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
+		end	
 	end	
+	return EMA.hooks["ContainerFrameItemButton_OnModifiedClick"]( self, event, ... )
 end
+
 
 
 function EMA:GetMailItemsMaxPosition()

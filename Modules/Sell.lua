@@ -814,7 +814,6 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "MERCHANT_CLOSED" )
 	-- Hook the item click event.
 	EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
-	EMA:RawHook( "ContainerFrameItemButton_OnClick", true)
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -827,28 +826,6 @@ end
 -- Sell functionality.
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:ContainerFrameItemButton_OnClick(self, event, ... )
-	--EMA:Print("tester")
-	if EMAPrivate.SettingsFrame.Widget:IsVisible() == true then		
-		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
-		local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
-		--EMA:Print("test2", GUIPanel, "vs", currentModule )
-		if currentModule ~= nil then
-			local itemID, itemLink = GameTooltip:GetItem()
-				--EMA:Print("test1", itemID, itemLink )
-			if itemLink ~= nil then
-				EMA.settingsControl.listEditBoxOtherItem:SetText( itemLink )
-				EMA.autoSellOtherItemLink = itemLink	
-			end
-		else
-			return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
-		end
-	else
-		return EMA.hooks["ContainerFrameItemButton_OnClick"]( self, event, ... )
-	end	
-end
-
-
 -- The ContainerFrameItemButton_OnModifiedClick hook.
 function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
 	if EMA.db.sellItemOnAllWithAltKey == true and IsAltKeyDown() and EMAUtilities:MerchantFrameIsShown() then
@@ -857,13 +834,20 @@ function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
 		EMA:EMASendCommandToTeam( EMA.COMMAND_SELL_ITEM, link )
 	end
 	local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
-	if isConfigOpen == true and IsAltKeyDown() == true then
-		local itemID, itemLink = GameTooltip:GetItem()
-		EMA:Print("test1", itemID, itemLink )
-		if itemLink ~= nil then
-			EMA.settingsControl.listEditBoxOtherItem:SetText( itemLink )
-			EMA.autoSellOtherItemLink = itemLink
-		end
+	if isConfigOpen == true and IsShiftKeyDown() == true then
+		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+		local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+		--EMA:Print("test2", GUIPanel, "vs", currentModule )
+		if currentModule ~= nil then
+			local itemID, itemLink = GameTooltip:GetItem()
+			--EMA:Print("test1", itemID, itemLink )
+			if itemLink ~= nil then
+				EMA.settingsControl.listEditBoxOtherItem:SetText( "" )
+				EMA.settingsControl.listEditBoxOtherItem:SetText( itemLink )
+				EMA.autoSellOtherItemLink = itemLink
+				return
+			end
+		end	
 	end	
 	return EMA.hooks["ContainerFrameItemButton_OnModifiedClick"]( self, event, ... )
 end

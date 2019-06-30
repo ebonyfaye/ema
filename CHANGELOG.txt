@@ -2,15 +2,16 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.2.0-Beta-v2.2(0128)
+EMA Version: v8.2.0-Beta-v2.2(0129)
 Game Version: 8.2.0
 Release Date: 29/6/2019
 
 ## Trade, Vender, Purchase, Mail, Guild
-	-- Nolonger Need To Drang Items To The EditBox To Add To The List.
+	-- You can Now Use Shift+Click to add the Item to the EditBox. 
+	(Dev Note: The Ui Is Protected On Normal Click And Would Not Let You Use Items )
 
 ## Trade
-	-- Holding "Shift Key" will not trade items to master. (If for some reason u did not want to use EMA-Trade)
+	-- Holding "Shift Key" will not trade items to master. (If For Some Reason U Did Not Want To Use Ema-Trade)
 
 
 ---------------------------
