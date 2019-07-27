@@ -2,17 +2,25 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.2.0-Beta-v2.2(0129)
+EMA Version: v8.2.0-Release-v2.2(0131)
 Game Version: 8.2.0
-Release Date: 29/6/2019
+Release Date: 27/7/2019
 
 ## Trade, Vender, Purchase, Mail, Guild
 	-- You can Now Use Shift+Click to add the Item to the EditBox. 
-	(Dev Note: The Ui Is Protected On Normal Click And Would Not Let You Use Items )
+	(Dev Note: The Ui Is Protected On Normal Click And Could Not Use Items )
 
 ## Trade
 	-- Holding "Shift Key" will not trade items to master. (If For Some Reason U Did Not Want To Use Ema-Trade)
 
+## Communications
+	-- Now Uses Its Own Prefix And Not Jamba's
+	-- Changed LayOut
+	-- Removed Boost Communications ( As Chat Chatthrottlelib Now Uses The Same Settings )
+	
+## Currency
+	-- Added 8.2 Currencys
+		- Prismatic Manapearl
 
 ---------------------------
 

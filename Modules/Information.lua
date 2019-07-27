@@ -89,7 +89,8 @@ EMA.currTypes.WarSupplies = 1587
 EMA.currTypes.SeventhLegionService = 1717
 EMA.currTypes.HonorboundService = 1716
 EMA.currTypes.TitanResiduum = 1718
-
+--8.2
+EMA.currTypes.PrismaticManapearl = 1721
 
 -------------------------------------- End of edit --------------------------------------------------------------
 

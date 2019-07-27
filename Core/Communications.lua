@@ -50,8 +50,7 @@ EMA.COMMUNICATION_GROUP = "RAID"
 EMA.COMMUNICATION_GUILD = "GUILD"
 
 -- Communication message prefix.
-EMA.MESSAGE_PREFIX = "JmbCmMsg"
-
+EMA.MESSAGE_PREFIX = "EmaMainComms"
 
 -- Communication priorities.
 EMA.COMMUNICATION_PRIORITY_BULK = "BULK"
@@ -59,12 +58,12 @@ EMA.COMMUNICATION_PRIORITY_NORMAL = "NORMAL"
 EMA.COMMUNICATION_PRIORITY_ALERT = "ALERT"
 
 -- Communication command.
-EMA.COMMAND_PREFIX = "JmbCmCmd"
+EMA.COMMAND_PREFIX = "EmaCmdComms"
 EMA.COMMAND_SEPERATOR = "\004"
 EMA.COMMAND_ARGUMENT_SEPERATOR = "\005"
 
 -- Internal commands sent by EMA Communications.
-EMA.COMMAND_INTERNAL_SEND_SETTINGS = "JmbCmSdSet"
+EMA.COMMAND_INTERNAL_SEND_SETTINGS = "EmaSetComms"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
@@ -86,7 +85,7 @@ EMA.settings = {
 	profile = {
 		autoSetTeamOnlineorOffline = true,
 		boostCommunication = true,
-		useGuildComms = false,
+		useGuildComms = false
 	},
 }
 
@@ -158,18 +157,10 @@ local function CreateCommandToSend( moduleName, commandName, ... )
 			message = message..EMA.COMMAND_ARGUMENT_SEPERATOR
 		end
 	end
-	-- Return the command to send.
-	--EMA:Print("Create", moduleName, commandName, iterateArguments)
 	return message	
 end
-
-
-local function CommandAll( moduleName, commandName, ... )
-   -- EMA:DebugMessage( "Command All: ", moduleName, commandName, ... )
-	--EMA:Print( "Command All: ", moduleName, commandName, ... )
-	-- Get the message to send.
-	local message = CreateCommandToSend( moduleName, commandName, ... )
-	local channel
+	
+local function CommandGuild(  message, ... )
 	if EMA.db.useGuildComms == true then
 			EMA:SendCommMessage(
 			EMA.COMMAND_PREFIX,
@@ -178,11 +169,13 @@ local function CommandAll( moduleName, commandName, ... )
 			nil,
 			EMA.COMMUNICATION_PRIORITY_ALERT	
 			)
-		return
-	end	
+	end
+end	
+	
+local function DefaultCommand( message )
+	local channel = nil
 	-- toon has to be in a group		
 	if UnitInBattleground( "player" ) then
-		EMA:DebugMessage( "PvP_INSTANCE")
 		channel = "INSTANCE_CHAT"
 	elseif IsInGroup() then
 		EMA:DebugMessage( "Group")
@@ -218,8 +211,7 @@ local function CommandAll( moduleName, commandName, ... )
 			nil,
 			EMA.COMMUNICATION_PRIORITY_ALERT
 			)
-			--EMA:Print("testChennel", EMA.COMMAND_PREFIX, channel, EMA.COMMUNICATION_PRIORITY_ALERT)	
-			--return
+			--EMA:Print("testChennel", EMA.COMMAND_PREFIX, channel, EMA.COMMUNICATION_PRIORITY_ALERT)
 	end
 	--if the unit is not in the party then it unlikely did not get the party message,
 	for characterName, characterOrder in EMAPrivate.Team.TeamList() do		
@@ -240,7 +232,17 @@ local function CommandAll( moduleName, commandName, ... )
 	end	
 end
 
-
+local function CommandAll( moduleName, commandName, ... )
+   -- EMA:DebugMessage( "Command All: ", moduleName, commandName, ... )
+	--EMA:Print( "Command All: ", moduleName, commandName, ... )
+	-- Get the message to send.
+	local message = CreateCommandToSend( moduleName, commandName, ... )
+	if EMA.db.useGuildComms == true then 
+		CommandGuild(  message )
+	else
+		DefaultCommand ( message )
+	end
+end	
 
 -- Should this get removed at some point and use all comms on one channel???
 -- WHISPER's don't work cross-realm but do work connected-realm so sending msg to masters would not send.
@@ -283,9 +285,7 @@ local function CommandToon( moduleName, characterName, commandName, ... )
 		end	
 end		
 
--- EbonyTest
--- hide offline player spam Not really the best way but it works, Maybe adding tick box's to set members offline? This should now work with elvUI?
-
+-- Hide Player "Offline" Using to set the team memberm online.
 local function SystemSpamFilter(frame, event, message)
 	if( event == "CHAT_MSG_SYSTEM") then	
 		if message:match(string.format(ERR_CHAT_PLAYER_NOT_FOUND_S, "(.+)")) then
@@ -401,7 +401,7 @@ end
 
 -- Initialize the addon.
 function EMA:OnInitialize()
-	--EMA.channelPollTimer = nil
+	--EMA.lastChannel = nil
 	-- Register commands with AceComms - tell AceComms to call the CommandReceived function when a command is received.
 	EMA:RegisterComm( EMA.COMMAND_PREFIX, "CommandReceived" )
 	-- Create the settings database supplying the settings values along with defaults.
@@ -428,7 +428,6 @@ function EMA:OnInitialize()
 end
 	
 function EMA:OnEnable()
-
 	EMA:RegisterEvent("GUILD_ROSTER_UPDATE")
 	if EMA.db.boostCommunication == true then
 		EMA:BoostCommunication()
@@ -449,6 +448,7 @@ function EMA:BoostCommunication()
 		ChatThrottleLib.MIN_FPS = 10 --20
 	end
 end
+
 
 -- Handle the chat command.
 function EMA:EMAChatCommand( input )
@@ -505,6 +505,7 @@ end
 
 function EMA:SettingsCreateOptions( top )
 	-- Get positions and dimensions.
+	local buttonControlWidth = 105
 	local checkBoxHeight = EMAHelperSettings:GetCheckBoxHeight()
 	local labelContinueHeight = EMAHelperSettings:GetContinueLabelHeight()
 	local editBoxHeight = EMAHelperSettings:GetEditBoxHeight()
@@ -531,6 +532,7 @@ function EMA:SettingsCreateOptions( top )
 		L["AUTO_SET_TEAM"],
 		EMA.CheckBoxAutoSetTeamOnlineorOffline
 	)
+	--[[
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.checkBoxBoostCommunication = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -541,7 +543,27 @@ function EMA:SettingsCreateOptions( top )
 		EMA.CheckBoxBoostCommunication,
 		L["BOOST_COMMUNICATIONS_HELP"]
 	)
-	movingTop = movingTop - checkBoxHeight		
+	]]
+	movingTop = movingTop - checkBoxHeight			
+	movingTop = movingTop - checkBoxHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["COMMUNICATIONS_AVD"]..L[" "]..L["OPTIONS"] , movingTop, false )--
+	movingTop = movingTop - headingHeight	
+	EMA.settingsControl.labelCommsInformation1 = EMAHelperSettings:CreateContinueLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		column1Left, 
+		movingTop,
+		L["AVD_INFORMATION_ONE"] 
+	)	
+	movingTop = movingTop - labelContinueHeight	
+	EMA.settingsControl.labelCommsInformation1 = EMAHelperSettings:CreateContinueLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		column1Left, 
+		movingTop,
+		L["AVD_INFORMATION_TWO"] 
+	)	
+	movingTop = movingTop - labelContinueHeight	
 	EMA.settingsControl.checkBoxUseGuildComms = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		headingWidth, 
@@ -551,13 +573,8 @@ function EMA:SettingsCreateOptions( top )
 		EMA.CheckBoxUseGuildComms,
 		L["USE_GUILD_COMMS_INFO"]
 	)
-	movingTop = movingTop - checkBoxHeight		
+	movingTop = movingTop - checkBoxHeight	
 	return movingTop	
-end
-
-function EMA:CheckBoxUseGuildComms( event, value )
-	EMA.db.useGuildComms = value
-	EMA:SettingsRefresh()
 end
 
 function EMA:CheckBoxBoostCommunication( event, value )
@@ -575,17 +592,25 @@ function EMA:CheckBoxAutoSetTeamOnlineorOffline( event, value )
 	EMA:SettingsRefresh()	
 end
 
+
+function EMA:CheckBoxUseGuildComms( event, value )
+	EMA.db.useGuildComms = value
+	EMA:SettingsRefresh()
+end
+
+
 function EMA:BeforeEMAProfileChanged()	
 end
 
-function EMA:OnEMAProfileChanged()	
+function EMA:OnEMAProfileChanged()
 	EMA:SettingsRefresh()
 end
 
 function EMA:SettingsRefresh()	
 	EMA.settingsControl.checkBoxAutoSetTeamOnlineorOffline:SetValue( EMA.db.autoSetTeamOnlineorOffline )
-	EMA.settingsControl.checkBoxBoostCommunication:SetValue( EMA.db.boostCommunication )
+	--EMA.settingsControl.checkBoxBoostCommunication:SetValue( EMA.db.boostCommunication )
 	EMA.settingsControl.checkBoxUseGuildComms:SetValue( EMA.db.useGuildComms )
+
 end
 
 -- Settings received.
@@ -598,7 +623,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.autoSetTeamOnlineorOffline = settings.autoSetTeamOnlineorOffline
-		EMA.db.boostCommunication = settings.boostCommunication
+	--	EMA.db.boostCommunication = settings.boostCommunication
 		EMA.db.useGuildComms = settings.useGuildComms
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
@@ -622,8 +647,6 @@ local function SendChatMessage( text, chatDestination, characterOrChannelName, p
 	if text:len() <= 255 then
 		--EMA:Print("test TURE!!!!! TOBIG" )
 		ChatThrottleLib:SendChatMessage( priority, EMA.MESSAGE_PREFIX, text, chatDestination, nil, characterOrChannelName, nil )
-	
-	
 	else
 		-- No, message is too big, split into smaller messages, taking UTF8 characters into account.	
 		local bytesAvailable = string.utf8len(text1)
