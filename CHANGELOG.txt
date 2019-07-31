@@ -2,6 +2,21 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.2.0-Release-v2.2(0132)
+Game Version: 8.2.0
+Release Date: 31/7/2019
+
+# Core
+	- Updated Ace3 to r1214
+
+# Item-Use
+	- Fixed Command Line Help Files. issue #83
+	
+# Information
+	- Fixed a SetPoint Bug
+
+---------------------------
+
 EMA Version: v8.2.0-Release-v2.2(0131)
 Game Version: 8.2.0
 Release Date: 27/7/2019

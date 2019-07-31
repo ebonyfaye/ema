@@ -1084,6 +1084,7 @@ function EMA:SettingsUpdateBorderStyle()
 	frame:SetBackdropBorderColor( EMA.db.currencyFrameBorderColourR, EMA.db.currencyFrameBorderColourG, EMA.db.currencyFrameBorderColourB, EMA.db.currencyFrameBorderColourA )
 	--frame:ClearAllPoints()
 	frame:SetAlpha( EMA.db.currencyFrameAlpha )
+	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.currencyFramePoint, UIParent, EMA.db.currencyFrameRelativePoint, EMA.db.currencyFrameXOffset, EMA.db.currencyFrameYOffset )
 end
 

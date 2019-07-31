@@ -752,7 +752,7 @@ end
 
 
 function EMA:SettingslistAddClick( event )
-	EMA:Print("test",  EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag )
+	--EMA:Print("test",  EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag )
 	if EMA.autoSellOtherItemLink ~= nil and EMA.autoSellOtherItemTag ~= nil then
 		EMA:AddOther( EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag, EMA.db.blackListItem,  EMA.db.destroyItem  )
 		EMA.autoSellOtherItemLink = nil
