@@ -244,8 +244,8 @@ local function CreateEMAItemUseFrame()
 		tile = true, tileSize = 10, edgeSize = 10, 
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )	
-	frame:SetPoint( EMA.db.framePoint, nil, EMA.db.frameRelativePoint, EMA.db.frameXOffset, EMA.db.frameYOffset )
 	frame:ClearAllPoints()
+	frame:SetPoint( EMA.db.framePoint, nil, EMA.db.frameRelativePoint, EMA.db.frameXOffset, EMA.db.frameYOffset )
 	-- Clear Button
 		local updateButton = CreateFrame( "Button", "ButtonUpdate", frame, "UIPanelButtonTemplate" )
 		updateButton:SetScript( "OnClick", function() EMA.ClearButton() end )

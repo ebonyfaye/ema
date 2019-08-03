@@ -2,6 +2,17 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.2.0-Release-v2.2(0133)
+Game Version: 8.2.0
+Release Date: 3/8/2019
+
+# Disaply Team
+	- Fixed a SetPoint Bug
+
+
+
+---------------------------
+
 EMA Version: v8.2.0-Release-v2.2(0132)
 Game Version: 8.2.0
 Release Date: 31/7/2019
