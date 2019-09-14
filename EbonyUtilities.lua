@@ -254,7 +254,7 @@ function EbonyUtilities:TooltipScaner(item)
 		if item ~= nil then
 			local tooltipName = "EMAScanner"
 			local tooltipScanner = CreateFrame("GameTooltip", tooltipName, nil, "GameTooltipTemplate")
-			tooltipScanner:SetOwner(UIParent, "ANCHOR_NONE")
+			tooltipScanner:SetOwner( WorldFrame, "ANCHOR_NONE")
 			tooltipScanner:SetHyperlink(item)
 			local tooltipText = _G[tooltipName.."TextLeft2"]:GetText()
 			local tooltipTextTwo = _G[tooltipName.."TextLeft3"]:GetText()
@@ -262,8 +262,11 @@ function EbonyUtilities:TooltipScaner(item)
 				text = tooltipText 
 				text2 = tooltipTextTwo	
 			--print("test9", text, text2)
+			--tooltipScanner:Hide()
 			tooltipScanner:Hide()
+			tooltipScanner:ClearLines()
 		end		
+	
 	return text, text2
 end
 

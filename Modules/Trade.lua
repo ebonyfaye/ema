@@ -690,7 +690,7 @@ end
 
 function EMA:RemoveItem()
 	if EMA.db.globalTradeList == true then
-		table.remove( EMA.db.global.autoTradeItemsListGlobal, EMA.settingsControl.listHighlightRow )
+		table.remove( EMA.db.global.autoTradeItemsListGlobal,  EMA.settingsControl.tradeItemsHighlightRow )
 	else	
 		table.remove( EMA.db.autoTradeItemsList, EMA.settingsControl.tradeItemsHighlightRow )
 	end

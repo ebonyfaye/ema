@@ -821,7 +821,7 @@ end
 
 function EMA:RemoveItem()
 	if EMA.db.globalMailList == true then
-		table.remove( EMA.db.global.autoMailItemsListGlobal, EMA.settingsControl.listHighlightRow )
+		table.remove( EMA.db.global.autoMailItemsListGlobal, EMA.settingsControl.MailItemsHighlightRow )
 	else
 		table.remove( EMA.db.autoMailItemsList, EMA.settingsControl.MailItemsHighlightRow )
 	end

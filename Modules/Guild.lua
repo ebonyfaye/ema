@@ -807,7 +807,7 @@ end
 
 function EMA:RemoveItem()
 	if EMA.db.globalGuildList == true then
-		table.remove( EMA.db.global.autoGuildItemsListGlobal, EMA.settingsControl.listHighlightRow )
+		table.remove( EMA.db.global.autoGuildItemsListGlobal, EMA.settingsControl.GuildItemsHighlightRow )
 	else
 		table.remove( EMA.db.autoGuildItemsList, EMA.settingsControl.GuildItemsHighlightRow )
 	end

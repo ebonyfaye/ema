@@ -2,6 +2,18 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.2.0-Release-v2.2(0134)
+Game Version: 8.2.0
+Release Date: 14/9/2019
+
+# Trade, Guild, Purchase, Mail
+	- Fixed a Global Error where it was not removing the item from the right Selected Item
+	
+
+
+---------------------------
+
+
 EMA Version: v8.2.0-Release-v2.2(0133)
 Game Version: 8.2.0
 Release Date: 3/8/2019

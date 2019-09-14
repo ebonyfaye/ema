@@ -542,7 +542,7 @@ end
 
 function EMA:RemoveItem()
 	if EMA.db.globalBuyList == true then
-		table.remove( EMA.db.global.autoBuyItemsListGlobal, EMA.settingsControl.listHighlightRow )
+		table.remove( EMA.db.global.autoBuyItemsListGlobal, EMA.settingsControl.highlightRow )
 	else	
 		table.remove( EMA.db.autoBuyItems, EMA.settingsControl.highlightRow )
 	end
