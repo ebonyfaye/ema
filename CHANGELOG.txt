@@ -2,6 +2,18 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.2.0-Release-v2.2(0135)
+Game Version: 8.2.0
+Release Date: 24/9/2019
+
+## Trade
+	-- Fixed A Bug Where The Groups On Boe And Crafting Reagents Was Not Getting Send To Other Team Members
+
+## Team
+	-- Fixed Issue Classic #20 (Changed API )
+
+---------------------------
+
 EMA Version: v8.2.0-Release-v2.2(0134)
 Game Version: 8.2.0
 Release Date: 14/9/2019

@@ -738,7 +738,6 @@ L["WHISPERED_YOU"] = "Whispered You."
 
 ------------------------
 -- Quest Locale
-
 L["ABANDON_QUESTS_TEAM"] = "Would you like to Abandon \"%s\" On All Toons?"
 L["JUST_ME"] = "Just Me"
 L["ALL_TEAM"] = "All Team"
