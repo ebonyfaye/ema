@@ -20,6 +20,7 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 )
 
 -- Get the EMA Utilities Library.
+local AceGUI = LibStub( "AceGUI-3.0" )
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
 local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
@@ -91,6 +92,9 @@ EMA.currTypes.HonorboundService = 1716
 EMA.currTypes.TitanResiduum = 1718
 --8.2
 EMA.currTypes.PrismaticManapearl = 1721
+--8.3
+EMA.currTypes.CoalescingVisions = 1755
+EMA.currTypes.CorruptedMementos = 1719
 
 -------------------------------------- End of edit --------------------------------------------------------------
 
@@ -705,6 +709,7 @@ function EMA:OnInitialize()
 	EMA:SettingsRefresh()
 	-- Create the currency list frame.
 	EMA:CreateEMAToonCurrencyListFrame()
+	--EMA:CreateEMAToonCurrencyListFrameTwo()
 end
 
 -- Called when the addon is enabled.
@@ -810,6 +815,64 @@ function EMA:MatchCurrValue(value)
 	end
 end 
 
+function EMA:CreateEMAToonCurrencyListFrameTwo()
+	local frameTwo = AceGUI:Create( "Frame" )
+	frameTwo:SetTitle( "test" )
+	frameTwo:SetWidth(800)
+	frameTwo:SetHeight(650)
+	frameTwo:SetLayout("Fill")
+	
+	
+	
+	local containerWidgetSettings = AceGUI:Create( "SimpleGroup" )
+	containerWidgetSettings:SetLayout( "JambaFill" )
+	
+	local widgetSettingsHelp = AceGUI:Create( "ScrollFrame" )
+	widgetSettingsHelp:SetLayout( "Flow" )
+	
+	local widgetSettings = AceGUI:Create( "ScrollFrame" )
+	widgetSettings:SetLayout( "Flow" )
+	
+	local tabGroupWidgetSettings = AceGUI:Create( "TabGroup" )
+	-- Was 'Fill', which causes lockup, started at patch 4.1 (40100).  Similar to http://forums.wowace.com/showthread.php?t=17872
+	tabGroupWidgetSettings:SetLayout( "Flow" )	
+	tabGroupWidgetSettings:SetTabs( { {text=L["Options"], value="options"}, {text=L["Commands"], value="help"} } )
+	
+	
+	
+	
+	
+	frameTwo:AddChild( tabGroupWidgetSettings )
+	tabGroupWidgetSettings:AddChild( widgetSettings )
+	
+	-- Callback function for OnGroupSelected
+	local function SelectGroup(container, event, group)
+	container:ReleaseChildren()
+	EMA:Print("test", container, event, group )
+	if group == "options" then
+		EMA:Print("HELLO")
+		EMA:DrawGroup1(container)
+	
+	elseif group == "tab1" then
+		EMA:Print("Grp1")
+		DrawGroup1(container)
+	elseif group == "tab2" then
+		DrawGroup2(container)
+	end
+end
+	tabGroupWidgetSettings:SetCallback("OnGroupSelected", SelectGroup)
+	EMAToonCurrencyListFrameTwo = frameTwo
+	
+end
+
+function EMA:DrawGroup1(container)
+	for characterName, currencyFrameCharacterInfo in pairs( EMA.currencyFrameCharacterInfo ) do
+		EMA:Print("test", characterName)
+	end	
+	
+end	
+
+
 function EMA:CreateEMAToonCurrencyListFrame()
 	-- The frame.
 	local frame = CreateFrame( "Frame", "EMAToonCurrencyListWindowFrame", UIParent )
@@ -834,17 +897,11 @@ function EMA:CreateEMAToonCurrencyListFrame()
 			EMA.db.currencyFrameRelativePoint = relativePoint
 			EMA.db.currencyFrameXOffset = xOffset
 			EMA.db.currencyFrameYOffset = yOffset
-		end	)
+	end	)
 	frame:SetWidth( 500 )
 	frame:SetHeight( 200 )
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.currencyFramePoint, UIParent, EMA.db.currencyFrameRelativePoint, EMA.db.currencyFrameXOffset, EMA.db.currencyFrameYOffset )
-	frame:SetBackdrop( {
-		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
-		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
-		tile = true, tileSize = 10, edgeSize = 10, 
-		insets = { left = 3, right = 3, top = 3, bottom = 3 }
-	} )
 
 	-- Create the title for the frame.
 	local titleName = frame:CreateFontString( "EMAToonCurrencyListWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
@@ -1022,6 +1079,7 @@ function EMA:CreateEMAToonCurrencyListFrame()
 	EMA:CurrencyListSetHeight()
 end
 
+
 function EMA:UpdateHendingText()
 	local parentFrame = EMAToonCurrencyListFrame
 	-- Type One
@@ -1069,6 +1127,7 @@ function EMA:CurrencyUpdateWindowLock()
 		EMAToonCurrencyListFrame:EnableMouse( false )
 	end
 end
+
 
 function EMA:SettingsUpdateBorderStyle()
 	local borderStyle = EMA.SharedMedia:Fetch( "border", EMA.db.currencyBorderStyle )
@@ -1533,6 +1592,7 @@ end
 function EMA:DoShowToonsCurrency( characterName, currencyValues )
 	--EMA.Print("DoShowCurrency", characterName, currencyValues.currTypeOne, currencyValues.currMaxTypeOne )
 	local parentFrame = EMAToonCurrencyListFrame
+	
 	-- Get (or create and get) the character information.
 	local currencyFrameCharacterInfo = EMA.currencyFrameCharacterInfo[characterName]
 		--EMA.Print("Frame", characterName)
@@ -1605,6 +1665,7 @@ function EMA:DoShowToonsCurrency( characterName, currencyValues )
 	-- Update width of currency list.
 	EMA:CurrencyListSetColumnWidth()
 	EMAToonCurrencyListFrame:Show()
+	EMAToonCurrencyListFrameTwo:Show()
 end
 
 -- A EMA command has been received.

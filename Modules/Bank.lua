@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2019 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2020 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -41,20 +41,27 @@ EMA.moduleOrder = 20
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	global = {
+		['**'] = {
+			autoBankItemsListGlobal = {},
+		},
+	 },
 	profile = {
 		messageArea = EMAApi.DefaultMessageArea(),
 		showEMABankWindow = false,
+		globalBankList = false,
 		blackListItem = false,
 		BankBoEItems = false,
-		autoBankToonNameBoE = "",
+--		autoBankToonNameBoE = "",
 		BankTagName = EMAApi.AllGroup(),
 		autoBoEItemTag = EMAApi.AllGroup(),	
 		BankCRItems = false,
-		autoBankToonNameCR = "",
+--		autoBankToonNameCR = "",
 		autoCRItemTag = EMAApi.AllGroup(),
 		autoBankItemsList = {},
-		adjustMoneyWithBankBank = false,
-		goldAmountToKeepOnToon = 250,
+--		autoBankItemsAmount = "",
+--		adjustMoneyWithBankBank = false,
+--		goldAmountToKeepOnToon = 250,
 	},
 }
 
@@ -127,7 +134,8 @@ function EMA:OnInitialize()
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
 	EMA.autoBankItemLink = nil
-	EMA.autoBankToonName = nil
+--	EMA.autoBankToonName = nil
+--	EMA.autoBankItemsAmount = nil
 	EMA.BankItemTable = {}
 	EMA.ShiftkeyDown = false
 	--EMA.putItemsInGB = {}
@@ -197,17 +205,26 @@ function EMA:SettingsCreateBank( top )
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["Bank_LIST_HEADER"], movingTop, false )
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["BANK_LIST_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxShowEMABankWindow = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left2, 
+		halfWidth, 
+		left, 
 		movingTop, 
-		L["Bank_LIST"],
+		L["BANK_LIST"],
 		EMA.SettingsToggleShowEMABankWindow,
-		L["Bank_LIST_HELP"]
+		L["BANK_LIST_HELP"]
 	)	
+	EMA.settingsControl.checkBoxGlobalBankList = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		left3, 
+		movingTop, 
+		L["GLOBAL_LIST"],
+		EMA.SettingsToggleGlobalBankList,
+		L["GLOBAL_SETTINGS_LIST_HELP"]
+	)
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.BankItemsHighlightRow = 1
 	EMA.settingsControl.BankItemsOffset = 1
@@ -269,15 +286,16 @@ function EMA:SettingsCreateBank( top )
 		EMA.SettingsToggleBlackListItem,
 		L["BLACKLIST_ITEM_HELP"]
 	)
-	
-	EMA.settingsControl.tabNumListDropDownList = EMAHelperSettings:CreateEditBox(
+--[[	
+	EMA.settingsControl.autoBankItemsAmount = EMAHelperSettings:CreateEditBox(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left2,
 		movingTop,
-		L["BankTOON"]
-	)
-	EMA.settingsControl.tabNumListDropDownList:SetCallback( "OnEnterPressed",  EMA.EditBankToonName )
+		L["AMOUNT"]
+	)	
+	EMA.settingsControl.autoBankItemsAmount:SetCallback( "OnEnterPressed",  EMA.EditBankItemsAmount )
+]]	
 	--Group
 	EMA.settingsControl.BankItemsEditBoxBankTag = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
@@ -298,7 +316,7 @@ function EMA:SettingsCreateBank( top )
 		EMA.SettingsBankItemsAddClick
 	)
 	movingTop = movingTop -	buttonHeight		
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["Bank_OPTIONS"], movingTop, false )
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["BANK_OPTIONS"], movingTop, false )
 	movingTop = movingTop - editBoxHeight - 3
 	
 	EMA.settingsControl.checkBoxBankBoEItems = EMAHelperSettings:CreateCheckBox( 
@@ -306,18 +324,20 @@ function EMA:SettingsCreateBank( top )
 		thirdWidth, 
 		left, 
 		movingTop + movingTopEdit,
-		L["Bank_BOE_ITEMS"],
+		L["BANK_BOE_ITEMS"],
 		EMA.SettingsToggleBankBoEItems,
-		L["Bank_BOE_ITEMS_HELP"]
+		L["BANK_BOE_ITEMS_HELP"]
 	)	
+--[[	
 	EMA.settingsControl.tabNumListDropDownListBoE = EMAHelperSettings:CreateEditBox(
 		EMA.settingsControl, 
 		thirdWidth,	
 		left2,
 		movingTop,
 		L["BankTOON"]
-	)
+	)	
 	EMA.settingsControl.tabNumListDropDownListBoE:SetCallback( "OnEnterPressed",  EMA.EditBankToonNameBoE )	
+--]]	
 	EMA.settingsControl.BankTradeBoEItemsTagBoE = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		thirdWidth,	
@@ -334,10 +354,11 @@ function EMA:SettingsCreateBank( top )
 		thirdWidth, 
 		left, 
 		movingTop + movingTopEdit, 
-		L["Bank_REAGENTS"],
+		L["BANK_REAGENTS"],
 		EMA.SettingsToggleBankCRItems,
-		L["Bank_REAGENTS_HELP"]
+		L["BANK_REAGENTS_HELP"]
 	)
+--[[	
 	EMA.settingsControl.tabNumListDropDownListCR = EMAHelperSettings:CreateEditBox(
 		EMA.settingsControl, 
 		thirdWidth,	
@@ -345,7 +366,9 @@ function EMA:SettingsCreateBank( top )
 		movingTop,
 		L["BankTOON"]
 	)
+	
 	EMA.settingsControl.tabNumListDropDownListCR:SetCallback( "OnEnterPressed",  EMA.EditBankToonNameCR )	
+]]	
 	EMA.settingsControl.BankTradeCRItemsTagCR = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		thirdWidth,	
@@ -358,7 +381,7 @@ function EMA:SettingsCreateBank( top )
 		
 	movingTop = movingTop - editBoxHeight
 	movingTop = movingTop - editBoxHeight
-	
+--[[	
 	EMA.settingsControl.labelComingSoon = EMAHelperSettings:CreateContinueLabel( 
 		EMA.settingsControl, 
 		headingWidth, 
@@ -366,7 +389,6 @@ function EMA:SettingsCreateBank( top )
 		movingTop,
 		L["Bank_GOLD_COMING_SOON"] 
 	)	
---[[	
 	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaBankBank = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		headingWidth, 
@@ -435,7 +457,7 @@ function EMA:SettingsScrollRefresh()
 				blackListText = L["ITEM_ON_BLACKLIST"]
 			end
 			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[1].textString:SetText( BankItemsInformation.name )
-			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[2].textString:SetText( BankItemsInformation.GBTab )
+			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[2].textString:SetText( BankItemsInformation.amount )
 			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[3].textString:SetText( BankItemsInformation.tag )
 			EMA.settingsControl.BankItems.rows[iterateDisplayRows].columns[4].textString:SetText( blackListText )
 			-- Highlight the selected row.
@@ -454,8 +476,13 @@ function EMA:SettingsBankItemsRowClick( rowNumber, columnNumber )
 end
 
 function EMA:SettingsBankItemsRemoveClick( event )
-	StaticPopup_Show( "EMABank_CONFIRM_REMOVE_Bank_ITEMS" )
+	StaticPopup_Show( "EMABANK_CONFIRM_REMOVE_BANK_ITEMS" )
 end
+
+function EMA:SettingsToggleGlobalBankList( event, checked )
+	EMA.db.globalBankList = checked
+	EMA:SettingsRefresh()
+end	
 
 function EMA:SettingsEditBoxChangedBankItem( event, text )
 	EMA.autoBankItemLink = text
@@ -463,8 +490,8 @@ function EMA:SettingsEditBoxChangedBankItem( event, text )
 end
 
 function EMA:SettingsBankItemsAddClick( event )
-	if EMA.autoBankItemLink ~= nil and EMA.autoBankToonName ~= nil and EMA.db.BankTagName ~= nil then
-		EMA:AddItem( EMA.autoBankItemLink, EMA.autoBankToonName, EMA.db.BankTagName, EMA.db.blackListItem )
+	if EMA.autoBankItemLink ~= nil and EMA.db.BankTagName ~= nil then
+		EMA:AddItem( EMA.autoBankItemLink, EMA.db.BankTagName, EMA.db.blackListItem )
 		EMA.autoBankItemLink = nil
 		EMA:SettingsRefresh()
 	end
@@ -490,12 +517,12 @@ function EMA:SettingsToggleBlackListItem( event, checked )
 end	
 
 
-function EMA:EditBankToonName (event, value )
+function EMA:EditBankItemsAmount (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
 		return 
 	end
-	EMA.autoBankToonName = value
+	EMA.autoBankItemsAmount = value
 	EMA:SettingsRefresh()
 end
 
@@ -504,16 +531,16 @@ function EMA:SettingsToggleBankBoEItems(event, checked )
 	EMA:SettingsRefresh()
 end
 
-
+--[[
 function EMA:EditBankToonNameBoE (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
 		return 
 	end
-	EMA.db.autoBankToonNameBoE = value
+--	EMA.db.autoBankToonNameBoE = value
 	EMA:SettingsRefresh()
 end
-
+]]
 function EMA:GroupListDropDownListBoE (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
@@ -533,7 +560,7 @@ function EMA:SettingsToggleBankCRItems(event, checked )
 	EMA.db.BankCRItems = checked
 	EMA:SettingsRefresh()
 end
-
+--[[
 function EMA:EditBankToonNameCR (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
@@ -542,7 +569,7 @@ function EMA:EditBankToonNameCR (event, value )
 	EMA.db.autoBankToonNameCR = value
 	EMA:SettingsRefresh()
 end
-
+]]
 function EMA:GroupListDropDownListCR (event, value )
 	-- if nil or the blank group then don't get Name.
 	if value == " " or value == nil then 
@@ -576,7 +603,7 @@ function EMA:SettingsToggleShowEMABankWindow( event, checked )
 	EMA.db.showEMABankWindow = checked
 	EMA:SettingsRefresh()
 end
-
+--[[
 function EMA:SettingsToggleAdjustMoneyOnToonViaBankBank( event, checked )
 	EMA.db.adjustMoneyWithBankBank = checked
 	EMA:SettingsRefresh()
@@ -594,19 +621,21 @@ function EMA:EditBoxChangedGoldAmountToLeaveOnToon( event, text )
 	end
 	EMA:SettingsRefresh()
 end
-
+]]
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.messageArea = settings.messageArea
+		EMA.db.globalBankdList = settings.globalBankList
 		EMA.db.showEMABankWindow = settings.showEMABankWindow
 		EMA.db.BankTagName = settings.BankTagName
 		EMA.db.BankBoEItems = settings.BankBoEItems
-		EMA.db.autoBankToonNameBoE = settings.autoBankToonNameBoE
+--		EMA.db.autoBankItemsAmount = settings.autoBankItemsAmount
+--		EMA.db.autoBankToonNameBoE = settings.autoBankToonNameBoE
 		EMA.db.autoBoEItemTag = settings.autoBoEItemTag
 		EMA.db.BankCRItems = settings.BankCRItems
-		EMA.db.autoBankToonNameCR = settings.autoBankToonNameCR
+--		EMA.db.autoBankToonNameCR = settings.autoBankToonNameCR
 		EMA.db.autoCRItemTag = settings.autoCRItemTag
 		EMA.db.autoBankItemsList = EMAUtilities:CopyTable( settings.autoBankItemsList )
 		EMA.db.adjustMoneyWithBankBank = settings.adjustMoneyWithBankBank
@@ -627,13 +656,16 @@ end
 
 function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxShowEMABankWindow:SetValue( EMA.db.showEMABankWindow )
+	EMA.settingsControl.checkBoxGlobalBankList:SetValue( EMA.db.globalBankList )
+	EMA.settingsControl.checkBoxGlobalBankList:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.BankItemsEditBoxBankTag:SetText( EMA.db.BankTagName )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
+--	EMA.settingsControl.autoBankItemsAmount:SetText( EMA.db.autoBankItemsAmount ) 
 	EMA.settingsControl.checkBoxBankBoEItems:SetValue( EMA.db.BankBoEItems )
-	EMA.settingsControl.tabNumListDropDownListBoE:SetText( EMA.db.autoBankToonNameBoE )
+--	EMA.settingsControl.tabNumListDropDownListBoE:SetText( EMA.db.autoBankToonNameBoE )
 	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetText( EMA.db.autoBoEItemTag )
 	EMA.settingsControl.checkBoxBankCRItems:SetValue( EMA.db.BankCRItems )
-	EMA.settingsControl.tabNumListDropDownListCR:SetText( EMA.db.autoBankToonNameCR )
+--	EMA.settingsControl.tabNumListDropDownListCR:SetText( EMA.db.autoBankToonNameCR )
 	EMA.settingsControl.BankTradeCRItemsTagCR:SetText( EMA.db.autoCRItemTag )
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 --	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaBankBank:SetValue( EMA.db.adjustMoneyWithBankBank )
@@ -641,15 +673,16 @@ function EMA:SettingsRefresh()
 --	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetDisabled( not EMA.db.adjustMoneyWithBankBank )
 	EMA.settingsControl.BankItemsEditBoxBankItem:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.showEMABankWindow )
+--	EMA.settingsControl.autoBankItemsAmount:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.BankItemsEditBoxBankTag:SetDisabled( not EMA.db.showEMABankWindow )	
-	EMA.settingsControl.tabNumListDropDownList:SetDisabled( not EMA.db.showEMABankWindow )
+--	EMA.settingsControl.tabNumListDropDownList:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.BankItemsButtonRemove:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.BankItemsButtonAdd:SetDisabled( not EMA.db.showEMABankWindow )	
 	EMA.settingsControl.checkBoxBankBoEItems:SetDisabled( not EMA.db.showEMABankWindow )
-	EMA.settingsControl.tabNumListDropDownListBoE:SetDisabled( not EMA.db.showEMABankWindow )
+--	EMA.settingsControl.tabNumListDropDownListBoE:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.BankTradeBoEItemsTagBoE:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.checkBoxBankCRItems:SetDisabled( not EMA.db.showEMABankWindow )
-	EMA.settingsControl.tabNumListDropDownListCR:SetDisabled( not EMA.db.showEMABankWindow )
+--	EMA.settingsControl.tabNumListDropDownListCR:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA.settingsControl.BankTradeCRItemsTagCR:SetDisabled( not EMA.db.showEMABankWindow )
 	EMA:SettingsScrollRefresh()
 
@@ -668,15 +701,23 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:GetBankItemsMaxPosition()
-	return #EMA.db.autoBankItemsList
+	if EMA.db.globalBankList == true then
+		return #EMA.db.global.autoBankItemsListGlobal
+	else
+		return #EMA.db.autoBankItemsList
+	end	
 end
 
 function EMA:GetBankItemsAtPosition( position )
-	return EMA.db.autoBankItemsList[position]
+	if EMA.db.globalBankList == true then
+		return EMA.db.global.autoBankItemsListGlobal[position]
+	else
+		return EMA.db.autoBankItemsList[position]
+	end	
 end
 
-function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
-	--EMA:Print("testDBAdd", itemLink, GBTab, itemTag )
+function EMA:AddItem( itemLink, itemTag, blackList )
+	--EMA:Print("testDBAdd", itemLink, itemTag )
 	-- Get some more information about the item.
 	local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo( itemLink )
 	-- If the item could be found.
@@ -684,48 +725,47 @@ function EMA:AddItem( itemLink, GBTab, itemTag, blackList )
 		local itemInformation = {}
 		itemInformation.link = link
 		itemInformation.name = name
-		itemInformation.GBTab = GBTab
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
+		if EMA.db.globalBankList == true then
+			table.insert( EMA.db.global.autoBankItemsListGlobal, itemInformation )
+		else	
 			table.insert( EMA.db.autoBankItemsList, itemInformation )
-			EMA:SettingsRefresh()			
-			EMA:SettingsBankItemsRowClick( 1, 1 )
+		end	
+			
+		EMA:SettingsRefresh()			
+		EMA:SettingsBankItemsRowClick( 1, 1 )
 	end	
 end
 
 function EMA:RemoveItem()
-	table.remove( EMA.db.autoBankItemsList, EMA.settingsControl.BankItemsHighlightRow )
+	if EMA.db.globalBankList == true then
+		table.remove( EMA.db.global.autoBankItemsListGlobal, EMA.settingsControl.BankItemsHighlightRow )
+	else
+		table.remove( EMA.db.autoBankItemsList, EMA.settingsControl.BankItemsHighlightRow )
+	end
 	EMA:SettingsRefresh()
 	EMA:SettingsBankItemsRowClick( EMA.settingsControl.BankItemsHighlightRow  - 1, 1 )		
 end
 
 
-function EMA:Bank_SHOW(event, ...)
+function EMA:BANKFRAME_OPENED(event, ...)
 	--EMA:Print("test")
 	if EMA.db.showEMABankWindow == true then
 		if not IsShiftKeyDown() then
-			EMA:AddAllToBankBox()
+			EMA:AddAllToBank()
 		else 
 			EMA.ShiftkeyDown = true
 		end	
 	end
-	--[[
-	if EMA.db.adjustMoneyWithBankBank == true then
-		 AddGoldToBankBox()
-	end
-	]]
 end
 
-function EMA:Bank_CLOSED(event, ...)
+function EMA:BANKFRAME_CLOSED(event, ...)
 	EMA.ShiftkeyDown = false
 end
 
-function EMA:AddAllToBankBox()
+function EMA:AddAllToBank()
 	--EMA:Print("run")
-	BankFrameTab_OnClick(nil, "2")
-	SendBankNameEditBox:SetText( "" )
-	SendBankNameEditBox:ClearFocus()
-	local count = 1 
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
@@ -733,21 +773,20 @@ function EMA:AddAllToBankBox()
 			if ( item ) then
 				local bagItemLink = item:GetItemLink()
 				if ( bagItemLink ) then	
+					local canSend = false
 					local itemLink = item:GetItemLink()
 					local location = item:GetItemLocation()
 					local itemType = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
-					local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
-					local canSend = false
-					local toonName = nil
+					local _,_,_,_,_,_,_, itemStackCount,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
+				--EMA:Print("I have", itemLink, countBank, "inMyBank")
 					if EMA.db.BankBoEItems == true then
 						if itemType ~= 0 then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoBoEItemTag ) == true then
 								if isBop == false then
 									if itemRarity == 2 or itemRarity == 3 or itemRarity == 4 then	
 										canSend = true
-										toonName = EMA.db.autoBankToonNameBoE
 									end			
 								end
 							end										
@@ -757,76 +796,35 @@ function EMA:AddAllToBankBox()
 						if isCraftingReagent == true then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoCRItemTag ) == true then
 								if isBop == false then
-									canSend = true
-									toonName = EMA.db.autoBankToonNameCR		
+									canSend = true		
 								end
 							end										
 						end
 					end
-					for position, itemInformation in pairs( EMA.db.autoBankItemsList ) do
+					if EMA.db.globalBankList == true then
+						itemTable = EMA.db.global.autoBankItemsListGlobal
+					else
+						itemTable = EMA.db.autoBankItemsList
+					end
+					for position, itemInformation in pairs( itemTable ) do
+					--	EMA:Print("test2", itemInformation.tag, itemInformation.link, "vs", itemLink )
 						if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
+							local dataAmount = tonumber( itemInformation.amount )
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, itemInformation.tag ) == true then
-								--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )
-								--EMA:Print("test", itemLink)
 								canSend = true
-								toonName = itemInformation.GBTab
-							end
-							if itemInformation.blackList == true then
-								canSend = false
-							end
+								if itemInformation.blackList == true then
+									canSend = false
+								end
+							end	
 						end
 					end
-					if canSend == true and toonName ~= "" and toonName ~= nil then	
-						local currentBankToon = SendBankNameEditBox:GetText()
-						local characterName = EMAUtilities:AddRealmToNameIfMissing( toonName )
-						if toonName == currentBankToon or currentBankToon == "" and characterName ~= EMA.characterName then
-							if count <= ATTACHMENTS_MAX_SEND then	
-								--EMA:Print("sending Bank:", count)
-								count = count + 1
-								SendBankNameEditBox:SetText( toonName )
-								SendBankSubjectEditBox:SetText( L["SENT_AUTO_BankER"] )
-								PickupContainerItem( bagID, slotID )
-								UseContainerItem( bagID , slotID  )
-							end	
-						end	
+					
+					if canSend == true then
+						PickupContainerItem( bagID, slotID )
+						UseContainerItem( bagID , slotID, nil, true )
 					end
 				end	
 			end
 		end
-	end	
-	EMA:ScheduleTimer( "DoSendBank", 0.5, nil )
-end
-
-function EMA:Bank_SEND_SUCCESS( event, ... )
-	--EMA:Print("try sendBank Again")
-	if EMA.ShiftkeyDown == false then
-		EMA:ScheduleTimer( "AddAllToBankBox", 1, nil )
-	end	
-end
-
-function EMA:DoSendBank()
-	--EMA:Print("newSendRun")
-	for iterateBankSlots = 1, ATTACHMENTS_MAX_SEND do
-		if HasSendBankItem( iterateBankSlots ) == true then
-			SendBankFrame_SendBank()	
-			break
-		end
-	end						
-end	
-
--- gold
-function AddGoldToBankBox()
-	local moneyToKeepOnToon = tonumber( EMA.db.goldAmountToKeepOnToon ) 
-	local moneyOnToon = GetMoney()
-	local moneyToDepositOrWithdraw = moneyOnToon - moneyToKeepOnToon
-	if moneyToDepositOrWithdraw == 0 then
-		return
-	end
-	if moneyToDepositOrWithdraw > 0 then
-		--local tradePlayersName = GetUnitName("NPC", true)
-		--local characterName = EMAUtilities:AddRealmToNameIfMissing( tradePlayersName )
-		--if EMAApi.IsCharacterTheMaster(characterName) == true and EMAUtilities:CheckIsFromMyRealm(characterName) == true then	
-			SendBankMoneyGold:SetText(moneyToDepositOrWithdraw)
-		--end
 	end
 end
