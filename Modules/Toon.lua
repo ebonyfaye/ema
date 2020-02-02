@@ -82,6 +82,7 @@ EMA.settings = {
 		teleportLFGWithTeam = false,
 		rollWithTeam = false,
 		toggleWarMode = false,
+		autoAcceptPartySyncRequest = false,
 		--Debug Suff
 		testAlwaysOff = true
 	},
@@ -300,7 +301,16 @@ local function SettingsCreateToon( top )
 		EMA.SettingsToggleWarMode,
 		L["WAR_MODE_HELP"]
 	)	
-	
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControlToon.checkBoxTogglePartySyncRequest = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlToon, 
+		halfWidth, 
+		left, 
+		movingTop, 
+		L["PARTY_SYNC"],
+		EMA.SettingsTogglePartySyncRequest,
+		L["PARTY_SYNC_HELP"]
+	)	
 	movingTop = movingTop - checkBoxHeight			
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["GROUPTOOLS_HEADING"], movingTop, false )
 	movingTop = movingTop - headingHeight
@@ -648,6 +658,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlToon.checkBoxLFGTeleport:SetValue( EMA.db.teleportLFGWithTeam )
 	EMA.settingsControlToon.checkBoxLootWithTeam:SetValue( EMA.db.rollWithTeam )
 	EMA.settingsControlToon.checkBoxToggleWarMode:SetValue( EMA.db.toggleWarMode )
+	EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetValue( EMA.db.autoAcceptPartySyncRequest )
 	EMA.settingsControlToon.dropdownRequestArea:SetValue( EMA.db.requestArea )
 	EMA.settingsControlMerchant.checkBoxAutoRepair:SetValue( EMA.db.autoRepair )
 	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( EMA.db.autoRepairUseGuildFunds )
@@ -735,6 +746,11 @@ end
 
 function EMA:SettingsToggleWarMode(event, checked )
 	EMA.db.toggleWarMode = checked
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsTogglePartySyncRequest(event, checked )
+	EMA.db.autoAcceptPartySyncRequest = checked
 	EMA:SettingsRefresh()
 end	
 
@@ -907,6 +923,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
 	EMA:RegisterEvent( "PLAYER_FLAGS_CHANGED", "WARMODE" )
+	EMA:RegisterEvent( "QUEST_SESSION_CREATED" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
@@ -955,6 +972,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.teleportLFGWithTeam = settings.teleportLFGWithTeam
 		EMA.db.rollWithTeam = settings.rollWithTeam
 		EMA.db.toggleWarMode = settings.toggleWarMode
+		EMA.db.autoAcceptPartySyncRequest = settings.autoAcceptPartySyncRequest
 		EMA.db.autoRepair = settings.autoRepair
 		EMA.db.autoRepairUseGuildFunds = settings.autoRepairUseGuildFunds
 		EMA.db.warningArea = settings.warningArea
@@ -1575,6 +1593,14 @@ function EMA:LOSS_OF_CONTROL_ADDED( event, ... )
 		end
 	end
 end
+
+function EMA:QUEST_SESSION_CREATED( event, ...)
+	--EMA:Print("test")
+	if EMA.db.autoAcceptPartySyncRequest == true then
+		C_QuestSession.SendSessionBeginResponse( "true" )
+	end	
+end	
+
 
 -- A EMA command has been received.
 function EMA:EMAOnCommandReceived( characterName, commandName, ... )

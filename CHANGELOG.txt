@@ -2,6 +2,16 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.3.0-Release-v2.4(0138)
+Game Version: 8.3.0
+Release Date: 02/02/2020
+
+## Toon
+	- Added Auto Accept Party Sync Requests.
+	
+
+---------------------------
+
 EMA Version: v8.3.0-Release-v2.3(0137)
 Game Version: 8.3.0
 Release Date: 01/02/2020

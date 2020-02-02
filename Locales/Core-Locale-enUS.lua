@@ -655,6 +655,8 @@ L["ROLL_LOOT"] = "Roll Loot With Team"
 L["ROLL_LOOT_HELP"] = "Roll Loot With the Team \nIf Any Instance Has A Roll On A Item"
 L["WAR_MODE"] = "Toggle WarMode With Team"
 L["WAR_MODE_HELP"] = "Toggle WarMode \"World PvP\" With The Team"
+L["PARTY_SYNC"] = "Auto Accept Party Sync Requests"
+L["PARTY_SYNC_HELP"] = "Team Members Auto Accept Party Sync Requests"
 -- Warnings
 L["COMBAT"] = "Combat"
 L["WARN_HIT"] = "Warn If Minion Gets Hit"
