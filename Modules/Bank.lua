@@ -764,6 +764,18 @@ function EMA:BANKFRAME_CLOSED(event, ...)
 	EMA.ShiftkeyDown = false
 end
 
+function EMA:AmountInBank( itemLink )
+	EMA:Print("test", itemLink )
+	local countBags = GetItemCount( itemLink )
+	local countTotal = GetItemCount( itemLink , true)
+	local countBank = countTotal - countBags
+	EMA:Print("test2", countBags, countTotal, countBank )
+	
+	return countBank
+
+
+end
+
 function EMA:AddAllToBank()
 	--EMA:Print("run")
 	for bagID = 0, NUM_BAG_SLOTS do
@@ -780,6 +792,7 @@ function EMA:AddAllToBank()
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
 					local _,_,_,_,_,_,_, itemStackCount,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
+				--local countBank = EMA:AmountInBank( itemLink )
 				--EMA:Print("I have", itemLink, countBank, "inMyBank")
 					if EMA.db.BankBoEItems == true then
 						if itemType ~= 0 then
@@ -821,7 +834,12 @@ function EMA:AddAllToBank()
 					
 					if canSend == true then
 						PickupContainerItem( bagID, slotID )
-						UseContainerItem( bagID , slotID, nil, true )
+						--EMA:Print("test", isCraftingReagent )
+						if isCraftingReagent == true then
+							UseContainerItem( bagID , slotID, nil, true )
+						else
+							UseContainerItem( bagID , slotID )
+						end						
 					end
 				end	
 			end

@@ -2,6 +2,20 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.3.0-Release-v2.4(0139)
+Game Version: 8.3.0
+Release Date: 07/02/2020
+
+## Bank
+	- Fixed a bug that would not put normal items in the bank
+	
+## information
+	- Fixed  Issue #96
+
+
+
+---------------------------
+
 EMA Version: v8.3.0-Release-v2.4(0138)
 Game Version: 8.3.0
 Release Date: 02/02/2020

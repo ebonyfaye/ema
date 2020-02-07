@@ -1665,7 +1665,7 @@ function EMA:DoShowToonsCurrency( characterName, currencyValues )
 	-- Update width of currency list.
 	EMA:CurrencyListSetColumnWidth()
 	EMAToonCurrencyListFrame:Show()
-	EMAToonCurrencyListFrameTwo:Show()
+	--EMAToonCurrencyListFrameTwo:Show()
 end
 
 -- A EMA command has been received.
