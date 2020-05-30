@@ -48,6 +48,13 @@ function EbonyUtilities:ClearTable( object )
 	end
 end
 
+function EbonyUtilities:GetStatusPercent(val, max)
+	if (max > 0) then
+		return (val / max)
+	end
+	return 1.0
+end
+
 function EbonyUtilities:Lowercase( name )
 	if name ~= nil then
 		return string.utf8lower( name )

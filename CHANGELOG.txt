@@ -2,6 +2,17 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.3.0-Release-v2.4(0140)
+Game Version: 8.3.0
+Release Date: 30/05/2020
+
+## Toon
+	- Updated Summon API
+	- Durability Warning will not warn ( "(ind)%" )
+
+
+---------------------------
+
 EMA Version: v8.3.0-Release-v2.4(0139)
 Game Version: 8.3.0
 Release Date: 07/02/2020

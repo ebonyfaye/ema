@@ -875,17 +875,6 @@ L["REWARDS"] = "Rewards"
 L["REWARDS_TEXT"] = "Completing This Quest Will \nReward You With:"
 L["HEADER_MOUSE_OVER_QUESTWATCHER"] = "Hold Down \"ALT\" Key To Move EMA Objectives Tracker"
 L["UPDATE_MOUSE_OVER_QUESTWATCHER"] = "Force A Update Of The EMA Objectives Tracker"
-------------------------
--- Bank Locale
-L["REMOVE_BANK_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Bank Items List?"
-L["BANK_LIST_HEADER"] = "Bank Items List" 
-L["BANK_LIST"] = "Put The Items In The Bank"
-L["BANK_LIST_HELP"] = "Automatically Put Listed Items Below In The Bank"
-L["BANK_BOE_ITEMS"] = "Places All BoE Items In The Bank" 
-L["BANK_BOE_ITEMS_HELP"] = "Places All Binds When Equipped Items In The Bank"
-L["BANK_REAGENTS"] = "Places All Reagents In Bank"
-L["BANK_REAGENTS_HELP"] = "Places All Crafting Reagents Items In The Bank"
-L["BANK_OPTIONS"] = "Extra Bank Options"
 
 ------------------------
 -- Guild Locale
@@ -948,10 +937,15 @@ end
 -----------------------
 -- Bank Locale
 L["BANK"] = "Bank"
-L["REMOVE_BANK_LIST"] = "Remove Item From Bank List"
-
-
-
+L["REMOVE_BANK_LIST"] = "Are You Sure You Wish To Remove The Selected Item From The Bank Items List?"
+L["BANK_LIST_HEADER"] = "Bank Items List" 
+L["BANK_LIST"] = "Put The Items In The Bank"
+L["BANK_LIST_HELP"] = "Automatically Put Listed Items Below In The Bank"
+L["BANK_BOE_ITEMS"] = "Places All BoE Items In The Bank" 
+L["BANK_BOE_ITEMS_HELP"] = "Places All Binds When Equipped Items In The Bank"
+L["BANK_REAGENTS"] = "Places All Reagents In Bank"
+L["BANK_REAGENTS_HELP"] = "Places All Crafting Reagents Items In The Bank"
+L["BANK_OPTIONS"] = "Extra Bank Options"
 
 -----------------------
 -- LDBBar Locale
