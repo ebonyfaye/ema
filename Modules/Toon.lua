@@ -1481,7 +1481,7 @@ function EMA:UPDATE_INVENTORY_DURABILITY(event, agr1)
 	if EMA.db.warnWhenDurabilityDropsBelowX == false then
 		return
 	end
-	EMA:Print("Test Durability Fired")
+	--EMA:Print("Test Durability Fired")
 	local curTotal, maxTotal, broken = 0, 0, 0
 	local durability = 100
 	for i = 1, 17 do
