@@ -2,7 +2,22 @@
 ChangeLogs:
 ---------------------------
 
-EMA Version: v8.3.0-Release-v2.4(0140)
+EMA Version: v8.3.0-Release-v2.4(0142)
+Game Version: 8.3.0
+Release Date: 16/07/2020
+
+## Toon
+	- Fixed a bug with Toggle WarMode 
+	
+# item-Bar
+	-- Removed Add Add Satche ls Items To Bar due to a Big API change
+
+
+
+
+---------------------------
+
+EMA Version: v8.3.0-Release-v2.4(0140/1)
 Game Version: 8.3.0
 Release Date: 30/05/2020
 

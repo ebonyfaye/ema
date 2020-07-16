@@ -1364,25 +1364,23 @@ function EMA:CONFIRM_SUMMON( event, sender, location, ... )
 end
 
 function EMA:WARMODE(event, ...)
-	if EMA.db.toggleWarMode == false then
-		return
-	end
-	if C_PvP.IsWarModeFeatureEnabled() == true then
-		local isWarMode = C_PvP.IsWarModeDesired()
-		if C_PvP.CanToggleWarMode(isWarMode) == true then
-			--EMA:Print("Send", isWarMode, EMA.isInternalCommand )
-			if EMA.isInternalCommand == false then	
-				EMA:EMASendCommandToTeam( EMA.COMMAND_WAR_MODE, isWarMode )
-				EMA.isInternalCommand = true
+	if EMA.db.toggleWarMode == true then
+		if C_PvP.IsWarModeFeatureEnabled() == true then
+			local isWarMode = C_PvP.IsWarModeDesired()
+			if C_PvP.CanToggleWarMode(isWarMode) == true then
+				if EMA.isInternalCommand == false then	
+					--EMA:Print("SendWarMode", isWarMode, EMA.isInternalCommand )
+					EMA:EMASendCommandToTeam( EMA.COMMAND_WAR_MODE, isWarMode )
+				end	
 			end	
-		end	
-	end
+		end
+	end	
 end
 
 function EMA:DoWarMode( isWarMode )
-	--EMA:Print("testwarmode", isWarMode )
 	EMA.isInternalCommand = true
 	if C_PvP.CanToggleWarMode( isWarMode ) == true and isWarMode ~= nil then
+		--EMA:Print("testwarmode", isWarMode )
 		C_PvP.SetWarModeDesired( isWarMode )
 	end
 	EMA.isInternalCommand = false
@@ -1631,10 +1629,12 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		end	
 	end
 	if commandName == EMA.COMMAND_WAR_MODE then
-		if characterName == self.characterName then
-			EMA.isInternalCommand = false
-		else	
+		if characterName ~= self.characterName then
+			--EMA.isInternalCommand = false
 			EMA.DoWarMode( characterName, ... )
 		end	
 	end
 end
+
+
+--EMAApi.isInternalCommand = EMA.isInternalCommand

@@ -77,8 +77,8 @@ EMA.settings = {
 		itemUseVerticalSpacing = 3,
 		itemUseHorizontalSpacing = 2,
 		autoAddQuestItemsToBar = false,
-		autoAddArtifactItemsToBar = false,
-		autoAddSatchelsItemsToBar = false,
+--		autoAddArtifactItemsToBar = false,
+--		autoAddSatchelsItemsToBar = false,
 		hideClearButton = false,
 		itemBarsSynchronized = true,
 		numberOfItems = 10,
@@ -552,6 +552,7 @@ function EMA:SyncButton()
 	end	
 end
 
+--[[
 -- Add satchels to item bar.
 function EMA:CheckForSatchelsItemAndAddToBar()
 	for bag = 0, NUM_BAG_SLOTS do
@@ -585,6 +586,8 @@ function EMA:CheckForArtifactItemAndAddToBar()
 		end
 	end
 end		
+
+]]
 	
 --Checks the item is in the Toon players bag 8.0.1 using min/min code!
 function EMA:IsInInventory(itemID)
@@ -808,7 +811,6 @@ local function SettingsCreateOptions( top )
 		EMA.SettingsToggleAutoAddArtifactItem,
 		L["ADD_ARTIFACT_ITEMS_HELP"]
 	)	
-	]]
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -819,6 +821,7 @@ local function SettingsCreateOptions( top )
 		EMA.SettingsToggleAutoAddSatchelsItem,
 		L["ADD_SATCHEL_ITEMS_HELP"]
 	)
+	]]
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
 	EMA.settingsControl.displayOptionsCheckBoxHideClearButton = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
@@ -989,7 +992,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.displayOptionsItemUseNumberOfRows:SetValue( EMA.db.numberOfRows )
 	EMA.settingsControl.displayOptionsCheckBoxAutoAddQuestItem:SetValue( EMA.db.autoAddQuestItemsToBar )
 	--EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem:SetValue( EMA.db.autoAddArtifactItemsToBar )
-	EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem:SetValue( EMA.db.autoAddSatchelsItemsToBar )
+	--EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem:SetValue( EMA.db.autoAddSatchelsItemsToBar )
 	EMA.settingsControl.displayOptionsCheckBoxHideClearButton:SetValue( EMA.db.hideClearButton )
 	EMA.settingsControl.displayOptionsCheckBoxItemBarsSynchronized:SetValue( EMA.db.itemBarsSynchronized )
 	EMA.settingsControl.displayOptionsItemUseScaleSlider:SetValue( EMA.db.itemUseScale )
@@ -1010,7 +1013,7 @@ function EMA:SettingsRefresh()
 		EMA.settingsControl.displayOptionsItemUseNumberOfRows:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxAutoAddQuestItem:SetDisabled( not EMA.db.showItemUse )
 		--EMA.settingsControl.displayOptionsCheckBoxAutoAddArtifactItem:SetDisabled( not EMA.db.showItemUse )
-		EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem:SetDisabled( not EMA.db.showItemUse )
+		--EMA.settingsControl.displayOptionsCheckBoxAutoAddSatchelsItem:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxHideClearButton:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsCheckBoxItemBarsSynchronized:SetDisabled( not EMA.db.showItemUse )
 		EMA.settingsControl.displayOptionsItemUseScaleSlider:SetDisabled( not EMA.db.showItemUse )
@@ -1060,7 +1063,7 @@ function EMA:SettingsToggleAutoAddQuestItem( event, checked )
 	EMA.db.autoAddQuestItemsToBar = checked
 	EMA:SettingsRefresh()
 end
-
+--[[
 function EMA:SettingsToggleAutoAddArtifactItem( event, checked )
 	EMA.db.autoAddArtifactItemsToBar = checked
 	EMA:SettingsRefresh()
@@ -1070,7 +1073,7 @@ function EMA:SettingsToggleAutoAddSatchelsItem( event, checked )
 	EMA.db.autoAddSatchelsItemsToBar = checked
 	EMA:SettingsRefresh()
 end
-
+]]
 function EMA:SettingsToggleHideClearButton(event, checked )
 	EMA.db.hideClearButton = checked
 	EMA:SettingsRefresh()
@@ -1201,7 +1204,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.itemUseHorizontalSpacing = settings.itemUseHorizontalSpacing
 		EMA.db.autoAddQuestItemsToBar = settings.autoAddQuestItemsToBar
 		--EMA.db.autoAddArtifactItemsToBar = settings.autoAddArtifactItemsToBar
-		EMA.db.autoAddSatchelsItemsToBar = settings.autoAddSatchelsItemsToBar
+		--EMA.db.autoAddSatchelsItemsToBar = settings.autoAddSatchelsItemsToBar
 		EMA.db.hideClearButton = settings.hideClearButton
 		EMA.db.itemBarsSynchronized = settings.itemBarsSynchronized
 		EMA.db.numberOfItems = settings.numberOfItems
@@ -1268,9 +1271,11 @@ function EMA:BAG_UPDATE_DELAYED()
 	if EMA.db.showItemCount == true then 
 		EMA:GetEMAItemCount()
 	end
+	--[[
 	if EMA.db.autoAddSatchelsItemsToBar == true then
 		EMA:CheckForSatchelsItemAndAddToBar()
 	end	
+	]]
 end
 
 function EMA:QUEST_UPDATE()
@@ -1291,11 +1296,10 @@ function EMA:ITEM_PUSH()
 	if EMA.db.autoAddArtifactItemsToBar == true then
 		EMA:ScheduleTimer( "CheckForArtifactItemAndAddToBar", 1 )
 	end
-	]]
 	if EMA.db.autoAddSatchelsItemsToBar == true then
 		EMA:ScheduleTimer( "CheckForSatchelsItemAndAddToBar", 1 )
 	end	
-	
+	]]
 end
 
 function EMA:PLAYER_ENTERING_WORLD( event, ... )
@@ -1450,4 +1454,4 @@ end
 
 --EMA QUEST API
 EMAApi.GetMaxItemCountFromItemID = GetMaxItemCountFromItemID
-EMAApi.QuestTest = EMA.CheckForSatchelsItemAndAddToBar
+--EMAApi.QuestTest = EMA.CheckForSatchelsItemAndAddToBar
