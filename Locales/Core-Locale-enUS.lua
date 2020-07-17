@@ -109,6 +109,7 @@ L["ITEM_USE"] = "Item Use"
 L["VENDER_LIST_MODULE"] = "Sell List"
 L["INTERACTION"] = "Interaction"
 L["CURRENCY"] = "Currency"
+L["INFORMATION"] = "Information"
 L["TOON"] = "Toon"
 L["FOLLOW"] = "Follow"
 L["PURCHASE"] = "Purchase"
@@ -445,7 +446,7 @@ L["I_AM_UNABLE_TO_FLY_TO_A"] = function( nodename )
 	return string.format( "I Am Unable To Fly To %s.", nodename )
 end
 --------------------------
--- Currency Locale
+-- infomation Locale
 L["EMA_CURRENCY"] = "Currency"
 L["SHOW_CURRENCY"] = "Show Currency"
 L["SHOW_CURRENCY_HELP"] = "Show The Currency Frame Window."
@@ -466,7 +467,28 @@ L["SPACE_FOR_POINTS"] = "Space For Points"
 L["SPACE_BETWEEN_VALUES"] = "Space Between Values"
 L["TOTAL"] = "Total"
 L["CURR"] = "Curr"
+L["CHAT_TRIGGER"] = "Chat !Triggers"
+L["CHAT_TRIGGERS"] = "Listen to Chat Triggers"
+L["CHAT_TRIGGERS_HELP"] = "Listen to !Triggers in \nParty/raid/guild to tell your team about things\n!emahelp"
+L["I_HAVE_X_GOLD"] = function( gold )
+	return string.format( "%s ", gold)
+end
 
+L["MY_KEY_STONE_IS"] = function( key )
+	return string.format( "%s", key )
+end
+L["MY_LATENCY_IS:X_MS_X_MS"] = function( home, world )
+	return string.format( "%s ms (Home) %s ms (World)", home, world )
+end
+L["MY_CURRENT_DURABILITY_IS"] = function (durabilityText)
+	return string.format( "Durability %s", durabilityText )
+end
+L["ITEMCOUNT:_x_BAGS_BANK"] = function (item, countBags, countTotal)
+	return string.format( "%s %s (Bags) %s (Bank)", item, countBags, (countTotal - countBags) )
+end	
+L["BAG_FREE_SPACE"] = function (numFreeSlots, numTotalSlots)
+	return string.format( "%s (Free) / %s (Total)", numFreeSlots, numTotalSlots )
+end	
 
 --------------------------
 -- Display Team Locale

@@ -128,7 +128,7 @@ function EbonyUtilities:MoneyString( value )
 			silverFormat = ""
 		end
 	end
-	return gold, silver, copper	
+	return BreakUpLargeNumbers(gold), silver, copper	
 end
 
 

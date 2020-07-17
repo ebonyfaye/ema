@@ -29,10 +29,10 @@ EMA.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 --  Constants and Locale for this module.
 EMA.moduleName = "Information"
 EMA.settingsDatabaseName = "CurrProfileDB"
-EMA.chatCommand = "ema-information"
+EMA.chatCommand = "ema-info"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["DISPLAY"]
-EMA.moduleDisplayName = L["CURRENCY"]
+EMA.moduleDisplayName = L["INFORMATION"]
 -- Icon 
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\SellIcon.tga"
 -- order
@@ -95,6 +95,7 @@ EMA.currTypes.PrismaticManapearl = 1721
 --8.3
 EMA.currTypes.CoalescingVisions = 1755
 EMA.currTypes.CorruptedMementos = 1719
+EMA.currTypes.echoesOfNyalotha = 1803
 
 -------------------------------------- End of edit --------------------------------------------------------------
 
@@ -108,6 +109,7 @@ end
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
+		currChatTrigger = false, 
 		currGold = true,
 		currGoldInGuildBank = false,
 		-- Currency default's
@@ -266,6 +268,21 @@ function EMA:SettingsCreateCurrency( top )
 	local left3 = left + (thirdWidth * 1)
 	local right = left + halfWidth + horizontalSpacing
 	local movingTop = top
+	-- A blank to get layout to show right?
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, "", movingTop, false )
+	movingTop = movingTop - headingHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["CHAT_TRIGGER"], movingTop, false )
+	movingTop = movingTop - headingHeight
+	EMA.settingsControl.checkBoxChatTrigger = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["CHAT_TRIGGERS"],
+		EMA.SettingsToggleChatTrigger,
+		L["CHAT_TRIGGERS_HELP"]
+	)
+	movingTop = movingTop - checkBoxHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["CURRENCY_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxCurrencyGold = EMAHelperSettings:CreateCheckBox( 
@@ -515,6 +532,7 @@ function EMA:OnEMAProfileChanged()
 end
 
 function EMA:SettingsRefresh()
+	EMA.settingsControl.checkBoxChatTrigger:SetValue( EMA.db.currChatTrigger )
 	EMA.settingsControl.checkBoxCurrencyGold:SetValue( EMA.db.currGold )
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank:SetValue( EMA.db.currGoldInGuildBank )
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank:SetDisabled( not EMA.db.currGold )
@@ -552,6 +570,11 @@ end
 
 function EMA:SettingsPushSettingsClick( event )
 	EMA:EMASendSettings()
+end
+
+function EMA:SettingsToggleChatTrigger( event, checked )
+	EMA.db.currChatTrigger = checked
+	EMA:SettingsRefresh()
 end
 
 function EMA:SettingsToggleCurrencyGold( event, checked )
@@ -715,6 +738,11 @@ end
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	-- WoW events.
+	EMA:RegisterEvent( "CHAT_MSG_PARTY", "DoChatCommand")
+	EMA:RegisterEvent( "CHAT_MSG_GUILD", "DoChatCommand")
+	EMA:RegisterEvent( "CHAT_MSG_PARTY_LEADER", "DoChatCommand")
+	EMA:RegisterEvent( "CHAT_MSG_RAID", "DoChatCommand")
+	EMA:RegisterEvent( "CHAT_MSG_RAID_LEADER", "DoChatCommand")
 	--EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	if EMA.db.currOpenStartUpMaster == true then
 		if EMAApi.IsCharacterTheMaster( self.characterName ) == true then
@@ -731,6 +759,7 @@ end
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
+		EMA.db.currChatTrigger = settings.currChatTrigger
 		EMA.db.currGold = settings.currGold
 		EMA.db.currGoldInGuildBank = settings.currGoldInGuildBank
 		EMA.db.CcurrTypeOne = settings.CcurrTypeOne
@@ -1666,6 +1695,203 @@ function EMA:DoShowToonsCurrency( characterName, currencyValues )
 	EMA:CurrencyListSetColumnWidth()
 	EMAToonCurrencyListFrame:Show()
 	--EMAToonCurrencyListFrameTwo:Show()
+end
+
+
+-------------------------------------------------------------------------------------------------------------
+-- Team Information Stuff.
+-------------------------------------------------------------------------------------------------------------
+
+local trigger = {
+	["!emahelp"] = true,
+	["!gold"] = true,
+	["!keys"] = true,
+	["!ping"] = true,
+	["!durability"] = true,
+	["!durr"] = true,
+	["!item"] = true,
+	["!bagspace"] = true
+}
+
+function EMA:DoChatCommand( event, msg, playerName, ... )
+	if EMA.db.currChatTrigger == false then
+		return
+	end
+	--EMA:Print("test3", event, msg, playerName )
+	msg = msg:lower()
+	for keyword in pairs(trigger) do
+		--EMA:Print("aa", msg, keyword, playerName)
+		if msg:match(keyword) then
+			if EMAApi.IsCharacterInTeam(playerName) == true then
+				if keyword == "!gold" then
+					--EMA:Print("triggerFound", keyword)
+					EMA:TellTeamGold( event, msg, playerName)
+				elseif keyword == "!keys" then
+					EMA:TellTeamKeys( event, msg, playerName)
+				elseif keyword == "!ping" then
+					EMA:TellTeamPing( event, msg, playerName)
+				elseif 	keyword == "!durability" or keyword == "!durr" then
+					EMA:TellTeamDurr( event, msg, playerName)
+				elseif keyword == "!item" then
+					EMA:TellTeamItem( event, msg, playerName)
+				elseif keyword == "!bagspace" then
+					EMA:TellTeamBagspace( event, msg, playerName)
+					
+				elseif keyword == "!emahelp" then
+					EMA:TriggerHelp( msg, playerName )
+				break
+				end	
+			end	
+		end
+	end
+end	
+
+function EMA:TriggerHelp( msg, playerName )
+	--EMA:Print("test?", playerName, EMA.CharacterName)
+	if  playerName == EMA.characterName then
+		EMA:Print( L["CHAT_TRIGGER"] )
+		for keyword in pairs(trigger) do
+		 EMA:Print(keyword)
+		 end
+	end
+end
+
+-- Report Gold. 
+function EMA:TellTeamGold( event, msg, playerName )
+	--EMA:Print("goldtest", event, msg)
+	local money = GetMoney()
+	local gold, silver, copper  = EMAUtilities:MoneyString(money)
+	local goldText = gold.." Gold "..silver.." Silver "..copper.." Copper"
+	local channel = nil 
+	if event == "CHAT_MSG_GUILD" then
+		channel = "GUILD"
+	elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" then
+		channel = "PARTY"
+	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+		channel = "RAID"
+	end
+	if channel ~= nil then
+		SendChatMessage(L["I_HAVE_X_GOLD"](goldText), channel) 
+	end
+end
+
+-- KeyStones
+function EMA:TellTeamKeys( event, msg, playerName)
+	local KeyStone = EMA:LookForKeyStones()
+	--EMA:Print("test", KeyStone)
+	local channel = nil 
+	if event == "CHAT_MSG_GUILD" then
+		channel = "GUILD"
+	elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" then
+		channel = "PARTY"
+	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+		channel = "RAID"
+	end
+	if channel ~= nil then
+		SendChatMessage(L["MY_KEY_STONE_IS"](KeyStone), channel)
+	end
+end	
+
+function EMA:LookForKeyStones()
+	for bagID = 0, NUM_BAG_SLOTS do
+		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+			local item = Item:CreateFromBagAndSlot(bagID, slotID)
+			if ( item ) then
+				local bagItemID = item:GetItemID()
+				local itemLink = item:GetItemLink()
+				if ( bagItemID ) then
+					--EMA:Print("test", bagItemID, itemLink)
+					if (bagItemID == 158923) then
+						return itemLink
+					elseif (bagItemID == 123456) then
+						return itemLink
+					end
+				end
+			end	
+		end	
+	end	
+end
+
+-- Ping (System)
+function EMA:TellTeamPing( event, msg, playerName)
+	local _, _, latencyHome, latencyWorld = GetNetStats()
+	local channel = nil 
+	if event == "CHAT_MSG_GUILD" then
+		channel = "GUILD"
+	elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" then
+		channel = "PARTY"
+	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+		channel = "RAID"
+	end
+	if channel ~= nil then
+		SendChatMessage(L["MY_LATENCY_IS:X_MS_X_MS"](latencyHome,latencyWorld), channel)
+	end
+end	
+ 
+ -- Durability
+function EMA:TellTeamDurr( event, msg, playerName)
+	local curTotal, maxTotal, broken = 0, 0, 0
+	local durability = 100
+	for i = 1, 17 do
+		local curItemDurability, maxItemDurability = GetInventoryItemDurability(i)
+		if (curItemDurability ~= nil) and (maxItemDurability ~= nil ) then
+			--EMA:Print("£test", i, curItemDurability, maxItemDurability )
+			curTotal = curTotal + curItemDurability
+			maxTotal = maxTotal + maxItemDurability
+			if maxItemDurability > 0 and curItemDurability == 0 then
+				broken = broken + 1
+			end
+		end
+	end
+	local durabilityPercent = ( EMAUtilities:GetStatusPercent(curTotal, maxTotal) * 100 )
+	local durabilityText = tostring(gsub( durabilityPercent, "%.[^|]+", "") )
+	
+	local channel = nil 
+	if event == "CHAT_MSG_GUILD" then
+		channel = "GUILD"
+	elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" then
+		channel = "PARTY"
+	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+		channel = "RAID"
+	end
+	if channel ~= nil then
+		SendChatMessage(L["MY_CURRENT_DURABILITY_IS"](durabilityText)..L["%"], channel)
+	end
+end
+
+-- Bag Item Scan:
+function EMA:TellTeamItem( event, msg, playerName)
+	--EMA:Print("item", event, msg, playerName )
+	local _, item = strsplit(" ", msg, 2)
+	local _, name = GetItemInfo( item )
+	local countBags = GetItemCount( item )
+	local countTotal = GetItemCount( item , true)
+	local channel = nil 
+	if event == "CHAT_MSG_GUILD" then
+		channel = "GUILD"
+	elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" then
+		channel = "PARTY"
+	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+		channel = "RAID"
+	end
+	if channel ~= nil and name ~= nil then
+		SendChatMessage(L["ITEMCOUNT:_x_BAGS_BANK"](name, countBags, countTotal), channel)
+	end
+end	
+
+function EMA:TellTeamBagspace( event, msg, playerName)
+	local numFreeSlots, numTotalSlots = LibBagUtils:CountSlots("BAGS", 0)
+	local channel = nil
+	if event == "CHAT_MSG_GUILD" then
+		channel = "GUILD"
+	elseif event == "CHAT_MSG_PARTY" or event == "CHAT_MSG_PARTY_LEADER" then
+		channel = "PARTY"
+	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
+		channel = "RAID"
+	end
+	if channel ~= nil then
+		SendChatMessage(L["BAG_FREE_SPACE"](numFreeSlots, numTotalSlots), channel)
+	end
 end
 
 -- A EMA command has been received.
