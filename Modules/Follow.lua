@@ -983,14 +983,14 @@ function EMA:PLAYER_REGEN_DISABLED()
 			end
 		end
 	end
-	if EMA.db.doNotWarnFollowPvP == true then
+	if EMA.db.warnFollowPvP == true then
 		EMA.warnFollowPvPCombat = true
 	end	
 end
 
 function EMA:PVP_FOLLOW(event, arg1, message, ...  )
 	--EMA:Print("test", message, EMA.warnFollowPvPCombat )
-	if EMA.db.doNotWarnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false then
+	if EMA.db.warnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false then
 		return
 	end
 	if message == ERR_INVALID_FOLLOW_TARGET_PVP_COMBAT or message == ERR_INVALID_FOLLOW_PVP_COMBAT then
