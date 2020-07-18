@@ -1760,7 +1760,7 @@ end
 function EMA:TellTeamGold( event, msg, playerName )
 	--EMA:Print("goldtest", event, msg)
 	local money = GetMoney()
-	local gold, silver, copper  = EMAUtilities:MoneyString(money)
+	local gold, silver, copper  = EMAUtilities:MoneyStringFormatted(money)
 	local goldText = gold.." Gold "..silver.." Silver "..copper.." Copper"
 	local channel = nil 
 	if event == "CHAT_MSG_GUILD" then

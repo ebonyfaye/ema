@@ -128,6 +128,21 @@ function EbonyUtilities:MoneyString( value )
 			silverFormat = ""
 		end
 	end
+	return gold, silver, copper	
+end
+
+
+-- A little toy to retun Gold,  silver and copper for formatted use.
+function EbonyUtilities:MoneyStringFormatted( value )
+	local gold = floor( value / ( EbonyUtilities.COPPER_PER_SILVER * EbonyUtilities.SILVER_PER_GOLD ) );
+	local silver = floor( ( value - ( gold * EbonyUtilities.COPPER_PER_SILVER * EbonyUtilities.SILVER_PER_GOLD ) ) / EbonyUtilities.COPPER_PER_SILVER );
+	local copper = mod( value, EbonyUtilities.COPPER_PER_SILVER );
+	if gold <=0 then
+		goldFormat = ""
+		if silver <= 0 then
+			silverFormat = ""
+		end
+	end
 	return BreakUpLargeNumbers(gold), silver, copper	
 end
 
