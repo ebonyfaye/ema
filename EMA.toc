@@ -2,8 +2,8 @@
 ## Title: EMA
 ## Notes: Ebony's MultiBoxing Assistant
 ## Author: Jennifer Calladine 'Ebony'
-## Version: v8.3.0-Release-v2.5(0145)
-## SavedVariables: CoreProfileDB, CommunicationsProfileDB, TeamProfileDB, TagProfileDB, MessageProfileDB, CurrProfileDB, DisplayTeamProfileDB, FollowProfileDB, GuildProfileDB, InteractionProfileDB, ItemUseProfileDB, PurchaseProfileDB, QuestProfileDB,  QuestWatcherProfileDB, SellProfileDB, TalkProfileDB, ToonProfileDB, TradeProfileDB, MailProfileDB, BankProfileDB, ISBoxerProfileDB
+## Version: v8.3.0-Release-v2.5(0146)
+## SavedVariables: CoreProfileDB, CommunicationsProfileDB, TeamProfileDB, TagProfileDB, MessageProfileDB, InformationProfileDB, DisplayTeamProfileDB, FollowProfileDB, GuildProfileDB, InteractionProfileDB, ItemUseProfileDB, PurchaseProfileDB, QuestProfileDB,  QuestWatcherProfileDB, SellProfileDB, TalkProfileDB, ToonProfileDB, TradeProfileDB, MailProfileDB, BankProfileDB, ISBoxerProfileDB
 
 #Libs
 Embeds.xml

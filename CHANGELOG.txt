@@ -2,6 +2,24 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v8.3.0-Release-v2.5(0146)
+Game Version: 8.3.0
+Release Date: 20/07/2020
+
+## Information
+	-- Trying to fix a bug i broke the *.DB so all settings got reset in this module ( sorry :( )
+	
+	-- Echoes of Ny'alotha sometimes do not show on a team member and blocks them from being showen in the blizzard UI. ( Issue #107 )
+		- DEV NOTE: This has been making a problem with EMA information generating the Currency List i added a hotfix to stop this blocking the addon 
+		- please to no report report it when a character Shows 0 Echoes of Ny'alotha 
+		-this is not a EMA problem this a blizzard problem and is well known. A reclient load or deleteing you Cache will fix and they should show again.
+		
+
+
+
+
+---------------------------
+
 EMA Version: v8.3.0-Release-v2.5(0145)
 Game Version: 8.3.0
 Release Date: 18/07/2020

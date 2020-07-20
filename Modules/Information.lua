@@ -28,7 +28,7 @@ EMA.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 EMA.moduleName = "Information"
-EMA.settingsDatabaseName = "CurrProfileDB"
+EMA.settingsDatabaseName = "InformationProfileDB"
 EMA.chatCommand = "ema-info"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["DISPLAY"]
@@ -95,14 +95,17 @@ EMA.currTypes.PrismaticManapearl = 1721
 --8.3
 EMA.currTypes.CoalescingVisions = 1755
 EMA.currTypes.CorruptedMementos = 1719
-EMA.currTypes.echoesOfNyalotha = 1803
+EMA.currTypes.EchoesOfNyalotha = 1803
 
 -------------------------------------- End of edit --------------------------------------------------------------
 
 function EMA:CurrencyIconAndName( id )
 	local fullName, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(id)
-	local currName = strconcat(" |T"..icon..":20|t", L[" "]..fullName)
-	return currName
+	---EMA:Print("test", fullName, icon)
+	if 	icon ~= nil then
+		local currName = strconcat(" |T"..icon..":20|t", L[" "]..fullName)	
+		return currName
+	end	
 end	
 	
 	
