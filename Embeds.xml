@@ -38,4 +38,5 @@
 	<Script file="GUI\AceGUIWidget-EMANormalLabel.lua" />
 	<Script file="GUI\AceGUIWidget-EMAContinueLabel.lua" />
 	<Script file="GUI\AceGUIWidget-EMAKeybinding.lua" />
+	
 </Ui>

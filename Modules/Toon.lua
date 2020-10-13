@@ -354,6 +354,11 @@ local function SettingsCreateToon( top )
 		L["ROLL_LOOT_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
+	
+	
+	
+	
+
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["MESSAGES_HEADER"], movingTop, false )
 	movingTop = movingTop - dropdownHeight - verticalSpacing
  	EMA.settingsControlToon.dropdownRequestArea = EMAHelperSettings:CreateDropdown( 
@@ -1582,11 +1587,15 @@ end
 --Ebony CCed
 function EMA:LOSS_OF_CONTROL_ADDED( event, ... )
 	if EMA.db.warnCC == true then
-		local eventIndex = C_LossOfControl.GetNumEvents()
+		---local eventIndex = C_LossOfControl.GetNumEvents()
+		local eventIndex = C_LossOfControl.GetActiveLossOfControlDataCount()
 		if eventIndex > 0 then
-			local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType = C_LossOfControl.GetEventInfo(eventIndex)	
-			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false then
-				EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "]..text, false )
+			local LossOfControlData = C_LossOfControl.GetActiveLossOfControlData(eventIndex)
+			--local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType	
+			local name, rank, icon, castTime, minRange, maxRange, spellId =  GetSpellInfo( LossOfControlData.spellID )
+			--EMA:Print("test", LossOfControlData.spellID, name )
+			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false and name ~= nil then
+				EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "].. name, false )
 			end
 		end
 	end

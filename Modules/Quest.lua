@@ -160,7 +160,7 @@ local function InitializePopupDialogs()
 		hideOnEscape = 1,
         OnAccept = function( self )
 			--EMA:Print("Button1")
-			AbandonQuest()
+			C_QuestLog.AbandonQuest()
 		end,
 		OnAlt = function ( self )
 			--EMA:Print("Button3")
@@ -251,11 +251,9 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "QUEST_PROGRESS" )
 	EMA:RegisterEvent( "CHAT_MSG_SYSTEM", "QUEST_FAIL" )
    -- Quest post hooks.
-    EMA:SecureHook( "SelectGossipOption" )
-    EMA:SecureHook( "SelectGossipActiveQuest" )
-    EMA:SecureHook( "SelectGossipAvailableQuest" )
-    EMA:SecureHook( "SelectActiveQuest" )
-    EMA:SecureHook( "SelectAvailableQuest" )
+	EMA:SecureHook( C_GossipInfo, "SelectOption", "SelectGossipOption")
+	EMA:SecureHook( C_GossipInfo, "SelectActiveQuest" )
+	EMA:SecureHook( C_GossipInfo, "SelectAvailableQuest" )
     EMA:SecureHook( "AcceptQuest" )
 	EMA:SecureHook( "AcknowledgeAutoAcceptQuest" )
     EMA:SecureHook( "CompleteQuest" )
@@ -1199,6 +1197,7 @@ function EMA:QUEST_PROGRESS()
 end
 
 function EMA:SelectGossipOption( gossipIndex )
+	--EMA:Print("test", gossipIndex)
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		if EMA.isInternalCommand == false then
             EMA:DebugMessage( "SelectGossipOption" )
@@ -1211,7 +1210,7 @@ function EMA:DoSelectGossipOption( sender, gossipIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectGossipOption" )
-		SelectGossipOption( gossipIndex )
+		C_GossipInfo.SelectOption( gossipIndex )
 		EMA.isInternalCommand = false
 	end		
 end
@@ -1237,7 +1236,7 @@ end
 function EMA:SelectGossipAvailableQuest( gossipIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		if EMA.isInternalCommand == false then
-            EMA:DebugMessage( "SelectGossipAvailableQuest" )
+			EMA:DebugMessage( "SelectGossipAvailableQuest" )
 			EMA:EMASendCommandToTeam( EMA.COMMAND_SELECT_GOSSIP_AVAILABLE_QUEST, gossipIndex )
 		end
 	end
@@ -1247,7 +1246,7 @@ function EMA:DoSelectGossipAvailableQuest( sender, gossipIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectGossipAvailableQuest" )
-		SelectGossipAvailableQuest( gossipIndex )
+		SelectAvailableQuest( gossipIndex )
 		EMA.isInternalCommand = false
 	end
 end
@@ -1265,7 +1264,11 @@ function EMA:DoSelectActiveQuest( sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectActiveQuest" )
-		SelectActiveQuest( questIndex )
+		if C_GossipInfo.GetNumActiveQuests() > 1 then
+			C_GossipInfo.SelectActiveQuest( questIndex )
+		else
+			EMA:EMASendMessageToTeam( EMA.db.warningArea, L["AM_I_TALKING_TO_A_NPC"], false )
+		end
 		EMA.isInternalCommand = false
 	end
 end
@@ -1273,17 +1276,23 @@ end
 function EMA:SelectAvailableQuest( questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then	
 		if EMA.isInternalCommand == false then
-            EMA:DebugMessage( "SelectAvailableQuest" )
+			EMA:DebugMessage( "SelectAvailableQuest" )
 			EMA:EMASendCommandToTeam( EMA.COMMAND_SELECT_AVAILABLE_QUEST, questIndex )
 		end
 	end		
 end
 
 function EMA:DoSelectAvailableQuest( sender, questIndex )
+	EMA:Print("test4", sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectAvailableQuest" )
-		SelectAvailableQuest( questIndex )
+		-- TODO KEEP?
+		--if C_GossipInfo.GetNumAvailableQuests() > 1 then 	
+			C_GossipInfo.SelectAvailableQuest( questIndex )
+		--else
+		--	EMA:EMASendMessageToTeam( EMA.db.warningArea, L["AM_I_TALKING_TO_A_NPC"], false )	
+		--end
 		EMA.isInternalCommand = false
 	end
 end
@@ -1666,9 +1675,9 @@ end
  
 function EMA:QuestMapQuestOptions_AbandonQuest(questID)                       
 	if EMAApi.GetTeamListMaximumOrderOnline() > 1 then	
-		local lastQuestIndex = GetQuestLogSelection()
+		local lastQuestIndex = C_QuestLog.GetSelectedQuest()
 		--EMA:Print("SetAbandonQuest", lastQuestIndex, questID)
-		title = GetAbandonQuestName()
+		local title = QuestUtils_GetQuestName(C_QuestLog.GetAbandonQuest())
 		local data = {}
 		data.questID = questID
 		data.title = title
@@ -1686,12 +1695,14 @@ end
 function EMA:QuestMapQuestOptions_TrackQuest(questID)
 	if EMAApi.GetTeamListMaximumOrderOnline() > 1 then
 		--EMA:Print("test", questID)
-		local questLogIndex = GetQuestLogIndexByID(questID)
-		local title = GetQuestLogTitle( questLogIndex )
+		local title = QuestUtils_GetQuestName(C_QuestLog.GetAbandonQuest())
+		local questLogIndex = C_QuestLog.GetLogIndexForQuestID( questID )
+		
+		
 		local data = {}
 		data.questID = questID
 		data.title = title
-		if ( IsQuestWatched(questLogIndex) ) then
+		if ( QuestUtils_IsQuestWatched(questID) ) then
 			--EMA:Print("TrackingQuest")
 			StaticPopup_Show( "EMA_QUEST_TRACK_ALL_TOONS", title, nil, data )
 		else
@@ -1703,7 +1714,7 @@ end
 
 function EMA:QuestMapQuestOptions_EMA_DoQuestTrack( sender, questID, title, track )
 	--EMA:Print("test1.5", sender, questID, title, track)
-	local questLogIndex = GetQuestLogIndexByID( questID )
+	local questLogIndex = C_QuestLog.GetLogIndexForQuestID( questID )
 	if questLogIndex ~= 0 then
 		if track then
 			EMA:EMADoQuest_TrackQuest( questID, questLogIndex )
@@ -1717,28 +1728,29 @@ end
 
 function EMA:EMADoQuest_TrackQuest(questID, questLogIndex)
 	--EMA:Print("test", questID, questLogIndex )
-	if ( not IsQuestWatched(questID) ) then
-		AddQuestWatch(questLogIndex, true)
+	if ( not QuestUtils_IsQuestWatched(questID) ) then	
+		C_QuestLog.AddQuestWatch(questID, Enum.QuestWatchType.Manual)
 		QuestSuperTracking_OnQuestTracked(questID)
 	end
 end
 
 
 function EMA:EMADoQuest_UnTrackQuest(questID, questLogIndex)
-	--EMA:Print("test2", questID, questLogIndex )
-	if ( IsQuestWatched(questLogIndex) ) then
+	EMA:Print("test2", questID, questLogIndex )
+	if ( QuestUtils_IsQuestWatched(questID) ) then
 		QuestObjectiveTracker_UntrackQuest(nil, questID)
 	end
 end
 
 function EMA:QuestMapQuestOptions_EMA_DoAbandonQuest( sender, questID, title )
-	local questLogIndex = GetQuestLogIndexByID( questID )
-	if questLogIndex ~= 0 then
-		local lastQuestIndex = GetQuestLogSelection();
-		SelectQuestLogEntry(GetQuestLogIndexByID(questID));
-		SetAbandonQuest();
-		AbandonQuest();
-		SelectQuestLogEntry(lastQuestIndex);	
+	--local questLogIndex = GetQuestLogIndexByID( questID )
+	
+	if  questID ~= nil then
+		local oldSelectedQuest = C_QuestLog.GetSelectedQuest()
+		C_QuestLog.SetSelectedQuest(questID)
+		C_QuestLog.SetAbandonQuest()
+		C_QuestLog.AbandonQuest()
+		C_QuestLog.SetSelectedQuest(oldSelectedQuest)	
 		EMA:EMASendMessageToTeam( EMA.db.messageArea, L["QUESTLOG_HAVE_ABANDONED_QUEST"]( title ), false )
 	end		
 end
@@ -1747,7 +1759,7 @@ end
 
 
 function EMA:CreateEMAMiniQuestLogFrame()
-    EMAMiniQuestLogFrame = CreateFrame( "Frame", "EMAMiniQuestLogFrame", QuestMapFrame )
+    EMAMiniQuestLogFrame = CreateFrame( "Frame", "EMAMiniQuestLogFrame", QuestMapFrame, BackdropTemplateMixin and "BackdropTemplate" or nil )
     local frame = EMAMiniQuestLogFrame
 	frame:SetWidth( 470 )
 	frame:SetHeight( 40 )
@@ -1837,7 +1849,7 @@ function EMA.AbandonNextQuest()
 		local canAbandon = CanAbandonQuest(questID)
 		if canAbandon then
 			EMA:EMASendCommandToTeam( EMA.COMMAND_ABANDON_QUEST, questID, title)
-			if (EMA.iterateQuests ~= GetNumQuestLogEntries()) then
+			if (EMA.iterateQuests ~= C_QuestLog.GetNumQuestLogEntries()) then
 				-- decrement quest count as we have removed one if not last quest
 				EMA.iterateQuests = EMA.iterateQuests - 1
 			end
@@ -1912,7 +1924,7 @@ end
 
 function EMA:IterateQuests(methodToCall, timer)
 	EMA.iterateQuests = EMA.iterateQuests + 1
-		if EMA.iterateQuests <= GetNumQuestLogEntries() then
+		if EMA.iterateQuests <= C_QuestLog.GetNumQuestLogEntries() then
 			EMA:ScheduleTimer( methodToCall, timer )
 		end
 end
@@ -1972,10 +1984,10 @@ function EMA:QUEST_ACCEPT_CONFIRM( event, senderName, questName )
 end
 
 function EMA:GetQuestLogIndexByName( questName )
-	for iterateQuests = 1, GetNumQuestLogEntries() do
-        local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( iterateQuests )
+	for iterateQuests = 1,C_QuestLog.GetNumQuestLogEntries() do
+		local info =  C_QuestLog.GetInfo( iterateQuests )
 		if not isHeader then
-			if title == questName then
+			if info.title == questName then
 				return iterateQuests
 			end
 		end

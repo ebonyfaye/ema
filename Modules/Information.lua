@@ -97,10 +97,13 @@ EMA.currTypes.CoalescingVisions = 1755
 EMA.currTypes.CorruptedMementos = 1719
 EMA.currTypes.EchoesOfNyalotha = 1803
 
+--9.0 
+EMA.currTypes.Honor = 1792
+
 -------------------------------------- End of edit --------------------------------------------------------------
 
 function EMA:CurrencyIconAndName( id )
-	local fullName, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = GetCurrencyInfo(id)
+	local fullName, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = C_CurrencyInfo.GetCurrencyInfo(id)
 	---EMA:Print("test", fullName, icon)
 	if 	icon ~= nil then
 		local currName = strconcat(" |T"..icon..":20|t", L[" "]..fullName)	
@@ -735,7 +738,6 @@ function EMA:OnInitialize()
 	EMA:SettingsRefresh()
 	-- Create the currency list frame.
 	EMA:CreateEMAToonCurrencyListFrame()
-	--EMA:CreateEMAToonCurrencyListFrameTwo()
 end
 
 -- Called when the addon is enabled.
@@ -847,55 +849,6 @@ function EMA:MatchCurrValue(value)
 	end
 end 
 
-function EMA:CreateEMAToonCurrencyListFrameTwo()
-	local frameTwo = AceGUI:Create( "Frame" )
-	frameTwo:SetTitle( "test" )
-	frameTwo:SetWidth(800)
-	frameTwo:SetHeight(650)
-	frameTwo:SetLayout("Fill")
-	
-	
-	
-	local containerWidgetSettings = AceGUI:Create( "SimpleGroup" )
-	containerWidgetSettings:SetLayout( "JambaFill" )
-	
-	local widgetSettingsHelp = AceGUI:Create( "ScrollFrame" )
-	widgetSettingsHelp:SetLayout( "Flow" )
-	
-	local widgetSettings = AceGUI:Create( "ScrollFrame" )
-	widgetSettings:SetLayout( "Flow" )
-	
-	local tabGroupWidgetSettings = AceGUI:Create( "TabGroup" )
-	-- Was 'Fill', which causes lockup, started at patch 4.1 (40100).  Similar to http://forums.wowace.com/showthread.php?t=17872
-	tabGroupWidgetSettings:SetLayout( "Flow" )	
-	tabGroupWidgetSettings:SetTabs( { {text=L["Options"], value="options"}, {text=L["Commands"], value="help"} } )
-	
-	
-	
-	
-	
-	frameTwo:AddChild( tabGroupWidgetSettings )
-	tabGroupWidgetSettings:AddChild( widgetSettings )
-	
-	-- Callback function for OnGroupSelected
-	local function SelectGroup(container, event, group)
-	container:ReleaseChildren()
-	EMA:Print("test", container, event, group )
-	if group == "options" then
-		EMA:Print("HELLO")
-		EMA:DrawGroup1(container)
-	
-	elseif group == "tab1" then
-		EMA:Print("Grp1")
-		DrawGroup1(container)
-	elseif group == "tab2" then
-		DrawGroup2(container)
-	end
-end
-	tabGroupWidgetSettings:SetCallback("OnGroupSelected", SelectGroup)
-	EMAToonCurrencyListFrameTwo = frameTwo
-	
-end
 
 function EMA:DrawGroup1(container)
 	for characterName, currencyFrameCharacterInfo in pairs( EMA.currencyFrameCharacterInfo ) do
@@ -907,7 +860,7 @@ end
 
 function EMA:CreateEMAToonCurrencyListFrame()
 	-- The frame.
-	local frame = CreateFrame( "Frame", "EMAToonCurrencyListWindowFrame", UIParent )
+	local frame = CreateFrame( "Frame", "EMAToonCurrencyListWindowFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil )
 	frame.obj = EMA
 	frame:SetFrameStrata( "LOW" )
 	frame:SetToplevel( false )
@@ -1115,37 +1068,37 @@ end
 function EMA:UpdateHendingText()
 	local parentFrame = EMAToonCurrencyListFrame
 	-- Type One
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo( EMA.db.CcurrTypeOne )
+	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne )
 	if icon ~= nil then
 		local iconTextureString = strconcat(" |T"..icon..":20|t")
 			parentFrame.TypeOneText:SetText( iconTextureString )
 	end		
 	-- Type Two
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo( EMA.db.CcurrTypeTwo )
+	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo )
 	if icon ~= nil then	
 		local iconTextureString = strconcat(" |T"..icon..":20|t")
 			parentFrame.TypeTwoText:SetText( iconTextureString )
 	end
 	-- Type Three
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo( EMA.db.CcurrTypeThree )
+	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree )
 	if icon ~= nil then
 		local iconTextureString = strconcat(" |T"..icon..":20|t")
 			parentFrame.TypeThreeText:SetText( iconTextureString )	
 	end
 	-- Type Four
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo( EMA.db.CcurrTypeFour )
+	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour )
 	if icon ~= nil then	
 		local iconTextureString = strconcat(" |T"..icon..":20|t")
 			parentFrame.TypeFourText:SetText( iconTextureString )
 	end
 	-- Type Five
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo( EMA.db.CcurrTypeFive )
+	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive )
 	if icon ~= nil then	
 		local iconTextureString = strconcat(" |T"..icon..":20|t")
 			parentFrame.TypeFiveText:SetText( iconTextureString )
 	end
 	-- Type six
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = GetCurrencyInfo( EMA.db.CcurrTypeSix )
+	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix )
 	if icon ~= nil then	
 		local iconTextureString = strconcat(" |T"..icon..":20|t")
 			parentFrame.TypeSixText:SetText( iconTextureString )
@@ -1592,8 +1545,8 @@ function EMA:EMAToonRequestCurrency()
 		end
 	end
 	EMA:EMASendCommandToTeam( EMA.COMMAND_REQUEST_CURRENCY, "" )
+	EMAToonCurrencyListFrame:Show()
 	EMA.SettingsRefresh()
-	
 end
 
 function EMA:DoSendCurrency( characterName, dummyValue )
@@ -1602,19 +1555,19 @@ function EMA:DoSendCurrency( characterName, dummyValue )
 	table.wipe( EMA.currentCurrencyValues )
 	EMA.currentCurrencyValues.currGold = GetMoney()
 	-- CurrencyValues
-	EMA.currentCurrencyValues.currTypeOne = select( 2, GetCurrencyInfo( EMA.db.CcurrTypeOne ) )
-	EMA.currentCurrencyValues.currTypeTwo = select( 2, GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
-	EMA.currentCurrencyValues.currTypeThree = select( 2, GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
-	EMA.currentCurrencyValues.currTypeFour	= select( 2, GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
-	EMA.currentCurrencyValues.currTypeFive = select( 2, GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
-	EMA.currentCurrencyValues.currTypeSix = select( 2, GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
+	EMA.currentCurrencyValues.currTypeOne = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne ) )
+	EMA.currentCurrencyValues.currTypeTwo = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
+	EMA.currentCurrencyValues.currTypeThree = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
+	EMA.currentCurrencyValues.currTypeFour	= select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
+	EMA.currentCurrencyValues.currTypeFive = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
+	EMA.currentCurrencyValues.currTypeSix = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
 	-- Max CurrencyValues
-	EMA.currentCurrencyValues.currMaxTypeOne = select( 6, GetCurrencyInfo( EMA.db.CcurrTypeOne ) )
-	EMA.currentCurrencyValues.currMaxTypeTwo = select( 6, GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
-	EMA.currentCurrencyValues.currMaxTypeThree = select( 6, GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
-	EMA.currentCurrencyValues.currMaxTypeFour	= select( 6, GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
-	EMA.currentCurrencyValues.currMaxTypeFive = select( 6, GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
-	EMA.currentCurrencyValues.currMaxTypeSix = select( 6, GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
+	EMA.currentCurrencyValues.currMaxTypeOne = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne ) )
+	EMA.currentCurrencyValues.currMaxTypeTwo = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
+	EMA.currentCurrencyValues.currMaxTypeThree = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
+	EMA.currentCurrencyValues.currMaxTypeFour	= select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
+	EMA.currentCurrencyValues.currMaxTypeFive = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
+	EMA.currentCurrencyValues.currMaxTypeSix = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
 	EMA:EMASendCommandToToon( characterName, EMA.COMMAND_HERE_IS_CURRENCY, EMA.currentCurrencyValues )
 	else
 		return
@@ -1790,7 +1743,11 @@ function EMA:TellTeamKeys( event, msg, playerName)
 	elseif event == "CHAT_MSG_RAID" or event == "CHAT_MSG_RAID_LEADER" then
 		channel = "RAID"
 	end
-	if channel ~= nil then
+	if KeyStone == nil then 
+		KeyStone = L["NO_KEYSTONE_FOUND"]
+	end	
+	
+	if channel ~= nil and KeyStone ~= nil then
 		SendChatMessage(L["MY_KEY_STONE_IS"](KeyStone), channel)
 	end
 end	

@@ -358,9 +358,9 @@ function EMA:CommandReceived( prefix, message, distribution, sender )
 					EMA:DebugMessage( "Sending command on to module: ", sender, moduleName, commandName, unpack( argumentsTable ) )
 					EMAPrivate.Core.OnCommandReceived( sender, moduleName, commandName, unpack( argumentsTable ) )
 				end
-			else
-				EMA:DebugMessage( "Sender is NOT in team list." )
-			end
+		else
+			EMA:DebugMessage( "Sender is NOT in team list." )
+		end
 	end
 end
 
@@ -462,10 +462,25 @@ end
 function EMA:OnDisable()
 end
 
+local function isPlayerInMyGuild( playerName) 
+	local numGuildMembers, numOnline, numOnlineAndMobile = GetNumGuildMembers()
+	for index = 1, numGuildMembers do
+		local characterName,_,_,_,class,_,_,_,online,status,classFileName,_, _,isMobile = GetGuildRosterInfo(index)
+		--EMA:Print("taaa", characterName, playerName)
+		if characterName == playerName then
+			--EMA:Print("player in my guild 102", characterName)
+			return true
+		end
+	end
+	return false
+end
+
+
 function EMA:GUILD_ROSTER_UPDATE(event, ... )
 	if EMA.db.useGuildComms == false then
 		return
 	end
+	EMA:SetNonGuildMembersOflline()
 	local numGuildMembers, numOnline, numOnlineAndMobile = GetNumGuildMembers()
 	for index = 1, numGuildMembers do
 		characterName,_,_,_,class,_,_,_,online,status,classFileName,_, _,isMobile = GetGuildRosterInfo(index)
@@ -478,8 +493,27 @@ function EMA:GUILD_ROSTER_UPDATE(event, ... )
 				end
 			end	
 		end
-	end	
+	end
 end
+
+
+function EMA:SetNonGuildMembersOflline()
+-- If Character is not in guild then auto set it offline as there is no communication for them cross guild!
+	for characterName, position in EMAApi.TeamList() do
+		local isNotInGuild = isPlayerInMyGuild( characterName )
+		--EMA:Print("test", characterName, "is", isNotInGuild )
+		
+		if isNotInGuild == false then
+			if EMA.db.autoSetTeamOnlineorOffline == true then
+				if EMAApi.IsCharacterInTeam(characterName) == true and IsCharacterOnline( characterName ) == true then 	
+					EMAApi.setOffline( characterName, false )
+					--EMA:Print("player is not in my guild 101", characterName )
+				end
+			end	
+		end	
+	end
+end	
+
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.

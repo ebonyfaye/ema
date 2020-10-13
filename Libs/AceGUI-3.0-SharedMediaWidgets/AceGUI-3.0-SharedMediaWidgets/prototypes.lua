@@ -112,7 +112,7 @@ do
 	function AGSMW:GetBaseFrameWithWindow()
 		local frame = self:GetBaseFrame()
 
-		local displayButton = CreateFrame("Button", nil, frame)
+		local displayButton = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 			displayButton:SetHeight(42)
 			displayButton:SetWidth(42)
 			displayButton:SetPoint("TOPLEFT", frame, "TOPLEFT", 1, -2)

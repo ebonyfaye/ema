@@ -43,8 +43,7 @@ local CreateFrame, UIParent = CreateFrame, UIParent
 
 -- Global vars/functions that we don't upvalue since they might get hooked, or upgraded
 -- List them here for Mikk's FindGlobals script
--- GLOBALS: CLOSE, GameFontNormal
-
+-- GLOBALS: CLOSE
 
 --[[-----------------------------------------------------------------------------
 Scripts
@@ -190,6 +189,7 @@ local methods = {
 --[[-----------------------------------------------------------------------------
 Constructor
 -------------------------------------------------------------------------------]]
+
 local FrameBackdrop = {
 	bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background",
 	edgeFile = "Interface\\DialogFrame\\UI-DialogBox-Border",
@@ -204,8 +204,9 @@ local PaneBackdrop  = {
 	insets = { left = 3, right = 3, top = 5, bottom = 3 }
 }
 
+
 local function Constructor()
-	local frame = CreateFrame("Frame", nil, UIParent)
+	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	frame:Hide()
 
 	frame:EnableMouse(true)
@@ -213,6 +214,7 @@ local function Constructor()
 	frame:SetResizable(true)
 	--frame:SetFrameStrata("FULLSCREEN_DIALOG")
 	frame:SetFrameStrata("HIGH")
+
 	frame:SetBackdrop(FrameBackdrop)
 	frame:SetBackdropColor(0, 0, 0, 1)
 	frame:SetMinResize(400, 200)
@@ -227,7 +229,7 @@ local function Constructor()
 	closebutton:SetWidth(100)
 	closebutton:SetText(CLOSE)
 
-	local statusbg = CreateFrame("Button", nil, frame)
+	local statusbg = CreateFrame("Button", nil, frame, BackdropTemplateMixin and "BackdropTemplate" or nil)
 	statusbg:SetPoint("BOTTOMLEFT", 15, 15)
 	statusbg:SetPoint("BOTTOMRIGHT", -132, 15)
 	statusbg:SetHeight(24)
@@ -236,13 +238,21 @@ local function Constructor()
 	statusbg:SetBackdropBorderColor(0.4,0.4,0.4)
 	statusbg:SetScript("OnEnter", StatusBar_OnEnter)
 	statusbg:SetScript("OnLeave", StatusBar_OnLeave)
-
 	local statustext = statusbg:CreateFontString(nil, "OVERLAY", "GameFontNormal")
 	statustext:SetPoint("TOPLEFT", 7, -2)
 	statustext:SetPoint("BOTTOMRIGHT", -7, 2)
 	statustext:SetHeight(20)
 	statustext:SetJustifyH("LEFT")
 	statustext:SetText("")
+
+--[[
+	local statusbg = frame:CreateTexture(nil, "BORDER")
+	statusbg:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+	statusbg:SetPoint("TOPLEFT", 8, -24)
+	statusbg:SetPoint("BOTTOMRIGHT", -6, 8)
+	statusbg:SetVertexColor(0, 0, 0, .75)
+]]	
+
 	
 	--Hacky hacky to set a logo then text -- temp logo ChangeMe
 	local titlebg = frame:CreateTexture(nil, "OVERLAY")
@@ -293,7 +303,8 @@ local function Constructor()
 	line1:SetWidth(14)
 	line1:SetHeight(14)
 	line1:SetPoint("BOTTOMRIGHT", -8, 8)
-	line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+	line1:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+--	line1:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
 	local x = 0.1 * 14/17
 	line1:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 
@@ -301,7 +312,8 @@ local function Constructor()
 	line2:SetWidth(8)
 	line2:SetHeight(8)
 	line2:SetPoint("BOTTOMRIGHT", -8, 8)
-	line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
+	line2:SetTexture(251963) -- Interface\\PaperDollInfoFrame\\UI-GearManager-Border
+--	line2:SetTexture("Interface\\Tooltips\\UI-Tooltip-Border")
 	local x = 0.1 * 8/17
 	line2:SetTexCoord(0.05 - x, 0.5, 0.05, 0.5 + x, 0.05, 0.5 - x, 0.5 + x, 0.5)
 

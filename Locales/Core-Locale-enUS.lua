@@ -151,9 +151,9 @@ L["RESETTING_PROFILE"] = "Resetting profile: "
 L["PROFILE_DELETED"] = "Profile deleted - iterating all modules."
 L["DELETING_PROFILE"] = "Deleting profile: "
 L["Failed_LOAD_MODULE"] =  "Failed to load EMA Module: "
-L["TEXT1"] = "Ebony's MultiBoxing Assistant v2.2 For 8.2.0!" 
+L["TEXT1"] = "Ebony's MultiBoxing Assistant v3.0 For 9.0.1!" 
 L["TEXT2"] = ""
-L["TEXT3"] = "Welcome To v2.2!"
+L["TEXT3"] = "Welcome To v3.0!"
 L["TEXT4"] = ""
 L["TEXT5"] = ""
 L["TEXT6"] = "|cFFFFFFFFRead The ChangeLog For More Information"
@@ -180,7 +180,7 @@ L["FRAME_RESET"] = "Frame Reset"
 L["ALL_SETTINGS_RESET"] = "Thank You For Using EMA \nYour settings have been reset. \n\nPlease report any bugs to the source control issue tracker."
 L["CAN_NOT_RUN_JAMBA_AND_EMA"] = "|cFFFF0000 You Can Not Run \"Jamba\" With EMA \nDisabling Jamba Addon \n\nThis Will Reload Your UI"
 -- CHANGE ME!!!
-L["v2_NEWS"] = "|cFFFFFF00Thank You For Upgrading EMA \nYou Are Now On Release v2.2 \n\n|cFFFFFFFFRead Changelog For More Information"
+L["v2_NEWS"] = "|cFFFFFF00Thank You For Upgrading EMA \nYou Are Now On Release v3.0 \n\n|cFFFFFFFFRead Changelog For More Information"
 
 --------------------------
 -- Communications Locale
@@ -470,10 +470,10 @@ L["CURR"] = "Curr"
 L["CHAT_TRIGGER"] = "Chat !Triggers"
 L["CHAT_TRIGGERS"] = "Listen to Chat Triggers"
 L["CHAT_TRIGGERS_HELP"] = "Listen to !Triggers in \nParty/raid/guild to tell your team about things\n!emahelp"
+L["NO_KEYSTONE_FOUND"] = "I Do Not Currently Have a Keystone"
 L["I_HAVE_X_GOLD"] = function( gold )
 	return string.format( "%s ", gold)
 end
-
 L["MY_KEY_STONE_IS"] = function( key )
 	return string.format( "%s", key )
 end
@@ -533,7 +533,9 @@ L["SHOW_HEALTH"] = "Show the Team's Health Bars"
 L["SHOW_CLASS_COLORS"] = "Show Class Colors"
 L["SHOW_CLASS_COLORS_HELP"] = "Show Class Colors on Health Bars"
 L["POWER_HELP"] = "Show the Team Power Bar\n\nMana, Rage, Etc..."
-L["CLASS_POWER"] = "Show the Teams Class Power Bar\n\nComboPoints\nSoulShards\nHoly Power\nRunes"
+L["CLASS_POWER"] = "Show the Teams Class Power Bar\n\nComboPoints\nSoulShards\nHoly Power\nDK Runes"
+L["GCD_FRAME_HEADER"] = "Trufigcd Support"
+L["GCD_FRAME"] = "Show A Trufigcd Bar On The Ema Team List\nNote:You Will Need The Trufigcd Addon Installed"
 L["DEAD"] = "Dead"
 L["PORTRAIT_HEADER"] = "Portrait"
 L["FOLLOW_BAR_HEADER"] = "Follow Status Bar"
@@ -541,7 +543,8 @@ L["EXPERIENCE_HEADER"] = "Experience Bars"
 L["HEALTH_BAR_HEADER"] = "Health Bar"
 L["POWER_BAR_HEADER"] = "Power Bar"
 L["CLASS_BAR_HEADER"] = "Class Power Bar"
-
+L["CAN_NOT_FIND_TRUFIGCD_ADDON"] = "TrufiGCD Missing" 
+L["NOT_SUPPORTED"] = "UnSupported"
 --------------------------
 -- Follow Locale
 L["FOLLOW_BINDING_HEADER"] = "Follow Key Bindings"
@@ -646,7 +649,7 @@ L["FOCUS"] = "Not Focus!"
 L["LOW_HEALTH"] = "Low Health!"
 L["LOW_MANA"] = "Low Mana!"
 L["BAGS_FULL"] = "Bags Full!"
-L["CCED"] = "I'm"
+L["CCED"] = "I've Been"
 -- Vendor
 L["AUTO_REPAIR"] = "Auto Repair"
 L["AUTO_REPAIR_HELP"] = "Auto Repairs Toon's Items When You Visit a Repair Merchant"
@@ -840,6 +843,7 @@ L["TRACK_ALL_TOOLTIP"] = "Track All Quests On All Minions"
 L["UNTRACK_ALL"] = "Untrack All"
 L["UNTRACK_ALL_TOOLTIP"] = "Untrack All Quests on all Minions"
 L["ABANDONING_ALLQUEST"] = "Abandoning Quests To All Toons"
+L["AM_I_TALKING_TO_A_NPC"] = "Am I Talking To A NPC"
 
 -- Quest Strings
 L["AUTOMATICALLY_ACCEPTED_ESCORT_QUEST"] = function( questName )

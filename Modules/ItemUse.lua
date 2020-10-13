@@ -206,8 +206,7 @@ end
 
 local function CreateEMAItemUseFrame()
 	-- The frame.	EMAItemUseWindowFrame
-	local frame = CreateFrame( "Frame", "EMAItemUseWindowFrame" , UIParent, "SecureHandlerStateTemplate" )
-	
+	local frame = CreateFrame("Frame", "EMAItemUseWindowFrame", UIParent, "SecureHandlerStateTemplate")Mixin(frame, BackdropTemplateMixin or {})
 	frame:SetAttribute("_onstate-page", [[
 		self:SetAttribute("state", newstate)
 		control:ChildUpdate("state", newstate)
@@ -238,12 +237,14 @@ local function CreateEMAItemUseFrame()
 			EMA.db.frameXOffset = xOffset
 			EMA.db.frameYOffset = yOffset
 		end	)	
+
 	frame:SetBackdrop( {
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
 		tile = true, tileSize = 10, edgeSize = 10, 
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
 	} )	
+	
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.framePoint, nil, EMA.db.frameRelativePoint, EMA.db.frameXOffset, EMA.db.frameYOffset )
 	-- Clear Button
@@ -273,7 +274,7 @@ local function CreateEMAItemUseFrame()
 	-- Set the global frame reference for this frame.
 	EMAItemUseFrame = frame
 	-- Remove unsued items --test
-	EMA:SettingsUpdateBorderStyle()	
+--	EMA:SettingsUpdateBorderStyle()	
 	EMA.itemUseCreated = true
 	EMA.UpdateHeight()
 end
@@ -481,9 +482,15 @@ end
 
 --ebony test Using the wowapi and not the scanning of tooltips
 function EMA:CheckForQuestItemAndAddToBar()	
-	for iterateQuests = 1, GetNumQuestLogEntries() do
-		local questLogTitleText,_,_,isHeader, _, _, _, questID = GetQuestLogTitle(iterateQuests)
-		if not isHeader then
+	--for iterateQuests = 1, GetNumQuestLogEntries() do
+	--	local questLogTitleText,_,_,isHeader, _, _, _, questID = GetQuestLogTitle(iterateQuests)
+	
+	local index = C_QuestLog.GetNumQuestLogEntries()
+		for iterateQuests = 1, index do	
+			local info =  C_QuestLog.GetInfo( iterateQuests )	
+		
+		
+		if not info.isHeader then
 			--EMA:Print("test", questItemLink, iterateQuests, questLogTitleText, questID )
 			local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )	
 			if questItemLink ~= nil then
@@ -1025,7 +1032,7 @@ function EMA:SettingsRefresh()
 		EMA.settingsControl.displayOptionsBorderColourPicker:SetDisabled( not EMA.db.showItemUse )		
 		if EMA.itemUseCreated == true then
 			EMA:RefreshItemUseControls()
-			EMA:SettingsUpdateBorderStyle()
+	--		EMA:SettingsUpdateBorderStyle()
 			EMA:SetItemUseVisibility()
 			EMA:UpdateItemsInBar()
 			EMA:UpdateHeight()
@@ -1154,7 +1161,7 @@ function EMA:OnInitialize()
 	-- Create the item use frame.
 	CreateEMAItemUseFrame()
 	EMA:RefreshItemUseControls()
-	EMA:SettingsUpdateBorderStyle()
+--	EMA:SettingsUpdateBorderStyle()
 	EMA:SetItemUseVisibility()
 	EMA:UpdateItemsInBar()
 	EMA.sharedInvData = {}

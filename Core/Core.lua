@@ -73,7 +73,7 @@ function EMA:OnEnable()
 		StaticPopup_Show( "ALL_SETTINGS HAVE BEEN RESET" )
 	end
 	]]
-	if EMA.db.global.showStartupMessage2000 then
+	if EMA.db.global.showStartupMessage3000 then
 		StaticPopup_Show( "UpgradeTo_v2" )
 	end
 end
@@ -111,7 +111,7 @@ local function InitializePopupDialogs()
 		text = L["v2_NEWS"],
 		button1 = OKAY,
 		OnAccept = function()
-			EMA.db.global.showStartupMessage2000 = false
+			EMA.db.global.showStartupMessage3000 = false
 		end,
 		showAlert = 1,
 		timeout = 0,
@@ -233,6 +233,7 @@ EMA.settings = {
 		['**'] = {
 			showStartupMessage8000 = false,
 			showStartupMessage2000 = true,
+			showStartupMessage3000 = true
 		},
 	 },	
 	profile = {

@@ -1158,16 +1158,16 @@ end
 -- Invite team to party.
 
 function EMA.DoTeamPartyInvite()
-	InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
+	C_PartyInfo.InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
 	EMA.currentInviteCount = EMA.currentInviteCount + 1
 	if EMA.currentInviteCount < EMA.inviteCount then
 		--if GetTeamListMaximumOrderOnline() > 5 and EMA.db.inviteConvertToRaid == true then
 		if EMA.inviteCount > 4 and EMA.db.inviteConvertToRaid == true then
 			if EMA.db.inviteSetAllAssistant == true then	
-				ConvertToRaid()
+				C_PartyInfo.ConvertToRaid()
 				SetEveryoneIsAssistant(true)
 			else				
-				ConvertToRaid()
+				C_PartyInfo.ConvertToRaid()
 			end
 		end
 		EMA:ScheduleTimer( "DoTeamPartyInvite", 0.5 )
@@ -1318,7 +1318,7 @@ end
 
 local function LeaveTheParty()
 	if IsInGroup( "player" ) then
-		LeaveParty()
+		C_PartyInfo.LeaveParty()
 	end
 end
 
