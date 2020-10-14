@@ -2,6 +2,23 @@
 ChangeLogs:
 ---------------------------
 
+EMA Version: v9.0.0-Release-v3.0(0154)
+Game Version: 9.0.1
+Release Date: 14/10/2020
+
+## Quest-Tracker
+	-- Fixed a lua Error on some world quests
+	
+## Quest
+	-- fixed a Gossip if talking to a npc that has a vender GUI
+	
+## information
+	-- fixed the API Should now work
+	
+	
+	
+---------------------------
+
 EMA Version: v9.0.0-Release-v3.0(0146-0153)
 Game Version: 9.0.0
 Release Date: 13/10/2020

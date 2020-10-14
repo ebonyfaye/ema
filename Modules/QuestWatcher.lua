@@ -992,8 +992,10 @@ function EMA:GetQuestReward( itemChoice )
     local questIndex = EMA:GetQuestLogIndexByName( questJustCompletedName )
     --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
     local info =  C_QuestLog.GetInfo( questIndex )
-	EMA:DebugMessage( "GetQuestReward after GetQuestLogTitle: ", info.questIndex, questJustCompletedName, info.questID )
-	EMA:RemoveQuestFromWatchList( info.questID )
+	if info ~=  nil then
+		EMA:DebugMessage( "GetQuestReward after GetQuestLogTitle: ", info.questIndex, questJustCompletedName, info.questID )
+		EMA:RemoveQuestFromWatchList( info.questID )
+	end	
 end
 
 function EMA:AddQuestWatch( questIndex )

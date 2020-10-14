@@ -103,10 +103,12 @@ EMA.currTypes.Honor = 1792
 -------------------------------------- End of edit --------------------------------------------------------------
 
 function EMA:CurrencyIconAndName( id )
-	local fullName, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered, quality = C_CurrencyInfo.GetCurrencyInfo(id)
-	---EMA:Print("test", fullName, icon)
-	if 	icon ~= nil then
-		local currName = strconcat(" |T"..icon..":20|t", L[" "]..fullName)	
+	local info = C_CurrencyInfo.GetCurrencyInfo(id)
+	--local info.fullName, info.amount, info.icon, info.earnedThisWeek, info.weeklyMax, info.totalMax, info.isDiscovered, info.quality  -- = C_CurrencyInfo.GetCurrencyInfo(id)
+	
+	--EMA:Print("test", info.name, info.icon)
+	if 	info.iconFileID ~= nil then
+		local currName = strconcat(" |T"..info.iconFileID..":20|t", L[" "]..info.name)	
 		return currName
 	end	
 end	
@@ -142,7 +144,7 @@ EMA.settings = {
 		currencyFrameBackgroundColourA = 1.0,
 		currencyFrameBorderColourR = 1.0,
 		currencyFrameBorderColourG = 1.0,
-		currencyFrameBorderColourB = 1.0,
+		currencyFrameBorerColourB = 1.0,
 		currencyFrameBorderColourA = 1.0,		
 		currencyBorderStyle = L["BLIZZARD_TOOLTIP"],
 		currencyBackgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
@@ -1064,44 +1066,46 @@ function EMA:CreateEMAToonCurrencyListFrame()
 	EMA:CurrencyListSetHeight()
 end
 
+local function GetIcon(iD)
+	local info = C_CurrencyInfo.GetCurrencyInfo(iD)
+	if 	info ~= nil then
+		local iconTextureString = strconcat(" |T"..info.iconFileID..":20|t")
+		return iconTextureString
+	end
+end
+	
 
 function EMA:UpdateHendingText()
 	local parentFrame = EMAToonCurrencyListFrame
 	-- Type One
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne )
-	if icon ~= nil then
-		local iconTextureString = strconcat(" |T"..icon..":20|t")
-			parentFrame.TypeOneText:SetText( iconTextureString )
+	local iconTextureString = GetIcon( EMA.db.CcurrTypeOne )
+	if iconTextureString ~= nil then
+		parentFrame.TypeOneText:SetText( iconTextureString )
 	end		
 	-- Type Two
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo )
-	if icon ~= nil then	
-		local iconTextureString = strconcat(" |T"..icon..":20|t")
-			parentFrame.TypeTwoText:SetText( iconTextureString )
+	local iconTextureString = GetIcon( EMA.db.CcurrTypeTwo )
+	if iconTextureString ~= nil then
+		parentFrame.TypeTwoText:SetText( iconTextureString )
 	end
 	-- Type Three
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree )
-	if icon ~= nil then
-		local iconTextureString = strconcat(" |T"..icon..":20|t")
-			parentFrame.TypeThreeText:SetText( iconTextureString )	
+	local iconTextureString = GetIcon( EMA.db.CcurrTypeThree )
+	if iconTextureString ~= nil then
+		parentFrame.TypeThreeText:SetText( iconTextureString )	
 	end
 	-- Type Four
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour )
-	if icon ~= nil then	
-		local iconTextureString = strconcat(" |T"..icon..":20|t")
-			parentFrame.TypeFourText:SetText( iconTextureString )
+	local iconTextureString = GetIcon( EMA.db.CcurrTypeFour )
+	if iconTextureString ~= nil then
+		parentFrame.TypeFourText:SetText( iconTextureString )
 	end
 	-- Type Five
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive )
-	if icon ~= nil then	
-		local iconTextureString = strconcat(" |T"..icon..":20|t")
-			parentFrame.TypeFiveText:SetText( iconTextureString )
+	local iconTextureString = GetIcon( EMA.db.CcurrTypeFive )
+	if iconTextureString ~= nil then
+		parentFrame.TypeFiveText:SetText( iconTextureString )
 	end
 	-- Type six
-	local name, amount, icon, earnedThisWeek, weeklyMax, totalMax, isDiscovered = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix )
-	if icon ~= nil then	
-		local iconTextureString = strconcat(" |T"..icon..":20|t")
-			parentFrame.TypeSixText:SetText( iconTextureString )
+	local iconTextureString = GetIcon( EMA.db.CcurrTypeSix )
+	if iconTextureString ~= nil then
+		parentFrame.TypeSixText:SetText( iconTextureString )
 	end
 end
 
@@ -1552,23 +1556,61 @@ end
 function EMA:DoSendCurrency( characterName, dummyValue )
 	--EMA:Print("Test2")
 	if EMAApi.GetCharacterOnlineStatus ( characterName ) == true then
-	table.wipe( EMA.currentCurrencyValues )
-	EMA.currentCurrencyValues.currGold = GetMoney()
-	-- CurrencyValues
-	EMA.currentCurrencyValues.currTypeOne = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne ) )
-	EMA.currentCurrencyValues.currTypeTwo = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
-	EMA.currentCurrencyValues.currTypeThree = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
-	EMA.currentCurrencyValues.currTypeFour	= select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
-	EMA.currentCurrencyValues.currTypeFive = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
-	EMA.currentCurrencyValues.currTypeSix = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
-	-- Max CurrencyValues
-	EMA.currentCurrencyValues.currMaxTypeOne = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne ) )
-	EMA.currentCurrencyValues.currMaxTypeTwo = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
-	EMA.currentCurrencyValues.currMaxTypeThree = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
-	EMA.currentCurrencyValues.currMaxTypeFour	= select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
-	EMA.currentCurrencyValues.currMaxTypeFive = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
-	EMA.currentCurrencyValues.currMaxTypeSix = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
-	EMA:EMASendCommandToToon( characterName, EMA.COMMAND_HERE_IS_CURRENCY, EMA.currentCurrencyValues )
+		table.wipe( EMA.currentCurrencyValues )
+		EMA.currentCurrencyValues.currGold = GetMoney()
+		--CcurrTypeOne
+		local info = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne )
+		if info ~= nil then	
+			EMA.currentCurrencyValues.currTypeOne = info.quantity
+			EMA.currentCurrencyValues.currMaxTypeOne = info.maxQuantity
+		end
+		--CcurrTypeTwo
+		local infoTwo = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo )
+		if infoTwo ~= nil then	
+			EMA.currentCurrencyValues.currTypeTwo = infoTwo.quantity
+			EMA.currentCurrencyValues.currMaxTypeTwo = infoTwo.maxQuantity
+		end
+		--CcurrTypeThree
+		local infoThree = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree )
+		if infoThree ~= nil then	
+			EMA.currentCurrencyValues.currTypeThree = infoThree.quantity
+			EMA.currentCurrencyValues.currMaxTypeThree = infoThree.maxQuantity
+		end
+		--CcurrTypeFour
+		local infoFour = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour )
+		if infoFour ~= nil then	
+			EMA.currentCurrencyValues.currTypeFour = infoFour.quantity
+			EMA.currentCurrencyValues.currMaxTypeFour = infoFour.maxQuantity
+		end
+		--CcurrTypeFive
+		local infoFive = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive )
+		if infoFive ~= nil then	
+			EMA.currentCurrencyValues.currTypeFive = infoFive.quantity
+			EMA.currentCurrencyValues.currMaxTypeFive = infoFive.maxQuantity
+		end
+		--CcurrTypeSix
+		local infoSix = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix )
+		if infoSix ~= nil then
+			EMA.currentCurrencyValues.currTypeSix = infoSix.quantity
+			EMA.currentCurrencyValues.currMaxTypeSix = infoSix.maxQuantity
+		end
+		
+		--[[
+		EMA.currentCurrencyValues.currTypeTwo = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
+		EMA.currentCurrencyValues.currTypeThree = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
+		EMA.currentCurrencyValues.currTypeFour	= select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
+		EMA.currentCurrencyValues.currTypeFive = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
+		EMA.currentCurrencyValues.currTypeSix = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
+		-- Max CurrencyValues
+		EMA.currentCurrencyValues.currMaxTypeTwo = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
+		EMA.currentCurrencyValues.currMaxTypeThree = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
+		EMA.currentCurrencyValues.currMaxTypeFour	= select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
+		EMA.currentCurrencyValues.currMaxTypeFive = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
+		EMA.currentCurrencyValues.currMaxTypeSix = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
+		]]
+		-- SEND DATA
+		--EMA:Print("testsendData", info.quantity, info.maxQuantity)
+		EMA:EMASendCommandToToon( characterName, EMA.COMMAND_HERE_IS_CURRENCY, EMA.currentCurrencyValues )
 	else
 		return
 	end
@@ -1595,41 +1637,49 @@ function EMA:DoShowToonsCurrency( characterName, currencyValues )
 	currencyFrameCharacterInfo.GoldText:SetTextColor( r, g, b, a )
 	currencyFrameCharacterInfo.characterNameText:SetTextColor( r, g, b, a )
 	currencyFrameCharacterInfo.GoldText:SetTextColor( r, g, b, a )
-	if currencyValues.currTypeOne == currencyValues.currMaxTypeOne and currencyValues.currTypeOne > 0 then 
-		--EMA:Print("SetRed")
-		currencyFrameCharacterInfo.TypeOneText:SetTextColor( r, v, v, a )
-	else
-		--EMA:Print("SetWhite")
-		currencyFrameCharacterInfo.TypeOneText:SetTextColor( r, g, b, a )
-	end	
-	
-	if currencyValues.currTypeTwo == currencyValues.currMaxTypeTwo and currencyValues.currTypeTwo > 0 then 
-		currencyFrameCharacterInfo.TypeTwoText:SetTextColor( r, v, v, a )
-	else
-		currencyFrameCharacterInfo.TypeTwoText:SetTextColor( r, g, b, a )
+	if currencyValues.currTypeOne ~= nil then
+		if currencyValues.currTypeOne == currencyValues.currMaxTypeOne and currencyValues.currTypeOne  > 0 then 
+			--EMA:Print("SetRed")
+			currencyFrameCharacterInfo.TypeOneText:SetTextColor( r, v, v, a )
+		else
+			--EMA:Print("SetWhite")
+			currencyFrameCharacterInfo.TypeOneText:SetTextColor( r, g, b, a )
+		end	
 	end
-	if currencyValues.currTypeThree == currencyValues.currMaxTypeThree and currencyValues.currTypeThree > 0 then 
-		currencyFrameCharacterInfo.TypeThreeText:SetTextColor( r, v, v, a )
-	else
-		currencyFrameCharacterInfo.TypeThreeText:SetTextColor( r, g, b, a )
+	if currencyValues.currTypeTwo ~= nil then
+		if currencyValues.currTypeTwo == currencyValues.currMaxTypeTwo and currencyValues.currTypeTwo  > 0 then 
+			currencyFrameCharacterInfo.TypeTwoText:SetTextColor( r, v, v, a )
+		else
+			currencyFrameCharacterInfo.TypeTwoText:SetTextColor( r, g, b, a )
+		end
 	end
-	
-	if currencyValues.currTypeFour == currencyValues.currMaxTypeFour and currencyValues.currTypeFour > 0 then 
-		currencyFrameCharacterInfo.TypeFourText:SetTextColor( r, v, v, a )
-	else
-		currencyFrameCharacterInfo.TypeFourText:SetTextColor( r, g, b, a )
+	if currencyValues.currTypeThree ~= nil then
+		if currencyValues.currTypeThree == currencyValues.currMaxTypeThree and currencyValues.currTypeThree  > 0 then 
+			currencyFrameCharacterInfo.TypeThreeText:SetTextColor( r, v, v, a )
+		else
+			currencyFrameCharacterInfo.TypeThreeText:SetTextColor( r, g, b, a )
+		end
 	end
-	
-	if currencyValues.currTypeFive == currencyValues.currMaxTypeFive and currencyValues.currTypeFive > 0 then 
-		currencyFrameCharacterInfo.TypeFiveText:SetTextColor( r, v, v, a )
-	else
-		currencyFrameCharacterInfo.TypeFiveText:SetTextColor( r, g, b, a )
+	if currencyValues.currTypeFour ~= nil then
+		if currencyValues.currTypeFour == currencyValues.currMaxTypeFour and currencyValues.currTypeFour  > 0 then 
+			currencyFrameCharacterInfo.TypeFourText:SetTextColor( r, v, v, a )
+		else
+			currencyFrameCharacterInfo.TypeFourText:SetTextColor( r, g, b, a )
+		end
 	end
-	
-	if currencyValues.currTypeSix == currencyValues.currMaxTypeSix and currencyValues.currTypeSix > 0 then 
-		currencyFrameCharacterInfo.TypeSixText:SetTextColor( r, v, v, a )
-	else
-		currencyFrameCharacterInfo.TypeSixText:SetTextColor( r, g, b, a )
+	if currencyValues.currTypeFive~= nil then
+		if currencyValues.currTypeFive == currencyValues.currMaxTypeFive and currencyValues.currTypeFive  > 0 then 
+			currencyFrameCharacterInfo.TypeFiveText:SetTextColor( r, v, v, a )
+		else
+			currencyFrameCharacterInfo.TypeFiveText:SetTextColor( r, g, b, a )
+		end
+	end
+	if currencyValues.currTypeSix ~= nil then	
+		if currencyValues.currTypeSix == currencyValues.currMaxTypeSix and currencyValues.currTypeSix > 0 then 
+			currencyFrameCharacterInfo.TypeSixText:SetTextColor( r, v, v, a )
+		else
+			currencyFrameCharacterInfo.TypeSixText:SetTextColor( r, g, b, a )
+		end
 	end
 	currencyFrameCharacterInfo.GoldText:SetText( EMAUtilities:FormatMoneyString( currencyValues.currGold ) )
 	--currencyFrameCharacterInfo.GoldText:SetText( GetCoinTextureString( currencyValues.currGold ) )

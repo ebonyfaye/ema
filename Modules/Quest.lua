@@ -1264,11 +1264,11 @@ function EMA:DoSelectActiveQuest( sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectActiveQuest" )
-		if C_GossipInfo.GetNumActiveQuests() > 1 then
+		--if C_GossipInfo.GetNumActiveQuests() > 1 then
 			C_GossipInfo.SelectActiveQuest( questIndex )
-		else
-			EMA:EMASendMessageToTeam( EMA.db.warningArea, L["AM_I_TALKING_TO_A_NPC"], false )
-		end
+		--else
+		--	EMA:EMASendMessageToTeam( EMA.db.warningArea, L["AM_I_TALKING_TO_A_NPC"], false )
+		--end
 		EMA.isInternalCommand = false
 	end
 end
