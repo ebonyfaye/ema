@@ -1,7 +1,20 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: v9.0.0-Release-v3.0(0156)
+EMA Version: v9.0.1-Release-v3.0(0157)
+Game Version: 9.0.1
+Release Date: 15/10/2020
+
+# Quest
+	- If Master Auto Shareing Quest is on it should work again.
+	- ShareAll should work again.
+
+# Quest-Tracker
+	- Fixed Disaply Problem with German Clients (bitbicket #114 )
+
+
+---------------------------
+EMA Version: v9.0.1-Release-v3.0(0156)
 Game Version: 9.0.1
 Release Date: 15/10/2020
 

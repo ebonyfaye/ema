@@ -1128,6 +1128,21 @@ end
 
 function EMA:GetQuestObjectiveCompletion( text )
 	if text == nil then
+        return L["N/A"], L["N/A"]
+    end
+
+    local icount,imax = string.match(text,"(%d+)/(%d+)")
+    if icount ~= nil then
+        text=string.gsub(text,icount .. "/" .. imax,"")
+        text=string.gsub(text,"[: ]*$","")
+        text=string.gsub(text,"^[: ]*","")
+        return icount..L["/"]..imax, text
+    else
+        return L["DONE"] , text
+    end
+end
+	--[[
+	if text == nil then
 		return L["N/A"], L["N/A"]
 	end
 	local makeString = nil
@@ -1150,6 +1165,7 @@ function EMA:GetQuestObjectiveCompletion( text )
 		return L["DONE"] , text		
 	end
 end
+]]
 
 function EMA:QuestWatchGetObjectiveText( questIndex, objectiveIndex )
 	local objectiveFullText, objectiveType, objectiveFinished = GetQuestLogLeaderBoard( objectiveIndex, questIndex )
@@ -1210,8 +1226,10 @@ function EMA:SetActiveQuestForQuestWatcherCache( questIndex )
 	end
 	if questIndex ~= nil then
         --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
-		local info =  C_QuestLog.GetInfo( questIndex )
-		EMA.currentQuestForQuestWatcherID = info.questID
+		--local info =  C_QuestLog.GetInfo( questIndex )
+		
+		--EMA:Print("testaa", info.questID)
+		EMA.currentQuestForQuestWatcherID = questIndex
 	else
 		EMA.currentQuestForQuestWatcherID = nil
 	end

@@ -1499,16 +1499,16 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:QUEST_ACCEPTED( ... )
-	local event, questIndex =  ...
+	local event, questID =  ...
+	--EMA:Print("test", event, questID )
 	if EMA.db.acceptQuests == true then
 		if EMA.db.masterAutoShareQuestOnAccept == true then	
 			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
 				if EMA.isInternalCommand == false then
-					SelectQuestLogEntry( questIndex )
-						if GetQuestLogPushable() and GetNumSubgroupMembers() > 0 then
-							EMA:EMASendMessageToTeam( EMA.db.messageArea, "Pushing newly accepted quest.", false )
-							QuestLogPushQuest()
-						end
+					if C_QuestLog.IsPushableQuest( questID ) and GetNumSubgroupMembers() > 0 then
+						EMA:EMASendMessageToTeam( EMA.db.messageArea, "Pushing newly accepted quest.", false )
+						QuestMapQuestOptions_ShareQuest( questID )
+					end		
 				end	
 			end
 		end
@@ -1871,7 +1871,8 @@ end
 
 function EMA.ShareNextQuest()
 	local title, isHeader, questID = EMA:GetRelevantQuestInfo(EMA.iterateQuests)
-	if GetQuestLogPushable() then
+	--EMA:Print("pushTest", title, isHeader, questID )
+	if C_QuestLog.IsPushableQuest( questID ) then	
 		if isHeader == false and questID ~= 0 then
 			QuestMapQuestOptions_ShareQuest(questID)
 		end
@@ -1930,8 +1931,9 @@ function EMA:IterateQuests(methodToCall, timer)
 end
 
 function EMA:GetRelevantQuestInfo(questLogIndex)
-    local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questLogIndex )
-	return title, isHeader, questID
+	local info =  C_QuestLog.GetInfo( questLogIndex )
+	--EMA:Print("test121", questLogIndex, info.title, info.isHeader, info.questID) 
+	return info.title, info.isHeader, info.questID
 end
 
 function EMA:ToggleFrame( frame )
