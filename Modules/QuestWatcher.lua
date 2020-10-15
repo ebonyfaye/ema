@@ -1462,7 +1462,7 @@ function EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
 					local amountCompleted = tostring(progress)..L["%"]																											
 					--EMA:Print("QuestPercent", title, objectiveText, amountCompleted )
 					local EditedQuestName = tostring("Bonus:")..(info.title)	
-					EMA:Print("BarQuest", info.questID, name, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete)
+					--EMA:Print("BarQuest", info.questID, name, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete)
 					if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
 						EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, EditedQuestName, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )															 
 					end

@@ -1283,7 +1283,7 @@ function EMA:SelectAvailableQuest( questIndex )
 end
 
 function EMA:DoSelectAvailableQuest( sender, questIndex )
-	EMA:Print("test4", sender, questIndex )
+	--EMA:Print("test4", sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectAvailableQuest" )
