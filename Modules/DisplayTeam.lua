@@ -27,6 +27,8 @@ local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
 local LibButtonGlow = LibStub:GetLibrary( "LibButtonGlow-1.0" )
 EMA.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 local TrufiGCD = IsAddOnLoaded( "TrufiGCD" )
+TrufiGCDGlSave = TrufiGCDGlSave
+
 
 -- Constants required by EMAModule and Locale for this module.
 EMA.moduleName = "JmbDspTm"
@@ -3295,23 +3297,28 @@ function EMA:SetTrGCOpt()
 		for i=1,5 do
 		-- enable
 			TrGCDQueueOpt[i].enable = true
-			TrufiGCDGlSave["TrGCDQueueFr"][i]["enable"] = true
+			if TrufiGCDGlSave ~= nil then	
+				TrufiGCDGlSave["TrGCDQueueFr"][i]["enable"] = true
+			end
 			-- fade
 			TrGCDQueueOpt[i].fade = "Right"
-			TrufiGCDGlSave["TrGCDQueueFr"][i]["fade"] = "Right"
+			if TrufiGCDGlSave ~= nil then	
+				TrufiGCDGlSave["TrGCDQueueFr"][i]["fade"] = "Right"
+			end
 			-- spells ( width )
 			TrGCDQueueOpt[i].width = EMA.db.gCDFrameWidth
-			TrufiGCDGlSave["TrGCDQueueFr"][i]["width"] = 3
 			TrGCDSpWidthChanged( i, EMA.db.gCDFrameWidth )
+			if TrufiGCDGlSave ~= nil then
+				TrufiGCDGlSave["TrGCDQueueFr"][i]["width"] = EMA.db.gCDFrameWidth
+			end	
 			-- Icon Size!
 			--EMA:Print("sizetest", TrGCDQueueOpt[i].size, EMA.db.comboStatusHeight ) 
 			TrGCDQueueOpt[i].size = EMA.db.gCDFrameHeight
-			TrufiGCDGlSave["TrGCDQueueFr"][i]["size"] = EMA.db.gCDFrameHeight
 			TrGCDQueueOpt[i].speed = TrGCDQueueOpt[i].size / TimeGcd
-			TrufiGCDGlSave["TrGCDQueueFr"][i]["speed"] = TrGCDQueueOpt[i].speed
 			TrGCDResizeQFr(i)
-			if TrGCDQueueOpt[i].size ~= EMA.db.gCDFrameHeight then
-				TrGCDClear(i)
+			if TrufiGCDGlSave ~= nil then
+				TrufiGCDGlSave["TrGCDQueueFr"][i]["size"] = EMA.db.gCDFrameHeight
+				TrufiGCDGlSave["TrGCDQueueFr"][i]["speed"] = TrGCDQueueOpt[i].speed
 			end	
 			TrGCDLoadSettings()
 		end

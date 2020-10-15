@@ -1,6 +1,14 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.0-Release-v3.0(0156)
+Game Version: 9.0.1
+Release Date: 15/10/2020
+
+# Display-Team
+	-- Fixed an Error if you login with a new Trufigcd Profile
+
+---------------------------
 
 EMA Version: v9.0.0-Release-v3.0(0155)
 Game Version: 9.0.1
