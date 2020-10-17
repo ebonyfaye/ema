@@ -1,9 +1,21 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.0(0159)
+Game Version: 9.0.1
+Release Date: 17/10/2020
+
+## Disaply-Team	
+	-- Can now show PLayerName on the HeathBars.
+	-- Can now Freeze the Portrait Frame
+	-- if a Character can not be found now sets a "Talking ?"
+	-- if Not Using Trufigcd  in EMA it show noloner change the settings of the addon.
+	
+
+---------------------------
 EMA Version: v9.0.1-Release-v3.0(0158)
 Game Version: 9.0.1
-Release Date: 16/10/2020
+Release Date: 17/10/2020
 
 ## Team
 	- Fixed API change for BN Friends.
