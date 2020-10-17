@@ -1256,14 +1256,16 @@ function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
 			-- Iterate each friend; searching for the inviter in the friends list.
 			local _, numFriends = BNGetNumFriends()
 			for bnIndex = 1, numFriends do
-				for toonIndex = 1, BNGetNumFriendGameAccounts( bnIndex ) do
-					local _, toonName, client, realmName = BNGetFriendGameAccountInfo( bnIndex, toonIndex )
-					--EMA:Print("BNFrindsTest", toonName, client, realmName, "inviter", inviter)
-					if client == "WoW" then
-						if toonName == inviter or toonName.."-"..realmName == inviter then
-							acceptInvite = true
-							break
-						end	
+				for toonIndex = 1, C_BattleNet.GetFriendNumGameAccounts( bnIndex ) do
+					local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo ( bnIndex, toonIndex )
+					--EMA:Print("BNFrindsTest", bnIndex, toonIndex, "a", gameAccountInfo.characterName, gameAccountInfo.clientProgram, gameAccountInfo.realmName, "inviter", inviter)
+					if gameAccountInfo.clientProgram == "WoW" and gameAccountInfo.wowProjectID == 1 then
+						if gameAccountInfo.realmName ~= nil then
+							if gameAccountInfo.characterName == inviter or gameAccountInfo.characterName.."-"..gameAccountInfo.realmName == inviter then
+								acceptInvite = true
+								break
+							end
+						end			
 					end
 				end
 			end	

@@ -1,6 +1,18 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.0(0158)
+Game Version: 9.0.1
+Release Date: 16/10/2020
+
+## Team
+	- Fixed API change for BN Friends.
+	
+## Quest
+	- Fixed more Quest-API.
+
+
+---------------------------
 EMA Version: v9.0.1-Release-v3.0(0157)
 Game Version: 9.0.1
 Release Date: 15/10/2020

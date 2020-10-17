@@ -1384,7 +1384,7 @@ function EMA:ShowQuestComplete( questIndex )
 	if EMA.isInternalCommand == true then
 		return
 	end
-	local questName = select( 1, GetQuestLogTitle( questIndex ) )
+	local questName = QuestUtils_GetQuestName( questIndex )
 	EMA:EMASendCommandToTeam( EMA.COMMAND_LOG_COMPLETE_QUEST, questName )
 end
 
@@ -1736,7 +1736,7 @@ end
 
 
 function EMA:EMADoQuest_UnTrackQuest(questID, questLogIndex)
-	EMA:Print("test2", questID, questLogIndex )
+	--EMA:Print("test2", questID, questLogIndex )
 	if ( QuestUtils_IsQuestWatched(questID) ) then
 		QuestObjectiveTracker_UntrackQuest(nil, questID)
 	end
@@ -1846,7 +1846,7 @@ end
 function EMA.AbandonNextQuest()
 	local title, isHeader, questID = EMA:GetRelevantQuestInfo(EMA.iterateQuests)
 	if isHeader == false and questID ~= 0 then
-		local canAbandon = CanAbandonQuest(questID)
+		local canAbandon = C_QuestLog.CanAbandonQuest(questID)
 		if canAbandon then
 			EMA:EMASendCommandToTeam( EMA.COMMAND_ABANDON_QUEST, questID, title)
 			if (EMA.iterateQuests ~= C_QuestLog.GetNumQuestLogEntries()) then
