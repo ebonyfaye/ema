@@ -1,6 +1,15 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.0(0160)
+Game Version: 9.0.1
+Release Date: 23/10/2020
+
+## Quest-Tracker
+	-- More API changes Fixed!
+
+
+---------------------------
 EMA Version: v9.0.1-Release-v3.0(0159)
 Game Version: 9.0.1
 Release Date: 17/10/2020

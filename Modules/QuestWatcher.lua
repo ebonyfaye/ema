@@ -1056,19 +1056,30 @@ function EMA:QUEST_LOG_UPDATE( event, ... )
 	if EMA.db.enableQuestWatcher == true then
 		-- Wait a bit for the correct information to come through from the server...
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )
+		-- For PopUpQuests!
+		for i = 1, GetNumAutoQuestPopUps() do
+			local questID, popUpType = GetAutoQuestPopUp(i);
+			if ( not C_QuestLog.IsQuestBounty(questID) ) then
+				local questTitle = C_QuestLog.GetTitleForQuestID(questID);
+				if ( questTitle and questTitle ~= "" ) then
+					if popUpType == "OFFER" then
+						EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, questID )
+					elseif popUpType == "COMPLETE" then
+						EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_COMPLETE, questID )
+					end	
+				end
+			end
+		end
 	end
 end
 
-
 function EMA:SCENARIO_UPDATE( event, ... )
 	--EMA:Print("test2")
-	if EMA.db.enableQuestWatcher == true then
-												
+	if EMA.db.enableQuestWatcher == true then								
 		EMA:RemoveQuestsNotBeingWatched()
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "scenario" )
 	end
 end
-
 
 function EMA:SCENARIO_CRITERIA_UPDATE( event, ... )
 	--EMA:Print("test3.5")
@@ -1263,25 +1274,12 @@ end
 -- AUTO QUEST COMMUNICATION
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:IsCompletedAutoCompleteFieldQuest( questIndex, isComplete )
-	-- Send an isComplete true flag if the quest is completed and is an in the field autocomplete quest.
-	if isComplete and isComplete > 0 then
-		if GetQuestLogIsAutoComplete( questIndex ) then
-			isComplete = true
-		else
-			isComplete = false
-		end
-	else
-		isComplete = false
-	end
-	return isComplete
-end
-
 function EMA:QUEST_AUTOCOMPLETE( event, questID, ... )
 	-- In the field autocomplete quest event.
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
+	--EMA:Print("test")
 	EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_COMPLETE, questID )
 end
 
@@ -1300,13 +1298,20 @@ function EMA:DoRemoveAutoQuestFieldComplete( characterName, questID )
 	EMA:EMARemoveAutoQuestPopUp( questID, characterName )
 end
 
-function EMA:QUEST_DETAIL()
+function EMA:QUEST_DETAIL(event, ...)
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	if QuestGetAutoAccept() and QuestIsFromAreaTrigger() then
+	local questStartItemID = ...
+	--EMA:Print("testOffer", questStartItemID, QuestGetAutoAccept(), QuestIsFromAreaTrigger() )
+    if(questStartItemID ~= nil and questStartItemID ~= 0) then
 		EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, GetQuestID() )
+		return
 	end
+	if ( QuestGetAutoAccept() and QuestIsFromAreaTrigger()) then
+		EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, GetQuestID() )
+		return
+	end	
 end		
 
 function EMA:DoAutoQuestFieldOffer( characterName, questID )
@@ -1421,7 +1426,7 @@ function EMA:EMAQuestWatcherQuestLogUpdate( useCache )
 				local isComplete = C_QuestLog.IsComplete( info.questID)
 				--local isComplete = EMA:IsCompletedAutoCompleteFieldQuest( questIndex, isComplete )
 				if info.isHeader == false and info.isHidden == false then
-				--EMA:Print("EMAQuestData", questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden)										
+				--EMA:Print("EMAQuestData", questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden)
 				if numObjectives > 0 then							 
 					for iterateObjectives = 1, numObjectives do
 						--EMA:Print( "NumObjs:", numObjectives )
@@ -1432,7 +1437,7 @@ function EMA:EMAQuestWatcherQuestLogUpdate( useCache )
 							local progress = GetQuestProgressBarPercent( info.questID )
 							objectiveText = "ProgressBar"..": "..objectiveText 
 							amountCompleted = tostring(progress)..L["%"]
-						end	
+						end
 						if objectiveFullText ~= nil then																												
 							--EMA:Print("test2", info.questID, info.title, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )
 							if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
@@ -1513,6 +1518,7 @@ function EMA:EMAQuestWatcherUpdate( useCache, questType )
 	if questType == "worldQuest" or "all" then
 		EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
 	end
+	
 end
 
 -- Gathers messages from team.
@@ -1530,7 +1536,8 @@ function EMA:UpdateQuestWatchList( questID, questName, objectiveIndex, objective
 	objectiveHeaderPosition = EMA:GetObjectiveHeaderInWatchList( questID, questName, objectiveIndex, objectiveText, totalAmountCompleted, questHeaderPosition )
 	-- isComplete piggybacks on the quest watch update, so we are always displaying a complete quest button (in case the QUEST_AUTOCOMPLETE event does not fire).
 	if isComplete == true then
-		EMA:DoAutoQuestFieldComplete( characterName, questID )
+		-- Do feel we need this!
+		--EMA:DoAutoQuestFieldComplete( characterName, questID )
 	end
 	if EMA.db.hideQuestIfAllComplete == true then
 		EMA:CheckQuestForAllObjectivesCompleteAndHide( questID )
@@ -2331,7 +2338,7 @@ function EMA:QuestMapQuestOptions_ToggleTrackQuest(questID, questText)
 end
 
 function EMA:QuestMapQuestOptions_ShareQuest( questID )
-	local questLogIndex = GetQuestLogIndexByID(questID)
+	local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
 	if questLogIndex then
 		QuestLogPushQuest(questLogIndex)
 	end
@@ -2361,10 +2368,12 @@ function EMA:HasAtLeastOneAutoQuestPopup()
 end
 
 function EMA:EMAAddAutoQuestPopUp( questID, popUpType, characterName )
+	--EMA:Print("addPopUP", questID, popUpType, characterName)
 	if EMA.currentAutoQuestPopups[questID] == nil then
-		EMA.currentAutoQuestPopups[questID] = {}	
-	end
+		EMA.currentAutoQuestPopups[questID] = {}
+	end	
 	EMA.currentAutoQuestPopups[questID][characterName] = popUpType
+	EMA:DisplayAutoQuestPopUps()
 end
 
 function EMA:EMARemoveAutoQuestPopUp( questID, characterName )
@@ -2419,50 +2428,48 @@ function EMA:DisplayAutoQuestPopUps()
 	EMAQuestWatcherFrame.autoQuestPopupsHeight = 0
 	local parentFrame = EMAQuestWatcherFrame.fieldNotifications
 	for questID, characterInfo in pairs( EMA.currentAutoQuestPopups ) do
+		local title = C_QuestLog.GetTitleForQuestID(questID)
+		local isComplete = C_QuestLog.IsComplete(questID)
+		--EMA:Print("test", questID, title, isComplete )
 		local characterName, characterPopUpType, popUpType
 		local characterList = ""
 		for characterName, characterPopUpType in pairs( characterInfo ) do
-			--characterList = characterList..characterName.." "
+			--EMA:Print("popup", characterPopUpType)
 			characterList = characterList..( Ambiguate( characterName, "none" ) ).." "
 			-- TODO - hack, assuming all characters have the same sort of popup.
 			popUpType = characterPopUpType
 		end
-        --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( C_QuestLog.GetQuestLogIndexByID( questID ) )
-		
-		if isComplete and isComplete > 0 then
-			isComplete = true
-		else
-			isComplete = false
-		end
 		-- If the current character does not have the quest, show the character names that do have it.
 		local clickToViewText = QUEST_WATCH_POPUP_CLICK_TO_VIEW
-		if not (title and title ~= "") then
-            title = characterList
-			clickToViewText = ""
-		end
+			if not (title and title ~= "") then
+				title = characterList
+				clickToViewText = ""
+			end
 		local frame = EMA:AutoQuestGetOrCreateFrame( parentFrame, countPopUps + 1 )
 		frame:Show()
 		frame:ClearAllPoints()
 		frame:SetParent( parentFrame )
-		if isComplete == true and popUpType == "COMPLETE" then
-			frame.TopText:SetText( QUEST_WATCH_POPUP_CLICK_TO_COMPLETE )
-			frame.BottomText:Hide()
-            frame:SetHeight( 32 )
-			frame.type = "COMPLETED"
-            frame:HookScript( "OnMouseUp", function()
-                ShowQuestComplete( GetQuestLogIndexByID( questID ) )
-                EMA:EMARemoveAllAutoQuestPopUps( questID )
-                EMA:DisplayAutoQuestPopUps()
-                EMA:SettingsUpdateBorderStyle()
-				EMA:SettingsUpdateFontStyle()
-            end )
+		--EMA:Print("test2", isComplete, popUpType)
+			if isComplete == true and popUpType == "COMPLETE" then
+				frame.TopText:SetText( QUEST_WATCH_POPUP_CLICK_TO_COMPLETE )
+				frame.BottomText:Hide()
+				frame:SetHeight( 32 )
+				frame.type = "COMPLETED"
+				frame:HookScript( "OnMouseUp", function()
+					ShowQuestComplete( questID )
+					EMA:EMARemoveAllAutoQuestPopUps( questID )
+					EMA:DisplayAutoQuestPopUps()
+					EMA:SettingsUpdateBorderStyle()
+					EMA:SettingsUpdateFontStyle()
+				end )
 		elseif popUpType == "OFFER" then
 			frame.TopText:SetText( QUEST_WATCH_POPUP_QUEST_DISCOVERED )
 			frame.BottomText:Show()
 			frame.BottomText:SetText( clickToViewText )
-            frame:SetHeight( 48 )
+			frame:SetHeight( 48 )
 			frame.type = "OFFER"
 			frame:HookScript( "OnMouseUp", function()
+				ShowQuestOffer( questID )
 				EMA:EMARemoveAllAutoQuestPopUps( questID )
 				EMA:DisplayAutoQuestPopUps()
 				EMA:SettingsUpdateBorderStyle()
@@ -2470,15 +2477,15 @@ function EMA:DisplayAutoQuestPopUps()
 			end )
 		end
 		frame:ClearAllPoints()
-		if nextAnchor ~= nil then
-			if iterateQuestPopups == 1 then
-				frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 ) -- -WATCHFRAME_TYPE_OFFSET
+			if nextAnchor ~= nil then
+				if iterateQuestPopups == 1 then
+					frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 ) -- -WATCHFRAME_TYPE_OFFSET
+				else
+					frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 )
+				end
 			else
-				frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 )
+				frame:SetPoint( "TOP", parentFrame, "TOP", 0, 5 ) -- -WATCHFRAME_INITIAL_OFFSET
 			end
-		else
-			frame:SetPoint( "TOP", parentFrame, "TOP", 0, 5 ) -- -WATCHFRAME_INITIAL_OFFSET
-		end
 		frame:SetPoint( "LEFT", parentFrame, "LEFT", -20, 0 )
 		frame.QuestName:SetText( title )
 		frame.questId = questID
@@ -2487,11 +2494,11 @@ function EMA:DisplayAutoQuestPopUps()
 		nextAnchor = frame
 		countPopUps = countPopUps + 1
 		EMAQuestWatcherFrame.autoQuestPopupsHeight = EMAQuestWatcherFrame.autoQuestPopupsHeight + frame:GetHeight()
-	end
-	for iterateQuestPopups = countPopUps + 1, EMA.countAutoQuestPopUpFrames do
-		_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups].questId = nil
-		_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups]:Hide()
-	end
+		end
+			for iterateQuestPopups = countPopUps + 1, EMA.countAutoQuestPopUpFrames do
+				_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups].questId = nil
+				_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups]:Hide()
+			end
 	EMA:UpdateQuestWatcherDimensions()
 end
 
