@@ -1,6 +1,22 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.0(0161)
+Game Version: 9.0.1
+Release Date: 25/10/2020
+
+
+## Quest 
+	- fixed (bitbucket) issue #124
+
+
+## Information
+	-- command line now should be right with how there coded with /ema-info
+		-- show is now a toggle.
+
+
+
+---------------------------
 EMA Version: v9.0.1-Release-v3.0(0160)
 Game Version: 9.0.1
 Release Date: 23/10/2020

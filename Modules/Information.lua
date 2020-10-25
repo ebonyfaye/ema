@@ -182,15 +182,15 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["SHOW_CURRENCY"],
 				desc = L["SHOW_CURRENCY_HELP"],
-				usage = "ema-information show",
+				usage = "ema-info show",
 				get = false,
-				set = "EMAToonRequestCurrency",
+				set = "ShowInformationPanel",
 			},
 			hide = {
 				type = "input",
 				name = L["HIDE_CURRENCY"],
 				desc = L["HIDE_CURRENCY_HELP"],
-				usage = "ema-information hide",
+				usage = "ema-info hide",
 				get = false,
 				set = "EMAToonHideCurrency",
 			},			
@@ -198,7 +198,7 @@ function EMA:GetConfiguration()
 				type = "input",
 				name = L["PUSH_ALL_SETTINGS"],
 				desc = L["PUSH_SETTINGS_INFO"],
-				usage = "ema-information push",
+				usage = "ema-info push",
 				get = false,
 				set = "EMASendSettings",
 			},											
@@ -210,7 +210,6 @@ end
 local function DebugMessage( ... )
 	--EMA:Print( ... )
 end
-
 -------------------------------------------------------------------------------------------------------------
 -- Command this module sends.
 -------------------------------------------------------------------------------------------------------------
@@ -1498,6 +1497,17 @@ function EMA:CreateEMACurrencyFrameInfo( characterName, parentFrame )
 	
 	EMA:SettingsUpdateFontStyle()
 end
+
+function EMA:ShowInformationPanel()
+	
+	if EMAToonCurrencyListWindowFrame:IsShown() then
+		EMAToonCurrencyListFrame:Hide()
+	else
+		EMA:EMAToonRequestCurrency()
+		EMAToonCurrencyListFrame:Show()
+	end	
+end	
+
 
 function EMA:EMAToonHideCurrency()
 	EMAToonCurrencyListFrame:Hide()

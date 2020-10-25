@@ -1097,6 +1097,7 @@ end
 
 function EMA:ChurnNpcGossip()
     EMA:DebugMessage( "ChurnNpcGossip" )
+	--9.0 C_GossipInfo.
 	-- GetGossipAvailableQuests and GetGossipActiveQuests are returning nil in some cases, so do this as well.
 	-- GetGossipAvailableQuests() now returns 6 elements per quest and GetGossipActiveQuests() returns 4. title, level, isTrivial, isDaily, ...
 	-- Patch 5.0.4 added isLegendary.
@@ -1105,10 +1106,11 @@ function EMA:ChurnNpcGossip()
 	local numberAvailableQuestInfo = 6
 	local numberActiveQuestInfo = 5
     local index
-    EMA:DebugMessage( "GetNumAvailableQuests", GetNumAvailableQuests() )
+	--EMA:Print("test" )
+   EMA:DebugMessage( "GetNumAvailableQuests", GetNumAvailableQuests() )
     EMA:DebugMessage( "GetNumActiveQuests", GetNumActiveQuests() )
-    EMA:DebugMessage( "GetGossipAvailableQuests", GetGossipAvailableQuests() )
-    EMA:DebugMessage( "GetGossipActiveQuests", GetGossipActiveQuests() )
+    EMA:DebugMessage( "GetGossipAvailableQuests", C_GossipInfo.GetAvailableQuests() )
+    EMA:DebugMessage( "GetGossipActiveQuests", C_GossipInfo.GetActiveQuests() )
     for index = 0, GetNumAvailableQuests() do
 		SelectAvailableQuest( index )
 	end
@@ -1116,7 +1118,7 @@ function EMA:ChurnNpcGossip()
 		SelectActiveQuest( index )
 	end
 	EMAUtilities:ClearTable( EMA.gossipQuests )
-	local availableQuestsData = { GetGossipAvailableQuests() }
+	local availableQuestsData = { C_GossipInfo.GetAvailableQuests() }
 	local iterateQuests = 1
 	local questIndex = 1
 	while( availableQuestsData[iterateQuests] ) do
@@ -1129,7 +1131,7 @@ function EMA:ChurnNpcGossip()
 		iterateQuests = iterateQuests + numberAvailableQuestInfo
 		questIndex = questIndex + 1
 	end
-	local activeQuestsData = { GetGossipActiveQuests() }
+	local activeQuestsData = {  C_GossipInfo.GetActiveQuests() }
 	iterateQuests = 1
 	while( activeQuestsData[iterateQuests] ) do
 		local questInformation = {}
@@ -1144,7 +1146,7 @@ function EMA:ChurnNpcGossip()
 	end
 	for index, questInformation in ipairs( EMA.gossipQuests ) do
 		if questInformation.type == "available" then
-			SelectGossipAvailableQuest( questInformation.index )
+			C_GossipInfo.SelectAvailableQuest( questInformation.index )
 		end
 		-- If this is an active quest...
 		if questInformation.type == "active" then
@@ -1263,12 +1265,9 @@ end
 function EMA:DoSelectActiveQuest( sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
-        EMA:DebugMessage( "DoSelectActiveQuest" )
-		--if C_GossipInfo.GetNumActiveQuests() > 1 then
-			C_GossipInfo.SelectActiveQuest( questIndex )
-		--else
-		--	EMA:EMASendMessageToTeam( EMA.db.warningArea, L["AM_I_TALKING_TO_A_NPC"], false )
-		--end
+        
+		--EMA:Print( "DoSelectActiveQuest" )
+		C_GossipInfo.SelectActiveQuest( questIndex )
 		EMA.isInternalCommand = false
 	end
 end

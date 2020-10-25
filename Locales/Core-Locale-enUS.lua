@@ -449,7 +449,7 @@ end
 -- infomation Locale
 L["EMA_CURRENCY"] = "Currency"
 L["SHOW_CURRENCY"] = "Show Currency"
-L["SHOW_CURRENCY_HELP"] = "Show The Currency Frame Window."
+L["SHOW_CURRENCY_HELP"] = "Toggle The Currency Window Frame."
 L["HIDE_CURRENCY"] = "Hide Currency"
 L["HIDE_CURRENCY_HELP"] = "Hide The Currency Values For All Members In The Team."
 L["CURRENCY_HEADER"] = "Currency Selection To Show On Frame"
