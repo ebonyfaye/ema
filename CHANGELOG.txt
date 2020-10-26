@@ -3,6 +3,18 @@ ChangeLogs:
 ---------------------------
 EMA Version: v9.0.1-Release-v3.0(0161)
 Game Version: 9.0.1
+Release Date: 29/10/2020
+
+## Quest-Tracker
+	- Should now remove "Popup" quests when you click the box.
+	
+	
+
+
+
+---------------------------
+EMA Version: v9.0.1-Release-v3.0(0161)
+Game Version: 9.0.1
 Release Date: 25/10/2020
 
 
