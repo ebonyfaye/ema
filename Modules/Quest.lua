@@ -1586,9 +1586,9 @@ function EMA:CanAutoAcceptSharedQuestFromPlayer()
 			end
 		end
 		if EMA.db.acceptFromFriends == true then	
-			for friendIndex = 1, GetNumFriends() do
-				local friendName = GetFriendInfo( friendIndex )
-				if questSourceName == friendName then
+			for friendIndex = 1, C_FriendList.GetNumFriends() do
+				local friend = C_FriendList.GetFriendInfoByIndex( friendIndex )
+				if questSourceName == friend.name then
 					canAccept = true
 					break
 				end
