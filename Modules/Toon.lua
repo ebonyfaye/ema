@@ -60,9 +60,11 @@ EMA.settings = {
 		warnManaDropsMessage = L["LOW_MANA"],
 		warnWhenDurabilityDropsBelowX = true,
 		warnWhenDurabilityDropsAmount = "60",
+		warnWhenBagsAlmostFullAmount = 0,
 		warnDurabilityDropsMessage = L["DURABILITY_LOW_MSG"],		
 		warnBagsFull = true,
-		bagsFullMessage = L["BAGS_FULL"],	
+		bagsFullMessage = L["BAGS_FULL"],
+		bagsAlmostFullMessage = L["BAGS_ALMOST_FULL"],
 		warnCC = true,
 		CcMessage = L["CCED"],
 		warningArea = EMAApi.DefaultWarningArea(),
@@ -559,6 +561,14 @@ local function SettingsCreateWarnings( top )
 		L["BAGS_FULL_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
+		headingWidth,
+		left,
+		movingTop,
+		L["BAG_SLOTS_HELP"]
+	)
+	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnWhenBagsAlmostFull )
+	movingTop = movingTop - editBoxHeight
 	EMA.settingsControlWarnings.editBoxBagsFullMessage = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
 		headingWidth,
 		left,
@@ -647,6 +657,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.checkBoxWarnWhenDurabilityDropsBelowX:SetValue( EMA.db.warnWhenDurabilityDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetText( EMA.db.warnWhenDurabilityDropsAmount )
 	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetText( EMA.db.warnDurabilityDropsMessage )	
+	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull:SetText( EMA.db.warnWhenBagsAlmostFullAmount )
 	EMA.settingsControlWarnings.checkBoxWarnBagsFull:SetValue( EMA.db.warnBagsFull )
 	EMA.settingsControlWarnings.editBoxBagsFullMessage:SetText( EMA.db.bagsFullMessage )
 	EMA.settingsControlWarnings.checkBoxWarnCC:SetValue( EMA.db.warnCC )
@@ -677,8 +688,9 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )
-	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )		
-	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not EMA.db.autoRepair )
+	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )	
+	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull:SetDisabled( not EMA.db.warnWhenBagsAlmostFullAmount )
+  EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not EMA.db.autoRepair )
 	EMA.settingsControlWarnings.editBoxBagsFullMessage:SetDisabled( not EMA.db.warnBagsFull )
 	EMA.settingsControlWarnings.editBoxCCMessage:SetDisabled( not EMA.db.warnCC )
 	EMA.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam:SetDisabled( not EMA.db.autoAcceptResurrectRequest )
@@ -877,6 +889,13 @@ function EMA:SettingsSetMerchantArea( event, value )
 	EMA:SettingsRefresh()
 end
 
+function EMA:EditBoxChangedWarnWhenBagsAlmostFull( event, text )
+	local amount = tonumber( text )
+	amount = EMAUtilities:FixValueToRange( amount, 0, 100 )
+	EMA.db.warnWhenBagsAlmostFullAmount = amount
+	EMA:SettingsRefresh()
+end
+
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
 -------------------------------------------------------------------------------------------------------------
@@ -963,6 +982,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.warnDurabilityDropsMessage = settings.warnDurabilityDropsMessage		
 		EMA.db.warnBagsFull = settings.warnBagsFull
 		EMA.db.bagsFullMessage = settings.bagsFullMessage
+		EMA.db.bagsAlmostFullMessage = settings.bagsAlmostFullMessage
 		EMA.db.warnCC = settings.warnCC
 		EMA.db.CcMessage = settings.CcMessage			
 		EMA.db.autoAcceptResurrectRequest = settings.autoAcceptResurrectRequest
@@ -1570,13 +1590,24 @@ function EMA:BAGS_FULL( event, arg1, message, ... )
 end
 
 function EMA:BAG_UPDATE_DELAYED(event, ... )
-	if EMA.db.warnBagsFull == true then	
-		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
-		if numberFreeSlots > 0 then
-			 EMA.previousFreeBagSlotsCount = false
-			 EMA:CancelAllTimers()
-		end
-	end	
+  if EMA.db.warnBagsFull == false then	
+    return
+  end
+  
+  if EMA.previousFreeBagSlotsCount == true then
+    return
+  end
+  
+  local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+  if numberFreeSlots > 0 and numberFreeSlots < EMA.db.warnWhenBagsAlmostFullAmount then
+    local warnMsg = EMA.db.bagsAlmostFullMessage .. ' (' .. tostring(numberFreeSlots) .. ')'
+    EMA:EMASendMessageToTeam( EMA.db.warningArea, warnMsg, false )
+    EMA.previousFreeBagSlotsCount = true
+    EMA:ScheduleTimer("ResetBagFull", 15, nil )
+  elseif numberFreeSlots > 0 then
+    EMA.previousFreeBagSlotsCount = false
+    EMA:CancelAllTimers()
+  end
 end
 
 function EMA:ResetBagFull()
