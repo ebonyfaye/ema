@@ -39,80 +39,143 @@ EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\SellIcon.tga"
 EMA.moduleOrder = 3
 
 EMA.globalCurrencyFramePrefix = "EMAToonCurrencyListFrame"
-EMA.currTypes = {}
+--EMA.currTypes = {}
 EMA.simpleCurrList = {}
 
 -- Currency Identifiers. To add you own just add a new line at the bottom of this part
 -- http://www.wowhead.com/currencies
--- Old Stuff
---EMA.currTypes.DalaranJewelcraftingToken = 61
-EMA.currTypes.ChampionsSeal = 241
---EMA.currTypes.IllustriousJewelcraftersToken = 361
-EMA.currTypes.TolBaradCommendation = 391
-EMA.currTypes.LesserCharmOfGoodFortune = 738
-EMA.currTypes.ElderCharmOfGoodFortune = 697
-EMA.currTypes.MoguRuneOfFate = 752
-EMA.currTypes.WarforgedSeal = 776
-EMA.currTypes.BloodyCoin = 789
-EMA.currTypes.TimelessCoin = 777
---WoD Currency
-EMA.currTypes.GarrisonResources = 824
-EMA.currTypes.TemperedFate = 994
-EMA.currTypes.ApexisCrystal = 823
-EMA.currTypes.Darkmoon = 515
-EMA.currTypes.Oil = 1101
-EMA.currTypes.InevitableFate = 1129
-EMA.currTypes.TimeWalker = 1166
-EMA.currTypes.Valor = 1191
+
+local function allAlwaysCurrencys()
+	local allAlwaysCurrencys = {}
+		allAlwaysCurrencys.Honor = 1792
+		allAlwaysCurrencys.TimeWalker = 1166
+		allAlwaysCurrencys.Darkmoon = 515
+	return allAlwaysCurrencys
+end	
+
+-- Before WOD
+local function classicCurrencys()
+	local classicCurrencys = {}
+		classicCurrencys.ChampionsSeal = 241
+		classicCurrencys.TolBaradCommendation = 391
+		classicCurrencys.LesserCharmOfGoodFortune = 738
+		classicCurrencys.ElderCharmOfGoodFortune = 697
+		classicCurrencys.MoguRuneOfFate = 752
+		classicCurrencys.WarforgedSeal = 776
+		classicCurrencys.BloodyCoin = 789
+		classicCurrencys.TimelessCoin = 777
+	return classicCurrencys
+end		
+
+-- Wod Currency
+local function wodCurrencys()
+	local wodCurrencys = {}
+		wodCurrencys.GarrisonResources = 824
+		wodCurrencys.TemperedFate = 994
+		wodCurrencys.ApexisCrystal = 823
+		wodCurrencys.Oil = 1101
+		wodCurrencys.InevitableFate = 1129
+		wodCurrencys.Valor = 1191
+	return wodCurrencys
+end		
+
 --Legion Currency
-EMA.currTypes.OrderResources = 1220
-EMA.currTypes.AncientMana = 1155
-EMA.currTypes.NetherShard = 1226
-EMA.currTypes.SealofBrokenFate = 1273
-EMA.currTypes.ShadowyCoins = 1154
-EMA.currTypes.SightlessEye = 1149
-EMA.currTypes.TimeWornArtifact = 1268
-EMA.currTypes.CuriousCoin = 1275
---7.2
-EMA.currTypes.LegionfallWarSupplies = 1342
---7.2.5
-EMA.currTypes.CoinsOfAir = 1416
---7.3
-EMA.currTypes.WakeningEssence = 1533
-EMA.currTypes.VeiledArgunite = 1508
---8.0
-EMA.currTypes.WarResources = 1560
-EMA.currTypes.RichAzeriteFragment = 1565
-EMA.currTypes.SeafarersDubloon = 1710
-EMA.currTypes.SealofWartornFate = 1580
-EMA.currTypes.WarSupplies = 1587
---8.1
-EMA.currTypes.SeventhLegionService = 1717
-EMA.currTypes.HonorboundService = 1716
-EMA.currTypes.TitanResiduum = 1718
---8.2
-EMA.currTypes.PrismaticManapearl = 1721
---8.3
-EMA.currTypes.CoalescingVisions = 1755
-EMA.currTypes.CorruptedMementos = 1719
-EMA.currTypes.EchoesOfNyalotha = 1803
+local function legionCurrencys()
+	local legionCurrencys = {}
+		legionCurrencys.OrderResources = 1220
+		legionCurrencys.AncientMana = 1155
+		legionCurrencys.NetherShard = 1226
+		legionCurrencys.SealofBrokenFate = 1273
+		legionCurrencys.ShadowyCoins = 1154
+		legionCurrencys.SightlessEye = 1149
+		legionCurrencys.TimeWornArtifact = 1268
+		legionCurrencys.CuriousCoin = 1275
+		legionCurrencys.LegionfallWarSupplies = 1342
+		legionCurrencys.CoinsOfAir = 1416
+		legionCurrencys.WakeningEssence = 1533
+		legionCurrencys.VeiledArgunite = 1508
+	return legionCurrencys	
 
---9.0 
-EMA.currTypes.Honor = 1792
+end
 
+-- BattleforAzeroth Currency
+local function battleforAzerothnCurrencys()
+	local bfa = {}
+		bfa.WarResources = 1560
+		bfa.RichAzeriteFragment = 1565
+		bfa.SeafarersDubloon = 1710
+		bfa.SealofWartornFate = 1580
+		bfa.WarSupplies = 1587
+		bfa.SeventhLegionService = 1717
+		bfa.HonorboundService = 1716
+		bfa.TitanResiduum = 1718
+		bfa.PrismaticManapearl = 1721
+		bfa.CoalescingVisions = 1755
+		bfa.CorruptedMementos = 1719
+		bfa.EchoesOfNyalotha = 1803
+	return bfa
+end	
+
+local function shadowlandsCurrencys()
+	local shadowlandsCurrencys = {}
+		shadowlandsCurrencys.ArgentCommendation = 1754
+		shadowlandsCurrencys.SoulAsh = 1828
+		shadowlandsCurrencys.Stygia = 1767
+		shadowlandsCurrencys.ReservoirAnima = 1813
+		shadowlandsCurrencys.SinstoneFragments = 1816
+		shadowlandsCurrencys.InfusedRuby = 1820
+		shadowlandsCurrencys.FreedSoul = 1751
+	return shadowlandsCurrencys
+end	
+		
+
+
+local function testcode()
+	return EMA.currTypes
+end
 -------------------------------------- End of edit --------------------------------------------------------------
 
 function EMA:CurrencyIconAndName( id )
 	local info = C_CurrencyInfo.GetCurrencyInfo(id)
-	--local info.fullName, info.amount, info.icon, info.earnedThisWeek, info.weeklyMax, info.totalMax, info.isDiscovered, info.quality  -- = C_CurrencyInfo.GetCurrencyInfo(id)
-	
-	--EMA:Print("test", info.name, info.icon)
+	--EMA:Print("test", info.name, info.iconFileID, info.description )
 	if 	info.iconFileID ~= nil then
 		local currName = strconcat(" |T"..info.iconFileID..":20|t", L[" "]..info.name)	
 		return currName
 	end	
 end	
+
+function EMA:AddCurrencyToTable()
+	table.wipe( EMA.currTypes )
+	for name, id in pairs( allAlwaysCurrencys() ) do
+		EMA.currTypes[name] = id
+	end
 	
+	if EMA.db.currClassicCurrencys == true then
+		for name, id in pairs( classicCurrencys() ) do
+			EMA.currTypes[name] = id
+		end
+	end
+	if 	EMA.db.currWodCurrencys == true then
+		for name, id in pairs( wodCurrencys() ) do
+			EMA.currTypes[name] = id
+		end
+	end
+	if EMA.db.currLegionCurrencys == true then
+		for name, id in pairs( legionCurrencys() ) do
+			EMA.currTypes[name] = id
+		end
+	end
+	if EMA.db.currBattleforAzerothCurrencys == true then
+		for name, id in pairs( battleforAzerothnCurrencys() ) do
+			EMA.currTypes[name] = id
+		end
+	end
+	if EMA.db.currShadowlands == true then 
+		for name, id in pairs( shadowlandsCurrencys() ) do
+			EMA.currTypes[name] = id
+		end
+	end
+end	
 	
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
@@ -120,19 +183,25 @@ EMA.settings = {
 		currChatTrigger = false, 
 		currGold = true,
 		currGoldInGuildBank = false,
-		-- Currency default's
-		CcurrTypeOne = EMA.currTypes.OrderResources,
-		CcurrTypeOneName = EMA:CurrencyIconAndName(EMA.currTypes.WarResources),
-		CcurrTypeTwo = EMA.currTypes.AncientMana,
-		CcurrTypeTwoName = EMA:CurrencyIconAndName(EMA.currTypes.WarSupplies),
-		CcurrTypeThree = EMA.currTypes.TimeWalker,
-		CcurrTypeThreeName = EMA:CurrencyIconAndName(EMA.currTypes.TimeWalker),
-		CcurrTypeFour = EMA.currTypes.SightlessEye,
-		CcurrTypeFourName = EMA:CurrencyIconAndName(EMA.currTypes.SealofWartornFate),
+		currBagSpace = false,
+		currClassicCurrencys = false,
+		currWodCurrencys = false, 
+		currLegionCurrencys = false,
+		currBattleforAzerothCurrencys = false,
+		currShadowlands = true,
+		-- Currency default's ALL NONE! (saves updating every xpac....)
+		CcurrTypeOne = 1,
+		CcurrTypeOneName = "",
+		CcurrTypeTwo = 1,
+		CcurrTypeTwoName = "",
+		CcurrTypeThree = 1,
+		CcurrTypeThreeName = "",
+		CcurrTypeFour = 1,
+		CcurrTypeFourName = "",
 		CcurrTypeFive = 1,
 		CcurrTypeFiveName = "",
 		CcurrTypeSix = 1,
-		CcurrTypeSixName = "",	
+		CcurrTypeSixName = "",
 		currencyFrameAlpha = 1.0,
 		currencyFramePoint = "CENTER",
 		currencyFrameRelativePoint = "CENTER",
@@ -154,9 +223,11 @@ EMA.settings = {
 		currencyNameWidth = 60,
 		currencyPointsWidth = 50,
 		currencyGoldWidth = 140,
+		currencyOtherWidth = 50,
 		currencySpacingWidth = 3,
 		currencyLockWindow = false,
 		currOpenStartUpMaster = false,
+		currOpenStartUpAll = false
 	},
 } 
 
@@ -268,11 +339,11 @@ function EMA:SettingsCreateCurrency( top )
 	local indent = horizontalSpacing * 12
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
-	local thirdWidth = (headingWidth - (horizontalSpacing * 5)) / 5
+	local thirdWidth = (headingWidth - (horizontalSpacing * 2)) / 3
 	local halfWidthSlider = (headingWidth - horizontalSpacing) / 2
 	local column2left = left + halfWidthSlider
 	local left2 = left + thirdWidth
-	local left3 = left + (thirdWidth * 1)
+	local left3 = left + (thirdWidth * 2)
 	local right = left + halfWidth + horizontalSpacing
 	local movingTop = top
 	-- A blank to get layout to show right?
@@ -282,7 +353,7 @@ function EMA:SettingsCreateCurrency( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxChatTrigger = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["CHAT_TRIGGERS"],
@@ -294,22 +365,81 @@ function EMA:SettingsCreateCurrency( top )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControl.checkBoxCurrencyGold = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["GOLD"],
 		EMA.SettingsToggleCurrencyGold,
 		L["GOLD_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight
+	)
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+		halfWidth, 
+		column2left, 
 		movingTop, 
 		L["GOLD_GB"],
 		EMA.SettingsToggleCurrencyGoldInGuildBank,
 		L["GOLD_GB_HELP"]
+	)
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxCurrencyShowBagSpace = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		left, 
+		movingTop, 
+		L["SHOW_BAG_SPACE"],
+		EMA.SettingsToggleCurrencyShowBagSpace,
+		L["SHOW_BAG_SPACE_HELP"]
+	)	
+	movingTop = movingTop - checkBoxHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["CURRENCY"], movingTop, false )
+	movingTop = movingTop - headingHeight
+	-- Xpacs
+	EMA.settingsControl.checkBoxCurrencyShowClassic = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left, 
+		movingTop, 
+		L["CURRENCY_CLASSIC"],
+		EMA.SettingsToggleCurrencyClassic,
+		L["CURRENCY_CLASSIC_HELP"]
+	)	
+	EMA.settingsControl.checkBoxCurrencyShowWarlordsofDraenor = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left2, 
+		movingTop, 
+		L["CURRENCY_WOD"],
+		EMA.SettingsToggleCurrencyWarlordsofDraenor,
+		L["CURRENCY_WOD_HELP"]
+	)	
+	EMA.settingsControl.checkBoxCurrencyShowLegion = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left3, 
+		movingTop, 
+		L["CURRENCY_LEGION"],
+		EMA.SettingsToggleCurrencyLegion,
+		L["CURRENCY_LEGION_HELP"]
+	)	
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.checkBoxCurrencyShowBattleforAzeroth = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left, 
+		movingTop, 
+		L["CURRENCY_BFA"],
+		EMA.SettingsToggleCurrencyBattleforAzeroth,
+		L["CURRENCY_BFA_HELP"]
+	)	
+	EMA.settingsControl.checkBoxCurrencyShowShadowlands = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left2, 
+		movingTop, 
+		L["CURRENCY_SHADOWLANDS"],
+		EMA.SettingsToggleCurrencyShadowlands,
+		L["CURRENCY_SHADOWLANDS_HELP"]
 	)
 	--Currency One & Two	
 	movingTop = movingTop - checkBoxHeight
@@ -383,14 +513,23 @@ function EMA:SettingsCreateCurrency( top )
 		L["SHOW_CURRENCY_HELP"]
 	)
 	movingTop = movingTop - buttonHeight
-	EMA.settingsControl.checkBoxCurrencyOpenStartUpMaster = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl.checkBoxCurrencyOpenStartUpAll = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
-		headingWidth, 
+		halfWidth, 
 		left, 
 		movingTop, 
 		L["CURR_STARTUP"],
-		EMA.SettingsToggleCurrencyOpenStartUpMaster,
+		EMA.SettingsToggleCurrencyOpenStartUpAll,
 		L["CURR_STARTUP_HELP"]
+	)
+	EMA.settingsControl.checkBoxCurrencyOpenStartUpMaster = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		column2left, 
+		movingTop, 
+		L["CURR_STARTUP_MASTER"],
+		EMA.SettingsToggleCurrencyOpenStartUpMaster,
+		L["CURR_STARTUP_MASTER_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight
 	-- Create appearance & layout.
@@ -502,6 +641,16 @@ function EMA:SettingsCreateCurrency( top )
 	EMA.settingsControl.currencySliderSpaceForGold:SetSliderValues( 20, 200, 1 )
 	EMA.settingsControl.currencySliderSpaceForGold:SetCallback( "OnValueChanged", EMA.SettingsChangeSliderSpaceForGold )
 	movingTop = movingTop - sliderHeight - verticalSpacing
+	EMA.settingsControl.currencySliderSpaceForOther = EMAHelperSettings:CreateSlider( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["SPACE_FOR_OTHER"]
+	)
+	EMA.settingsControl.currencySliderSpaceForOther:SetSliderValues( 20, 200, 1 )
+	EMA.settingsControl.currencySliderSpaceForOther:SetCallback( "OnValueChanged", EMA.SettingsChangeSliderSpaceForOther )
+	movingTop = movingTop - sliderHeight - verticalSpacing
 	EMA.settingsControl.currencySliderSpaceForPoints = EMAHelperSettings:CreateSlider( 
 		EMA.settingsControl, 
 		headingWidth, 
@@ -543,14 +692,27 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxCurrencyGold:SetValue( EMA.db.currGold )
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank:SetValue( EMA.db.currGoldInGuildBank )
 	EMA.settingsControl.checkBoxCurrencyGoldInGuildBank:SetDisabled( not EMA.db.currGold )
+	EMA.settingsControl.checkBoxCurrencyShowBagSpace:SetValue( EMA.db.currBagSpace )
+	EMA.settingsControl.checkBoxCurrencyShowClassic:SetValue( EMA.db.currClassicCurrencys )
+	EMA.settingsControl.checkBoxCurrencyShowWarlordsofDraenor:SetValue( EMA.db.currWodCurrencys )
+	EMA.settingsControl.checkBoxCurrencyShowLegion:SetValue( EMA.db.currLegionCurrencys )
+	EMA.settingsControl.checkBoxCurrencyShowBattleforAzeroth:SetValue( EMA.db.currBattleforAzerothCurrencys) 
+	EMA.settingsControl.checkBoxCurrencyShowShadowlands:SetValue( EMA.db.currShadowlands )
 	EMA.settingsControl.editBoxCurrencyTypeOneID:SetValue( EMA.db.CcurrTypeOne )
+	EMA.settingsControl.editBoxCurrencyTypeOneID:SetList( EMA.CurrDropDownBox() )
 	EMA.settingsControl.editBoxCurrencyTypeTwoID:SetValue ( EMA.db.CcurrTypeTwo )	
+	EMA.settingsControl.editBoxCurrencyTypeTwoID:SetList( EMA.CurrDropDownBox() )
 	EMA.settingsControl.editBoxCurrencyTypeThreeID:SetValue ( EMA.db.CcurrTypeThree )
+	EMA.settingsControl.editBoxCurrencyTypeThreeID:SetList( EMA.CurrDropDownBox() )
 	EMA.settingsControl.editBoxCurrencyTypeFourID:SetValue ( EMA.db.CcurrTypeFour )
-	EMA.settingsControl.editBoxCurrencyTypeFiveID:SetValue ( EMA.db.CcurrTypeFive )	
+	EMA.settingsControl.editBoxCurrencyTypeFourID:SetList( EMA.CurrDropDownBox() )
+	EMA.settingsControl.editBoxCurrencyTypeFiveID:SetValue ( EMA.db.CcurrTypeFive )
+	EMA.settingsControl.editBoxCurrencyTypeFiveID:SetList( EMA.CurrDropDownBox() )
 	EMA.settingsControl.editBoxCurrencyTypeSixID:SetValue ( EMA.db.CcurrTypeSix )
-	--state
+	EMA.settingsControl.editBoxCurrencyTypeSixID:SetList( EMA.CurrDropDownBox() )
+	EMA.settingsControl.checkBoxCurrencyOpenStartUpAll:SetValue( EMA.db.currOpenStartUpAll )
 	EMA.settingsControl.checkBoxCurrencyOpenStartUpMaster:SetValue( EMA.db.currOpenStartUpMaster )
+	EMA.settingsControl.checkBoxCurrencyOpenStartUpMaster:SetDisabled( not EMA.db.currOpenStartUpAll )
 	EMA.settingsControl.currencyTransparencySlider:SetValue( EMA.db.currencyFrameAlpha )
 	EMA.settingsControl.currencyScaleSlider:SetValue( EMA.db.currencyScale )
 	EMA.settingsControl.currencyMediaBorder:SetValue( EMA.db.currencyBorderStyle )
@@ -561,9 +723,11 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.currencyFontSize:SetValue( EMA.db.currencyFontSize )
 	EMA.settingsControl.currencySliderSpaceForName:SetValue( EMA.db.currencyNameWidth )
 	EMA.settingsControl.currencySliderSpaceForGold:SetValue( EMA.db.currencyGoldWidth )
+	EMA.settingsControl.currencySliderSpaceForOther:SetValue( EMA.db.currencyOtherWidth )
 	EMA.settingsControl.currencySliderSpaceForPoints:SetValue( EMA.db.currencyPointsWidth )
 	EMA.settingsControl.currencySliderSpaceBetweenValues:SetValue( EMA.db.currencySpacingWidth )
 	EMA.settingsControl.checkBoxCurrencyLockWindow:SetValue( EMA.db.currencyLockWindow )
+	EMA.CurrDropDownBox()
 	if EMA.currencyListFrameCreated == true then
 		EMA:CurrencyListSetColumnWidth()
 		EMA:SettingsUpdateBorderStyle()
@@ -593,6 +757,41 @@ function EMA:SettingsToggleCurrencyGoldInGuildBank( event, checked )
 	EMA.db.currGoldInGuildBank = checked
 	EMA:SettingsRefresh()
 end
+
+function EMA:SettingsToggleCurrencyShowBagSpace( event, checked )
+	EMA.db.currBagSpace = checked
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleCurrencyClassic( event, checked )
+	EMA.db.currClassicCurrencys = checked
+	EMA:AddCurrencyToTable()
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleCurrencyWarlordsofDraenor( event, checked )
+	EMA.db.currWodCurrencys = checked
+	EMA:AddCurrencyToTable()
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleCurrencyLegion( event, checked )
+	EMA.db.currLegionCurrencys = checked
+	EMA:AddCurrencyToTable()
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleCurrencyBattleforAzeroth( event, checked )
+	EMA.db.currBattleforAzerothCurrencys = checked
+	EMA:AddCurrencyToTable()
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsToggleCurrencyShadowlands( event, checked )
+	EMA.db.currShadowlands = checked
+	EMA:AddCurrencyToTable()
+	EMA:SettingsRefresh()
+end	
 
 function EMA:EditBoxChangedCurrencyTypeOneID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
@@ -641,6 +840,11 @@ function EMA:EditBoxChangedCurrencyTypeSixID( event, value )
 	EMA.db.CcurrTypeSix = id
 	EMA.db.CcurrTypeSixName = currName
 	EMA:EMAToonRequestCurrency()
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleCurrencyOpenStartUpAll( event, checked )
+	EMA.db.currOpenStartUpAll = checked
 	EMA:SettingsRefresh()
 end
 
@@ -705,6 +909,11 @@ function EMA:SettingsChangeSliderSpaceForGold( event, value )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsChangeSliderSpaceForOther( event, value )
+	EMA.db.currencyOtherWidth = tonumber( value )
+	EMA:SettingsRefresh()
+end
+
 function EMA:SettingsChangeSliderSpaceForPoints( event, value )
 	EMA.db.currencyPointsWidth = tonumber( value )
 	EMA:SettingsRefresh()
@@ -731,14 +940,16 @@ function EMA:OnInitialize()
 	EMA.currencyListFrameCreated = false
 	EMA.currencyFrameCharacterInfo = {}
 	EMA.currentCurrencyValues = {}
+	EMA.currTypes = {}
 	-- Create the settings control.
 	SettingsCreate()
 	-- Initialise the EMAModule part of this module.
 	EMA:EMAModuleInitialize( EMA.settingsControl.widgetSettings.frame )
-	-- Populate the settings.
-	EMA:SettingsRefresh()
 	-- Create the currency list frame.
 	EMA:CreateEMAToonCurrencyListFrame()
+	EMA:AddCurrencyToTable()
+	-- Populate the settings.
+	EMA:SettingsRefresh()
 end
 
 -- Called when the addon is enabled.
@@ -750,10 +961,14 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "CHAT_MSG_RAID", "DoChatCommand")
 	EMA:RegisterEvent( "CHAT_MSG_RAID_LEADER", "DoChatCommand")
 	--EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
-	if EMA.db.currOpenStartUpMaster == true then
-		if EMAApi.IsCharacterTheMaster( self.characterName ) == true then
-			EMA:ScheduleTimer( "EMAToonRequestCurrency", 20 )
-		end
+	if EMA.db.currOpenStartUpAll == true then
+		if EMA.db.currOpenStartUpMaster == true then	
+			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
+				EMA:ScheduleTimer( "EMAToonRequestCurrency", 10 )
+			end
+		else		
+			EMA:ScheduleTimer( "EMAToonRequestCurrency", 10 )
+		end	
 	end
 end
 
@@ -768,6 +983,12 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.currChatTrigger = settings.currChatTrigger
 		EMA.db.currGold = settings.currGold
 		EMA.db.currGoldInGuildBank = settings.currGoldInGuildBank
+		EMA.db.currBagSpace = settings.currBagSpace
+		EMA.db.currClassicCurrencys = settings.currClassicCurrencys
+		EMA.db.currWodCurrencys = settings.currWodCurrencys
+		EMA.db.currLegionCurrencys = settings.currLegionCurrencys
+		EMA.db.currBattleforAzerothCurrencys = settings.currBattleforAzerothCurrencys
+		EMA.db.currShadowlands = settings.currShadowlands
 		EMA.db.CcurrTypeOne = settings.CcurrTypeOne
 		EMA.db.CcurrTypeOneName = settings.CcurrTypeOneName
 		EMA.db.CcurrTypeTwo = settings.CcurrTypeTwo
@@ -781,6 +1002,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.CcurrTypeSix = settings.CcurrTypeSix
 		EMA.db.CcurrTypeSixName = settings.CcurrTypeSixName
 		EMA.db.currOpenStartUpMaster = settings.currOpenStartUpMaster
+		EMA.db.currOpenStartUpAll = settings.currOpenStartUpAll
 		EMA.db.currencyScale = settings.currencyScale
 		EMA.db.currencyFrameAlpha = settings.currencyFrameAlpha
 		EMA.db.currencyFramePoint = settings.currencyFramePoint
@@ -802,6 +1024,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.currencyNameWidth = settings.currencyNameWidth
 		EMA.db.currencyPointsWidth = settings.currencyPointsWidth
 		EMA.db.currencyGoldWidth = settings.currencyGoldWidth
+		EMA.db.currencyOtherWidth = settings.currencyOtherWidth
 		EMA.db.currencySpacingWidth = settings.currencySpacingWidth
 		EMA.db.currencyLockWindow = settings.currencyLockWindow
 		-- Refresh the settings.
@@ -811,29 +1034,18 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	end
 end
 
-function pairsByKeys (t, f)
-    local a = {}
-    for n in pairs(t) do table.insert(a, n) end
-    table.sort(a, f)
-    local i = 0      -- iterator variable
-    local iter = function ()   -- iterator function
-        i = i + 1
-        if a[i] == nil then return nil
-        else return a[i], t[a[i]]
-        end
-     end
-     return iter
-end
-
 function EMA:CurrDropDownBox()
+	--EMA:Print("test21")
+	EMAUtilities:ClearTable( EMA.simpleCurrList )
 	for name, id in pairs( EMA.currTypes ) do
-		--EMA:Print("test", name, id)
+		--EMA:Print("testDropDown", name, id)
 		local currName = EMA:CurrencyIconAndName( id )
+		--EMA.simpleCurrList[id] = currName
 		EMA.simpleCurrList[id] = currName		
 	end
 	EMA.simpleCurrList[0] = ""
-	table.sort(EMA.simpleCurrList, function(a,b) return a<b end)
-	table.concat(EMA.simpleCurrList, ", ")
+	--table.sort(EMA.simpleCurrList, function(a,b) return a<b end)
+	--table.concat(EMA.simpleCurrList, ", ")
 	return EMA.simpleCurrList
 end	
 
@@ -929,6 +1141,16 @@ function EMA:CreateEMAToonCurrencyListFrame()
 	frameGoldText:SetJustifyH( "CENTER" )
 	frame.GoldText = frameGoldText
 	left = left + spacing	
+	-- Set the BagSpace font string.
+	local frameBagSpace = EMA.globalCurrencyFramePrefix.."TitleBagSpace"
+	local frameBagSpaceText = parentFrame:CreateFontString( frameBagSpace.."Text", "OVERLAY", "GameFontNormal" )
+	frameBagSpaceText:SetText( L["BAG_SPACE"] )
+	frameBagSpaceText:SetTextColor( r, g, b, a )
+	frameBagSpaceText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
+	frameBagSpaceText:SetWidth( width )
+	frameBagSpaceText:SetJustifyH( "CENTER" )
+	frame.BagSpaceText = frameBagSpaceText
+	left = left + spacing
 	-- Set the TypeOne font string.
 	local frameTypeOne = EMA.globalCurrencyFramePrefix.."TitleTypeOne"
 	local frameTypeOneText = parentFrame:CreateFontString( frameTypeOne.."Text", "OVERLAY", "GameFontNormal" )
@@ -1055,7 +1277,6 @@ function EMA:CreateEMAToonCurrencyListFrame()
 	updateButton:SetText( L["UPDATE"] )		
 	
 	frame.updateButton = updateButton
-	
 	EMA:SettingsUpdateBorderStyle()
 	EMA:CurrencyUpdateWindowLock()
 	EMA:SettingsUpdateFontStyle()
@@ -1072,10 +1293,19 @@ local function GetIcon(iD)
 		return iconTextureString
 	end
 end
-	
 
 function EMA:UpdateHendingText()
 	local parentFrame = EMAToonCurrencyListFrame
+	-- Gold
+	local iconTextureString = strconcat(" |T".."133785"..":20|t")
+	if iconTextureString ~= nil then
+		parentFrame.GoldText:SetText( iconTextureString )
+	end		
+	-- BagSpace
+	local iconTextureString = strconcat(" |T".."133633"..":20|t")
+	if iconTextureString ~= nil then
+		parentFrame.BagSpaceText:SetText( iconTextureString )
+	end
 	-- Type One
 	local iconTextureString = GetIcon( EMA.db.CcurrTypeOne )
 	if iconTextureString ~= nil then
@@ -1116,7 +1346,6 @@ function EMA:CurrencyUpdateWindowLock()
 	end
 end
 
-
 function EMA:SettingsUpdateBorderStyle()
 	local borderStyle = EMA.SharedMedia:Fetch( "border", EMA.db.currencyBorderStyle )
 	local backgroundStyle = EMA.SharedMedia:Fetch( "background", EMA.db.currencyBackgroundStyle )
@@ -1129,7 +1358,6 @@ function EMA:SettingsUpdateBorderStyle()
 	} )
 	frame:SetBackdropColor( EMA.db.currencyFrameBackgroundColourR, EMA.db.currencyFrameBackgroundColourG, EMA.db.currencyFrameBackgroundColourB, EMA.db.currencyFrameBackgroundColourA )
 	frame:SetBackdropBorderColor( EMA.db.currencyFrameBorderColourR, EMA.db.currencyFrameBorderColourG, EMA.db.currencyFrameBorderColourB, EMA.db.currencyFrameBorderColourA )
-	--frame:ClearAllPoints()
 	frame:SetAlpha( EMA.db.currencyFrameAlpha )
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.currencyFramePoint, UIParent, EMA.db.currencyFrameRelativePoint, EMA.db.currencyFrameXOffset, EMA.db.currencyFrameYOffset )
@@ -1142,6 +1370,7 @@ function EMA:SettingsUpdateFontStyle()
 	frame.titleName:SetFont( textFont , textSize , "OUTLINE")
 	frame.characterNameText:SetFont( textFont , textSize , "OUTLINE")
 	frame.GoldText:SetFont( textFont , textSize , "OUTLINE")
+	frame.BagSpaceText:SetFont( textFont , textSize , "OUTLINE")
 	frame.TotalGoldGuildTitleText:SetFont( textFont , textSize , "OUTLINE")
 	frame.TotalGoldGuildText:SetFont( textFont , textSize , "OUTLINE")
 	frame.TotalGoldText:SetFont( textFont , textSize , "OUTLINE")
@@ -1151,6 +1380,7 @@ function EMA:SettingsUpdateFontStyle()
 		--currencyFrameCharacterInfo.characterNameText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.characterNameText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.GoldText:SetFont( textFont , textSize , "OUTLINE")
+		currencyFrameCharacterInfo.BagSpaceText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.TypeOneText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.TypeTwoText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.TypeThreeText:SetFont( textFont , textSize , "OUTLINE")
@@ -1159,7 +1389,6 @@ function EMA:SettingsUpdateFontStyle()
 		currencyFrameCharacterInfo.TypeSixText:SetFont( textFont , textSize , "OUTLINE")
 	end
 end
-
 
 function EMA:CurrencyListSetHeight()
 	local additionalLines = 0
@@ -1180,6 +1409,7 @@ function EMA:CurrencyListSetColumnWidth()
 	local nameWidth = EMA.db.currencyNameWidth
 	local pointsWidth = EMA.db.currencyPointsWidth
 	local goldWidth = EMA.db.currencyGoldWidth
+	local otherWidth = EMA.db.currencyOtherWidth
 	local spacingWidth = EMA.db.currencySpacingWidth
 	local frameHorizontalSpacing = 10
 	local numberOfPointsColumns = 0
@@ -1187,6 +1417,7 @@ function EMA:CurrencyListSetColumnWidth()
 	local headingRowTopPoint = -30
 	local left = frameHorizontalSpacing
 	local haveGold = 0
+	local haveOther = 0
 	-- Heading rows.
 	parentFrame.characterNameText:SetWidth( nameWidth )
 	parentFrame.characterNameText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, headingRowTopPoint )
@@ -1200,6 +1431,16 @@ function EMA:CurrencyListSetColumnWidth()
 	else
 		parentFrame.GoldText:Hide()
 		haveGold = 0
+	end
+	if EMA.db.currBagSpace == true then
+		parentFrame.BagSpaceText:SetWidth( otherWidth )
+		parentFrame.BagSpaceText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, headingRowTopPoint )
+		left = left + otherWidth + (spacingWidth * 3)
+		parentFrame.BagSpaceText:Show()
+		haveOther = 1
+	else
+		parentFrame.BagSpaceText:Hide()
+		haveOther = 0
 	end
 	if EMA.db.CcurrTypeOneName == "" then
 		parentFrame.TypeOneText:Hide()
@@ -1271,6 +1512,14 @@ function EMA:CurrencyListSetColumnWidth()
 			else
 				currencyFrameCharacterInfo.GoldText:Hide()
 			end
+			if EMA.db.currBagSpace == true then
+				currencyFrameCharacterInfo.BagSpaceText:SetWidth( otherWidth )
+				currencyFrameCharacterInfo.BagSpaceText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, characterRowTopPoint )
+				left = left + otherWidth + (spacingWidth * 3)
+				currencyFrameCharacterInfo.BagSpaceText:Show()
+			else
+				currencyFrameCharacterInfo.BagSpaceText:Hide()
+			end
 			if EMA.db.CcurrTypeOneName == "" then
 				currencyFrameCharacterInfo.TypeOneText:Hide()
 			else
@@ -1323,7 +1572,7 @@ function EMA:CurrencyListSetColumnWidth()
 		end
 	end	
 	-- Parent frame width and title.
-	local finalParentWidth = frameHorizontalSpacing + nameWidth + spacingWidth + (haveGold * (goldWidth + (spacingWidth * 3))) + (numberOfPointsColumns * (pointsWidth + spacingWidth)) + frameHorizontalSpacing
+	local finalParentWidth = frameHorizontalSpacing + nameWidth + spacingWidth + (haveGold * (goldWidth + (spacingWidth * 3))) + (haveOther * (otherWidth + (spacingWidth * 3))) + (numberOfPointsColumns * (pointsWidth + spacingWidth)) + frameHorizontalSpacing
 	if finalParentWidth < 95 then
 		finalParentWidth = 95
 	end
@@ -1386,9 +1635,6 @@ function EMA:CurrencyListSetColumnWidth()
 	end
 end
 
-	
-
-
 function EMA:CreateEMACurrencyFrameInfo( characterName, parentFrame )
 	--EMA.Print("makelist", characterName)
 	--if EMAPrivate.Team.GetCharacterOnlineStatus (characterName) == true then
@@ -1434,6 +1680,16 @@ function EMA:CreateEMACurrencyFrameInfo( characterName, parentFrame )
 	frameGoldText:SetJustifyH( "RIGHT" )
 	currencyFrameCharacterInfo.GoldText = frameGoldText
 	left = left + spacing	
+	-- Set the BagSpace font string.
+	local frameBagSpace = EMA.globalCurrencyFramePrefix.."BagSpace"
+	local frameBagSpaceText = parentFrame:CreateFontString( frameBagSpace.."Text", "OVERLAY", "GameFontNormal" )
+	frameBagSpaceText:SetText( "0" )
+	frameBagSpaceText:SetTextColor( 1.00, 1.00, 1.00, 1.00 )
+	frameBagSpaceText:SetPoint( "TOPLEFT", parentFrame, "TOPLEFT", left, top )
+	frameBagSpaceText:SetWidth( width )
+	frameBagSpaceText:SetJustifyH( "RIGHT" )
+	currencyFrameCharacterInfo.BagSpaceText = frameBagSpaceText
+	left = left + spacing
 	-- Set the TypeOne font string.
 	local frameTypeOne = EMA.globalCurrencyFramePrefix.."TypeOne"
 	local frameTypeOneText = parentFrame:CreateFontString( frameTypeOne.."Text", "OVERLAY", "GameFontNormal" )
@@ -1494,20 +1750,18 @@ function EMA:CreateEMACurrencyFrameInfo( characterName, parentFrame )
 	frameTypeSixText:SetJustifyH( "CENTER" )
 	currencyFrameCharacterInfo.TypeSixText = frameTypeSixText
 	left = left + spacing
-	
 	EMA:SettingsUpdateFontStyle()
 end
 
 function EMA:ShowInformationPanel()
-	
 	if EMAToonCurrencyListWindowFrame:IsShown() then
 		EMAToonCurrencyListFrame:Hide()
 	else
+		--EMA:Print("startup")
 		EMA:EMAToonRequestCurrency()
 		EMAToonCurrencyListFrame:Show()
 	end	
 end	
-
 
 function EMA:EMAToonHideCurrency()
 	EMAToonCurrencyListFrame:Hide()
@@ -1534,6 +1788,7 @@ function EMA:EMAToonRequestCurrency()
 			--EMA.Print("offlineRemove", characterName )
 			currencyFrameCharacterInfo.characterNameText:Hide()
 			currencyFrameCharacterInfo.GoldText:Hide()
+			currencyFrameCharacterInfo.BagSpaceText:Hide()
 			currencyFrameCharacterInfo.TypeOneText:Hide()
 			currencyFrameCharacterInfo.TypeTwoText:Hide()
 			currencyFrameCharacterInfo.TypeThreeText:Hide()
@@ -1543,6 +1798,7 @@ function EMA:EMAToonRequestCurrency()
 		else
 			currencyFrameCharacterInfo.characterNameText:Show()
 			currencyFrameCharacterInfo.GoldText:SetTextColor( r, g, b, a )
+			currencyFrameCharacterInfo.BagSpaceText:SetTextColor( r, g, b, a )
 			currencyFrameCharacterInfo.characterNameText:SetTextColor( r, g, b, a )
 			currencyFrameCharacterInfo.TypeOneText:SetTextColor( r, g, b, a )
 			currencyFrameCharacterInfo.TypeTwoText:SetTextColor( r, g, b, a )
@@ -1567,7 +1823,12 @@ function EMA:DoSendCurrency( characterName, dummyValue )
 	--EMA:Print("Test2")
 	if EMAApi.GetCharacterOnlineStatus ( characterName ) == true then
 		table.wipe( EMA.currentCurrencyValues )
+		-- Gold
 		EMA.currentCurrencyValues.currGold = GetMoney()
+		-- BagSpace Maths
+		local numFreeSlots, numTotalSlots = LibBagUtils:CountSlots("BAGS", 0)
+		EMA.currentCurrencyValues.bagSpace = numFreeSlots
+		EMA.currentCurrencyValues.bagSpaceMax = numTotalSlots
 		--CcurrTypeOne
 		local info = C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeOne )
 		if info ~= nil then	
@@ -1604,20 +1865,6 @@ function EMA:DoSendCurrency( characterName, dummyValue )
 			EMA.currentCurrencyValues.currTypeSix = infoSix.quantity
 			EMA.currentCurrencyValues.currMaxTypeSix = infoSix.maxQuantity
 		end
-		
-		--[[
-		EMA.currentCurrencyValues.currTypeTwo = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
-		EMA.currentCurrencyValues.currTypeThree = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
-		EMA.currentCurrencyValues.currTypeFour	= select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
-		EMA.currentCurrencyValues.currTypeFive = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
-		EMA.currentCurrencyValues.currTypeSix = select( 2, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
-		-- Max CurrencyValues
-		EMA.currentCurrencyValues.currMaxTypeTwo = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeTwo ) )
-		EMA.currentCurrencyValues.currMaxTypeThree = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeThree ) )	
-		EMA.currentCurrencyValues.currMaxTypeFour	= select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFour ) )
-		EMA.currentCurrencyValues.currMaxTypeFive = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeFive ) )
-		EMA.currentCurrencyValues.currMaxTypeSix = select( 6, C_CurrencyInfo.GetCurrencyInfo( EMA.db.CcurrTypeSix ) )
-		]]
 		-- SEND DATA
 		--EMA:Print("testsendData", info.quantity, info.maxQuantity)
 		EMA:EMASendCommandToToon( characterName, EMA.COMMAND_HERE_IS_CURRENCY, EMA.currentCurrencyValues )
@@ -1643,10 +1890,18 @@ function EMA:DoShowToonsCurrency( characterName, currencyValues )
 	local b = 1.0
 	local a = 1.0
 	local v = 0
-	
+	--Gold
 	currencyFrameCharacterInfo.GoldText:SetTextColor( r, g, b, a )
 	currencyFrameCharacterInfo.characterNameText:SetTextColor( r, g, b, a )
 	currencyFrameCharacterInfo.GoldText:SetTextColor( r, g, b, a )
+	-- BagSpace
+	if currencyValues.bagSpace == 0 then 
+		--EMA:Print("SetRed")
+		currencyFrameCharacterInfo.BagSpaceText:SetTextColor( r, v, v, a )
+	else
+		--EMA:Print("SetWhite")
+		currencyFrameCharacterInfo.BagSpaceText:SetTextColor( r, g, b, a )
+	end
 	if currencyValues.currTypeOne ~= nil then
 		if currencyValues.currTypeOne == currencyValues.currMaxTypeOne and currencyValues.currTypeOne  > 0 then 
 			--EMA:Print("SetRed")
@@ -1692,7 +1947,7 @@ function EMA:DoShowToonsCurrency( characterName, currencyValues )
 		end
 	end
 	currencyFrameCharacterInfo.GoldText:SetText( EMAUtilities:FormatMoneyString( currencyValues.currGold ) )
-	--currencyFrameCharacterInfo.GoldText:SetText( GetCoinTextureString( currencyValues.currGold ) )
+	currencyFrameCharacterInfo.BagSpaceText:SetText( currencyValues.bagSpace..L["/"]..currencyValues.bagSpaceMax )
 	currencyFrameCharacterInfo.TypeOneText:SetText( currencyValues.currTypeOne )
 	currencyFrameCharacterInfo.TypeTwoText:SetText( currencyValues.currTypeTwo )
 	currencyFrameCharacterInfo.TypeThreeText:SetText( currencyValues.currTypeThree )	
@@ -1923,3 +2178,5 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		EMA:DoShowToonsCurrency( characterName, ... )
 	end
 end
+
+EMAApi.TestCodeCurr = testcode

@@ -1,24 +1,19 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: v9.0.1-Release-v3.0(0165)
+EMA Version: v9.0.1-Release-v3.1(0164-0166)
 Game Version: 9.0.1
 Release Date: 30/10/2020
+
+## Information
+	-- Added Support For Bagspace Information
+	-- Information Panel Can Now Startup On All Team Members
+	-- Added Some Options To Support The Removal Of "Expansions" From Dropdown List.
+	-- Added Shadowlands Currencies.
 
 ## Toon
 	-- Added Support To Tell The Team When Your Bag Space Is Getting Low Then Just Full.  (by RobinFrcd ) 
 			
-
-
-
-
-
-
----------------------------
-EMA Version: v9.0.1-Release-v3.0(0164)
-Game Version: 9.0.1
-Release Date: 29/10/2020
-
 ## Quest 
 	-- Fixed Issue #8
 
