@@ -1,7 +1,21 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: v9.0.1-Release-v3.0(0161)
+EMA Version: v9.0.1-Release-v3.0(0164)
+Game Version: 9.0.1
+Release Date: 29/10/2020
+
+## Quest 
+	-- Fixed Issue #8
+
+# Trade
+	-- Added Support To Trade All Recipes by Akandesh
+	
+# Mail 	
+	-- Added Support To Mail All Recipes by Akandesh
+
+---------------------------
+EMA Version: v9.0.1-Release-v3.0(0163)
 Game Version: 9.0.1
 Release Date: 29/10/2020
 

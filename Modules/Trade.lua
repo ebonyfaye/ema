@@ -53,9 +53,11 @@ EMA.settings = {
 		blackListItem = false,
 		tradeBoEItems = false,
 		tradeCRItems = false,
+		tradeRecipeFItems = false,
 		autoSellOtherItemTag = EMAApi.MasterGroup(),
 		autoBoEItemTag = EMAApi.MasterGroup(),
 		autoCRItemTag = EMAApi.MasterGroup(),
+		autoRecipeFItemTag = EMAApi.MasterGroup(),
 		autoTradeItemsList = {},
 		adjustMoneyWithMasterOnTrade = false,
 		goldAmountToKeepOnToonTrade = 200,
@@ -344,6 +346,26 @@ function EMA:SettingsCreateTrade( top )
 	)
 	EMA.settingsControl.tradeTradeCRItemsTag:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.tradeTradeCRItemsTag:SetCallback( "OnValueChanged",  EMA.TradeGroupListItemsCRDropDown )
+	-- NEW AKANDESH THING
+	movingTop = movingTop - editBoxHeight - 3
+	EMA.settingsControl.checkBoxTradeRecipeFItems = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl, 
+		halfWidth, 
+		left, 
+		movingTop + movingTopEdit, 
+		L["TRADE_RECIPE_FORMULA"],
+		EMA.SettingsToggleTradeRecipeFItems,
+		L["TRADE_RECIPE_FORMULA_HELP"]
+	)
+	EMA.settingsControl.tradeTradeRecipeFItemsTag = EMAHelperSettings:CreateDropdown(
+		EMA.settingsControl, 
+		dropBoxWidth,	
+		left3,
+		movingTop, 
+		L["GROUP_LIST"]
+	)
+	EMA.settingsControl.tradeTradeRecipeFItemsTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.tradeTradeRecipeFItemsTag:SetCallback( "OnValueChanged",  EMA.TradeGroupListItemsRecipeFDropDown )
 	-- Trade Gold! Keep
 	movingTop = movingTop - editBoxHeight
 	EMA.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade = EMAHelperSettings:CreateCheckBox( 
@@ -472,6 +494,7 @@ end
 function EMA:OnGroupAreasChanged( message )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.tradeTradeCRItemsTag:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.tradeTradeRecipeFItemsTag:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.tradeTradeBoEItemsTag:SetList( EMAApi.GroupList() )
 end
 
@@ -513,6 +536,11 @@ function EMA:SettingsToggleTradeCRItems(event, checked )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleTradeRecipeFItems(event, checked )
+	EMA.db.tradeRecipeFItems = checked
+	EMA:SettingsRefresh()
+end
+
 function EMA:TradeGroupListItemsCRDropDown(event, value )
 	if value == " " or value == nil then 
 		return 
@@ -520,6 +548,19 @@ function EMA:TradeGroupListItemsCRDropDown(event, value )
 	for index, groupName in ipairs( EMAApi.GroupList() ) do
 		if index == value then
 			EMA.db.autoCRItemTag = groupName
+			break
+		end
+	end
+	EMA:SettingsRefresh()
+end
+
+function EMA:TradeGroupListItemsRecipeFDropDown(event, value )
+	if value == " " or value == nil then 
+		return 
+	end
+	for index, groupName in ipairs( EMAApi.GroupList() ) do
+		if index == value then
+			EMA.db.autoRecipeFItemTag = groupName
 			break
 		end
 	end
@@ -570,6 +611,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.blackListItem = settings.blackListItem
 		EMA.db.tradeBoEItems = settings.tradeBoEItems
 		EMA.db.tradeCRItems = settings.tradeCRItems
+		EMA.db.tradeRecipeFItems = settings.tradeRecipeFItems
 		EMA.db.autoBoEItemTag = settings.autoBoEItemTag
 		EMA.db.autoCRItemTag = settings.autoCRItemTag
 		EMA.db.autoTradeItemsList = EMAUtilities:CopyTable( settings.autoTradeItemsList )
@@ -600,10 +642,12 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
 	EMA.settingsControl.checkBoxTradeBoEItems:SetValue( EMA.db.tradeBoEItems)
 	EMA.settingsControl.checkBoxTradeCRItems:SetValue( EMA.db.tradeCRItems)
+	EMA.settingsControl.checkBoxTradeRecipeFItems:SetValue( EMA.db.tradeRecipeFItems)
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	EMA.settingsControl.tradeItemsEditBoxToonTag:SetText( EMA.db.autoSellOtherItemTag )
 	EMA.settingsControl.tradeTradeBoEItemsTag:SetText( EMA.db.autoBoEItemTag )
 	EMA.settingsControl.tradeTradeCRItemsTag:SetText( EMA.db.autoCRItemTag )
+	EMA.settingsControl.tradeTradeRecipeFItemsTag:SetText( EMA.db.autoRecipeFItemTag )
 	EMA.settingsControl.checkBoxAdjustMoneyWithMasterOnTrade:SetValue( EMA.db.adjustMoneyWithMasterOnTrade )
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetText( tostring( EMA.db.goldAmountToKeepOnToonTrade ) )
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToonTrade:SetDisabled( not EMA.db.adjustMoneyWithMasterOnTrade )
@@ -616,6 +660,8 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.tradeTradeBoEItemsTag:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA.settingsControl.checkBoxTradeCRItems:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA.settingsControl.tradeTradeCRItemsTag:SetDisabled( not EMA.db.showEMATradeWindow )
+	EMA.settingsControl.checkBoxTradeRecipeFItems:SetDisabled( not EMA.db.showEMATradeWindow )
+	EMA.settingsControl.tradeTradeRecipeFItemsTag:SetDisabled( not EMA.db.showEMATradeWindow )
 	EMA:SettingsScrollRefresh()
 end
 
@@ -750,13 +796,13 @@ function EMA:TradeAllItems()
 				if ( bagItemLink ) then	
 					local itemLink = item:GetItemLink()
 					local location = item:GetItemLocation()
-					local itemType = C_Item.GetItemInventoryType( location )
+					local inventoryType = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
-					local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
+					local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(bagItemLink)
 					local canTrade = false
 					if EMA.db.tradeBoEItems == true then
-						if itemType ~= 0 then
+						if inventoryType ~= 0 then
 							if EMAApi.IsCharacterInGroup( characterName, EMA.db.autoBoEItemTag ) == true then
 								if isBop == false then
 									if itemRarity == 2 or itemRarity == 3 or itemRarity == 4 then	
@@ -773,6 +819,15 @@ function EMA:TradeAllItems()
 									canTrade = true	
 								end
 							end										
+						end
+					end
+					if EMA.db.tradeRecipeFItems == true then
+						if itemClassID == 9 then -- LE_ITEM_CLASS_RECIPE
+							if EMAApi.IsCharacterInGroup( characterName, EMA.db.autoRecipeFItemTag ) == true then
+								if isBop == false then
+									canTrade = true	
+								end
+							end		
 						end
 					end
 					if EMA.db.globalTradeList == true then

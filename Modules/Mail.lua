@@ -58,6 +58,9 @@ EMA.settings = {
 		MailCRItems = false,
 		autoMailToonNameCR = "",
 		autoCRItemTag = EMAApi.AllGroup(),
+		MailRecipeFItems = false,
+		autoMailToonNameRecipeF = "",
+		autoRecipeFItemTag = EMAApi.AllGroup(),
 		autoMailItemsList = {},
 		
 		adjustMoneyWithMail = false,
@@ -384,6 +387,34 @@ function EMA:SettingsCreateMail( top )
 	)
 	EMA.settingsControl.MailTradeCRItemsTagCR:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.MailTradeCRItemsTagCR:SetCallback( "OnValueChanged",  EMA.GroupListDropDownListCR )	
+	-- Recipes & Formulas
+	movingTop = movingTop - editBoxHeight - 3
+	EMA.settingsControl.checkBoxMailRecipeFItems = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl, 
+		thirdWidth, 
+		left, 
+		movingTop + movingTopEdit, 
+		L["MAIL_RECIPES"],
+		EMA.SettingsToggleMailRecipeF,
+		L["MAIL_RECIPES_HELP"]
+	)
+	EMA.settingsControl.tabNumListDropDownListRecipeF = EMAHelperSettings:CreateEditBox(
+		EMA.settingsControl, 
+		thirdWidth,	
+		left2,
+		movingTop,
+		L["MAILTOON"]
+	)
+	EMA.settingsControl.tabNumListDropDownListRecipeF:SetCallback( "OnEnterPressed",  EMA.SettingsToggleMailRecipeFName )	
+	EMA.settingsControl.MailTradeRecipeFItemsTagRecipeF = EMAHelperSettings:CreateDropdown(
+		EMA.settingsControl, 
+		thirdWidth,	
+		left3,
+		movingTop, 
+		L["GROUP_LIST"]
+	)
+	EMA.settingsControl.MailTradeRecipeFItemsTagRecipeF:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.MailTradeRecipeFItemsTagRecipeF:SetCallback( "OnValueChanged",  EMA.EditMailToonNameRecipeFGroup )	
 		
 	movingTop = movingTop - editBoxHeight - headingHeight
 --	movingTop = movingTop - editBoxHeight
@@ -605,6 +636,34 @@ function EMA:GroupListDropDownListCR (event, value )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleMailRecipeF(event, checked )
+	EMA.db.MailRecipeFItems = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleMailRecipeFName (event, value )
+	-- if nil or the blank group then don't get Name.
+	if value == " " or value == nil then 
+		return 
+	end
+	EMA.db.autoMailToonNameRecipeF = value
+	EMA:SettingsRefresh()
+end
+
+function EMA:EditMailToonNameRecipeFGroup (event, value )
+	-- if nil or the blank group then don't get Name.
+	if value == " " or value == nil then 
+		return 
+	end
+	for index, groupName in ipairs( EMAApi.GroupList() ) do
+		if index == value then
+			EMA.db.autoRecipeFItemTag = groupName
+			break
+		end
+	end
+	EMA:SettingsRefresh()
+end
+
 function EMA:OnMessageAreasChanged( message )
 	EMA.settingsControl.dropdownMessageArea:SetList( EMAApi.MessageAreaList() )
 end
@@ -613,6 +672,7 @@ function EMA:OnGroupAreasChanged( message )
 	EMA.settingsControl.MailItemsEditBoxMailTag:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.MailTradeBoEItemsTagBoE:SetList( EMAApi.GroupList() )
 	EMA.settingsControl.MailTradeCRItemsTagCR:SetList( EMAApi.GroupList() )
+	EMA.settingsControl.MailTradeRecipeFItemsTagRecipeF:SetList( EMAApi.GroupList() )
 end
 
 function EMA:SettingsSetMessageArea( event, value )
@@ -688,6 +748,9 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.MailCRItems = settings.MailCRItems
 		EMA.db.autoMailToonNameCR = settings.autoMailToonNameCR
 		EMA.db.autoCRItemTag = settings.autoCRItemTag
+		EMA.db.MailRecipeFItems = settings.MailRecipeFItems
+		EMA.db.autoMailToonNameRecipeF = settings.autoMailToonNameRecipeF
+		EMA.db.autoRecipeFItemTag = settings.autoRecipeFItemTag
 		EMA.db.autoMailItemsList = EMAUtilities:CopyTable( settings.autoMailItemsList )
 		EMA.db.global.autoMailItemsListGlobal = EMAUtilities:CopyTable( settings.global.autoMailItemsListGlobal )
 		EMA.db.adjustMoneyWithMail = settings.adjustMoneyWithMail
@@ -721,8 +784,11 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxMailCRItems:SetValue( EMA.db.MailCRItems )
 	EMA.settingsControl.tabNumListDropDownListCR:SetText( EMA.db.autoMailToonNameCR )
 	EMA.settingsControl.MailTradeCRItemsTagCR:SetText( EMA.db.autoCRItemTag )
+
+	EMA.settingsControl.checkBoxMailRecipeFItems:SetValue( EMA.db.MailRecipeFItems )
+	EMA.settingsControl.tabNumListDropDownListRecipeF:SetText( EMA.db.autoMailToonNameRecipeF )
+	EMA.settingsControl.MailTradeRecipeFItemsTagRecipeF:SetText( EMA.db.autoRecipeFItemTag )
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
-	
 	EMA.settingsControl.checkBoxAdjustMoneyOnToonViaMail:SetValue( EMA.db.adjustMoneyWithMail )
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetText( tostring( EMA.db.goldAmountToKeepOnToon ) )
 	EMA.settingsControl.editBoxGoldAmountToLeaveOnToon:SetDisabled( not EMA.db.adjustMoneyWithMail )
@@ -743,6 +809,9 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxMailCRItems:SetDisabled( not EMA.db.showEMAMailWindow )
 	EMA.settingsControl.tabNumListDropDownListCR:SetDisabled( not EMA.db.showEMAMailWindow )
 	EMA.settingsControl.MailTradeCRItemsTagCR:SetDisabled( not EMA.db.showEMAMailWindow )
+	EMA.settingsControl.checkBoxMailRecipeFItems:SetDisabled( not EMA.db.showEMAMailWindow )
+	EMA.settingsControl.tabNumListDropDownListRecipeF:SetDisabled( not EMA.db.showEMAMailWindow )
+	EMA.settingsControl.MailTradeRecipeFItemsTagRecipeF:SetDisabled( not EMA.db.showEMAMailWindow )
 	EMA:SettingsScrollRefresh()
 
 end
@@ -860,17 +929,18 @@ function EMA:AddAllToMailBox()
 	EMA.Count = 1 
 	for bagID = 0, NUM_BAG_SLOTS do
 		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
-			--EMA:Print( "Bags OK. checking", itemLink )
+			
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
 				local bagItemLink = item:GetItemLink()
 				if ( bagItemLink ) then	
+					--EMA:Print( "Bags OK. checking", itemLink )
 					local itemLink = item:GetItemLink()
 					local location = item:GetItemLocation()
 					local itemType = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
-					local _,_,_,_,_,_,_,_,_,_,_,_,_,_,_,_,isCraftingReagent = GetItemInfo( bagItemLink )
+					local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo( bagItemLink )
 					local canSend = false
 					local toonName = nil
 					if EMA.db.MailBoEItems == true then
@@ -888,9 +958,21 @@ function EMA:AddAllToMailBox()
 					if EMA.db.MailCRItems == true then
 						if isCraftingReagent == true then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoCRItemTag ) == true then
+								--EMA:Print("testCR", classID, bagItemLink)
 								if isBop == false then
 									canSend = true
 									toonName = EMA.db.autoMailToonNameCR		
+								end
+							end										
+						end
+					end
+					if EMA.db.MailRecipeFItems == true then
+						if itemClassID == 9 then
+							--EMA:Print("testRF", itemClassID, bagItemLink)
+							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoRecipeFItemTag ) == true then
+								if isBop == false then
+									canSend = true
+									toonName = EMA.db.autoMailToonNameRecipeF		
 								end
 							end										
 						end
