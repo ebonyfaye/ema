@@ -151,7 +151,7 @@ local function SettingsCreateOptions( top )
 		"All macros created within this tab will be named 'name"..EMA.MACRO_TAIL.."'. \n" ..
 		"Clicking '".. L["DELETE_MACROS"] .."' will delete all macros ending with '"..EMA.MACRO_TAIL.."' on all your characters."
 	)	
-	movingTop = movingTop - 55
+	movingTop = movingTop - 70
 
 	EMA.settingsControl.dropDownMacroSelect = EMAHelperSettings:CreateDropdown( 
 		EMA.settingsControl,
