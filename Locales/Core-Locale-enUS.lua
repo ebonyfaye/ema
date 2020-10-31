@@ -128,6 +128,7 @@ L["QUEST"] = "Quest"
 L["COMPLETION"] = "Completion"
 L["TRACKER"] = "Tracker"
 L["ISBOXER"] = "ISBoxer"
+L["MACRO"] = "Macro"
 
 --------------------------
 -- Pecoded String Formats
