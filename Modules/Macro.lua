@@ -41,7 +41,7 @@ local myMacros = {}
 local currentMacro = {isLocal=false}
 local teamNames = {}
 local minionNames = {}
-local currentToonValue = ''
+local currentToonValue
 
 
 -- Configuration.
@@ -81,7 +81,7 @@ end
 
 EMA.COMMAND_SEND_MACRO = "SEND_MACRO"
 EMA.COMMAND_DELETE_EMA_MACRO = "DELETE_EMA_MACRO"
-EMA.MACRO_TAIL = '_EMA_AUTO'
+EMA.MACRO_TAIL = L["MACRO_TAIL"]
 
 -------------------------------------------------------------------------------------------------------------
 -- Macro Management.
@@ -137,15 +137,28 @@ local function SettingsCreateOptions( top )
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, "", movingTop, false )
 	movingTop = movingTop - headingHeight	
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, "Duplicate Macros", movingTop, false )
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["MACRO_TITLE"], movingTop, false )
 	movingTop = movingTop - headingHeight
+
+	EMA.settingsControl.macroInformationlabel = EMAHelperSettings:CreateFreeLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left + indent, 
+		movingTop,
+		"You can load your current macros to use them as a model. \n" ..
+		"Changing the macro title/content and hitting 'Save' will only change the " ..
+		"macro you're sending to other toons, not the one you're currently editing. \n" ..
+		"All macros created within this tab will be named 'name"..EMA.MACRO_TAIL.."'. \n" ..
+		"Clicking '".. L["DELETE_MACROS"] .."' will delete all macros ending with '"..EMA.MACRO_TAIL.."' on all your characters."
+	)	
+	movingTop = movingTop - 55
 
 	EMA.settingsControl.dropDownMacroSelect = EMAHelperSettings:CreateDropdown( 
 		EMA.settingsControl,
 		(headingWidth - indent) / 2, 
 		left + indent, 
 		movingTop, 
-		"Select macro to edit and clone" 
+		L["SELECT_MACRO_TITLE"]
 	)
 	EMA.settingsControl.dropDownMacroSelect:SetList( myMacros )
 	EMA.settingsControl.dropDownMacroSelect:SetCallback( "OnValueChanged", EMA.EditCurrentMacroValue )
@@ -155,23 +168,33 @@ local function SettingsCreateOptions( top )
 		buttonControlWidth, 
 		left + indent + (headingWidth - indent) / 2 + horizontalSpacing, 
 		movingTop - buttonHeight,
-		"Load macros",
+		L["LOAD_MACRO_BUTTON"],
 		EMA.RefreshMacroList,
-		"Get current character macros"
+		L["LOAD_MACRO_BUTTON_HELP"]
 	)
 	movingTop = movingTop - dropdownHeight - verticalSpacing
+
+	EMA.settingsControl.editBoxMacroTitle = EMAHelperSettings:CreateEditBox( 
+		EMA.settingsControl,
+		headingWidth / 3,
+		left + indent,
+		movingTop,
+		L["MACRO_NAME_AREA"]
+	)		
+	EMA.settingsControl.editBoxMacroTitle:SetCallback( "OnEnterPressed", EMA.SaveCurrentMacroTitle )
+	movingTop = movingTop - editBoxHeight
 
 	EMA.settingsControl.editCurrentMacro = EMAHelperSettings:CreateMultiEditBox( 
 		EMA.settingsControl,
 		headingWidth,
 		left + indent,
 		movingTop,
-		"Macro Content",
+		L["MACRO_BODY"],
 		10
 	)
 	EMA.settingsControl.editCurrentMacro.button:SetText( "Save macro to send" )
 	EMA.settingsControl.editCurrentMacro.button:SetWidth( 180 )
-	EMA.settingsControl.editCurrentMacro:SetCallback( "OnEnterPressed", EMA.SaveCurrentMacroValue )
+	EMA.settingsControl.editCurrentMacro:SetCallback( "OnEnterPressed", EMA.SaveCurrentMacroBody )
 	movingTop = movingTop - editBoxHeight * 3.7
 
 	EMA.settingsControl.checkBoxisLocal = EMAHelperSettings:CreateCheckBox( 
@@ -179,9 +202,9 @@ local function SettingsCreateOptions( top )
 		halfWidth, 
 		left + indent + halfWidth, 
 		movingTop, 
-		"Local Macro ?",
+		L["LOCAL_MACRO"],
 		EMA.setCurrentMacroIsLocal,
-		"If not local, it's global"
+		L["LOCAL_MACRO_HELP"]
 	)	
 	movingTop = movingTop - checkBoxHeight - 5
 
@@ -204,26 +227,27 @@ local function SettingsCreateOptions( top )
 		160, 
 		left + indent + (headingWidth - indent) / 3 + horizontalSpacing, 
 		movingTop - buttonHeight,
-		"Send Macro to toon",
+		L["SEND_MACRO"],
 		EMA.SendMacroToToon
 	)
 	EMA.settingsControl.buttonSendToonMacro = EMAHelperSettings:CreateButton(
 		EMA.settingsControl, 
-		140, 
+		160, 
 		385, 
 		movingTop - buttonHeight,
-		"Send to all Toons",
+		L["SEND_MACRO_ALL_CHARACTERS"],
 		EMA.SendMacroAllMinions
 	)
 	movingTop = movingTop - dropdownHeight - verticalSpacing
 
 	EMA.settingsControl.buttonSendToonMacro = EMAHelperSettings:CreateButton(
 		EMA.settingsControl, 
-		140, 
-		385, 
+		200, 
+		left + indent, 
 		movingTop - buttonHeight,
-		"Delete ALL EMA macros",
-		EMA.DeleteMacroTeam
+		L["DELETE_MACROS"],
+		EMA.DeleteMacroTeam,
+		L["DELETE_MACROS_HELP"]
 	)
 	movingTop = movingTop - dropdownHeight - verticalSpacing
 
@@ -256,7 +280,6 @@ end
 
 
 function EMA:RefreshMacroList()
-	print(GetNumMacros())
 	local name, icon, body, isLocal
 	local macrosNames = {}
 	myMacros = {}
@@ -298,37 +321,50 @@ function EMA:EditCurrentMacroValue ( event, value )
 	currentMacro.id = value
 	EMA.settingsControl.editCurrentMacro:SetText( currentMacro.body )
 	EMA.settingsControl.checkBoxisLocal:SetValue( currentMacro.isLocal )
+	EMA.settingsControl.editBoxMacroTitle:SetText( currentMacro.name )
 end
 
 function EMA:EditCurrentToonValue(event, value) 
 	currentToonValue = teamNames[value]
 end
 
-function EMA:SaveCurrentMacroValue(event, value)
-	print(event, value)
+
+function EMA:SaveCurrentMacroBody(event, value)
 	currentMacro.body = value
 end
 
+function EMA:SaveCurrentMacroTitle( event, value )
+	currentMacro.name = value
+	EMA.settingsControl.editBoxMacroTitle:SetText(value)
+end
+
 function EMA:setCurrentMacroIsLocal (event, checked)
-	print(event, checked)
 	currentMacro.isLocal = checked
 end
 
 function EMA:SendMacroToToon()
-	EMA:Print("Sending Macro " .. currentMacro.name .. " To " .. currentToonValue)
-	EMA:EMASendCommandToToon( currentToonValue, EMA.COMMAND_SEND_MACRO, currentMacro )
+	if (currentToonValue ~= nil and currentMacro.name ~= nil) then
+		EMA:Print("Sending Macro " .. currentMacro.name .. " To " .. currentToonValue)
+		EMA:EMASendCommandToToon( currentToonValue, EMA.COMMAND_SEND_MACRO, currentMacro )
+	elseif currentToonValue == nil then
+		EMA:Print("Please select a character to send the macro to")
+	elseif currentMacro.name == nil then
+		EMA:Print("Please fill macro information you want to send")
+	end
 end
 
 function EMA:SendMacroAllMinions()
-	for minionName, position in EMAApi.MinionsList() do
-		EMA:Print("Sending Macro " .. currentMacro.name .. " To " .. minionName)
-		EMA:EMASendCommandToToon( minionName, EMA.COMMAND_SEND_MACRO, currentMacro )
+	for characterName, position in EMAApi.TeamList() do
+		if characterName ~= EMA.characterName then
+			EMA:Print("Sending Macro " .. currentMacro.name .. " To " .. characterName)
+			EMA:EMASendCommandToToon( characterName, EMA.COMMAND_SEND_MACRO, currentMacro )
+		end
 	end
 end
 
 function EMA:DeleteMacroTeam()
 	for characterName, position in EMAApi.TeamList() do
-		EMA:Print("Deleteing Macros on " .. characterName)
+		EMA:Print("Deleting Macros on " .. characterName)
 		EMA:EMASendCommandToToon( characterName, EMA.COMMAND_DELETE_EMA_MACRO )
 	end
 end

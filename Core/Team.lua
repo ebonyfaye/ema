@@ -1034,19 +1034,6 @@ function EMA:ReceiveCommandSetMaster( target, tag )
 	end
 end
 
-local function MinionsList()
-	local minionsList = {}
-	local masterName = GetMasterName()
-	for name, info in pairs( EMA.db.newTeamList ) do
-		for _, charInfo in pairs (info) do
-			if name ~= masterName then
-				minionsList[name] = charInfo.order
-			end
-		end
-	end
-	return pairs( minionsList )
-end
-
 -------------------------------------------------------------------------------------------------------------
 -- Character online status.
 -------------------------------------------------------------------------------------------------------------
@@ -1903,7 +1890,6 @@ EMAApi.IsCharacterTheMaster = IsCharacterTheMaster
 EMAApi.GetMasterName = GetMasterName
 EMAApi.TeamList = TeamList
 EMAApi.FullTeamList = FullTeamList
-EMAApi.MinionsList = MinionsList
 EMAApi.Offline = Offline
 EMAApi.TeamListOrdered = TeamListOrdered
 EMAApi.GetCharacterNameAtOrderPosition = GetCharacterNameAtOrderPosition
