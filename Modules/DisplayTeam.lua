@@ -749,12 +749,29 @@ function EMA:CreateEMATeamStatusBar( characterName, parentFrame )
 	--gCDFrame:SetAlpha( 1 )
 	characterStatusBar["GCDFrame"] = gCDFrame
 	
+	
+	local gCDFrameIconOne = CreateFrame( "Button", gCDFrameName.."ButtonTwo", parentFrame )
+	gCDFrameIconOne.texture = gCDFrameIconOne:CreateTexture(nil, "BACKGROUND")
+	gCDFrameIconOne:SetAllPoints()
+	
+	characterStatusBar["gCDFrameIconOne"] = gCDFrameIconOne
+	
+	local gCDFrameIconOne = gCDFrame:CreateTexture(nil, "BACKGROUND")
+	
+	characterStatusBar["gCDFrameIconOne"] = gCDFrameIconOne
+	
+	
+	--[[
+	local gCDFrameIconTwo = CreateFrame( "Button", gCDFrameName.."ButtonTwo", parentFrame )
+	gCDFrameIconTwo.texture:CreateTexture(nil, "BACKGROUND")
+	characterStatusBar["gCDFrameIconTwo"] = gCDFrameIconTwo
+	]]
 	local gCDFrameText = gCDFrame:CreateFontString( gCDFrameName.."Text", "OVERLAY", "GameFontNormal" )
 	gCDFrameText:SetTextColor( 1.00, 1.00, 0.0, 1.00 )
 	gCDFrameText:SetFont( textFont , textSize, "OUTLINE")
 	gCDFrameText:SetAllPoints()
 	characterStatusBar["GCDFrameText"] = gCDFrameText
-	EMA:SetTrGCOpt()	
+	--EMA:SetTrGCOpt()	
 
 	-- Add the health and power click bars to ClickCastFrames for addons like Clique to use.
 	--Ebony if Support for Clique if not on then default to target unit
@@ -3247,7 +3264,23 @@ function EMA:UpdateSpellStatus( unitTarget, spellID )
 	end
 	local GCDFrame = characterStatusBar["GCDFrame"]	
 	local GCDFrameText = characterStatusBar["GCDFrameText"]
+	--[[
+	local gCDFrameIconOne = characterStatusBar["gCDFrameIconOne"]
+	local name, rank, icon, castTime, minRange, maxRange, spellId = GetSpellInfo( spellID )
+	EMA:Print("testUpdate", unitTarget, spellID )
+	EMA:Print("SellInfo", name, icon, castTime)
+	
+	gCDFrameIconOne:SetTexture( icon )
+	
+	gCDFrameIconOne:SetPoint( "LEFT", GCDFrame, "LEFT", 0 , 0 )
+	EMA:Print("sizetest", TrGCDQueueOpt[1].width, EMA.db.gCDFrameWidth )
+	EMA:Print("sizetesHeight", TrGCDQueueOpt[1].size, EMA.db.gCDFrameHeight )
+	gCDFrameIconOne:SetWidth( EMA.db.gCDFrameHeight )
+	gCDFrameIconOne:SetHeight( EMA.db.gCDFrameHeight )
+	gCDFrameIconOne:Show()
+--]]
 	--EMA:Print("testUpdate", unitTarget )
+	
 	if IsAddOnLoaded( "TrufiGCD" ) == true then
 		local i, _ = TrGCDPlayerDetect(unitTarget)
 		--EMA:Print("test", unitTarget, i )
@@ -3258,7 +3291,7 @@ function EMA:UpdateSpellStatus( unitTarget, spellID )
 		end
 	else
 		GCDFrameText:SetText( L["CAN_NOT_FIND_TRUFIGCD_ADDON"] )
-	end		
+	end
 end
 
 function EMA:SetTrGCOpt()
@@ -3297,6 +3330,7 @@ function EMA:SetTrGCOpt()
 		end
 	end
 end	
+
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
 -------------------------------------------------------------------------------------------------------------
@@ -3309,14 +3343,17 @@ function EMA:OnInitialize()
 	SettingsCreate()
 	-- Initialise the EMAModule part of this module.
 	EMA:EMAModuleInitialize( EMA.settingsControl.widgetSettings.frame )
-	-- Populate the settings.
-	EMA:SettingsRefresh()
+	
 	-- Create the team list frame.
 	CreateEMATeamListFrame()
 	EMA:SetTeamListVisibility()	
 	-- Is Following to stop spam
 	EMA.isFollowing = false
 	EMA:SetTrGCOpt()
+	EMA.gCDFrameIcon = {}
+	
+	-- Populate the settings.
+	EMA:SettingsRefresh()
 end
 
 -- Called when the addon is enabled.

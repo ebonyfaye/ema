@@ -799,7 +799,9 @@ function EMA:TradeAllItems()
 					local inventoryType = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
-					local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo(bagItemLink)
+					--itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent
+					local itemClassID = select(12, GetItemInfo(bagItemLink) )
+					local isCraftingReagent = select(17, GetItemInfo(bagItemLink) )
 					local canTrade = false
 					if EMA.db.tradeBoEItems == true then
 						if inventoryType ~= 0 then
