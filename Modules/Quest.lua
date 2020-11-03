@@ -253,8 +253,10 @@ function EMA:OnEnable()
    -- Quest post hooks.
 	EMA:SecureHook( C_GossipInfo, "SelectOption", "SelectGossipOption")
 	EMA:SecureHook( C_GossipInfo, "SelectActiveQuest" )
+	EMA:SecureHook( "SelectActiveQuest" ) -- Seems bfa uses the old API?
 	EMA:SecureHook( C_GossipInfo, "SelectAvailableQuest" )
-    EMA:SecureHook( "AcceptQuest" )
+	EMA:SecureHook( "SelectAvailableQuest" ) -- Seems bfa uses the old API?
+	EMA:SecureHook( "AcceptQuest" )
 	EMA:SecureHook( "AcknowledgeAutoAcceptQuest" )
     EMA:SecureHook( "CompleteQuest" )
 	EMA:SecureHook( "GetQuestReward" )
@@ -1236,6 +1238,7 @@ function EMA:DoSelectGossipActiveQuest( sender, gossipIndex )
 end
 
 function EMA:SelectGossipAvailableQuest( gossipIndex )
+	--EMA:Print("test")
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		if EMA.isInternalCommand == false then
 			EMA:DebugMessage( "SelectGossipAvailableQuest" )
@@ -1254,6 +1257,7 @@ function EMA:DoSelectGossipAvailableQuest( sender, gossipIndex )
 end
 
 function EMA:SelectActiveQuest( questIndex )
+	--EMA:Print("test")
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		if EMA.isInternalCommand == false then
             EMA:DebugMessage( "SelectActiveQuest" )
@@ -1265,7 +1269,6 @@ end
 function EMA:DoSelectActiveQuest( sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
-        
 		--EMA:Print( "DoSelectActiveQuest" )
 		C_GossipInfo.SelectActiveQuest( questIndex )
 		EMA.isInternalCommand = false
@@ -1273,6 +1276,7 @@ function EMA:DoSelectActiveQuest( sender, questIndex )
 end
 
 function EMA:SelectAvailableQuest( questIndex )
+	--EMA:Print("test")
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then	
 		if EMA.isInternalCommand == false then
 			EMA:DebugMessage( "SelectAvailableQuest" )
@@ -1286,12 +1290,12 @@ function EMA:DoSelectAvailableQuest( sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectAvailableQuest" )
-		-- TODO KEEP?
-		--if C_GossipInfo.GetNumAvailableQuests() > 1 then 	
+		-- BFA npcs are not using the c_gossipInfo?????
+		if C_GossipInfo.GetNumAvailableQuests() > 1 then 	
 			C_GossipInfo.SelectAvailableQuest( questIndex )
-		--else
-		--	EMA:EMASendMessageToTeam( EMA.db.warningArea, L["AM_I_TALKING_TO_A_NPC"], false )	
-		--end
+		else
+		SelectAvailableQuest( questIndex )
+		end
 		EMA.isInternalCommand = false
 	end
 end

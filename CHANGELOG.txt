@@ -1,12 +1,28 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.1(0169-0169)
+Game Version: 9.0.1
+Release Date: 30/10/2020
+
+## Quest
+	- Quests with Gossip options Should Now work in BFA Zones.
+		-- Dev note: Sorry about this one it seems they was not working with the new api like even older zones are? 
+	
+## Disaply-Team
+	- Can Move the frame again
+		--dev note: BBtC 
+		
+
+
+
+---------------------------
 EMA Version: v9.0.1-Release-v3.1(0164-0166)
 Game Version: 9.0.1
 Release Date: 30/10/2020
 
 ## Information
-	-- Added Support For Bagspace Information
+	-- Added Support For Bag space Information
 	-- Information Panel Can Now Startup On All Team Members
 	-- Added Some Options To Support The Removal Of "Expansions" From Dropdown List.
 	-- Added Shadowlands Currencies.
