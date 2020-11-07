@@ -75,6 +75,7 @@ EMA.settings = {
 		followStatusHeight = 15,
 		followStatusShowName = true,
 		showExperienceStatus = true,
+		showLevel = true,
 		showXpStatus = true,
 		showArtifactStatus = false,
 		showHonorStatus = false,
@@ -1487,10 +1488,19 @@ local function SettingsCreateDisplayOptions( top )
 		L["PERCENTAGE_HELP"]
 	)		
 	movingTop = movingTop - checkBoxHeight - verticalSpacing
-	EMA.settingsControl.displayOptionsCheckBoxShowXpStatus = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControl.displayOptionsCheckBoxShowLevel = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		thirdWidth, 
 		left, 
+		movingTop, 
+		L["SHOW_LEVEL"],
+		EMA.SettingsToggleShowLevel,
+		L["SHOW_LEVEL_HELP"]
+	)	
+	EMA.settingsControl.displayOptionsCheckBoxShowXpStatus = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left2, 
 		movingTop, 
 		L["SHOW_XP"],
 		EMA.SettingsToggleShowXpStatus,
@@ -1499,7 +1509,7 @@ local function SettingsCreateDisplayOptions( top )
 	EMA.settingsControl.displayOptionsCheckBoxShowArtifactStatus = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		thirdWidth, 
-		left2, 
+		left3, 
 		movingTop, 
 		L["ARTIFACT_BAR"],
 		EMA.SettingsToggleShowArtifactStatus,
@@ -1807,6 +1817,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.displayOptionsFollowStatusHeightSlider:SetValue( EMA.db.followStatusHeight )
 	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatus:SetValue( EMA.db.showExperienceStatus )
 	EMA.settingsControl.displayOptionsCheckBoxShowXpStatus:SetValue( EMA.db.showXpStatus )
+	EMA.settingsControl.displayOptionsCheckBoxShowLevel:SetValue( EMA.db.showLevel )
 	EMA.settingsControl.displayOptionsCheckBoxShowArtifactStatus:SetValue( EMA.db.showArtifactStatus )
 	EMA.settingsControl.displayOptionsCheckBoxShowRepStatus:SetValue( EMA.db.showRepStatus )
 	EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatusValues:SetValue( EMA.db.experienceStatusShowValues )
@@ -1863,6 +1874,7 @@ function EMA:SettingsRefresh()
 		EMA.settingsControl.displayOptionsFollowStatusHeightSlider:SetDisabled( not EMA.db.showTeamList or not EMA.db.showFollowStatus)
 		EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatus:SetDisabled( not EMA.db.showTeamList )
 		EMA.settingsControl.displayOptionsCheckBoxShowXpStatus:SetDisabled( not EMA.db.showTeamList or not EMA.db.showExperienceStatus)
+		EMA.settingsControl.displayOptionsCheckBoxShowLevel:SetDisabled( not EMA.db.showTeamList or not EMA.db.showExperienceStatus)
 		EMA.settingsControl.displayOptionsCheckBoxShowArtifactStatus:SetDisabled( not EMA.db.showTeamList or not EMA.db.showExperienceStatus)
 		EMA.settingsControl.displayOptionsCheckBoxShowRepStatus:SetDisabled( not EMA.db.showTeamList or not EMA.db.showExperienceStatus )
 		EMA.settingsControl.displayOptionsCheckBoxShowExperienceStatusValues:SetDisabled( not EMA.db.showTeamList or not EMA.db.showExperienceStatus )
@@ -1939,6 +1951,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.followStatusShowName = settings.followStatusShowName
 		EMA.db.showExperienceStatus = settings.showExperienceStatus
 		EMA.db.showXpStatus = settings.showXpStatus
+		EMA.db.showLevel = settings.showLevel
 		EMA.db.showArtifactStatus = settings.showArtifactStatus
 		EMA.db.showRepStatus = settings.showRepStatus
 		EMA.db.experienceStatusWidth = settings.experienceStatusWidth
@@ -2121,6 +2134,10 @@ function EMA:SettingsToggleShowExperienceStatus( event, checked )
 	EMA:SettingsRefresh()
 end
 --
+function EMA:SettingsToggleShowLevel( event, checked )
+	EMA.db.showLevel = checked
+	EMA:SettingsRefresh()
+end
 
 function EMA:SettingsToggleShowXpStatus( event, checked )
 	EMA.db.showXpStatus = checked
@@ -2631,6 +2648,9 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 			text = tostring( AbbreviateLargeNumbers(playerExperience) )..L[" "]..L["("]..tostring( floor( (playerExperience/playerMaxExperience)*100) )..L["%"]..L[")"]
 		else
 			text = tostring( floor( (playerExperience/playerMaxExperience)*100) )..L["%"]
+		end
+		if EMA.db.showLevel then
+			text = "Lv " ..tostring( playerLevel ) .. " | ".. text
 		end
 	end
 	experienceBarText:SetText( text )
