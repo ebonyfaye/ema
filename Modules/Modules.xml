@@ -13,9 +13,9 @@
 	<Script file="Purchase.lua" />
 
 	<Script file="Toon.lua" />
-	<Script file="Talk.lua" />	
-	
 	<Script file="Follow.lua" />
+	<Script file="Talk.lua" />
+	<Script file="Macro.lua" />
 	
 	<Script file="Interaction.lua" />	
 	<Script file="Trade.lua" />
@@ -29,6 +29,6 @@
 	<Script file="DisplayTeam.lua" />
 	<Script file="Information.lua" />
 	<Script file="ItemUse.lua" />
-	<Script file="ISBoxer.lua" />
+<!--	<Script file="ISBoxer.lua" /> -->
 	<Script file="LDBBar.lua" />
 </Ui>

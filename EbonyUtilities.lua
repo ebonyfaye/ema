@@ -334,3 +334,11 @@ function EbonyUtilities:getPetOwner( petName )
 	--	print(owner)
 	end
 end
+
+function EbonyUtilities:endsWith(str, ending)
+	if str ~= nil then
+		return str:match(ending .. '$')
+	else
+		return false
+	end
+end

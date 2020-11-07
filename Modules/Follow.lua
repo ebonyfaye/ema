@@ -33,7 +33,7 @@ EMA.moduleDisplayName = L["FOLLOW"]
 -- Icon 
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\FollowIcon.tga"
 -- order
-EMA.moduleOrder = 50
+EMA.moduleOrder = 20
 
 -- EMA key bindings.
 

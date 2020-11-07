@@ -33,7 +33,7 @@ EMA.moduleDisplayName = L["TALK"]
 -- Icon 
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\ChatIcon.tga"
 -- order
-EMA.moduleOrder = 99
+EMA.moduleOrder = 40
 
 
 -- Settings - the values to store and their defaults for the settings database.

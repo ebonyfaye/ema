@@ -41,7 +41,8 @@ EMA.moduleIconWarnings = "Interface\\Addons\\EMA\\Media\\WarningIcon.tga"
 EMA.moduleIconRepair = "Interface\\Addons\\EMA\\Media\\moduleIconRepair.tga"
 -- order
 EMA.moduleOrder = 40
-
+EMA.moduleWarningsOrder = 1
+EMA.moduleRepairOrder = 1
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
@@ -610,14 +611,17 @@ local function SettingsCreate()
 		L["WARNINGS"],
 		EMA.parentDisplayNameToon, 
 		EMA.SettingsPushSettingsClick,
-		EMA.moduleIconWarnings
+		EMA.moduleIconWarnings,
+		EMA.moduleWarningsOrder
+		
 	)
 	EMAHelperSettings:CreateSettings( 
 		EMA.settingsControlMerchant, 
 		L["REPAIR"], 
 		EMA.parentDisplayNameMerchant, 
 		EMA.SettingsPushSettingsClick,
-		EMA.moduleIconRepair		
+		EMA.moduleIconRepair,
+		EMA.moduleRepairOrder	
 	)
 	local bottomOfToon = SettingsCreateToon( EMAHelperSettings:TopOfSettings() )
 	EMA.settingsControlToon.widgetSettings.content:SetHeight( -bottomOfToon )

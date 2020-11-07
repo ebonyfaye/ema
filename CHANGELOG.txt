@@ -1,13 +1,30 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.1(0170)
+Game Version: 9.0.1
+Release Date: 07/11/2020
+
+## Quest
+	Fix #17
+
+## Isboxer 
+	-- Removed isboxer support for now. due to new policy update.
+
+## Added New Module -- By: RobinFrcd ( edited by me )
+	-- Macro Add and copys Macros to your team!
+
+## Display-team
+	-- Added player level By: RobinFrcd
+	
+---------------------------
 EMA Version: v9.0.1-Release-v3.1(0169-0169)
 Game Version: 9.0.1
 Release Date: 30/10/2020
 
 ## Quest
 	- Quests with Gossip options Should Now work in BFA Zones.
-		-- Dev note: Sorry about this one it seems they was not working with the new api like even older zones are? 
+		-- Dev note: Sorry about this one it seems they was not working with the new api like even older zones are? 	
 	
 ## Disaply-Team
 	- Can Move the frame again
