@@ -2440,11 +2440,13 @@ function EMA:DisplayAutoQuestPopUps()
 			popUpType = characterPopUpType
 		end
 		-- If the current character does not have the quest, show the character names that do have it.
+		--[[
 		local clickToViewText = QUEST_WATCH_POPUP_CLICK_TO_VIEW
 			if not (title and title ~= "") then
 				title = characterList
 				clickToViewText = ""
 			end
+		]]
 		local frame = EMA:AutoQuestGetOrCreateFrame( parentFrame, countPopUps + 1 )
 		frame:Show()
 		frame:ClearAllPoints()

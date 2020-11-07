@@ -1109,7 +1109,7 @@ function EMA:ChurnNpcGossip()
 	local numberActiveQuestInfo = 5
     local index
 	--EMA:Print("test" )
-   EMA:DebugMessage( "GetNumAvailableQuests", GetNumAvailableQuests() )
+    EMA:DebugMessage( "GetNumAvailableQuests", GetNumAvailableQuests() )
     EMA:DebugMessage( "GetNumActiveQuests", GetNumActiveQuests() )
     EMA:DebugMessage( "GetGossipAvailableQuests", C_GossipInfo.GetAvailableQuests() )
     EMA:DebugMessage( "GetGossipActiveQuests", C_GossipInfo.GetActiveQuests() )
