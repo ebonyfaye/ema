@@ -347,9 +347,21 @@ function EMAHelperSettings:CreateIcon( settingsControl, width, left, top, iconNa
 	return icon
 end
 
+-------------------------------------------------------------------------------------------------------------
+-- FreeLabel.
+-------------------------------------------------------------------------------------------------------------
+
+function EMAHelperSettings:CreateFreeLabel( settingsControl, width, left, top, text )
+	local label = AceGUI:Create( "Label" )
+	label:SetText( text )
+	settingsControl.widgetSettings:AddChild( label )
+	label:SetWidth( width )
+	label:SetPoint( "TOPLEFT", settingsControl.widgetSettings.content, "TOPLEFT", left, top )
+	return label
+end
 
 -------------------------------------------------------------------------------------------------------------
--- Label.
+-- NormalLabel.
 -------------------------------------------------------------------------------------------------------------
 
 function EMAHelperSettings:GetLabelHeight()
