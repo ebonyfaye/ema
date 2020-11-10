@@ -609,7 +609,7 @@ end
 
 function EMA:CoreSettingsCreateInfo( top )
 	-- Get positions and dimensions.
-	local buttonPushAllSettingsWidth = 200
+	local buttonWidth = 200
 	local buttonHeight = EMAHelperSettings:GetButtonHeight()
 	local checkBoxHeight = EMAHelperSettings:GetCheckBoxHeight()
 	local radioBoxHeight = EMAHelperSettings:GetRadioBoxHeight()
@@ -724,7 +724,20 @@ function EMA:CoreSettingsCreateInfo( top )
 		column2Left, 
 		movingTop,
 		L["TEXT10"]
-	)	
+	)
+	movingTop = movingTop - labelContinueHeight
+	--[[
+	EMA.settingsControl.buttonClearItemBar = EMAHelperSettings:CreateButton(
+        EMA.settingsControl,
+        buttonWidth,
+        column2Left,
+        movingTop,
+        L["SET_KEYBINDINGS"],
+        EMA.SetkeyBindingsCommand,
+		L["SET_KEYBINDINGS_HELP"]
+    )
+    movingTop = movingTop - buttonHeight - verticalSpacing
+	]]
 	--movingTop = movingTop - labelContinueHeight
 	-- Useful websites Heading
 	movingTop = movingTop - labelContinueHeight * 2
@@ -867,6 +880,13 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		-- Tell the player.
 		EMA:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
+end
+
+function EMA:SetkeyBindingsCommand()
+	--EMA:Print("buttonTest")
+	KeyBindingFrame_LoadUI();
+	--KeyBindingFrame.mode = 6;
+	ShowUIPanel(KeyBindingFrame);
 end
 
 --[[

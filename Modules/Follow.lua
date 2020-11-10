@@ -36,12 +36,12 @@ EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\FollowIcon.tga"
 EMA.moduleOrder = 20
 
 -- EMA key bindings.
-
 BINDING_HEADER_F0LLOW = L["FOLLOW_BINDING_HEADER"]
 BINDING_NAME_FOLLOWME = L["FOLLOW_ME"]
 BINDING_NAME_FOLLOWSTROBEME = L["FOLLOW_STROBE_ME"]
 BINDING_NAME_FOLLOWSTROBEOFF = L["FOLLOW_STROBE_OFF"]
 BINDING_NAME_FOLLOWTEAIN = L["FOLLOW_TRAIN"]
+BINDING_NAME_FOLLOWSTOP = L["FOLLOW_STOP"]
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
@@ -66,7 +66,6 @@ EMA.settings = {
 		useFollowMaster = false,
 		overrideStrobeTargetWithMaster = false,
 		onlyWarnIfOutOfFollowRange = false,
-		
 	},
 }
 
@@ -173,7 +172,15 @@ function EMA:GetConfiguration()
 				usage = "/ema-follow snw",
 				get = false,
 				set = "SuppressNextFollowWarningCommand",
-			},								
+			},
+			stop = {
+				type = "input",
+				name = L["FOLLOW_STOP"],
+				desc = L["FOLLOW_STOP_HELP"],
+				usage = "/ema-follow stop <group>",
+				get = false,
+				set = "CommandFollowStop",
+			},				
 		},
 	}
 	return configuration
@@ -194,6 +201,7 @@ EMA.COMMAND_FOLLOW_STROBE_OFF = "FollowStrobeOff"
 EMA.COMMAND_SET_FOLLOW_MASTER = "FollowMaster"
 EMA.COMMAND_FOLLOW_TRAIN = "FollowTrain"
 EMA.COMMAND_FOLLOW_ME = "FollowMe"
+EMA.COMMAND_FOLLOW_STOP = "FollowStop"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
@@ -664,6 +672,13 @@ function EMA:UPDATE_BINDINGS()
 	if key2 then 
 		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowTrain" ) 
 	end
+	local key1, key2 = GetBindingKey( "FOLLOWSTOP" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowStop" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowStop" ) 
+	end	
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -717,6 +732,10 @@ function EMA:OnInitialize()
 	EMAFollowSecureButtonFollowTrain:SetAttribute( "type", "macro" )
 	EMAFollowSecureButtonFollowTrain:SetAttribute( "macrotext", "/ema-follow train all" )
 	EMAFollowSecureButtonFollowTrain:Hide()
+	EMAFollowSecureButtonFollowStop = CreateFrame( "CheckButton", "EMAFollowSecureButtonFollowStop", nil, "SecureActionButtonTemplate" )
+	EMAFollowSecureButtonFollowStop:SetAttribute( "type", "macro" )
+	EMAFollowSecureButtonFollowStop:SetAttribute( "macrotext", "/ema-follow stop all" )
+	EMAFollowSecureButtonFollowStop:Hide()
 end
 
 -- Called when the addon is enabled.
@@ -1342,6 +1361,20 @@ function EMA:FollowStrobingPause( pause )
 	end	
 end
 
+function EMA:CommandFollowStop( info, parameters )
+	local tag = parameters
+	if tag ~= nil and tag:trim() ~= "" then 
+		EMA:EMASendCommandToTeam( EMA.COMMAND_FOLLOW_STOP, tag )
+	end
+end
+
+function EMA:ReceiveCommandFollowStop( characterName, tag )
+	--EMA:Print("testfollowStop", characterName, tag ) 
+	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
+		FollowUnit( "player" )
+	end
+end
+
 -- A EMA command has been recieved.
 function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	if commandName == EMA.COMMAND_FOLLOW_TARGET then
@@ -1364,6 +1397,9 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	end
 	if commandName == EMA.COMMAND_FOLLOW_ME then
 		EMA:ReceiveCommandFollowMe( characterName, ... )
+	end
+	if commandName == EMA.COMMAND_FOLLOW_STOP then
+		EMA:ReceiveCommandFollowStop( characterName, ... )
 	end
 end
 
