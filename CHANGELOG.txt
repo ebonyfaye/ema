@@ -1,7 +1,7 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: v9.0.1-Release-v3.1(0172)
+EMA Version: v9.0.1-Release-v3.1(0173)
 Game Version: 9.0.1
 Release Date: 10/11/2020
 
