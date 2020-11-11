@@ -38,10 +38,18 @@ EMA.moduleOrder = 20
 
 
 -- EMA key bindings.
-BINDING_HEADER_TEAM = L["TEAM"]
 BINDING_NAME_TEAMINVITE = L["INVITE_GROUP"]
 BINDING_NAME_TEAMDISBAND = L["DISBAND_GROUP"]
 BINDING_NAME_TEAMMASTER = L["SET_MASTER"]
+BINDING_NAME_MASTERFOCUS = L["SET_FOCUS_MASTER"]
+BINDING_NAME_MASTERTARGET = L["SET_MASTER_TARGET"]
+BINDING_NAME_MASTERASSIST = L["SET_MASTER_ASSIST"]
+--Headers
+BINDING_HEADER_TEAM = L["TEAM"]
+BINDING_HEADER_ASTERISK  = L["FAKE_KEY_BINDING"]
+
+
+
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
@@ -520,6 +528,34 @@ local function SettingsCreatePartyInvitationsControl( top )
 		EMA.SettingsDeclineInviteStrangersToggle,
 		L["CHECKBOX_DECLINE_STRANGERS_HELP"]
 	)
+	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
+		"You Can Use the current [\Click] in macros"
+	)	
+	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
+		"[\click EMAAssistMaster]"
+	)
+	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
+		"[click EMATargetMaster]"
+	)
+	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
+		EMA.settingsControl, 
+		headingWidth, 
+		left, 
+		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
+		"[click EMAFocusMaster]"
+	)
 	return bottomOfSection	
 end
 
@@ -711,10 +747,9 @@ local function IsCharacterInTeam( name )
 end
 
 
-
 -- Get the master for this character.
 local function GetMasterName()
-	return EMA.db.master	
+	return EMA.db.master
 end
 
 -- Return true if the character specified is in the master.
@@ -1326,8 +1361,24 @@ local function LeaveTheParty()
 	end
 end
 
+function EMA:UpdateMacros()
+	if InCombatLockdown() then
+		return
+	end
+	local characterName = ( Ambiguate(EMA.db.master, "none" ) )
+	local focus = "/focus " .. characterName
+	local target = "/target " .. characterName
+	local assist = "/assist " .. characterName
+	--EMA:Print("test", characterName, "M", focus )
+	EMAFocusMaster:SetAttribute( "macrotext", focus )
+	EMATargetMaster:SetAttribute( "macrotext", target )
+	EMAAssistMaster:SetAttribute( "macrotext", assist )
+end
+
+
 function EMA:OnMasterChange( message, characterName )
 	--EMA:Print("test", message, characterName)
+	EMA:UpdateMacros()
 	local playerName = EMA.characterName
 	if EMA.db.masterChangePromoteLeader == true then
 		if IsInGroup( "player" ) and UnitIsGroupLeader( "player" ) == true and GetMasterName() ~= playerName then
@@ -1379,21 +1430,34 @@ function EMA:OnInitialize()
 	-- Adds DefaultGroups to GUI
 	EMA.characterGroupList = {}
 	-- Key bindings.
-	EMATeamSecureButtonInvite = CreateFrame( "CheckButton", "EMATeamSecureButtonInvite", nil, "SecureActionButtonTemplate" )
-	EMATeamSecureButtonInvite:SetAttribute( "type", "macro" )
-	EMATeamSecureButtonInvite:SetAttribute( "macrotext", "/ema-team invite" )
-	EMATeamSecureButtonInvite:Hide()	
-	EMATeamSecureButtonDisband = CreateFrame( "CheckButton", "EMATeamSecureButtonDisband", nil, "SecureActionButtonTemplate" )
-	EMATeamSecureButtonDisband:SetAttribute( "type", "macro" )
-	EMATeamSecureButtonDisband:SetAttribute( "macrotext", "/ema-team disband" )
-	EMATeamSecureButtonDisband:Hide()
-	EMATeamSecureButtonMaster = CreateFrame( "CheckButton", "EMATeamSecureButtonMaster", nil, "SecureActionButtonTemplate" )
-	EMATeamSecureButtonMaster:SetAttribute( "type", "macro" )
-	EMATeamSecureButtonMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
-	EMATeamSecureButtonMaster:Hide()
-	--Sets The class of the char.
-	--	setClass()
-
+	if InCombatLockdown()  == false then
+		EMATeamSecureButtonInvite = CreateFrame( "CheckButton", "EMATeamSecureButtonInvite", nil, "SecureActionButtonTemplate" )
+		EMATeamSecureButtonInvite:SetAttribute( "type", "macro" )
+		EMATeamSecureButtonInvite:SetAttribute( "macrotext", "/ema-team invite" )
+		EMATeamSecureButtonInvite:Hide()	
+		EMATeamSecureButtonDisband = CreateFrame( "CheckButton", "EMATeamSecureButtonDisband", nil, "SecureActionButtonTemplate" )
+		EMATeamSecureButtonDisband:SetAttribute( "type", "macro" )
+		EMATeamSecureButtonDisband:SetAttribute( "macrotext", "/ema-team disband" )
+		EMATeamSecureButtonDisband:Hide()
+		EMATeamSecureButtonMaster = CreateFrame( "CheckButton", "EMATeamSecureButtonMaster", nil, "SecureActionButtonTemplate" )
+		EMATeamSecureButtonMaster:SetAttribute( "type", "macro" )
+		EMATeamSecureButtonMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
+		EMATeamSecureButtonMaster:Hide()
+		
+		EMAFocusMaster = CreateFrame( "CheckButton", "EMAFocusMaster", nil, "SecureActionButtonTemplate" )
+		EMAFocusMaster:SetAttribute( "type", "macro" )
+		EMAFocusMaster:Hide()
+		
+		EMATargetMaster = CreateFrame( "CheckButton", "EMATargetMaster", nil, "SecureActionButtonTemplate" )
+		EMATargetMaster:SetAttribute( "type", "macro" )
+		EMATargetMaster:Hide()	
+		
+		EMAAssistMaster = CreateFrame( "CheckButton", "EMAAssistMaster", nil, "SecureActionButtonTemplate" )
+		EMAAssistMaster:SetAttribute( "type", "macro" )
+		EMAAssistMaster:Hide()
+		
+		EMA:UpdateMacros()
+	end
 end
 
 -- Called when the addon is enabled.
@@ -1830,6 +1894,27 @@ function EMA:UPDATE_BINDINGS()
 	end
 	if key2 then 
 		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonMaster" ) 
+	end
+	local key1, key2 = GetBindingKey( "MASTERFOCUS" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusMaster" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusMaster" ) 
+	end
+	local key1, key2 = GetBindingKey( "MASTERTARGET" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATargetMaster" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATargetMaster" ) 
+	end
+	local key1, key2 = GetBindingKey( "MASTERASSIST" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAAssistMaster" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAAssistMaster" ) 
 	end
 end
 

@@ -267,6 +267,11 @@ L["ONLINE"] = "Online"
 L["OFFLINE"] = "Offline"
 L["STATICPOPUP_ADD"] = "Enter character to add in name-server format:"
 L["STATICPOPUP_REMOVE"] = "Are you sure you wish to remove %s from the team list?"
+L["SET_FOCUS_MASTER"] = "Sets Focus To Master* "
+L["SET_MASTER_TARGET"] = "Sets Target To Master* "
+L["SET_MASTER_ASSIST"] = "Sets Assist To Master* "
+L["FAKE_KEY_BINDING"] = "* Needs to Press the key on all clones"
+
 
 --------------------------
 -- Message Locale

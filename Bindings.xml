@@ -18,6 +18,15 @@
 	<Binding name="TEAMMASTER" category="EMA">
 		--[[dummy]]
 	</Binding>
+	<Binding name="MASTERFOCUS" header="ASTERISK" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="MASTERTARGET" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="MASTERASSIST" category="EMA">
+		--[[dummy]]
+	</Binding>
 	<!-- Follow Bindings-->
 	<Binding name="FOLLOWME" header="FOLLOW" category="EMA">
 		--[[dummy]]
@@ -31,7 +40,6 @@
 	<Binding name="FOLLOWSTOP" category="EMA">
 		--[[dummy]]
 	</Binding>
-<!-- 	<group> -->
 	<!-- ItemUse Bindings-->
 	<Binding name="ITEMUSE1" header="ITEMUSE" category="EMA">
 		--[[dummy]]

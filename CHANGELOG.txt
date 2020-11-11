@@ -1,6 +1,23 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.1-Release-v3.1(0174)
+Game Version: 9.0.1
+Release Date: 11/11/2020
+
+## Team
+	-- Added 3 New KeyBindings
+		-- Focus Master
+		-- Target Master
+		-- Assist Master
+		-dev note: They will need to be pressed on every Character by "hand"/Window as well they will not update in combat.
+	
+	-- You can use /click in custom macros 	
+		/click EMAAssistMaster
+		/click EMATargetMaster
+		/click EMAFocusMaster
+
+---------------------------
 EMA Version: v9.0.1-Release-v3.1(0173)
 Game Version: 9.0.1
 Release Date: 10/11/2020
@@ -9,8 +26,6 @@ Release Date: 10/11/2020
 	-- Added a new command to stop follow your current Target.
 		-- KeyBinding can be set the normal way.
 		-- /ema-follow stop all
-
-
 
 ---------------------------
 EMA Version: v9.0.1-Release-v3.1(0170/0171)
