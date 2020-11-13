@@ -271,7 +271,9 @@ L["SET_FOCUS_MASTER"] = "Sets Focus To Master* "
 L["SET_MASTER_TARGET"] = "Sets Target To Master* "
 L["SET_MASTER_ASSIST"] = "Sets Assist To Master* "
 L["FAKE_KEY_BINDING"] = "* Needs to Press the key on all clones"
-
+L["BINDING_CLICK_TO_MOVE"] = "Toggle Click To Move"
+L["COMMANDLINE_CLICK_TO_MOVE"] = "Toggles Click To Move <Group> "
+L["COMMANDLINE_CLICK_TO_MOVE_HELP"] = "Toggles Click To Move By <Group>"
 
 --------------------------
 -- Message Locale

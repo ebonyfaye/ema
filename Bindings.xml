@@ -18,6 +18,9 @@
 	<Binding name="TEAMMASTER" category="EMA">
 		--[[dummy]]
 	</Binding>
+	<Binding name="CLICKTOMOVE" category="EMA">
+		--[[dummy]]
+	</Binding>
 	<Binding name="MASTERFOCUS" header="ASTERISK" category="EMA">
 		--[[dummy]]
 	</Binding>

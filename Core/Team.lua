@@ -41,15 +41,13 @@ EMA.moduleOrder = 20
 BINDING_NAME_TEAMINVITE = L["INVITE_GROUP"]
 BINDING_NAME_TEAMDISBAND = L["DISBAND_GROUP"]
 BINDING_NAME_TEAMMASTER = L["SET_MASTER"]
+BINDING_NAME_CLICKTOMOVE = L["BINDING_CLICK_TO_MOVE"]
 BINDING_NAME_MASTERFOCUS = L["SET_FOCUS_MASTER"]
 BINDING_NAME_MASTERTARGET = L["SET_MASTER_TARGET"]
 BINDING_NAME_MASTERASSIST = L["SET_MASTER_ASSIST"]
 --Headers
 BINDING_HEADER_TEAM = L["TEAM"]
 BINDING_HEADER_ASTERISK  = L["FAKE_KEY_BINDING"]
-
-
-
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
@@ -165,6 +163,14 @@ function EMA:GetConfiguration()
 				get = false,
 				set = "SetAllMembersOnline",
 			},
+			ctm = {
+				type = "input",
+				name = L["COMMANDLINE_CLICK_TO_MOVE"],
+				desc = L["COMMANDLINE_CLICK_TO_MOVE_HELP"],
+				usage = "/ema-team ctm <group>",
+				get = false,
+				set = "CommandClickToMove",
+			},
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
@@ -194,6 +200,7 @@ EMA.COMMAND_SET_MASTER = "EMATeamSetMaster"
 -- Set Minion OffLine
 EMA.COMMAND_SET_OFFLINE = "EMATeamSetOffline"
 EMA.COMMAND_SET_ONLINE = "EMATeamSetOnline"
+EMA.COMMAND_CLICK_TO_MOVE = "EMAClickToMove"
 
 
 -------------------------------------------------------------------------------------------------------------
@@ -540,21 +547,21 @@ local function SettingsCreatePartyInvitationsControl( top )
 		headingWidth, 
 		left, 
 		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
-		"[\click EMAAssistMaster]"
+		"[/click EMAAssistMaster]"
 	)
 	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
 		EMA.settingsControl, 
 		headingWidth, 
 		left, 
 		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
-		"[click EMATargetMaster]"
+		"[/click EMATargetMaster]"
 	)
 	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
 		EMA.settingsControl, 
 		headingWidth, 
 		left, 
 		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
-		"[click EMAFocusMaster]"
+		"[/click EMAFocusMaster]"
 	)
 	return bottomOfSection	
 end
@@ -1394,6 +1401,27 @@ function EMA:OnMasterChange( message, characterName )
 	end
 end
 
+function EMA:CommandClickToMove( info, parameters )
+	local tag = parameters
+	if tag ~= nil and tag:trim() ~= "" then 
+		EMA:EMASendCommandToTeam( EMA.COMMAND_CLICK_TO_MOVE, tag )
+	end
+end
+
+function EMA:ReceiveClickToMove( characterName, tag )
+	local clickToMove = GetCVar("Autointeract")
+	--EMA:Print("test", characterName, tag, clickToMove )
+	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
+		if clickToMove == "1" then
+			ConsoleExec("Autointeract 0")	
+		else
+			if characterName ~= EMA.characterName then
+				ConsoleExec("Autointeract 1")
+			end	
+		end
+	end	
+end
+
 --[[
 function EMA:AddIsboxerMembers()
 	if IsAddOnLoaded("Isboxer" ) then
@@ -1443,6 +1471,13 @@ function EMA:OnInitialize()
 		EMATeamSecureButtonMaster:SetAttribute( "type", "macro" )
 		EMATeamSecureButtonMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
 		EMATeamSecureButtonMaster:Hide()
+		
+		EMATeamSecureButtonClickToMove = CreateFrame( "CheckButton", "EMATeamSecureButtonClickToMove", nil, "SecureActionButtonTemplate" )
+		EMATeamSecureButtonClickToMove:SetAttribute( "type", "macro" )
+		EMATeamSecureButtonClickToMove:SetAttribute( "macrotext", "/ema-team ctm all" )
+		EMATeamSecureButtonClickToMove:Hide()		
+		
+		
 		
 		EMAFocusMaster = CreateFrame( "CheckButton", "EMAFocusMaster", nil, "SecureActionButtonTemplate" )
 		EMAFocusMaster:SetAttribute( "type", "macro" )
@@ -1916,6 +1951,13 @@ function EMA:UPDATE_BINDINGS()
 	if key2 then 
 		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAAssistMaster" ) 
 	end
+	local key1, key2 = GetBindingKey( "CLICKTOMOVE" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonClickToMove" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonClickToMove" ) 
+	end
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1923,31 +1965,27 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:EMAOnCommandReceived( sender, commandName, ... )
+	if IsCharacterInTeam( sender ) == false then
+		return
+	end	
 	if commandName == EMA.COMMAND_LEAVE_PARTY then
-		if IsCharacterInTeam( sender ) == true then
-			LeaveTheParty()
-		end
+		LeaveTheParty()
 	end
 	if commandName == EMA.COMMAND_SET_MASTER then
-		if IsCharacterInTeam( sender ) == true then
-			EMA:ReceiveCommandSetMaster( ... )
-		end	
+		EMA:ReceiveCommandSetMaster( ... )	
 	end
 	--Ebony
 	if commandName == EMA.COMMAND_SET_OFFLINE then
-		if IsCharacterInTeam( sender ) == true then
-			EMA.ReceivesetOffline( ... )
-		end
+		EMA:ReceivesetOffline( ... )
 	end
 	if commandName == EMA.COMMAND_SET_ONLINE then
-		if IsCharacterInTeam( sender ) == true then
-			EMA.ReceivesetOnline( ... )
-		end
+		EMA:ReceivesetOnline( ... )
 	end
 	if commandName == EMA.COMMAND_TAG_PARTY then
-		if IsCharacterInTeam( sender ) == true then
-			EMA.doTagParty( characterName, tag, ... )
-		end	
+		EMA:doTagParty( characterName, tag, ... )
+	end
+	if commandName == EMA.COMMAND_CLICK_TO_MOVE then
+		EMA:ReceiveClickToMove( sender, ... )
 	end	
 end
 
