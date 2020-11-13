@@ -1463,10 +1463,12 @@ function EMA:OnInitialize()
 		EMATeamSecureButtonInvite:SetAttribute( "type", "macro" )
 		EMATeamSecureButtonInvite:SetAttribute( "macrotext", "/ema-team invite" )
 		EMATeamSecureButtonInvite:Hide()	
+		
 		EMATeamSecureButtonDisband = CreateFrame( "CheckButton", "EMATeamSecureButtonDisband", nil, "SecureActionButtonTemplate" )
 		EMATeamSecureButtonDisband:SetAttribute( "type", "macro" )
 		EMATeamSecureButtonDisband:SetAttribute( "macrotext", "/ema-team disband" )
 		EMATeamSecureButtonDisband:Hide()
+		
 		EMATeamSecureButtonMaster = CreateFrame( "CheckButton", "EMATeamSecureButtonMaster", nil, "SecureActionButtonTemplate" )
 		EMATeamSecureButtonMaster:SetAttribute( "type", "macro" )
 		EMATeamSecureButtonMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
@@ -1476,8 +1478,6 @@ function EMA:OnInitialize()
 		EMATeamSecureButtonClickToMove:SetAttribute( "type", "macro" )
 		EMATeamSecureButtonClickToMove:SetAttribute( "macrotext", "/ema-team ctm all" )
 		EMATeamSecureButtonClickToMove:Hide()		
-		
-		
 		
 		EMAFocusMaster = CreateFrame( "CheckButton", "EMAFocusMaster", nil, "SecureActionButtonTemplate" )
 		EMAFocusMaster:SetAttribute( "type", "macro" )
@@ -1974,7 +1974,6 @@ function EMA:EMAOnCommandReceived( sender, commandName, ... )
 	if commandName == EMA.COMMAND_SET_MASTER then
 		EMA:ReceiveCommandSetMaster( ... )	
 	end
-	--Ebony
 	if commandName == EMA.COMMAND_SET_OFFLINE then
 		EMA:ReceivesetOffline( ... )
 	end

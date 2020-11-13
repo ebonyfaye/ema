@@ -1291,10 +1291,10 @@ function EMA:DoSelectAvailableQuest( sender, questIndex )
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectAvailableQuest" )
 		-- BFA npcs are not using the c_gossipInfo?????
-		if C_GossipInfo.GetNumAvailableQuests() > 1 then 	
+		if C_GossipInfo.GetNumAvailableQuests() >= 1 then 	
 			C_GossipInfo.SelectAvailableQuest( questIndex )
 		else
-		SelectAvailableQuest( questIndex )
+			SelectAvailableQuest( questIndex )
 		end
 		EMA.isInternalCommand = false
 	end
