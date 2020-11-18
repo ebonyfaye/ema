@@ -137,8 +137,8 @@ end
 
 function EMA:CurrencyIconAndName( id )
 	local info = C_CurrencyInfo.GetCurrencyInfo(id)
-	--EMA:Print("test", info.name, info.iconFileID, info.description )
-	if 	info.iconFileID ~= nil then
+	if info ~= nil and info.iconFileID ~= nil then
+		--EMA:Print("test", info.name, info.iconFileID )
 		local currName = strconcat(" |T"..info.iconFileID..":20|t", L[" "]..info.name)	
 		return currName
 	end	

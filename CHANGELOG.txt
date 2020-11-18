@@ -1,6 +1,18 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.2-Release-v3.1(0178)
+Game Version: 9.0.2
+Release Date: 18/11/2020
+
+##core
+	-- Updated Ace3
+	-- Updated Ace3-SharedMediaWidgets
+
+## Information
+	--Fixed a lua error from changes with the new patch
+	
+---------------------------
 EMA Version: v9.0.1-Release-v3.1(0175)
 Game Version: 9.0.1
 Release Date: 13/11/2020

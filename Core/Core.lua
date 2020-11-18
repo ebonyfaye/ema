@@ -395,6 +395,7 @@ end
 
 -- Send a command for the module specified (using its address) to other EMA Team characters.
 local function SendCommandToTeam( moduleAddress, commandName, ... )
+	--EMA:Print("test", moduleAddress, commandName)
 	-- Get the name of the module.
 	local moduleName = EMA.registeredModulesByAddress[moduleAddress]
 	-- Send the command identified by the module name.
