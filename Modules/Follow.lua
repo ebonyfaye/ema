@@ -876,6 +876,7 @@ end
 
 function EMA:SuppressNextFollowWarning()
 	-- Events are fired as follows for a /follow command.
+	--EMA:Print("testfollow", EMA.isFollowing)
 	if EMA.isFollowing == true then
 		EMA:SetNoFollowBrokenWarningNextBreak()
 		EMA:SetNoFollowBrokenWarningNextSecondBreak()
@@ -955,6 +956,11 @@ function EMA:AutoFollowEndSend()
 			canWarn = false
 		end
 	end	
+	if EMA.EMAExternalNoWarnNextBreak == true then
+		--EMA:Print("test", EMA.EMAExternalNoWarnNextBreak )
+		canWarn = false		
+		EMA.EMAExternalNoWarnNextBreak = false
+	end
 	-- If allowed to warn, then warn.
 	if canWarn == true then
 		EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.followBrokenMessage, false )
@@ -1126,13 +1132,15 @@ end
 function EMA:CommandFollowMe( info, parameters )
 	local tag = parameters
 	if tag ~= nil and tag:trim() ~= "" then 
+		EMA.SuppressNextFollowWarning()
 		EMA:EMASendCommandToTeam( EMA.COMMAND_FOLLOW_ME, tag )
 	end
 end
 
 function EMA:ReceiveCommandFollowMe( characterName, tag )
-	--EMA:Print("testfollowme", characterName, tag ) 
-	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
+	--EMA:Print("testfollowme", characterName, tag )
+	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) and characterName ~= EMA.characterName then
+		--EMA:Print("works")
 		FollowUnit( Ambiguate( characterName, "none" ), true )	
 	end
 end
@@ -1370,7 +1378,7 @@ end
 
 function EMA:ReceiveCommandFollowStop( characterName, tag )
 	--EMA:Print("testfollowStop", characterName, tag ) 
-	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
+	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) and characterName ~= EMA.characterName then
 		FollowUnit( "player" )
 	end
 end
