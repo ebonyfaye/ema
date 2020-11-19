@@ -37,6 +37,11 @@ EMA.moduleDisplayName = L["INTERACTION"]
 -- order
 EMA.moduleOrder = 60
 
+-- EMA key bindings.
+BINDING_HEADER_MOUNT = L["MOUNT"]
+BINDING_NAME_TEAMMOUNT = L["MOUNT_WITH_TEAM"]
+
+
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
@@ -75,7 +80,7 @@ function EMA:GetConfiguration()
 				usage = "/ema-interaction config",
 				get = false,
 				set = "",				
-			},
+			},	
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
@@ -130,7 +135,13 @@ function EMA:OnInitialize()
 	EMA:EMAModuleInitialize( EMA.settingsControl.widgetSettings.frame )
 	-- Populate the settings.
 	EMA:SettingsRefresh()
-	--EMA:DisableAutoLoot()	
+	--EMA:DisableAutoLoot()
+	if InCombatLockdown()  == false then
+		EMATeamSecureButtonMount = CreateFrame( "CheckButton", "EMATeamSecureButtonMount", nil, "SecureActionButtonTemplate" )
+		EMATeamSecureButtonMount:SetAttribute( "type", "macro" )
+		EMATeamSecureButtonMount:SetAttribute( "macrotext", "/run C_MountJournal.SummonByID(0)" )
+		EMATeamSecureButtonMount:Hide()
+	end
 end
 
 -- Called when the addon is enabled.
@@ -144,6 +155,10 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "LOOT_READY" )
 	EMA:RegisterEvent( "TAXIMAP_OPENED" )
 	EMA:RegisterEvent( "TAXIMAP_CLOSED" )
+	-- Initialise key bindings.
+	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
+	EMA:RegisterEvent( "UPDATE_BINDINGS" )		
+	EMA:UPDATE_BINDINGS()
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 end
 
@@ -886,6 +901,21 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		end		
 	end
 end
+
+function EMA:UPDATE_BINDINGS()
+	if InCombatLockdown() then
+		return
+	end
+	ClearOverrideBindings( EMA.keyBindingFrame )
+	local key1, key2 = GetBindingKey( "TEAMMOUNT" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonMount" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonMount" ) 
+	end
+end
+
 
 EMAApi.Taxi = {}
 EMAApi.Taxi.MESSAGE_TAXI_TAKEN = EMA.MESSAGE_TAXI_TAKEN

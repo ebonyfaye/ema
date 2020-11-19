@@ -26,6 +26,7 @@ local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
 EMA.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
+
 --  Constants and Locale for this module.
 EMA.moduleName = "Toon"
 EMA.settingsDatabaseName = "ToonProfileDB"
@@ -104,7 +105,7 @@ function EMA:GetConfiguration()
 				desc = L["OPEN_CONFIG_HELP"],
 				usage = "/ema-toon config",
 				get = false,
-				set = "",				
+				set = "",
 			},
 				push = {
 				type = "input",

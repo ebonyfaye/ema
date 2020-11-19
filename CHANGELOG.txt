@@ -5,6 +5,14 @@ EMA Version: v9.0.2-Release-v3.1(0179)
 Game Version: 9.0.2
 Release Date: 19/11/2020
 
+## Interaction
+	--Added a keybinding to mount from you "Summon Random Favorite Mount" ( you need mount team on for the team to copy ) request #20
+
+---------------------------
+EMA Version: v9.0.2-Release-v3.1(0179)
+Game Version: 9.0.2
+Release Date: 19/11/2020
+
 ## Follow
 	SNW now works again (less follow borken spam!)
 	/ema-follow me and KeyBinding 
