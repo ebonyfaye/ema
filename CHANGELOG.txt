@@ -1,6 +1,20 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.2-Release-v3.1(0181)
+Game Version: 9.0.2
+Release Date: 20/11/2020
+
+## Interaction
+	--Undo the mount change in (0180)
+	-- New Mount Option
+		-New command: "/ema-interaction mount <Tag>" 
+		- New KeyBinding, now calls "/ema-interaction mount all"
+			- Will Now tell the team to summon a "Random Favorite Mount" (everyone summons there own random mount) 
+				-- Dev note: This works with with shift!!!!!!!.
+				-- You do not need to Have the settings ticked in the options to copy mount!	
+
+---------------------------
 EMA Version: v9.0.2-Release-v3.1(0180)
 Game Version: 9.0.2
 Release Date: 19/11/2020

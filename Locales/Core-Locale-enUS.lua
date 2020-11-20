@@ -431,6 +431,8 @@ L["ONLY_DISMOUNT_WITH_MASTER_HELP"] = "Only Dismount's When Master Character Dis
 L["ONLY_MOUNT_WHEN_IN_RANGE"] = "Only Mount When In Range"
 L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"] = "Dismounts Only When The Team Is In Range /nOnly Works In A Party!"
 L["I_AM_UNABLE_TO_MOUNT"] = "I Am Unable To Mount."
+L["MOUNT_HELP"] = "Command Teams To Summon A Random Favorite Mount"
+
 -- Loot Locale
 L["LOOT_OPTIONS"] = "Loot v2 Options"
 L["DISMOUNT_WITH_CHARACTER"] = "Dismount With Character That Dismount"
