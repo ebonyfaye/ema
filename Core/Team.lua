@@ -45,6 +45,19 @@ BINDING_NAME_CLICKTOMOVE = L["BINDING_CLICK_TO_MOVE"]
 BINDING_NAME_MASTERFOCUS = L["SET_FOCUS_MASTER"]
 BINDING_NAME_MASTERTARGET = L["SET_MASTER_TARGET"]
 BINDING_NAME_MASTERASSIST = L["SET_MASTER_ASSIST"]
+-- EMA Focus key bindings
+BINDING_NAME_FOCUS1 = L["SET_FOCUS_ONE"]
+BINDING_NAME_FOCUS2 = L["SET_FOCUS_TWO"]
+BINDING_NAME_FOCUS3 = L["SET_FOCUS_THREE"]
+BINDING_NAME_FOCUS4 = L["SET_FOCUS_FOUR"]
+BINDING_NAME_FOCUS5 = L["SET_FOCUS_FIVE"]
+BINDING_NAME_FOCUS6 = L["SET_FOCUS_SIX"]
+BINDING_NAME_FOCUS7 = L["SET_FOCUS_SEVEN"]
+BINDING_NAME_FOCUS8 = L["SET_FOCUS_EIGHT"]
+BINDING_NAME_FOCUS9 = L["SET_FOCUS_NINE"]
+BINDING_NAME_FOCUS10 = L["SET_FOCUS_TEN"]
+
+
 --Headers
 BINDING_HEADER_TEAM = L["TEAM"]
 BINDING_HEADER_ASTERISK  = L["FAKE_KEY_BINDING"]
@@ -233,9 +246,9 @@ EMA.simpleAreaList = {}
 
 local function SettingsCreateTeamList()
 	-- Position and size constants.
-	local teamListButtonControlWidth = 250
+	local teamListButtonControlWidth = 200
 	local iconSize = 24
-	local groupListWidth = 200
+	local groupListWidth = 150
 	local extaSpacing = 40
 	local rowHeight = 30
 	local rowsToDisplay = 8
@@ -274,8 +287,8 @@ local function SettingsCreateTeamList()
 	EMA.settingsControl.labelTwo = EMAHelperSettings:CreateContinueLabel( 
 		EMA.settingsControl, 
 		teamListButtonControlWidth,  
-
-		teamListButtonControlWidth + iconSize + groupListWidth, 
+		teamListWidth / 2, 
+		teamListButtonControlWidth + iconSize + groupListWidth + 100, 
 		leftOfList,
 		L["GROUPS_HEADER"]
 	)
@@ -288,17 +301,21 @@ local function SettingsCreateTeamList()
 	list.listWidth = teamListWidth
 	list.rowHeight = rowHeight
 	list.rowsToDisplay = rowsToDisplay
-	list.columnsToDisplay = 3
+	list.columnsToDisplay = 4
 	list.columnInformation = {}
 	list.columnInformation[1] = {}
-	list.columnInformation[1].width = 30
+	list.columnInformation[1].width = 35
 	list.columnInformation[1].alignment = "LEFT"
 	list.columnInformation[2] = {}
-	list.columnInformation[2].width = 55
-	list.columnInformation[2].alignment = "CENTER"
+	list.columnInformation[2].width = 30
+	list.columnInformation[2].alignment = "LEFT"
 	list.columnInformation[3] = {}
 	list.columnInformation[3].width = 15
-	list.columnInformation[3].alignment = "RIGHT"	
+	list.columnInformation[3].alignment = "LEFT"
+	list.columnInformation[4] = {}
+	list.columnInformation[4].width = 15
+	list.columnInformation[4].alignment = "LEFT"	
+	
 	list.scrollRefreshCallback = EMA.SettingsTeamListScrollRefresh
 	list.rowClickCallback = EMA.SettingsTeamListRowClick
 	EMA.settingsControl.teamList = list
@@ -1380,7 +1397,28 @@ function EMA:UpdateMacros()
 	EMAFocusMaster:SetAttribute( "macrotext", focus )
 	EMATargetMaster:SetAttribute( "macrotext", target )
 	EMAAssistMaster:SetAttribute( "macrotext", assist )
-end
+	
+	local EMAFocusOneName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(1), "none" ) ) 
+		EMAFocusOne:SetAttribute( "macrotext", "/focus " .. EMAFocusOneName  )
+	local EMAFocusTwoName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(2), "none" ) ) 
+		EMAFocusTwo:SetAttribute( "macrotext", "/focus " .. EMAFocusTwoName  )
+	local EMAFocusThreeName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(3), "none" ) ) 
+		EMAFocusThree:SetAttribute( "macrotext", "/focus " .. EMAFocusThreeName  )
+	local EMAFocusFourName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(4), "none" ) ) 
+		EMAFocusFour:SetAttribute( "macrotext", "/focus " .. EMAFocusFourName  )
+	local EMAFocusFiveName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(5), "none" ) ) 
+		EMAFocusFive:SetAttribute( "macrotext", "/focus " .. EMAFocusFiveName  )
+	local EMAFocusSixName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(6), "none" ) ) 
+		EMAFocusSix:SetAttribute( "macrotext", "/focus " .. EMAFocusSixName  )
+	local EMAFocusSevenName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(7), "none" ) ) 
+		EMAFocusSeven:SetAttribute( "macrotext", "/focus " .. EMAFocusSevenName  )
+	local EMAFocusEightName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(8), "none" ) ) 
+		EMAFocusEight:SetAttribute( "macrotext", "/focus " .. EMAFocusEightName  )
+	local EMAFocusNineName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(9), "none" ) )
+		EMAFocusNine:SetAttribute( "macrotext", "/focus " .. EMAFocusNineName  )
+	local EMAFocusTenName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(10), "none" ) )
+		EMAFocusTen:SetAttribute( "macrotext", "/focus " .. EMAFocusTenName  )
+end		
 
 
 function EMA:OnMasterChange( message, characterName )
@@ -1458,26 +1496,27 @@ function EMA:OnInitialize()
 	-- Adds DefaultGroups to GUI
 	EMA.characterGroupList = {}
 	-- Key bindings.
+	
 	if InCombatLockdown()  == false then
-		EMATeamSecureButtonInvite = CreateFrame( "CheckButton", "EMATeamSecureButtonInvite", nil, "SecureActionButtonTemplate" )
-		EMATeamSecureButtonInvite:SetAttribute( "type", "macro" )
-		EMATeamSecureButtonInvite:SetAttribute( "macrotext", "/ema-team invite" )
-		EMATeamSecureButtonInvite:Hide()	
+		EMAInvite = CreateFrame( "CheckButton", "EMAInvite", nil, "SecureActionButtonTemplate" )
+		EMAInvite:SetAttribute( "type", "macro" )
+		EMAInvite:SetAttribute( "macrotext", "/ema-team invite" )
+		EMAInvite:Hide()	
 		
-		EMATeamSecureButtonDisband = CreateFrame( "CheckButton", "EMATeamSecureButtonDisband", nil, "SecureActionButtonTemplate" )
-		EMATeamSecureButtonDisband:SetAttribute( "type", "macro" )
-		EMATeamSecureButtonDisband:SetAttribute( "macrotext", "/ema-team disband" )
-		EMATeamSecureButtonDisband:Hide()
+		EMADisband = CreateFrame( "CheckButton", "EMADisband", nil, "SecureActionButtonTemplate" )
+		EMADisband:SetAttribute( "type", "macro" )
+		EMADisband:SetAttribute( "macrotext", "/ema-team disband" )
+		EMADisband:Hide()
 		
-		EMATeamSecureButtonMaster = CreateFrame( "CheckButton", "EMATeamSecureButtonMaster", nil, "SecureActionButtonTemplate" )
-		EMATeamSecureButtonMaster:SetAttribute( "type", "macro" )
-		EMATeamSecureButtonMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
-		EMATeamSecureButtonMaster:Hide()
+		EMAMaster = CreateFrame( "CheckButton", "EMAMaster", nil, "SecureActionButtonTemplate" )
+		EMAMaster:SetAttribute( "type", "macro" )
+		EMAMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
+		EMAMaster:Hide()
 		
-		EMATeamSecureButtonClickToMove = CreateFrame( "CheckButton", "EMATeamSecureButtonClickToMove", nil, "SecureActionButtonTemplate" )
-		EMATeamSecureButtonClickToMove:SetAttribute( "type", "macro" )
-		EMATeamSecureButtonClickToMove:SetAttribute( "macrotext", "/ema-team ctm all" )
-		EMATeamSecureButtonClickToMove:Hide()		
+		EMAClickToMove = CreateFrame( "CheckButton", "EMAClickToMove", nil, "SecureActionButtonTemplate" )
+		EMAClickToMove:SetAttribute( "type", "macro" )
+		EMAClickToMove:SetAttribute( "macrotext", "/ema-team ctm all" )
+		EMAClickToMove:Hide()		
 		
 		EMAFocusMaster = CreateFrame( "CheckButton", "EMAFocusMaster", nil, "SecureActionButtonTemplate" )
 		EMAFocusMaster:SetAttribute( "type", "macro" )
@@ -1490,6 +1529,46 @@ function EMA:OnInitialize()
 		EMAAssistMaster = CreateFrame( "CheckButton", "EMAAssistMaster", nil, "SecureActionButtonTemplate" )
 		EMAAssistMaster:SetAttribute( "type", "macro" )
 		EMAAssistMaster:Hide()
+		
+		EMAFocusOne = CreateFrame( "CheckButton", "EMAFocusOne", nil, "SecureActionButtonTemplate" )
+		EMAFocusOne:SetAttribute( "type", "macro" )
+		EMAFocusOne:Hide()
+		
+		EMAFocusTwo = CreateFrame( "CheckButton", "EMAFocusTwo", nil, "SecureActionButtonTemplate" )
+		EMAFocusTwo:SetAttribute( "type", "macro" )
+		EMAFocusTwo:Hide()
+		
+		EMAFocusThree = CreateFrame( "CheckButton", "EMAFocusThree", nil, "SecureActionButtonTemplate" )
+		EMAFocusThree:SetAttribute( "type", "macro" )
+		EMAFocusThree:Hide()
+		
+		EMAFocusFour = CreateFrame( "CheckButton", "EMAFocusFour", nil, "SecureActionButtonTemplate" )
+		EMAFocusFour:SetAttribute( "type", "macro" )
+		EMAFocusFour:Hide()
+		
+		EMAFocusFive = CreateFrame( "CheckButton", "EMAFocusFive", nil, "SecureActionButtonTemplate" )
+		EMAFocusFive:SetAttribute( "type", "macro" )
+		EMAFocusFive:Hide()
+		
+		EMAFocusSix = CreateFrame( "CheckButton", "EMAFocusSix", nil, "SecureActionButtonTemplate" )
+		EMAFocusSix:SetAttribute( "type", "macro" )
+		EMAFocusSix:Hide()
+		
+		EMAFocusSeven = CreateFrame( "CheckButton", "EMAFocusSeven", nil, "SecureActionButtonTemplate" )
+		EMAFocusSeven:SetAttribute( "type", "macro" )
+		EMAFocusSeven:Hide()
+		
+		EMAFocusEight = CreateFrame( "CheckButton", "EMAFocusEight", nil, "SecureActionButtonTemplate" )
+		EMAFocusEight:SetAttribute( "type", "macro" )
+		EMAFocusEight:Hide()
+		
+		EMAFocusNine = CreateFrame( "CheckButton", "EMAFocusNine", nil, "SecureActionButtonTemplate" )
+		EMAFocusNine:SetAttribute( "type", "macro" )
+		EMAFocusNine:Hide()
+		
+		EMAFocusTen = CreateFrame( "CheckButton", "EMAFocusTen", nil, "SecureActionButtonTemplate" )
+		EMAFocusTen:SetAttribute( "type", "macro" )
+		EMAFocusTen:Hide()
 		
 		EMA:UpdateMacros()
 	end
@@ -1605,9 +1684,11 @@ function EMA:SettingsTeamListScrollRefresh()
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetText( "" )
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[3].textString:SetText( "" )
+		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[4].textString:SetText( "" )
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
+		EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[4].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		EMA.settingsControl.teamList.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		-- Get data.
 		local dataRowNumber = iterateDisplayRows + EMA.settingsControl.teamListOffset
@@ -1657,6 +1738,10 @@ function EMA:SettingsTeamListScrollRefresh()
 			EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[1].textString:SetText( displayCharacterName )
 			EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[2].textString:SetText( displayCharacterRleam )
 			EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[3].textString:SetText( displayOnline )
+			local key1 = ""
+			key1 = GetBindingKey( "FOCUS"..iterateDisplayRows )
+			--EMA:Print("test", key1, "FOCUS"..iterateDisplayRows )
+			EMA.settingsControl.teamList.rows[iterateDisplayRows].columns[4].textString:SetText( key1 )
 			-- Highlight the selected row.
 			if dataRowNumber == EMA.settingsControl.teamListHighlightRow then
 				EMA.settingsControl.teamList.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
@@ -1911,24 +1996,24 @@ function EMA:UPDATE_BINDINGS()
 	ClearOverrideBindings( EMA.keyBindingFrame )
 	local key1, key2 = GetBindingKey( "TEAMINVITE" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonInvite" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAInvite" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonInvite" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAInvite" ) 
 	end	
 	local key1, key2 = GetBindingKey( "TEAMDISBAND" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonDisband" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMADisband" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonDisband" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMADisband" ) 
 	end
 	local key1, key2 = GetBindingKey( "TEAMMASTER" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonMaster" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAMaster" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonMaster" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAMaster" ) 
 	end
 	local key1, key2 = GetBindingKey( "MASTERFOCUS" )		
 	if key1 then 
@@ -1953,11 +2038,80 @@ function EMA:UPDATE_BINDINGS()
 	end
 	local key1, key2 = GetBindingKey( "CLICKTOMOVE" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonClickToMove" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAClickToMove" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonClickToMove" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAClickToMove" ) 
 	end
+	local key1, key2 = GetBindingKey( "FOCUS1" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusOne" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusOne" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS2" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusTwo" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusTwo" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS3" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusThree" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusThree" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS4" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusFour" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusFour" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS5" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusFive" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusFive" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS6" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusSix" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS7" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusSix" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusSeven" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS8" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusEight" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusEight" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS9" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusNine" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusNine" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOCUS10" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFocusTen" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFocusTen" ) 
+	end
+	
+	
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -2038,3 +2192,4 @@ EMAApi.CommandIAmMaster = EMA.CommandIAmMaster
 --EMAApi.SetClass = setClass
 EMAApi.GroupAreaList = EMA.GroupAreaList
 EMAApi.refreshDropDownList = refreshDropDownList
+EMAApi.UpdateMacros = EMA.UpdateMacros

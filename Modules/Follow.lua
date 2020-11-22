@@ -646,38 +646,38 @@ function EMA:UPDATE_BINDINGS()
 	ClearOverrideBindings( EMA.keyBindingFrame )
 	local key1, key2 = GetBindingKey( "FOLLOWME" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowMe" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowMe" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowMe" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowMe" ) 
 	end	
 	local key1, key2 = GetBindingKey( "FOLLOWSTROBEME" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowStrobeMe" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowStrobeMe" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowStrobeMe" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowStrobeMe" ) 
 	end
 	local key1, key2 = GetBindingKey( "FOLLOWSTROBEOFF" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowStrobeOff" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowStrobeOff" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowStrobeOff" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowStrobeOff" ) 
 	end
 	local key1, key2 = GetBindingKey( "FOLLOWTEAIN" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowTrain" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowTrain" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowTrain" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowTrain" ) 
 	end
 	local key1, key2 = GetBindingKey( "FOLLOWSTOP" )		
 	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowSecureButtonFollowStop" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowStop" ) 
 	end
 	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowSecureButtonFollowStop" ) 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowStop" ) 
 	end	
 end
 
@@ -716,26 +716,26 @@ function EMA:OnInitialize()
 	-- Character on taxi flag.
 	EMA.characterIsOnTaxi = false
 -- Key bindings.
-	EMAFollowSecureButtonFollowMe = CreateFrame( "CheckButton", "EMAFollowSecureButtonFollowMe", nil, "SecureActionButtonTemplate" )
-	EMAFollowSecureButtonFollowMe:SetAttribute( "type", "macro" )
-	EMAFollowSecureButtonFollowMe:SetAttribute( "macrotext", "/ema-follow me all" )
-	EMAFollowSecureButtonFollowMe:Hide()
-	EMAFollowSecureButtonStrobeMe = CreateFrame( "CheckButton", "EMAFollowSecureButtonFollowStrobeMe", nil, "SecureActionButtonTemplate" )
-	EMAFollowSecureButtonStrobeMe:SetAttribute( "type", "macro" )
-	EMAFollowSecureButtonStrobeMe:SetAttribute( "macrotext", "/ema-follow strobeonme all" )
-	EMAFollowSecureButtonStrobeMe:Hide()
-	EMAFollowSecureButtonFollowStrobeOff = CreateFrame( "CheckButton", "EMAFollowSecureButtonFollowStrobeOff", nil, "SecureActionButtonTemplate" )
-	EMAFollowSecureButtonFollowStrobeOff:SetAttribute( "type", "macro" )
-	EMAFollowSecureButtonFollowStrobeOff:SetAttribute( "macrotext", "/ema-follow strobeoff all" )
-	EMAFollowSecureButtonFollowStrobeOff:Hide()
-	EMAFollowSecureButtonFollowTrain = CreateFrame( "CheckButton", "EMAFollowSecureButtonFollowTrain", nil, "SecureActionButtonTemplate" )
-	EMAFollowSecureButtonFollowTrain:SetAttribute( "type", "macro" )
-	EMAFollowSecureButtonFollowTrain:SetAttribute( "macrotext", "/ema-follow train all" )
-	EMAFollowSecureButtonFollowTrain:Hide()
-	EMAFollowSecureButtonFollowStop = CreateFrame( "CheckButton", "EMAFollowSecureButtonFollowStop", nil, "SecureActionButtonTemplate" )
-	EMAFollowSecureButtonFollowStop:SetAttribute( "type", "macro" )
-	EMAFollowSecureButtonFollowStop:SetAttribute( "macrotext", "/ema-follow stop all" )
-	EMAFollowSecureButtonFollowStop:Hide()
+	EMAFollowMe = CreateFrame( "CheckButton", "EMAFollowMe", nil, "SecureActionButtonTemplate" )
+	EMAFollowMe:SetAttribute( "type", "macro" )
+	EMAFollowMe:SetAttribute( "macrotext", "/ema-follow me all" )
+	EMAFollowMe:Hide()
+	EMAFollowStrobeMe = CreateFrame( "CheckButton", "EMAFollowStrobeMe", nil, "SecureActionButtonTemplate" )
+	EMAFollowStrobeMe:SetAttribute( "type", "macro" )
+	EMAFollowStrobeMe:SetAttribute( "macrotext", "/ema-follow strobeonme all" )
+	EMAFollowStrobeMe:Hide()
+	EMAFollowStrobeOff = CreateFrame( "CheckButton", "EMAFollowStrobeOff", nil, "SecureActionButtonTemplate" )
+	EMAFollowStrobeOff:SetAttribute( "type", "macro" )
+	EMAFollowStrobeOff:SetAttribute( "macrotext", "/ema-follow strobeoff all" )
+	EMAFollowStrobeOff:Hide()
+	EMAFollowTrain = CreateFrame( "CheckButton", "EMAFollowTrain", nil, "SecureActionButtonTemplate" )
+	EMAFollowTrain:SetAttribute( "type", "macro" )
+	EMAFollowTrain:SetAttribute( "macrotext", "/ema-follow train all" )
+	EMAFollowTrain:Hide()
+	EMAFollowStop = CreateFrame( "CheckButton", "EMAFollowStop", nil, "SecureActionButtonTemplate" )
+	EMAFollowStop:SetAttribute( "type", "macro" )
+	EMAFollowStop:SetAttribute( "macrotext", "/ema-follow stop all" )
+	EMAFollowStop:Hide()
 end
 
 -- Called when the addon is enabled.

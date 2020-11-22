@@ -30,6 +30,38 @@
 	<Binding name="MASTERASSIST" category="EMA">
 		--[[dummy]]
 	</Binding>
+	<Binding name="FOCUS1" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS2" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS3" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS4" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS5" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS6" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS7" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS8" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS9" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS10" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	
+	
 	<!-- Follow Bindings-->
 	<Binding name="FOLLOWME" header="FOLLOW" category="EMA">
 		--[[dummy]]
@@ -47,64 +79,64 @@
 		--[[dummy]]
 	</Binding>
 	<!-- ItemUse Bindings-->
-	<Binding name="ITEMUSE1" header="ITEMUSE" category="EMA">
+	<Binding name="ITEMUSE1" header="ITEMUSE" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE2" category="EMA">
+	<Binding name="ITEMUSE2" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE3" category="EMA">
+	<Binding name="ITEMUSE3" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE4" category="EMA">
+	<Binding name="ITEMUSE4" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE5" category="EMA">
+	<Binding name="ITEMUSE5" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE6" category="EMA">
+	<Binding name="ITEMUSE6" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE7" category="EMA">
+	<Binding name="ITEMUSE7" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE8" category="EMA">
+	<Binding name="ITEMUSE8" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE9" category="EMA">
+	<Binding name="ITEMUSE9" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE10" category="EMA">
+	<Binding name="ITEMUSE10" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE11" category="EMA">
+	<Binding name="ITEMUSE11" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE12" category="EMA">
+	<Binding name="ITEMUSE12" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE13" category="EMA">
+	<Binding name="ITEMUSE13" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE14" category="EMA">
+	<Binding name="ITEMUSE14" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE15" category="EMA">
+	<Binding name="ITEMUSE15" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE16" category="EMA">
+	<Binding name="ITEMUSE16" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE17" category="EMA">
+	<Binding name="ITEMUSE17" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE18" category="EMA">
+	<Binding name="ITEMUSE18" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE19" category="EMA">
+	<Binding name="ITEMUSE19" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
-	<Binding name="ITEMUSE20" category="EMA">
+	<Binding name="ITEMUSE20" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
 </Bindings>

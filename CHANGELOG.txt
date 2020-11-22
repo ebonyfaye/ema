@@ -1,6 +1,19 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.2-Release-v3.1(0182)
+Game Version: 9.0.2
+Release Date: 22/11/2020
+
+## Team 
+	-- Added New Set Focus KeyBindings to set the team members in the order they sit in the GUI
+
+## /Click macros
+	-- Made some easyer to work with see doc at:
+		https://github.com/ebonyfaye/ema/wiki/Click-Macros
+
+
+---------------------------
 EMA Version: v9.0.2-Release-v3.1(0181)
 Game Version: 9.0.2
 Release Date: 20/11/2020

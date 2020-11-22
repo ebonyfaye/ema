@@ -274,6 +274,16 @@ L["FAKE_KEY_BINDING"] = "* Needs to Press the key on all clones"
 L["BINDING_CLICK_TO_MOVE"] = "Toggle Click To Move"
 L["COMMANDLINE_CLICK_TO_MOVE"] = "Toggles Click To Move <Group> "
 L["COMMANDLINE_CLICK_TO_MOVE_HELP"] = "Toggles Click To Move By <Group>"
+L["SET_FOCUS_ONE"] = "Sets Focus To Order One"
+L["SET_FOCUS_TWO"] = "Sets Focus To Order Two"
+L["SET_FOCUS_THREE"] = "Sets Focus To Order Three"
+L["SET_FOCUS_FOUR"] = "Sets Focus To Order Four"
+L["SET_FOCUS_FIVE"] = "Sets Focus To Order Five"
+L["SET_FOCUS_SIX"] = "Sets Focus To Order Six"
+L["SET_FOCUS_SEVEN"] = "Sets Focus To Order Seven"
+L["SET_FOCUS_EIGHT"] = "Sets Focus To Order Eight"
+L["SET_FOCUS_NINE"] = "Sets Focus To Order Nine"
+L["SET_FOCUS_TEN"] = "Sets Focus To Order Ten"
 
 --------------------------
 -- Message Locale
