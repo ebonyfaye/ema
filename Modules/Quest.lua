@@ -252,6 +252,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "CHAT_MSG_SYSTEM", "QUEST_FAIL" )
    -- Quest post hooks.
 	EMA:SecureHook( C_GossipInfo, "SelectOption", "SelectGossipOption")
+	--EMA:SecureHook( "SelectOption", "SelectGossipOption")
 	EMA:SecureHook( C_GossipInfo, "SelectActiveQuest" )
 	EMA:SecureHook( "SelectActiveQuest" ) -- Seems bfa uses the old API?
 	EMA:SecureHook( C_GossipInfo, "SelectAvailableQuest" )
@@ -1270,7 +1271,11 @@ function EMA:DoSelectActiveQuest( sender, questIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
 		--EMA:Print( "DoSelectActiveQuest" )
-		C_GossipInfo.SelectActiveQuest( questIndex )
+		if C_GossipInfo.GetNumActiveQuests() >= 1 then	
+			C_GossipInfo.SelectActiveQuest( questIndex )
+		else
+			SelectActiveQuest( questIndex )
+		end
 		EMA.isInternalCommand = false
 	end
 end

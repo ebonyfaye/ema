@@ -1,6 +1,17 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.2-Release-v3.1(0183)
+Game Version: 9.0.2
+Release Date: 25/11/2020
+
+# Quest
+	-- Fixed A non-Api change on Shadowlands quest givers when handing in mutiple quests .
+	
+
+
+
+---------------------------
 EMA Version: v9.0.2-Release-v3.1(0182)
 Game Version: 9.0.2
 Release Date: 22/11/2020
