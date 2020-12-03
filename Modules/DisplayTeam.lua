@@ -2533,20 +2533,20 @@ function EMA:SendExperienceStatusUpdateCommand()
 		local artifactPointsAvailable = 0
 		local artifactPointsSpent = 0
 		
+		local azeriteItemLocation = self:GetAzeriteItemLocation()
+		if azeriteItemLocation then
+			local azeriteXP, azeriteTotalXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
+			local azeriteLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
+			local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation)
+			local azeriteName = azeriteItem:GetItemName()	
+			--EMA:Print("test", azeriteName, azeriteXP, azeriteTotalXP )
+			artifactName = azeriteName
+			artifactXP = azeriteXP
+			artifactForNextPoint = azeriteTotalXP
+			artifactPointsAvailable = 0
+			artifactPointsSpent	= 0	
+		end	
 
-	local azeriteItemLocation = C_AzeriteItem.FindActiveAzeriteItem() 
-	if (azeriteItemLocation) and HasArtifactEquipped() == false then 
-		local azeriteXP, azeriteTotalXP = C_AzeriteItem.GetAzeriteItemXPInfo(azeriteItemLocation)
-		local azeriteLevel = C_AzeriteItem.GetPowerLevel(azeriteItemLocation)
-		local azeriteItem = Item:CreateFromItemLocation(azeriteItemLocation)
-		local azeriteName = azeriteItem:GetItemName()	
-		--EMA:Print("test", azeriteName, azeriteXP, azeriteTotalXP )
-		artifactName = azeriteName
-		artifactXP = azeriteXP
-		artifactForNextPoint = azeriteTotalXP
-		artifactPointsAvailable = 0
-		artifactPointsSpent	= 0	
-	end	
 		if EMA.db.showTeamListOnMasterOnly == true then
 				--EMA:Print("Testtoteam", characterName, name, xp, xpForNextPoint, numPointsAvailableToSpend)
 				--EMA:Print("TestTOTEAM", characterName, name, xp, xpForNextPoint, numPointsAvailableToSpend)
@@ -2556,6 +2556,22 @@ function EMA:SendExperienceStatusUpdateCommand()
 				--EMA:Print("TestTOTEAM", characterName, name, xp, xpForNextPoint, numPointsAvailableToSpend)
 				EMA:EMASendCommandToTeam( EMA.COMMAND_EXPERIENCE_STATUS_UPDATE, playerExperience, playerMaxExperience, exhaustionStateID, playerLevel, artifactName, artifactXP, artifactPointsSpent, artifactForNextPoint, artifactPointsAvailable ) --, honorXP, honorMax, HonorLevel, prestigeLevel, honorExhaustionStateID)
 			end
+	end
+end
+
+function EMA:GetAzeriteItemLocation()
+	local location = C_AzeriteItem.FindActiveAzeriteItem()
+
+	if not location then
+		return
+	end
+
+	if location:IsEquipmentSlot() then
+		return location
+	end
+
+	if BACKPACK_CONTAINER <= location.bagID and location.bagID <= NUM_BAG_SLOTS then
+		return location
 	end
 end
 
