@@ -1496,7 +1496,6 @@ function EMA:OnInitialize()
 	-- Adds DefaultGroups to GUI
 	EMA.characterGroupList = {}
 	-- Key bindings.
-	
 	if InCombatLockdown()  == false then
 		EMAInvite = CreateFrame( "CheckButton", "EMAInvite", nil, "SecureActionButtonTemplate" )
 		EMAInvite:SetAttribute( "type", "macro" )

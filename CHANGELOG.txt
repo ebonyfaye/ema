@@ -3,6 +3,27 @@ ChangeLogs:
 ---------------------------
 EMA Version: v9.0.2-Release-v3.1(0183)
 Game Version: 9.0.2
+Release Date: 04/12/2020
+
+## KeyBinding
+	-- Added a keybinding for "SetView"
+
+# Display-Team
+	-- Removed Artifact Power xp Bar ( if they add somthing like this it probs get all changed again )
+		- so changed to "Gold".
+	-- Added Gold to the Display Team	
+
+# Toon
+	-- Added A Setview Command With Or Without Team
+		- :) yes you olny have to press it on one toon 
+		
+		
+
+
+
+---------------------------
+EMA Version: v9.0.2-Release-v3.1(0183)
+Game Version: 9.0.2
 Release Date: 25/11/2020
 
 # Quest

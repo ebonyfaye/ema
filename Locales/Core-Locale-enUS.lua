@@ -27,6 +27,7 @@ L[" / "] = true
 L["/"] = true
 L["%"] = true
 L["N/A"] = true
+L["WIP"] = "wip"
 L["OPEN_CONFIG"] = "Opens The Config"
 L["OPEN_CONFIG_HELP"] = "Opens The Configuration GUI"
 L["PUSH_SETTINGS"] = "Push Settings"
@@ -760,6 +761,14 @@ L["RELEASE_TEAM_Q"] = "Release All Team?"
 L["RELEASE_TEAM"] = "Release Team"
 L["RECOVER_CORPSES"] = "Recover All Team Corpses?"
 L["ERR_GOLD_TO_REPAIR"] = "I Do Not Have Enough Money To Repair All My Items"
+--Set View
+L["SET_VIEW_HEADER"] = "Set View Settings" 
+L["SET_VIEW"] = "Set View" 
+L["SET_VIEW_HELP"] = "Set View Team View" 
+L["SET_VIEW_WITHOUT_MASTER"] = "Set View Without Master"
+L["SET_VIEW_WITHOUT_MASTER_HELP"] = "Set View Without The Master"
+
+
 L["RELEASE_CORPSE_FOR_X"] = function( delay )
 	return string.format( "I can not release to my Corpse for: %s seconds", delay )
 end

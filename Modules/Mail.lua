@@ -937,14 +937,14 @@ function EMA:AddAllToMailBox()
 					--EMA:Print( "Bags OK. checking", itemLink )
 					local itemLink = item:GetItemLink()
 					local location = item:GetItemLocation()
-					local itemType = C_Item.GetItemInventoryType( location )
+					local itemTypeNew = C_Item.GetItemInventoryType( location )
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
 					local itemName, itemLink, itemRarity, itemLevel, itemMinLevel, itemType, itemSubType, itemStackCount, itemEquipLoc, itemIcon, itemSellPrice, itemClassID, itemSubClassID, bindType, expacID, itemSetID, isCraftingReagent = GetItemInfo( bagItemLink )
 					local canSend = false
 					local toonName = nil
 					if EMA.db.MailBoEItems == true then
-						if itemType ~= 0 then
+						if itemTypeNew ~= 0 then
 							if EMAApi.IsCharacterInGroup(  EMA.characterName, EMA.db.autoBoEItemTag ) == true then
 								if isBop == false then
 									if itemRarity == 2 or itemRarity == 3 or itemRarity == 4 then	

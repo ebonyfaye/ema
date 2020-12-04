@@ -139,4 +139,10 @@
 	<Binding name="ITEMUSE20" category="EMA-Item Use">
 		--[[dummy]]
 	</Binding>
+	
+	<!-- Toon Bindings-->
+	<Binding name="SETVIEW" header="TOON" category="EMA">
+		--[[dummy]]
+	</Binding>
+	
 </Bindings>

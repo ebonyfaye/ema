@@ -45,6 +45,10 @@ EMA.moduleOrder = 40
 EMA.moduleWarningsOrder = 1
 EMA.moduleRepairOrder = 1
 
+-- EMA key bindings.
+BINDING_HEADER_TOON = L["TOON"]
+BINDING_NAME_SETVIEW= L["SET_VIEW"]
+
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
@@ -87,6 +91,8 @@ EMA.settings = {
 		rollWithTeam = false,
 		toggleWarMode = false,
 		autoAcceptPartySyncRequest = false,
+		setViewWithoutMaster = true,
+		setView = 1,
 		--Debug Suff
 		testAlwaysOff = true
 	},
@@ -99,6 +105,14 @@ function EMA:GetConfiguration()
 		handler = EMA,
 		type = 'group',
 		args = {
+			SetView = {
+				type = "input",
+				name = L["SET_VIEW"],
+				desc = L["SET_VIEW_HELP"],
+				usage = "/ema-toon setview",
+				get = false,
+				set = "SetView",
+			},
 				config = {
 				type = "input",
 				name = L["OPEN_CONFIG"],
@@ -135,16 +149,11 @@ EMA.COMMAND_READY_CHECK = "EMAReadyCheck"
 EMA.COMMAND_TELE_PORT = "EMAteleport"
 EMA.COMMAND_LOOT_ROLL = "EMALootRoll"
 EMA.COMMAND_WAR_MODE = "EMAWarMode"
+EMA.COMMAND_SET_VIEW = "Set View Point"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
 -------------------------------------------------------------------------------------------------------------
-
--------------------------------------------------------------------------------------------------------------
--- Variables used by module.
--------------------------------------------------------------------------------------------------------------
-
---EMA.sharedInvData = {}
 
 -------------------------------------------------------------------------------------------------------------
 -- Settings Dialogs.
@@ -220,14 +229,17 @@ local function SettingsCreateToon( top )
 	local checkBoxHeight = EMAHelperSettings:GetCheckBoxHeight()
 	local editBoxHeight = EMAHelperSettings:GetEditBoxHeight()
 	local dropdownHeight = EMAHelperSettings:GetDropdownHeight()
+	local sliderHeight = EMAHelperSettings:GetSliderHeight()
 	local labelHeight = EMAHelperSettings:GetLabelHeight()
 	local left = EMAHelperSettings:LeftOfSettings()
 	local headingHeight = EMAHelperSettings:HeadingHeight()
 	local headingWidth = EMAHelperSettings:HeadingWidth( false )
 	local horizontalSpacing = EMAHelperSettings:GetHorizontalSpacing()
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
+	local sectionSpacing = verticalSpacing * 4
 	local halfWidth = (headingWidth - horizontalSpacing) / 2
 	local thirdWidth = (headingWidth - (horizontalSpacing * 2)) / 3
+	local halfWidthSlider = (headingWidth - horizontalSpacing) / 2
 	local column2left = left + halfWidth
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
@@ -358,11 +370,30 @@ local function SettingsCreateToon( top )
 		L["ROLL_LOOT_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["SET_VIEW_HEADER"], movingTop, false )
+	movingTop = movingTop - headingHeight
+	EMA.settingsControlToon.checkBoxSetViewWithWithoutMaster = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlToon, 
+		halfWidth, 
+		left, 
+		movingTop,
+		L["SET_VIEW_WITHOUT_MASTER"],
+		EMA.SettingsToggleSetViewWihoutMaster,
+		L["SET_VIEW_WITHOUT_MASTER_HELP"]
+	)
+	movingTop = movingTop - headingHeight
+	EMA.settingsControlToon.SliderSetView = EMAHelperSettings:CreateSlider( 
+		EMA.settingsControlToon, 
+		halfWidthSlider, 
+		left, 
+		movingTop, 
+		L["SET_VIEW"]
+	)
+	EMA.settingsControlToon.SliderSetView:SetSliderValues( 1, 5, 1 )
+	EMA.settingsControlToon.SliderSetView:SetCallback( "OnValueChanged", EMA.SettingsChangeSetView )
+	movingTop = movingTop - sliderHeight - sectionSpacing
 	
-	
-	
-	
-
+	--movingTop = movingTop - checkBoxHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["MESSAGES_HEADER"], movingTop, false )
 	movingTop = movingTop - dropdownHeight - verticalSpacing
  	EMA.settingsControlToon.dropdownRequestArea = EMAHelperSettings:CreateDropdown( 
@@ -681,6 +712,9 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlToon.checkBoxToggleWarMode:SetValue( EMA.db.toggleWarMode )
 	EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetValue( EMA.db.autoAcceptPartySyncRequest )
 	EMA.settingsControlToon.dropdownRequestArea:SetValue( EMA.db.requestArea )
+	EMA.settingsControlToon.checkBoxSetViewWithWithoutMaster:SetValue( EMA.db.setViewWithoutMaster )
+	EMA.settingsControlToon.SliderSetView:SetValue( EMA.db.setView )
+	
 	EMA.settingsControlMerchant.checkBoxAutoRepair:SetValue( EMA.db.autoRepair )
 	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( EMA.db.autoRepairUseGuildFunds )
 	EMA.settingsControlMerchant.dropdownMerchantArea:SetValue( EMA.db.merchantArea )
@@ -798,6 +832,13 @@ function EMA:EditBoxChangedBagsFullMessage( event, text )
 	EMA:SettingsRefresh()
 end
 
+function EMA:EditBoxChangedWarnWhenBagsAlmostFull( event, text )
+	local amount = tonumber( text )
+	amount = EMAUtilities:FixValueToRange( amount, 0, 100 )
+	EMA.db.warnWhenBagsAlmostFullAmount = amount
+	EMA:SettingsRefresh()
+end
+
 function EMA:SettingsToggleWarnCC( event, checked )
 	EMA.db.warnCC = checked
 	EMA:SettingsRefresh()
@@ -879,6 +920,16 @@ function EMA:EditBoxChangedWarnDurabilityDropsMessage( event, text )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleSetViewWihoutMaster( event, value )
+	EMA.db.setViewWithoutMaster = value
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsChangeSetView( event, value )
+	EMA.db.setView = tonumber( value )
+	EMA:SettingsRefresh()
+end	
+
 function EMA:SettingsSetWarningArea( event, value )
 	EMA.db.warningArea = value
 	EMA:SettingsRefresh()
@@ -894,12 +945,6 @@ function EMA:SettingsSetMerchantArea( event, value )
 	EMA:SettingsRefresh()
 end
 
-function EMA:EditBoxChangedWarnWhenBagsAlmostFull( event, text )
-	local amount = tonumber( text )
-	amount = EMAUtilities:FixValueToRange( amount, 0, 100 )
-	EMA.db.warnWhenBagsAlmostFullAmount = amount
-	EMA:SettingsRefresh()
-end
 
 -------------------------------------------------------------------------------------------------------------
 -- Addon initialization, enabling and disabling.
@@ -923,6 +968,11 @@ function EMA:OnInitialize()
 	EMA.haveBeenHit = false
 	-- Bags full changed count.
 	EMA.previousFreeBagSlotsCount = false
+	-- Key bindings.
+	EMASETVIEW = CreateFrame( "CheckButton", "EMASETVIEW", nil, "SecureActionButtonTemplate" )
+	EMASETVIEW:SetAttribute( "type", "macro" )
+	EMASETVIEW:SetAttribute( "macrotext", "/ema-toon setview" )
+	EMASETVIEW:Hide()	
 end
 
 -- Called when the addon is enabled.
@@ -953,6 +1003,10 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
 	EMA:RegisterEvent( "PLAYER_FLAGS_CHANGED", "WARMODE" )
 	EMA:RegisterEvent( "QUEST_SESSION_CREATED" )
+	-- Initialise key bindings.
+	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
+	EMA:RegisterEvent( "UPDATE_BINDINGS" )
+	EMA:UPDATE_BINDINGS()
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
@@ -1002,6 +1056,8 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.teleportLFGWithTeam = settings.teleportLFGWithTeam
 		EMA.db.rollWithTeam = settings.rollWithTeam
 		EMA.db.toggleWarMode = settings.toggleWarMode
+		EMA.db.setView = settings.setView
+		EMA.db.setViewWithoutMaster = settings.setViewWithoutMaster
 		EMA.db.autoAcceptPartySyncRequest = settings.autoAcceptPartySyncRequest
 		EMA.db.autoRepair = settings.autoRepair
 		EMA.db.autoRepairUseGuildFunds = settings.autoRepairUseGuildFunds
@@ -1644,6 +1700,17 @@ function EMA:QUEST_SESSION_CREATED( event, ...)
 	end	
 end	
 
+function EMA:SetView()
+	EMA:EMASendCommandToTeam( EMA.COMMAND_SET_VIEW )
+end
+
+function EMA:DoSetView(characterName, ...)
+	if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true and EMA.db.setViewWithoutMaster == true then
+		return
+	end	
+		
+	SetView( EMA.db.setView);SetView( EMA.db.setView)
+end
 
 -- A EMA command has been received.
 function EMA:EMAOnCommandReceived( characterName, commandName, ... )
@@ -1679,7 +1746,26 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 			EMA.DoWarMode( characterName, ... )
 		end	
 	end
+	if commandName == EMA.COMMAND_SET_VIEW then
+		EMA.DoSetView( characterName, ... )
+	end	
 end
 
+-------------------------------------------------------------------------------------------------------------
+-- Key bindings.
+-------------------------------------------------------------------------------------------------------------
 
+function EMA:UPDATE_BINDINGS()
+	if InCombatLockdown() then
+		return
+	end
+	ClearOverrideBindings( EMA.keyBindingFrame )
+	local key1, key2 = GetBindingKey( "SETVIEW" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMASETVIEW" ) 
+	end
+	if key2 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMASETVIEW" ) 
+	end	
+end
 --EMAApi.isInternalCommand = EMA.isInternalCommand
