@@ -54,8 +54,15 @@ local function Button_OnClick(frame)
 	frame.obj:Hide()
 end
 
+local function Frame_OnShow(frame)
+	PlaySound(SOUNDKIT.IG_MAINMENU_OPEN)
+end
+
 local function Frame_OnClose(frame)
 	frame.obj:Fire("OnClose")
+	PlaySound(SOUNDKIT.IG_MAINMENU_LOGOUT)
+	--PlaySound(SOUNDKIT.IG_MAINMENU_CLOSE)
+	--PlaySound(SOUNDKIT.IG_CHARACTER_INFO_CLOSE)
 end
 
 local function Frame_OnMouseDown(frame)
@@ -206,9 +213,9 @@ local PaneBackdrop  = {
 
 
 local function Constructor()
-	local frame = CreateFrame("Frame", nil, UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
-	frame:Hide()
+	local frame = CreateFrame("Frame", "EmaConfigFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil)
 
+	frame:Hide()
 	frame:EnableMouse(true)
 	frame:SetMovable(true)
 	frame:SetResizable(true)
@@ -219,8 +226,11 @@ local function Constructor()
 	frame:SetBackdropColor(0, 0, 0, 1)
 	frame:SetMinResize(400, 200)
 	frame:SetToplevel(true)
+	frame:SetScript("OnShow", Frame_OnShow)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)
+	-- add this frame to a list of frames that get closed with escape key
+	tinsert(UISpecialFrames, frame:GetName())
 
 	local closebutton = CreateFrame("Button", nil, frame, "UIPanelButtonTemplate")
 	closebutton:SetScript("OnClick", Button_OnClick)
