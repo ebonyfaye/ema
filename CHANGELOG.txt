@@ -1,6 +1,22 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.2-Release-v3.1(0185)
+Game Version: 9.0.2
+Release Date: 26/02/2021
+
+
+## Interaction
+	-- Fixed the Dismounting options issue #35
+		-- Works with the keybindings as well. (Team not the master one)
+
+## Mail
+	-- Fixed Issue #41 Where gold would still send if shift key was held down.
+
+## follow
+	-- Added Request #45
+
+---------------------------
 EMA Version: v9.0.2-Release-v3.1(0184)
 Game Version: 9.0.2
 Release Date: 04/12/2020

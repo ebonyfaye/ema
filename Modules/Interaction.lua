@@ -476,8 +476,8 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxTellBoEEpic:SetValue( EMA.db.tellBoEEpic )
 	EMA.settingsControl.checkBoxTellBoEMount:SetValue( EMA.db.tellBoEMount )
 	-- Set state.
-	EMA.settingsControl.checkBoxDismountWithTeam:SetDisabled( not EMA.db.mountWithTeam )
-	EMA.settingsControl.checkBoxDismountWithMaster:SetDisabled( not EMA.db.dismountWithTeam or not EMA.db.mountWithTeam )
+	--EMA.settingsControl.checkBoxDismountWithTeam:SetDisabled( not EMA.db.mountWithTeam )
+	--EMA.settingsControl.checkBoxDismountWithMaster:SetDisabled( not EMA.db.dismountWithTeam or not EMA.db.mountWithTeam )
 	--EMA.settingsControl.checkBoxMountInRange:SetDisabled( not EMA.db.mountWithTeam )
 end
 
@@ -665,15 +665,17 @@ function EMA:UNIT_AURA(event, unitID, ... )
 		if EMA.db.dismountWithMaster == true then
 			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
 				if IsShiftKeyDown() == false then	
-						--EMA:Print("test")
+					--EMA:Print("test")
 					EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_DISMOUNT )
 					EMA:UnregisterEvent("UNIT_AURA")
 				end		
 			end
 		else
-			if IsShiftKeyDown() == false then	
-				EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_DISMOUNT )
-				EMA:UnregisterEvent("UNIT_AURA")
+			if EMA.db.dismountWithTeam == true then 
+				if IsShiftKeyDown() == false then	
+					EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_DISMOUNT )
+					EMA:UnregisterEvent("UNIT_AURA")
+				end	
 			end		
 		end			
 	end
@@ -761,7 +763,9 @@ function EMA:ReceiveRandomMountWithTeam( characterName, tag)
 		if IsMounted() == false then	
 			C_MountJournal.SummonByID(0)
 		else
-			Dismount()
+			if EMA.db.dismountWithTeam == true then
+				Dismount()
+			end	
 		end	
 	end
 end

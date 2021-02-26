@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2020 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2021 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -175,7 +175,7 @@ L["ISB"] = ""
 L["TEMP_WEBSITE1"] = ""
 L["TEMP_WEBSITE2"] = ""
 L["TEMP_WEBSITE3"] = ""
-L["COPYRIGHT"] = "Copyright (c) 2015-2020  Jennifer Calladine (Ebony)"
+L["COPYRIGHT"] = "Copyright (c) 2015-2021  Jennifer Calladine (Ebony)"
 L["COPYRIGHTTWO"] = "Released Under License: All Rights Reserved unless otherwise explicitly stated"
 L["FRAME_RESET"] = "Frame Reset"
 -- Msg 8000
@@ -637,9 +637,12 @@ L["ANY_MEMBER_IN_COMBAT"] = "Any Member In Combat"
 L["FOLLOW_STROBING"] = "Follow Strobing"
 L["FOLLOW_STROBING_EMA_FOLLOW_COMMANDS."] = "Follow Strobing Is Controlled By \"/ema Commands\" Or KeyBindings"
 L["USE_MASTER_STROBE_TARGET"] = "Always Use Master As The Strobe Target"
+--
 L["PAUSE_FOLLOW_STROBING"] = "Pause Follow Strobing If ...."
 L["DRINKING_EATING"] = "Drinking/Eating"
 L["IN_A_VEHICLE"] = "In A Vehicle"
+L["PLAYER_DEAD"] = "Dead Or Ghost"
+--
 L["GROUP_FOLLOW_STROBE"] = "Group For Follow Strobe"
 L["FREQUENCY"] = "Frequency (s)"
 L["FREQUENCY_COMABT"] = "Frequency In Combat (s)"

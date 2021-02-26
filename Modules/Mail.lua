@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2020 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2021 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -1013,7 +1013,7 @@ function EMA:AddAllToMailBox()
 			end
 		end
 	end	
-	EMA:ScheduleTimer( "DoSendMail", 1, nil )
+	EMA:ScheduleTimer( "DoSendMail", 2, nil )
 end
 
 function EMA:MAIL_SEND_SUCCESS( event, ... )
@@ -1047,6 +1047,9 @@ end
 
 -- gold
 function EMA:AddGoldToMailBox()
+	if EMA.ShiftkeyDown == true then
+		return
+	end
 	local moneyToKeepOnToon = tonumber( EMA.db.goldAmountToKeepOnToon ) * 10000
 	local moneyOnToon = GetMoney() - 30
 	local moneyToDepositOrWithdraw = moneyOnToon - moneyToKeepOnToon
@@ -1071,7 +1074,7 @@ function EMA:AddGoldToMailBox()
 					SendMailMoneyGold:SetText(gold)
 					SendMailMoneySilver:SetText(silver)
 					SendMailMoneyCopper:SetText(copper)
-					EMA:ScheduleTimer( "DoSendMail", 1, true )
+					EMA:ScheduleTimer( "DoSendMail", 2, true )
 				end
 			end	
 		else

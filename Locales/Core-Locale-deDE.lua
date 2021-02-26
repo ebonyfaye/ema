@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2020 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2021 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -164,7 +164,7 @@ L["ISB"] = "http://IsBoxer.com"
 L["TEMP_WEBSITE1"] = ""
 L["TEMP_WEBSITE2"] = ""
 L["TEMP_WEBSITE3"] = ""
-L["COPYRIGHT"] = "Copyright (c) 2015-2019  Jennifer Calladine (Ebony)"
+L["COPYRIGHT"] = "Copyright (c) 2015-2021  Jennifer Calladine (Ebony)"
 L["COPYRIGHTTWO"] = "Released Under License: The MIT License"
 L["FRAME_RESET"] = "Frame Reset"
 -- Msg 8000

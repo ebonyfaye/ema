@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2020 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2021 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -60,6 +60,7 @@ EMA.settings = {
 		strobePauseInCombat = false,
 		strobePauseIfDrinking = false,
 		strobePauseIfInVehicle = false,
+		strobePauseIfDead = false,
 		strobePauseTag = EMAApi.AllTag(),
 		warningArea = EMAApi.DefaultWarningArea(),
 		followMaster = "",
@@ -434,6 +435,14 @@ local function SettingsCreateDisplayOptions( top )
 		movingTop, 
 		L["IN_A_VEHICLE"],
 		EMA.SettingsTogglePauseIfInVehicle
+	)
+	EMA.settingsControl.checkBoxPauseIfDead = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		halfWidth, 
+		column2left, 
+		movingTop, 
+		L["PLAYER_DEAD"],
+		EMA.SettingsTogglePauseIfDead
 	)	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.editBoxFollowStrobePauseTag = EMAHelperSettings:CreateEditBox( EMA.settingsControl,
@@ -511,6 +520,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxPauseInCombat:SetValue( EMA.db.strobePauseInCombat )
 	EMA.settingsControl.checkBoxPauseDrinking:SetValue( EMA.db.strobePauseIfDrinking )
 	EMA.settingsControl.checkBoxPauseIfInVehicle:SetValue( EMA.db.strobePauseIfInVehicle )
+	EMA.settingsControl.checkBoxPauseIfDead:SetValue( EMA.db.strobePauseIfDead )
 	EMA.settingsControl.editBoxFollowStrobePauseTag:SetText( EMA.db.strobePauseTag )
 	EMA.settingsControl.editBoxFollowStrobeDelaySeconds:SetText( EMA.db.strobeFrequencySeconds )
 	EMA.settingsControl.editBoxFollowStrobeDelaySecondsInCombat:SetText( EMA.db.strobeFrequencySecondsInCombat )
@@ -607,6 +617,11 @@ end
 
 function EMA:SettingsTogglePauseIfInVehicle( event, checked )
 	EMA.db.strobePauseIfInVehicle = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsTogglePauseIfDead( event, checked )
+	EMA.db.strobePauseIfDead = checked
 	EMA:SettingsRefresh()
 end
 
@@ -782,6 +797,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.warnFollowPvP = settings.warnFollowPvP
 		EMA.db.strobePauseInCombat = settings.strobePauseInCombat
 		EMA.db.strobePauseIfInVehicle = settings.strobePauseIfInVehicle
+		EMA.db.strobePauseIfDead = settings.strobePauseIfDead
 		EMA.db.strobePauseIfDrinking = settings.strobePauseIfDrinking
 		EMA.db.strobePauseTag = settings.strobePauseTag
 		EMA.db.doNotWarnFollowStrobing = settings.doNotWarnFollowStrobing
@@ -1305,6 +1321,12 @@ function EMA:FollowTarget( target )
 			end
 		end
 	end
+	if EMA.followingStrobing == true and EMA.db.strobePauseIfDead == true then
+		local isDeadOrGhost = UnitIsDeadOrGhost("player")
+		if isDeadOrGhost == true then 
+			canFollowTarget = false
+		end	
+	end	
 	-- If follow strobing and strobing paused.
 	if EMA.followingStrobing == true and EMA.followingStrobingPaused == true then
 		-- Follow strobing is paused, do not follow target.
