@@ -1110,15 +1110,15 @@ function EMA:ChurnNpcGossip()
 	local numberActiveQuestInfo = 5
     local index
 	--EMA:Print("test" )
-    EMA:DebugMessage( "GetNumAvailableQuests", GetNumAvailableQuests() )
-    EMA:DebugMessage( "GetNumActiveQuests", GetNumActiveQuests() )
+    EMA:DebugMessage( "GetNumAvailableQuests", C_GossipInfo.GetNumAvailableQuests() )
+    EMA:DebugMessage( "GetNumActiveQuests", C_GossipInfo.GetNumActiveQuests() )
     EMA:DebugMessage( "GetGossipAvailableQuests", C_GossipInfo.GetAvailableQuests() )
     EMA:DebugMessage( "GetGossipActiveQuests", C_GossipInfo.GetActiveQuests() )
-    for index = 0, GetNumAvailableQuests() do
-		SelectAvailableQuest( index )
+    for index = 0, C_GossipInfo.GetNumAvailableQuests() do
+		C_GossipInfo.SelectAvailableQuest( index )
 	end
-    for index = 0, GetNumActiveQuests() do
-		SelectActiveQuest( index )
+    for index = 0, C_GossipInfo.GetNumActiveQuests() do
+		C_GossipInfo.SelectActiveQuest( index )
 	end
 	EMAUtilities:ClearTable( EMA.gossipQuests )
 	local availableQuestsData = { C_GossipInfo.GetAvailableQuests() }
@@ -1156,7 +1156,7 @@ function EMA:ChurnNpcGossip()
 			-- If this quest has been completed...
 			if questInformation.isComplete then
 				-- Complete it.
-				SelectGossipActiveQuest( questInformation.index )
+				C_GossipInfo.SelectGossipActiveQuest( questInformation.index )
 			end
 		end			
 	end
@@ -1233,7 +1233,7 @@ function EMA:DoSelectGossipActiveQuest( sender, gossipIndex )
 	if EMA.db.mirrorMasterQuestSelectionAndDeclining == true then
 		EMA.isInternalCommand = true
         EMA:DebugMessage( "DoSelectGossipActiveQuest" )
-		SelectGossipActiveQuest( gossipIndex )
+		C_GossipInfo.SelectGossipActiveQuest( gossipIndex )
 		EMA.isInternalCommand = false
 	end
 end

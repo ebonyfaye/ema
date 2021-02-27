@@ -1,6 +1,21 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.2-Release-v3.1(0187)
+Game Version: 9.0.2
+Release Date: 27/02/2021
+
+##Core
+
+-- Esc key close the config screen, issue/pull #31 #43
+
+## Quest Wacher
+	-- case sensitive error  in scenarios and torghast part of the addon. ( pull request #34 )
+
+## Quest
+	-- Fix #21	
+
+---------------------------
 EMA Version: v9.0.2-Release-v3.1(0186)
 Game Version: 9.0.2
 Release Date: 27/02/2021
