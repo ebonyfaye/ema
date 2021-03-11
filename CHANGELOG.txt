@@ -1,6 +1,17 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: v9.0.5-Release-v3.1(0188)
+Game Version: 9.0.5
+Release Date: 11/03/2021
+---------------------------
+
+*.TOC Bump 
+
+
+
+
+---------------------------
 EMA Version: v9.0.2-Release-v3.1(0187)
 Game Version: 9.0.2
 Release Date: 27/02/2021

@@ -2101,7 +2101,7 @@ function EMA:QuestWatcherQuestListScrollRefresh()
 		frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetText( "" )
 		frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
 		frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )
-		frame.questWatchList.rows[iterateDisplayRows].highlight:SetTexture( 0.0, 0.0, 0.0, 1.0 )
+		frame.questWatchList.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 1.0 )
 		-- Get data.
 		local dataRowNumber = iterateDisplayRows + frame.questWatchListOffset + frame.dataRowOffset
 		local foundDataRow = false
