@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2021 Jennifer Calladine					--
+--				License: All Rights Reserved 2018-2020 Jennifer Cally					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -20,9 +20,7 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 	"AceTimer-3.0"
 )
 
-if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
-	return
-end	
+
 
 -- Load libraries.
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
@@ -152,7 +150,6 @@ end
 
 -- Initialise the module.
 function EMA:OnInitialize()
-	EMA.QUESTWATCHUPDATING = false 
 	EMA.currentAutoQuestPopups = {}
 	EMA.countAutoQuestPopUpFrames = 0
 	EMA.questWatcherFrameCreated = false
@@ -182,6 +179,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "QUEST_WATCH_UPDATE" )
 	EMA:RegisterEvent( "QUEST_LOG_UPDATE")
+	EMA:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_WATCH_UPDATE" )
 	EMA:RegisterEvent( "QUEST_WATCH_LIST_CHANGED", "QUEST_WATCH_UPDATE" )
 	-- For in the field auto quests. And Bonus Quests.
 	EMA:RegisterEvent("QUEST_ACCEPTED", "QUEST_WATCH_UPDATE")
@@ -189,22 +187,19 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "QUEST_AUTOCOMPLETE" )
 	EMA:RegisterEvent( "QUEST_COMPLETE" )
 	EMA:RegisterEvent( "QUEST_DETAIL" )
-	EMA:RegisterEvent( "SCENARIO_UPDATE" )
-	EMA:RegisterEvent( "SCENARIO_CRITERIA_UPDATE" )
 	EMA:RegisterEvent( "PLAYER_ENTERING_WORLD" )
    -- Quest post hooks.
     EMA:SecureHook( "SelectActiveQuest" )
 	EMA:SecureHook( "GetQuestReward" )
-	EMA:SecureHook( C_QuestLog, "AddQuestWatch" )
-	EMA:SecureHook( C_QuestLog, "RemoveQuestWatch" )
-	EMA:SecureHook( C_QuestLog, "AbandonQuest" )
-	EMA:SecureHook( C_QuestLog, "SetAbandonQuest" )
+	EMA:SecureHook( "AddQuestWatch" )
+	EMA:SecureHook( "RemoveQuestWatch" )
+	EMA:SecureHook( "AbandonQuest" )
+	EMA:SecureHook( "SetAbandonQuest" )
 	-- Update the quest watcher for watched quests.
 	EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, false, "all" )
-	--EMA:ScheduleTimer( "EMAQuestWatcherScenarioUpdate", 1, false )
 	EMA:UpdateUnlockWatcherFrame()
-	-- To Hide After elv changes. --ebony
-	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
+	EMA:UpdateHideBlizzardWatchFrame()
+	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
 	if EMA.db.enableQuestWatcher == true then
 		EMA:QuestWatcherQuestListScrollRefresh()
 	end
@@ -751,8 +746,8 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		EMA:UpdateUnlockWatcherFrame()
-		--EMA:UpdateHideBlizzardWatchFrame()
-		EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
+		EMA:UpdateHideBlizzardWatchFrame()
+		EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
 		-- Tell the player.
 		EMA:Print( L["SETTINGS_RECEIVED_FROM_A"] ( characterName ) )
 	end
@@ -929,8 +924,8 @@ end
 
 function EMA:SettingsToggleHideBlizzardWatchFrame( event, checked )
 	EMA.db.hideBlizzardWatchFrame = checked
-	--EMA:UpdateHideBlizzardWatchFrame()
-	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
+	EMA:UpdateHideBlizzardWatchFrame()
+	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
 	EMA:SettingsRefresh()
 end
 
@@ -965,11 +960,13 @@ function EMA:UpdateHideBlizzardWatchFrame()
 		return
 	end
 	if EMA.db.hideBlizzardWatchFrame == true then
-		if ObjectiveTrackerFrame:IsVisible() then
-            ObjectiveTrackerFrame:Hide()
+		if QuestWatchFrame:IsVisible() then
+			--QuestLogFrame:Hide()
+			QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
+			QuestWatchFrame:Hide()
 		end
 	else
-        ObjectiveTrackerFrame:Show()
+		QuestWatchFrame:Show()
 	end
 end
 
@@ -992,34 +989,30 @@ function EMA:GetQuestReward( itemChoice )
 	local questJustCompletedName = GetTitleText()
     EMA:DebugMessage( "GetQuestReward: ", questIndex, questJustCompletedName )
     local questIndex = EMA:GetQuestLogIndexByName( questJustCompletedName )
-    --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
-    local info =  C_QuestLog.GetInfo( questIndex )
-	if info ~=  nil then
-		EMA:DebugMessage( "GetQuestReward after GetQuestLogTitle: ", info.questIndex, questJustCompletedName, info.questID )
-		EMA:RemoveQuestFromWatchList( info.questID )
-	end	
+    local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
+    EMA:DebugMessage( "GetQuestReward after GetQuestLogTitle: ", questIndex, questJustCompletedName, questID )
+	EMA:RemoveQuestFromWatchList( questID )
 end
 
 function EMA:AddQuestWatch( questIndex )
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	--EMA:UpdateHideBlizzardWatchFrame()
-	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
+	EMA:UpdateHideBlizzardWatchFrame()
+	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
 	EMA:EMAQuestWatcherUpdate( true,  "all" )
 	--EMA:EMAQuestWatcherScenarioUpdate( true )
 end
 
-function EMA:RemoveQuestWatch( questID )
+function EMA:RemoveQuestWatch( questIndex )
 	if EMA.db.enableQuestWatcher == false then
 		return
     end
-    --EMA:Print( "RemoveQuestWatch", questID )
-	--EMA:UpdateHideBlizzardWatchFrame()
-    EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
-	--local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
-    --local info =  C_QuestLog.GetInfo( questIndex )
-	EMA:DebugMessage( "About to call RemoveQuestFromWatchList with value:", questID )
+    EMA:DebugMessage( "RemoveQuestWatch", questIndex )
+	EMA:UpdateHideBlizzardWatchFrame()
+	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
+	local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
+    EMA:DebugMessage( "About to call RemoveQuestFromWatchList with value:", questID )
 	EMA:RemoveQuestFromWatchList( questID )
 end
 
@@ -1027,8 +1020,7 @@ function EMA:SetAbandonQuest()
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	--local questName = GetAbandonQuestName()
-	local questName = QuestUtils_GetQuestName(C_QuestLog.GetAbandonQuest())
+	local questName = GetAbandonQuestName()
 	if questName ~= nil then
 		local questIndex = EMA:GetQuestLogIndexByName( questName )
 		EMA:SetActiveQuestForQuestWatcherCache( questIndex )
@@ -1047,8 +1039,10 @@ end
 function EMA:QUEST_WATCH_UPDATE( event, ... )
 	--EMA:Print("test4")
 	if EMA.db.enableQuestWatcher == true then
+		EMA:UpdateHideBlizzardWatchFrame()
+		EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
 		-- Wait a bit for the correct information to come through from the server...
-		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )		
+		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )	
 	end
 end
 
@@ -1056,32 +1050,23 @@ end
 function EMA:QUEST_LOG_UPDATE( event, ... )
 	--EMA:Print("QuestTestUpdates")
 	if EMA.db.enableQuestWatcher == true then
+		EMA:UpdateHideBlizzardWatchFrame()
+		--EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.5 )
 		-- Wait a bit for the correct information to come through from the server...
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )
-		-- For PopUpQuests!
-		for i = 1, GetNumAutoQuestPopUps() do
-			local questID, popUpType = GetAutoQuestPopUp(i);
-			if ( not C_QuestLog.IsQuestBounty(questID) ) then
-				local questTitle = C_QuestLog.GetTitleForQuestID(questID);
-				if ( questTitle and questTitle ~= "" ) then
-					if popUpType == "OFFER" then
-						EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, questID )
-					elseif popUpType == "COMPLETE" then
-						EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_COMPLETE, questID )
-					end	
-				end
-			end
-		end
 	end
 end
 
+
 function EMA:SCENARIO_UPDATE( event, ... )
 	--EMA:Print("test2")
-	if EMA.db.enableQuestWatcher == true then								
+	if EMA.db.enableQuestWatcher == true then
+												
 		EMA:RemoveQuestsNotBeingWatched()
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "scenario" )
 	end
 end
+
 
 function EMA:SCENARIO_CRITERIA_UPDATE( event, ... )
 	--EMA:Print("test3.5")
@@ -1141,20 +1126,17 @@ end
 
 function EMA:GetQuestObjectiveCompletion( text )
 	if text == nil then
-        return L["N/A"], L["N/A"]
-    end
-
-    local icount,imax = string.match(text,"(%d+)/(%d+)")
-    if icount ~= nil then
-        text=string.gsub(text,icount .. "/" .. imax,"")
-        text=string.gsub(text,"[: ]*$","")
-        text=string.gsub(text,"^[: ]*","")
-        return icount..L["/"]..imax, text
-    else
-        return L["DONE"] , text
-    end
+		return L["N/A"], L["N/A"]
+	end
+	local _, _, arg1, arg2 = string.find(text, "(.*):%s(.*)")
+	if arg1 and arg2 then
+		return arg2, arg1
+	else
+		return L["N/A"], text
+	end
 end
-	--[[
+
+--[[:GetQuestObjectiveCompletion( text )
 	if text == nil then
 		return L["N/A"], L["N/A"]
 	end
@@ -1162,13 +1144,13 @@ end
 	local dig1, dig2 = string.match( text, "(%d*)/(%d*)")
 	if (dig1  and dig2) then
 		local arg1, arg2 = string.match(text, "(.-%S)%s(.*)")
-		--EMA:Print("testm", arg1, "A", arg2)
+		EMA:Print("testm", arg1, "A", arg2)
 		makeString = dig1..L["/"]..dig2 
 	end
 	if makeString ~= nil then
 		local arg1, arg2 = string.match(text, "(.-%S)%s(.*)")
 		local textFind = string.find(arg1, "(%d*)")
-		--EMA:Print("text", textFind)
+		EMA:Print("text", textFind)
 		if textFind then
 			return makeString, arg2
 		else
@@ -1179,7 +1161,6 @@ end
 	end
 end
 ]]
-
 function EMA:QuestWatchGetObjectiveText( questIndex, objectiveIndex )
 	local objectiveFullText, objectiveType, objectiveFinished = GetQuestLogLeaderBoard( objectiveIndex, questIndex )
 	local amountCompleted, objectiveText = EMA:GetQuestObjectiveCompletion( objectiveFullText )
@@ -1238,11 +1219,8 @@ function EMA:SetActiveQuestForQuestWatcherCache( questIndex )
 		return
 	end
 	if questIndex ~= nil then
-        --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
-		--local info =  C_QuestLog.GetInfo( questIndex )
-		
-		--EMA:Print("testaa", info.questID)
-		EMA.currentQuestForQuestWatcherID = questIndex
+        local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
+		EMA.currentQuestForQuestWatcherID = questID
 	else
 		EMA.currentQuestForQuestWatcherID = nil
 	end
@@ -1276,12 +1254,25 @@ end
 -- AUTO QUEST COMMUNICATION
 -------------------------------------------------------------------------------------------------------------
 
+function EMA:IsCompletedAutoCompleteFieldQuest( questIndex, isComplete )
+	-- Send an isComplete true flag if the quest is completed and is an in the field autocomplete quest.
+	if isComplete and isComplete > 0 then
+		if GetQuestLogIsAutoComplete( questIndex ) then
+			isComplete = true
+		else
+			isComplete = false
+		end
+	else
+		isComplete = false
+	end
+	return isComplete
+end
+
 function EMA:QUEST_AUTOCOMPLETE( event, questID, ... )
 	-- In the field autocomplete quest event.
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	--EMA:Print("test")
 	EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_COMPLETE, questID )
 end
 
@@ -1300,20 +1291,13 @@ function EMA:DoRemoveAutoQuestFieldComplete( characterName, questID )
 	EMA:EMARemoveAutoQuestPopUp( questID, characterName )
 end
 
-function EMA:QUEST_DETAIL(event, ...)
+function EMA:QUEST_DETAIL()
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	local questStartItemID = ...
-	--EMA:Print("testOffer", questStartItemID, QuestGetAutoAccept(), QuestIsFromAreaTrigger() )
-    if(questStartItemID ~= nil and questStartItemID ~= 0) then
-		EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, GetQuestID() )
-		return
-	end
-	if ( QuestGetAutoAccept() and QuestIsFromAreaTrigger()) then
-		EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, GetQuestID() )
-		return
-	end	
+--	if QuestGetAutoAccept() and QuestIsFromAreaTrigger() then
+--		EMA:EMASendCommandToTeam( EMA.COMMAND_AUTO_QUEST_OFFER, GetQuestID() )
+--	end
 end		
 
 function EMA:DoAutoQuestFieldOffer( characterName, questID )
@@ -1324,203 +1308,40 @@ end
 -- QUEST WATCH COMMUNICATION
 -------------------------------------------------------------------------------------------------------------
 
-function EMA:EMAQuestWatcherScenarioUpdate(useCache)
-	-- Scenario information
-	local isInScenario = C_Scenario.IsInScenario()
-	if isInScenario == true then
-		-- Hacky hacky to get Scenario to show at the top of the list.
-		if useCache == false then 
-			EMAUtilities:ClearTable( EMA.questWatchObjectivesList )
-		end
-		--local useCache = false
-		local scenarioName, currentStage, numStages, flags, _, _, _, xp, money = C_Scenario.GetInfo()
-		--EMA:Print("scenario", scenarioName, currentStage, numStages)
-			for StagesIndex = 1, currentStage do
-				--EMA:Print("Player is on Stage", currentStage)
-				local stageName, stageDescription, numCriteria, _, _, _, numSpells, spellInfo, weightedProgress = C_Scenario.GetStepInfo()
-				--EMA:Print("test match", numCriteria)
-				if numCriteria == 0 then
-					--EMA:Print("test match 0")
-					if (weightedProgress) then
-						--EMA:Print("Checking Progress", weightedProgress)
-						local questID = 1001	
-						local criteriaIndex = 0
-						local maxProgress = 100
-						--Placeholder does not work on borkenshore questlines......
-						--local totalQuantity = 100
-						local completed = false
-						local amountCompleted = tostring(weightedProgress).."/"..(maxProgress)
-						local name = "Scenario:"..stageName.." "..currentStage.."/"..numStages
-						--EMA:Print("scenarioProgressInfo", questID, name, criteriaIndex, stageDescription , amountCompleted , totalQuantity, completed )
-						--EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, questID, name, numCriteria, stageDescription , amountCompleted , totalQuantity, completed )
-						EMA:DoQuestWatchObjectiveUpdate( EMA.characterName, questID, name, numCriteria, stageDescription , amountCompleted , totalQuantity, completed )
-					else
-						--EMA:Print("ScenarioDONE", stageDescription)
-						local questID = 1001
-						local criteriaIndex = 1
-						local completed = false
-						local amountCompleted = tostring(0).."/"..(1)
-						local name = "Scenario:"..stageName.." "..currentStage.."/"..numStages
-						--EMA:Print("scenarioProgressInfo", questID, name, criteriaIndex, stageDescription , amountCompleted , totalQuantity, completed )																									 
-						EMA:DoQuestWatchObjectiveUpdate( EMA.characterName, questID, name, numCriteria, stageDescription , amountCompleted , totalQuantity, completed )
-					end
-	 
-				else
-				for criteriaIndex = 1, numCriteria do																   
-				local criteriaString, criteriaType, completed, quantity, totalQuantity, flags, assetID, quantityString, criteriaID, duration, elapsed = C_Scenario.GetCriteriaInfo(criteriaIndex)																
-				--Ebony to fix a bug with character trial quest (this might be a blizzard bug) TODO relook at somepoint in beta.
-					if (criteriaString) then
-						local questID = 1001
-						local amountCompleted = tostring( quantity ).."/"..( totalQuantity ) 
-						--EMA:Print("Stages", numStages)
-						local name = nil
-							if (numStages) > 1 then
-								local textName = "Scenario:"..stageName.." "..currentStage.."/"..numStages
-								newName = textName
-							else
-								local textName = "Scenario:"..stageName
-								newName = textName
-							end
-							local name = newName																				  
-							--EMA:Print("test", questID, name, criteriaIndex, criteriaString , amountCompleted , completed, completed)
-							EMA:DoQuestWatchObjectiveUpdate( EMA.characterName, questID, name, criteriaIndex, criteriaString , amountCompleted , completed, completed )
-						end
-					end	
-				end
-			end
-		end
-	-- SCENARIO_BONUS
-		local tblBonusSteps = C_Scenario.GetBonusSteps()
-		if #tblBonusSteps > 0 then
-			--EMA:Print("BonusTest", #tblBonusSteps )
-		for i = 1, #tblBonusSteps do
-			local bonusStepIndex = tblBonusSteps[i]
-			--EMA:Print("bonusIndex", bonusStepIndex)
-			local stageName, stageDescription, numCriteria = C_Scenario.GetStepInfo(bonusStepIndex)
-			--EMA:Print("bonusInfo", numCriteria, stageName, stageDescription) 
-			for criteriaIndex = 1, numCriteria do
-				--EMA:Print("Player has", numCriteria, "Criterias", "and is checking", criteriaIndex)
-				local criteriaString, criteriaType, completed, quantity, totalQuantity, flags, assetID, quantityString, criteriaID = C_Scenario.GetCriteriaInfoByStep(bonusStepIndex, criteriaIndex)
-				local questID = assetID
-				local amountCompleted = tostring(quantity).."/"..(totalQuantity)
-				local name = "ScenarioBouns:"..stageName --.." "..currentStage.."/"..numStages
-				--EMA:Print("scenarioBouns", questID, name, criteriaIndexa, criteriaString , amountCompleted , totalQuantity, completed )																											
-				EMA:DoQuestWatchObjectiveUpdate( EMA.characterName, questID, name, criteriaIndex, criteriaString , amountCompleted , completed, completed )							
-			end
-		end
-	end
-	EMA.QUESTWATCHUPDATING = false
-end
-
 function EMA:EMAQuestWatcherQuestLogUpdate( useCache )
-		if EMA.QUESTWATCHUPDATING == true then
-			return
-		end	
-		--EMA:Print("QUESTWATCHUPDATINGS")
-		EMA.QUESTWATCHUPDATING = true
-		local index = C_QuestLog.GetNumQuestLogEntries()
-		for iterateQuests = 1, index do	
-			local info =  C_QuestLog.GetInfo( iterateQuests )	
-			if info.questID ~= nil and QuestUtils_IsQuestWatched(info.questID) == true then
-				--EMA:Print("testAA", info.title, info.questLogIndex, info.questID, info.campaignID, info.level, info.difficultyLevel, info.suggestedGroup, info.frequency, info.isHeader, info.isCollapsed, info.startEvent, info.isTask, info.isBounty, info.isStory, info.isScaling, info.isOnMap, info.hasLocalPOI, info.isHidden, info.isAutoComplete, info.overridesSortOrder, info.readyForTranslation )
-				local questLogIndex = C_QuestLog.GetLogIndexForQuestID(info.questID)
-				local numObjectives = GetNumQuestLeaderBoards(questLogIndex )
-				local isComplete = C_QuestLog.IsComplete( info.questID)
-				--local isComplete = EMA:IsCompletedAutoCompleteFieldQuest( questIndex, isComplete )
-				if info.isHeader == false and info.isHidden == false then
-				--EMA:Print("EMAQuestData", questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden)
-				if numObjectives > 0 then							 
-					for iterateObjectives = 1, numObjectives do
-						--EMA:Print( "NumObjs:", numObjectives )
-						local objectiveFullText, objectiveType, objectiveFinished = GetQuestLogLeaderBoard( iterateObjectives, questLogIndex )																								
-						local amountCompleted, objectiveText = EMA:GetQuestObjectiveCompletion( objectiveFullText, objectiveType )
-						
-						if objectiveType == "progressbar" then
-							local progress = GetQuestProgressBarPercent( info.questID )
-							objectiveText = "ProgressBar"..": "..objectiveText 
-							amountCompleted = tostring(progress)..L["%"]
-						end
-						if objectiveFullText ~= nil then																												
-							--EMA:Print("test2", info.questID, info.title, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )
-							if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
-								EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, info.title, iterateObjectives, objectiveText, amountCompleted, isComplete, isComplete )																		   
-							end
-						end
+	for i = 1, GetNumQuestLogEntries() do
+		local questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden = GetQuestWatchInfo(i)															
+		if questID ~= nil then
+		--EMA:Print("EMAQuestData", questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden)										
+			if numObjectives > 0 then							 
+				for iterateObjectives = 1, numObjectives do
+					--EMA:Print( "NumObjs:", numObjectives )
+					local objectiveFullText, objectiveType, objectiveFinished = GetQuestLogLeaderBoard( iterateObjectives, questLogIndex )																								
+					local amountCompleted, objectiveText = EMA:GetQuestObjectiveCompletion( objectiveFullText, objectiveType )
+					if objectiveType == "progressbar" then
+						local progress = GetQuestProgressBarPercent( questID )
+						objectiveText = "ProgressBar"..": "..objectiveText 
+						amountCompleted = tostring(progress)..L["%"]
 					end	
-				else
-					local objectiveFullText = GetQuestLogCompletionText(questLogIndex)
-					local iterateObjectives = 0
-					local amountCompleted, objectiveText = EMA:GetQuestObjectiveCompletion( objectiveFullText )
-					local objectiveFinished = true
-					--EMA:Print("test3", info.questID, info.title, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )
-					if (EMA:QuestCacheUpdate( info.questID, info.title, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
-						EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, info.title, iterateObjectives, objectiveText, amountCompleted, isComplete, isComplete )
-					end
-				end
-			end			
-		end
-	end
-	--EMA:Print("QUESTWATCHUPDATING DONE")
-	EMA.QUESTWATCHUPDATING = false
-end
-
-function EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
-	--EMA:Print("fireworldquestUpdate")
-	--for i = 1, GetNumQuestLogEntries() do
-	local index = C_QuestLog.GetNumQuestLogEntries()
-	for iterateQuests = 1, index do	
-		local info =  C_QuestLog.GetInfo( iterateQuests )	
-		local questIndex = C_QuestLog.GetLogIndexForQuestID(info.questID)
-		---local title, level, suggestedGroup, isHeader, isCollapsed, _ , frequency, questID = GetQuestLogTitle(i)
-		local isInArea, isOnMap, numObjectives = GetTaskInfo(info.questID)				  
-		local isComplete = C_QuestLog.IsComplete( info.questID)
-		--local isComplete = EMA:IsCompletedAutoCompleteFieldQuest( questIndex, IsComplete )		
-			
-			if isInArea and isOnMap then
-			for iterateObjectives = 1, numObjectives do
-				--EMA:Print("test", questID, iterateObjectives, isComplete)
-				local objectiveFullText, objectiveType, objectiveFinished = GetQuestObjectiveInfo( info.questID, iterateObjectives, isComplete )
-				local amountCompleted, objectiveText = EMA:GetQuestObjectiveCompletion( objectiveFullText )																											  
-				if objectiveType == "progressbar"  then	  
-					local objectiveText = "ProgressBar"
-					local progress = GetQuestProgressBarPercent( info.questID )
-					local amountCompleted = tostring(progress)..L["%"]																											
-					--EMA:Print("QuestPercent", title, objectiveText, amountCompleted )
-					local EditedQuestName = tostring("Bonus:")..(info.title)	
-					--EMA:Print("BarQuest", info.questID, name, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete)
-					if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
-						EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, EditedQuestName, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )															 
-					end
-			else
-				local amountCompleted, objectiveText = EMA:GetQuestObjectiveCompletion( objectiveFullText )
-				if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then									   
-					--EMA:Print( "UPDATE:", "cache:", useCache, "QuestID", questID, "ObjectID", iterateObjectives )
-					--EMA:Print("sendingquestdata", info.title, info.questID, objectiveText, amountCompleted, finished )
-					local name = tostring("Bonus:")..(info.title)
-					EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, name, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )
+					if objectiveFullText ~= nil then																												
+						--EMA:Print("test2", questID, title, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )
+						if (EMA:QuestCacheUpdate( questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
+							EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, questID, title, iterateObjectives, objectiveText, amountCompleted, isComplete, isComplete )																		   
+						end
 					end
 				end
 			end
-		end	
+		end			
 	end
-	EMA.QUESTWATCHUPDATING = false	
 end
 
 function EMA:EMAQuestWatcherUpdate( useCache, questType )
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	--EMA:Print("updateQuestList", useCache, questType )
-	if questType == "scenario" or "all" then
-		EMA:EMAQuestWatcherScenarioUpdate(useCache)
-	end
 	if questType == "quest" or "all" then
 		EMA:EMAQuestWatcherQuestLogUpdate( useCache )
 	end
-	if questType == "worldQuest" or "all" then
-		EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
-	end
-	
 end
 
 -- Gathers messages from team.
@@ -1538,8 +1359,7 @@ function EMA:UpdateQuestWatchList( questID, questName, objectiveIndex, objective
 	objectiveHeaderPosition = EMA:GetObjectiveHeaderInWatchList( questID, questName, objectiveIndex, objectiveText, totalAmountCompleted, questHeaderPosition )
 	-- isComplete piggybacks on the quest watch update, so we are always displaying a complete quest button (in case the QUEST_AUTOCOMPLETE event does not fire).
 	if isComplete == true then
-		-- Do feel we need this!
-		--EMA:DoAutoQuestFieldComplete( characterName, questID )
+		EMA:DoAutoQuestFieldComplete( characterName, questID )
 	end
 	if EMA.db.hideQuestIfAllComplete == true then
 		EMA:CheckQuestForAllObjectivesCompleteAndHide( questID )
@@ -1677,10 +1497,14 @@ function EMA:RemoveQuestsNotBeingWatched()
 	EMA:UpdateAllQuestsInWatchList()
 	for checkQuestID, value in pairs( EMA.questWatchListOfQuests ) do
 		local found = false
-		local IsOnQuest = C_QuestLog.IsOnQuest(checkQuestID)
-		if IsOnQuest == true then
-			--EMA:Print("foundQuest", checkQuestID)
-			found = true
+		for iterateWatchedQuests = 1, GetNumQuestWatches() do
+			local questIndex = GetQuestIndexForWatch( iterateWatchedQuests )
+			if questIndex ~= nil then
+                local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )
+				if checkQuestID == questID then
+					found = true
+				end
+			end
 		end
 		if found == false then
 			EMA:RemoveQuestFromWatchList( checkQuestID )
@@ -1760,15 +1584,14 @@ function EMA:GetObjectiveHeaderInWatchList( questID, questName, objectiveIndex, 
 	return questHeaderPosition + 1	
 end
 
+--TODO CLEAN UP
+
 function EMA:GetQuestItemFromQuestID(findQuestID)
-	--for iterateQuests=1,GetNumQuestLogEntries() do
-	--	local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID = GetQuestLogTitle(iterateQuests)
-	local index = C_QuestLog.GetNumQuestLogEntries()
-	for iterateQuests = 1, index do	
-		local info =  C_QuestLog.GetInfo( iterateQuests )
+	for iterateQuests=1,GetNumQuestLogEntries() do
+		local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID = GetQuestLogTitle(iterateQuests)
 		--if title ~= nil then
-		if not info.isHeader then	
-			if findQuestID == info.questID then
+		if not isHeader then	
+			if findQuestID == questID then
 				local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )
 				if questItemLink then
 					--EMA:Print("Item", questItemLink, questItemIcon, questID)
@@ -1780,16 +1603,6 @@ function EMA:GetQuestItemFromQuestID(findQuestID)
 		end
 	end
 end	
-
-local function GetInlineFactionIcon()
-	local faction = UnitFactionGroup("player");
-	local coords = faction == "Horde" and QUEST_TAG_TCOORDS.HORDE or QUEST_TAG_TCOORDS.ALLIANCE;
-	return CreateTextureMarkup(QUEST_ICONS_FILE, QUEST_ICONS_FILE_WIDTH, QUEST_ICONS_FILE_HEIGHT, 18, 18
-	, coords[1]
-	, coords[2] - 0.02 -- Offset to stop bleeding from next image
-	, coords[3]
-	, coords[4], 0, 2);
-end
 
 function EMA:GetQuestHeaderInWatchList( questID, questName, characterName )
 	for key, questWatchInfoContainer in pairs( EMA.questWatchObjectivesList ) do
@@ -1804,15 +1617,6 @@ function EMA:GetQuestHeaderInWatchList( questID, questName, characterName )
 			return position
 		end
 	end
-	local questItemLink, questItemIcon = EMA:GetQuestItemFromQuestID(questID)
-	local icon = ""
-	if ( questItemIcon ~= nil ) then
-		icon = strconcat(" |T"..questItemIcon..":18|t".."  ")
-	end
-	if (C_CampaignInfo.IsCampaignQuest(questID) ) then
-			--EMA:Print("CampaignQuest", questName)
-		icon = GetInlineFactionIcon()
-	end	
 	local questWatchInfo = EMA:CreateQuestWatchInfo( questID, "QUEST_HEADER", -1, "", questName, icon )
 	
 	EMA:UpdateTeamQuestCountAddCharacter( questWatchInfo, characterName )
@@ -2018,70 +1822,30 @@ function EMA:QuestWatcherQuestListDrawLine( frame, iterateDisplayRows, type, inf
 	frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetFont( textFont , textSize , "OUTLINE")
 	frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetFont( textFont , textSize , "OUTLINE")
 	--EMA:Print("test2343", type, information )
-	local matchData = string.find( information, "Bonus:" )
-	local matchDataScenario = string.find( information, "Scenario:" )
-	local matchDataScenarioBouns = string.find( information, "ScenarioBouns:" )
-	-- Scenario
-	if matchDataScenario then
-		local name = gsub(information, "[^|]+:", "")
-		frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetText( padding..toggleDisplay..name )
-		frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetText( amount )
-			frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0, 1.0, 1.0, 1.0 )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0, 1.0, 1.0, 1.0 )
-		if InCombatLockdown() == false then
-			frame.questWatchList.rows[iterateDisplayRows].columns[1]:EnableMouse( false )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2]:EnableMouse( false )	
+	frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetText( padding..toggleDisplay..teamCount..information )
+	frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetText( amount )
+	if type == "QUEST_HEADER" then
+		if matchData then
+			frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0, 0, 1.0, 1.0 )
+			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0, 0, 1.0, 1.0 )	
+		else
+			frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
+			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
 		end
-	-- Scenario Bouns
-	elseif matchDataScenarioBouns then
-		local name = gsub(information, "[^|]+:", "")
-		frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetText( padding..toggleDisplay..name )
-		frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetText( amount )
-			frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 0, 0.30, 1.0, 1.0, 1.0 )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 0, 0.30, 1.0, 1.0, 1.0 )	
-		if InCombatLockdown() == false then
-			frame.questWatchList.rows[iterateDisplayRows].columns[1]:EnableMouse( false )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2]:EnableMouse( false )	
-		end															   
-	else
-		frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetText( padding..toggleDisplay..teamCount..information )
-		frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetText( amount )
-		if type == "QUEST_HEADER" then
-			if matchData then
-				frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0, 0, 1.0, 1.0 )
-				frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0, 0, 1.0, 1.0 )	
-			else
-				frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
-				frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0.96, 0.41, 1.0 )
-			end
 		
-		end
-		if InCombatLockdown() == false then
-			frame.questWatchList.rows[iterateDisplayRows].columns[1]:EnableMouse( true )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2]:EnableMouse( true )	
-		end		
 	end
+	if InCombatLockdown() == false then
+		frame.questWatchList.rows[iterateDisplayRows].columns[1]:EnableMouse( true )
+		frame.questWatchList.rows[iterateDisplayRows].columns[2]:EnableMouse( true )
+	end		
 
 	if type == "OBJECTIVE_HEADER" then
-		--EMA:Print("Match", information)
-		local matchData = string.find( information, "ProgressBar" )
-		if matchData then
-			--EMA:Print("Match", information)
-			frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( 1.0, 0.50, 0.50, 1.0 )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 0.50, 0.50, 1.0 )
-			-- Turn on the mouse for these buttons.
-		else
-			frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1.0 )
-			frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1.0 )
-			-- Turn on the mouse for these buttons.
-		end
-	end
-	local questItemLink, questItemIcon = EMA:GetQuestItemFromQuestID(questID)
-	if questItemLink ~= nil and type == "QUEST_HEADER" then
-		EMA:UpdateQuestItemButton( iterateDisplayRows, questItemLink )
-		
-	end
+
+	frame.questWatchList.rows[iterateDisplayRows].columns[1].textString:SetTextColor( NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1.0 )
+	frame.questWatchList.rows[iterateDisplayRows].columns[2].textString:SetTextColor( NORMAL_FONT_COLOR.r, NORMAL_FONT_COLOR.g, NORMAL_FONT_COLOR.b, 1.0 )
+
 	frame.questWatchList.rows[iterateDisplayRows].key = key
+	end
 end
 
 function EMA:QuestWatcherQuestListScrollRefresh()
@@ -2174,23 +1938,17 @@ end
 
 
 function EMA:QuestWatcherQuestListRowClick( rowNumber, columnNumber )
-   -- EMA:Print( "QuestWatcherQuestListRowClick", rowNumber, columnNumber )
 	local frame = EMAQuestWatcherFrame
 	local key = frame.questWatchList.rows[rowNumber].key
 	if key ~= nil and key ~= "" then
 		local information, amount, type, questID, childrenAreHidden, keyStored = EMA:GetQuestWatchInfoFromKey( key )
         EMA:DebugMessage( "GetQuestWatchInfoFromKey", information, amount, type, questID, childrenAreHidden, keyStored, key )
+		local questIndex = EMA:GetQuestLogIndexByName( information )
 		if type == "QUEST_HEADER" then
             if columnNumber == 1 then
-				QuestMapFrame_OpenToQuestDetails( questID )
+				ShowUIPanel(QuestLogFrame)
+				QuestLog_SetSelection( questIndex )
 			end
-			if columnNumber == 2 then
-				local questItemLink, questItemIcon = EMA:GetQuestItemFromQuestID(questID)
-				if questItemLink ~= nil then
-					local itemName = GetItemInfo(questItemLink)
-					EMA:UpdateQuestItemButton( rowNumber, itemName )
-				end
-		   end	
 		end
 		if type == "OBJECTIVE_HEADER" then
 			if columnNumber == 1 then
@@ -2217,77 +1975,7 @@ function EMA.QuestWatcherQuestListRowRightClick( rowNumber, columnNumber )
 end
 
 function EMA.QuestWatcherQuestListRowOnEnter( rowNumber, columnNumber )
-	--EMA:Print("MouseOver", rowNumber, columnNumber)
-	local frame = EMAQuestWatcherFrame
-	local key = frame.questWatchList.rows[rowNumber].key
-	local toolTipFrame = frame.questWatchList.rows[rowNumber].columns[columnNumber]
-	if key ~= nil and key ~= "" then
-		local information, amount, type, questID, childrenAreHidden, keyStored = EMA:GetQuestWatchInfoFromKey( key )
-		--EMA:Print("test", information, questID)
-		GameTooltip:ClearAllPoints()
-		GameTooltip:SetPoint("TOPRIGHT", toolTipFrame, "TOPLEFT", 0, 0)
-		GameTooltip:SetOwner( toolTipFrame, "ANCHOR_PRESERVE")
-		if type == "QUEST_HEADER" and columnNumber == 2 then
-			local questItemLink, questItemIcon = EMA:GetQuestItemFromQuestID(questID)
-			if questItemLink ~= nil then
-				GameTooltip:SetHyperlink(questItemLink)
-				GameTooltip:Show()
-			end
-		end	
-			if columnNumber == 1 then
-				toolTipFrame:SetAlpha( 1.0 )
-				if ( HaveQuestData(questID) and GetQuestLogRewardXP(questID) == 0 and GetNumQuestLogRewardCurrencies(questID) == 0
-					and GetNumQuestLogRewards(questID) == 0 and GetQuestLogRewardMoney(questID) == 0 and GetQuestLogRewardArtifactXP(questID) == 0 ) then
-					GameTooltip:Hide()
-					return
-				end
-				GameTooltip:AddLine(L["REWARDS"], 1, 0.82, 0, 1)
-				GameTooltip:AddLine(L["REWARDS_TEXT"],1,1,1,1)
-				GameTooltip:AddLine(" ")
-				if ( not HaveQuestData(questID) ) then
-					GameTooltip:AddLine(RETRIEVING_DATA, RED_FONT_COLOR.r, RED_FONT_COLOR.g, RED_FONT_COLOR.b);
-				else
-					-- Taken From Blizzard BonusObjectiveTracker_ShowRewardsTooltip
-					-- xp
-					local xp = GetQuestLogRewardXP(questID);
-					if ( xp > 0 ) then
-						GameTooltip:AddLine(string.format(BONUS_OBJECTIVE_EXPERIENCE_FORMAT, xp), 1, 1, 1);
-					end
-					local artifactXP = GetQuestLogRewardArtifactXP(questID);
-					if ( artifactXP > 0 ) then
-						GameTooltip:AddLine(string.format(BONUS_OBJECTIVE_ARTIFACT_XP_FORMAT, artifactXP), 1, 1, 1);
-					end
-					-- currency
-					QuestUtils_AddQuestCurrencyRewardsToTooltip(questID, GameTooltip);
-					-- honor
-					local honorAmount = GetQuestLogRewardHonor(questID);
-					if ( honorAmount > 0 ) then
-						GameTooltip:AddLine(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT:format("Interface\\ICONS\\Achievement_LegionPVPTier4", honorAmount, HONOR), 1, 1, 1);
-					end
-					-- money
-					local money = GetQuestLogRewardMoney(questID);
-					if ( money > 0 ) then
-						SetTooltipMoney(GameTooltip, money, nil);
-					end
-					-- items
-					local numQuestRewards = GetNumQuestLogRewards(questID);
-					for i = 1, numQuestRewards do
-						local name, texture, numItems, quality, isUsable = GetQuestLogRewardInfo(i, questID);
-						local text;
-						if ( numItems > 1 ) then
-							text = string.format(BONUS_OBJECTIVE_REWARD_WITH_COUNT_FORMAT, texture, HIGHLIGHT_FONT_COLOR:WrapTextInColorCode(numItems), name);
-						elseif( texture and name ) then
-							text = string.format(BONUS_OBJECTIVE_REWARD_FORMAT, texture, name);
-						end
-					if( text ) then
-						local color = ITEM_QUALITY_COLORS[quality];
-						GameTooltip:AddLine(text, color.r, color.g, color.b);
-					end
-				end
-				GameTooltip:Show()
-			end
-		end
-	end
+
 end
 
 
@@ -2300,7 +1988,7 @@ function EMAQuestMapQuestOptionsDropDown_Initialize(self)
 	local questID = EMAQuestMapQuestOptionsDropDown.questID
 	local questText = EMAQuestMapQuestOptionsDropDown.questText
 	if (questID ~= 0 ) then
-		local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
+		local questLogIndex = GetQuestLogIndexByID(questID)
 		
 		local infoTitle = UIDropDownMenu_CreateInfo()
 		infoTitle.text = questText
@@ -2318,7 +2006,7 @@ function EMAQuestMapQuestOptionsDropDown_Initialize(self)
 		info.checked = false
 		UIDropDownMenu_AddButton(info)
 		
-		if ( C_QuestLog.IsPushableQuest(questID) and IsInGroup() ) then
+		if ( GetQuestLogPushable(questLogIndex) and IsInGroup() ) then
 			info.text = SHARE_QUEST
 			info.func = function(_, questID) EMA:QuestMapQuestOptions_ShareQuest(questID) end
 			info.arg1 = self.questID
@@ -2340,7 +2028,7 @@ function EMA:QuestMapQuestOptions_ToggleTrackQuest(questID, questText)
 end
 
 function EMA:QuestMapQuestOptions_ShareQuest( questID )
-	local questLogIndex = C_QuestLog.GetLogIndexForQuestID(questID)
+	local questLogIndex = GetQuestLogIndexByID(questID)
 	if questLogIndex then
 		QuestLogPushQuest(questLogIndex)
 	end
@@ -2370,12 +2058,10 @@ function EMA:HasAtLeastOneAutoQuestPopup()
 end
 
 function EMA:EMAAddAutoQuestPopUp( questID, popUpType, characterName )
-	--EMA:Print("addPopUP", questID, popUpType, characterName)
 	if EMA.currentAutoQuestPopups[questID] == nil then
-		EMA.currentAutoQuestPopups[questID] = {}
-	end	
+		EMA.currentAutoQuestPopups[questID] = {}	
+	end
 	EMA.currentAutoQuestPopups[questID][characterName] = popUpType
-	EMA:DisplayAutoQuestPopUps()
 end
 
 function EMA:EMARemoveAutoQuestPopUp( questID, characterName )
@@ -2430,67 +2116,65 @@ function EMA:DisplayAutoQuestPopUps()
 	EMAQuestWatcherFrame.autoQuestPopupsHeight = 0
 	local parentFrame = EMAQuestWatcherFrame.fieldNotifications
 	for questID, characterInfo in pairs( EMA.currentAutoQuestPopups ) do
-		local title = C_QuestLog.GetTitleForQuestID(questID)
-		local isComplete = C_QuestLog.IsComplete(questID)
-		--EMA:Print("test", questID, title, isComplete )
 		local characterName, characterPopUpType, popUpType
 		local characterList = ""
 		for characterName, characterPopUpType in pairs( characterInfo ) do
-			--EMA:Print("popup", characterPopUpType)
+			--characterList = characterList..characterName.." "
 			characterList = characterList..( Ambiguate( characterName, "none" ) ).." "
 			-- TODO - hack, assuming all characters have the same sort of popup.
 			popUpType = characterPopUpType
 		end
+        local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( GetQuestLogIndexByID( questID ) )
+		if isComplete and isComplete > 0 then
+			isComplete = true
+		else
+			isComplete = false
+		end
 		-- If the current character does not have the quest, show the character names that do have it.
-		--[[
 		local clickToViewText = QUEST_WATCH_POPUP_CLICK_TO_VIEW
-			if not (title and title ~= "") then
-				title = characterList
-				clickToViewText = ""
-			end
-		]]
+		if not (title and title ~= "") then
+            title = characterList
+			clickToViewText = ""
+		end
 		local frame = EMA:AutoQuestGetOrCreateFrame( parentFrame, countPopUps + 1 )
 		frame:Show()
 		frame:ClearAllPoints()
 		frame:SetParent( parentFrame )
-		--EMA:Print("test2", isComplete, popUpType)
-			if isComplete == true and popUpType == "COMPLETE" then
-				frame.TopText:SetText( QUEST_WATCH_POPUP_CLICK_TO_COMPLETE )
-				frame.BottomText:Hide()
-				frame:SetHeight( 32 )
-				frame.type = "COMPLETED"
-				frame:HookScript( "OnMouseUp", function()
-					ShowQuestComplete( questID )
-					EMA:EMARemoveAllAutoQuestPopUps( questID )
-					--EMA:DisplayAutoQuestPopUps()
-					EMA:SettingsUpdateBorderStyle()
-					EMA:SettingsUpdateFontStyle()
-				end )
+		if isComplete == true and popUpType == "COMPLETE" then
+			frame.TopText:SetText( QUEST_WATCH_POPUP_CLICK_TO_COMPLETE )
+			frame.BottomText:Hide()
+            frame:SetHeight( 32 )
+			frame.type = "COMPLETED"
+            frame:HookScript( "OnMouseUp", function()
+                ShowQuestComplete( GetQuestLogIndexByID( questID ) )
+                EMA:EMARemoveAllAutoQuestPopUps( questID )
+                EMA:DisplayAutoQuestPopUps()
+                EMA:SettingsUpdateBorderStyle()
+				EMA:SettingsUpdateFontStyle()
+            end )
 		elseif popUpType == "OFFER" then
 			frame.TopText:SetText( QUEST_WATCH_POPUP_QUEST_DISCOVERED )
 			frame.BottomText:Show()
 			frame.BottomText:SetText( clickToViewText )
-			frame:SetHeight( 48 )
+            frame:SetHeight( 48 )
 			frame.type = "OFFER"
 			frame:HookScript( "OnMouseUp", function()
-				ShowQuestOffer( questID )
 				EMA:EMARemoveAllAutoQuestPopUps( questID )
-				--EMA:DisplayAutoQuestPopUps()
+				EMA:DisplayAutoQuestPopUps()
 				EMA:SettingsUpdateBorderStyle()
 				EMA:SettingsUpdateFontStyle()
-				AutoQuestPopupTracker_RemovePopUp( questID )
 			end )
 		end
 		frame:ClearAllPoints()
-			if nextAnchor ~= nil then
-				if iterateQuestPopups == 1 then
-					frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 ) -- -WATCHFRAME_TYPE_OFFSET
-				else
-					frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 )
-				end
+		if nextAnchor ~= nil then
+			if iterateQuestPopups == 1 then
+				frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 ) -- -WATCHFRAME_TYPE_OFFSET
 			else
-				frame:SetPoint( "TOP", parentFrame, "TOP", 0, 5 ) -- -WATCHFRAME_INITIAL_OFFSET
+				frame:SetPoint( "TOP", nextAnchor, "BOTTOM", 0, 0 )
 			end
+		else
+			frame:SetPoint( "TOP", parentFrame, "TOP", 0, 5 ) -- -WATCHFRAME_INITIAL_OFFSET
+		end
 		frame:SetPoint( "LEFT", parentFrame, "LEFT", -20, 0 )
 		frame.QuestName:SetText( title )
 		frame.questId = questID
@@ -2499,11 +2183,11 @@ function EMA:DisplayAutoQuestPopUps()
 		nextAnchor = frame
 		countPopUps = countPopUps + 1
 		EMAQuestWatcherFrame.autoQuestPopupsHeight = EMAQuestWatcherFrame.autoQuestPopupsHeight + frame:GetHeight()
-		end
-			for iterateQuestPopups = countPopUps + 1, EMA.countAutoQuestPopUpFrames do
-				_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups].questId = nil
-				_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups]:Hide()
-			end
+	end
+	for iterateQuestPopups = countPopUps + 1, EMA.countAutoQuestPopUpFrames do
+		_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups].questId = nil
+		_G["EMAWatchFrameAutoQuestPopUp"..iterateQuestPopups]:Hide()
+	end
 	EMA:UpdateQuestWatcherDimensions()
 end
 
@@ -2512,11 +2196,10 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMA:GetQuestLogIndexByName( questName )
-	for iterateQuests = 1, C_QuestLog.GetNumQuestLogEntries() do
-        --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( iterateQuests )
-		local info =  C_QuestLog.GetInfo( iterateQuests )
-		if not info.isHeader then
-			if info.title == questName then
+	for iterateQuests = 1, GetNumQuestLogEntries() do
+        local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( iterateQuests )
+		if not isHeader then
+			if title == questName then
 				return iterateQuests
 			end
 		end
@@ -2525,11 +2208,10 @@ function EMA:GetQuestLogIndexByName( questName )
 end
 
 function EMA:GetQuestLogIndexByID( inQuestID )
-	for iterateQuests = 1, C_QuestLog.GetNumQuestLogEntries() do
-        --local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( iterateQuests )
-		local info =  C_QuestLog.GetInfo( iterateQuests )
-		if not info.isHeader then
-			if info.questID == inQuestID then
+	for iterateQuests = 1, GetNumQuestLogEntries() do
+        local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( iterateQuests )
+		if not isHeader then
+			if questID == inQuestID then
 				return iterateQuests
 			end
 		end

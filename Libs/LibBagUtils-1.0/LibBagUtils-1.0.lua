@@ -32,9 +32,19 @@ local GetTime=GetTime
 local GetContainerNumSlots, GetContainerNumFreeSlots = GetContainerNumSlots, GetContainerNumFreeSlots
 local GetContainerItemLink,GetContainerItemInfo = GetContainerItemLink,GetContainerItemInfo
 local GetItemInfo, GetItemFamily = GetItemInfo, GetItemFamily
+
 -- GLOBALS: error, geterrorhandler, PickupContainerItem
 -- GLOBALS: CursorHasItem, ClearCursor, GetCursorInfo
 -- GLOBALS: DEFAULT_CHAT_FRAME, SELECTED_CHAT_FRAME
+
+local function isClassicBuild()
+	local isClassicBuild = false
+	local _, _, _, tocversion = GetBuildInfo()
+	if tocversion >= 10000 and tocversion <= 30000 then
+		isClassicBuild = true
+	end
+	return isClassicBuild
+end	
 
 local BANK_CONTAINER = BANK_CONTAINER
 -- local KEYRING_CONTAINER = KEYRING_CONTAINER
@@ -259,7 +269,9 @@ for k,v in pairs(bags.BANK) do
 end
 
 -- Reagent Bank
-bags.REAGENTBANK[REAGENTBANK_CONTAINER] = REAGENTBANK_CONTAINER
+if isClassicBuild() == false then
+	bags.REAGENTBANK[REAGENTBANK_CONTAINER] = REAGENTBANK_CONTAINER
+end
 
 local function iterbags(tab, cur)
 	cur = next(tab, cur)

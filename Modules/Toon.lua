@@ -34,7 +34,7 @@ EMA.chatCommand = "ema-toon"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["TOON"]
 EMA.parentDisplayNameToon = L["TOON"]
-EMA.parentDisplayNameMerchant = L["VENDER"]
+EMA.parentDisplayNameMerchant = L["VENDOR"]
 EMA.moduleDisplayName = L["TOON"]
 -- Icon 
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\Toon.tga"
@@ -350,7 +350,7 @@ local function SettingsCreateToon( top )
 		L["READY_CHECKS_HELP"]
 	)
  	movingTop = movingTop - checkBoxHeight
- 	EMA.settingsControlToon.checkBoxLFGTeleport = EMAHelperSettings:CreateCheckBox( 
+	EMA.settingsControlToon.checkBoxLFGTeleport = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControlToon, 
 		halfWidth, 
 		left, 
@@ -729,10 +729,15 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )	
 	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull:SetDisabled( not EMA.db.warnWhenBagsAlmostFullAmount )
-  EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not EMA.db.autoRepair )
+	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not EMA.db.autoRepair )
 	EMA.settingsControlWarnings.editBoxBagsFullMessage:SetDisabled( not EMA.db.warnBagsFull )
 	EMA.settingsControlWarnings.editBoxCCMessage:SetDisabled( not EMA.db.warnCC )
 	EMA.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam:SetDisabled( not EMA.db.autoAcceptResurrectRequest )
+	-- Disabled for Classic
+	EMA.settingsControlToon.checkBoxLFGTeleport:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
+	EMA.settingsControlToon.checkBoxToggleWarMode:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
+	EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
+	EMA.settingsControlToon.checkBoxAutoRoleCheck:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
 end
 
 function EMA:SettingsPushSettingsClick( event )
@@ -1012,7 +1017,9 @@ function EMA:OnEnable()
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
 	-- Ace Hooks
 	EMA:SecureHook( "ConfirmReadyCheck" )
-	EMA:SecureHook( "LFGTeleport" )
+	if EMAPrivate.Core.isEmaClassicBuild == false then
+		EMA:SecureHook( "LFGTeleport" )
+	end
 	EMA:SecureHook( "RollOnLoot" )
 end
 
@@ -1383,7 +1390,7 @@ end
 
 function EMA:LFGTeleport( event, arg1, ... )
 	--EMA:Print("LFGtest")
-	if EMA.db.teleportLFGWithTeam == true then
+	if EMA.db.teleportLFGWithTeam == true and EMAPrivate.Core.isEmaClassicBuild() == false then
 		if IsShiftKeyDown() == false then
 			if EMA.isInternalCommand == false then
 				if IsInLFGDungeon() == true then
@@ -1397,6 +1404,7 @@ function EMA:LFGTeleport( event, arg1, ... )
 end
 
 function EMA:DoLFGTeleport(port)
+	if EMAPrivate.Core.isEmaClassicBuild() == ture then return end	
 	--EMA:Print("TeleCommand", port)
 	EMA.isInternalCommand = true
 	if IsShiftKeyDown() == false then
@@ -1450,7 +1458,7 @@ function EMA:CONFIRM_SUMMON( event, sender, location, ... )
 end
 
 function EMA:WARMODE(event, ...)
-	if EMA.db.toggleWarMode == true then
+	if EMA.db.toggleWarMode == true and EMAPrivate.Core.isEmaClassicBuild() == false then
 		if C_PvP.IsWarModeFeatureEnabled() == true then
 			local isWarMode = C_PvP.IsWarModeDesired()
 			if C_PvP.CanToggleWarMode(isWarMode) == true then
@@ -1464,6 +1472,7 @@ function EMA:WARMODE(event, ...)
 end
 
 function EMA:DoWarMode( isWarMode )
+	if EMAPrivate.Core.isEmaClassicBuild() == ture then return end
 	EMA.isInternalCommand = true
 	if C_PvP.CanToggleWarMode( isWarMode ) == true and isWarMode ~= nil then
 		--EMA:Print("testwarmode", isWarMode )
@@ -1489,6 +1498,7 @@ function EMA:MERCHANT_SHOW( event, ... )
 	-- At least some cost...
 	if repairCost > 0 then
 		-- If allowed to use guild funds, then attempt to repair using guild funds.
+-- TODO GUILD BANK STUFF FOR CLASSIC or TBC CLASSIC 
 		if EMA.db.autoRepairUseGuildFunds == true then
 			if IsInGuild() and CanGuildBankRepair() then
 				RepairAllItems( 1 )
@@ -1679,18 +1689,27 @@ end
 --Ebony CCed
 function EMA:LOSS_OF_CONTROL_ADDED( event, ... )
 	if EMA.db.warnCC == true then
-		---local eventIndex = C_LossOfControl.GetNumEvents()
-		local eventIndex = C_LossOfControl.GetActiveLossOfControlDataCount()
-		if eventIndex > 0 then
-			local LossOfControlData = C_LossOfControl.GetActiveLossOfControlData(eventIndex)
-			--local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType	
-			local name, rank, icon, castTime, minRange, maxRange, spellId =  GetSpellInfo( LossOfControlData.spellID )
-			--EMA:Print("test", LossOfControlData.spellID, name )
-			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false and name ~= nil then
-				EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "].. name, false )
+		if EMAPrivate.Core.isEmaClassicBuild() == true then
+			local eventIndex = C_LossOfControl.GetNumEvents()
+			if eventIndex > 0 then
+				local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType = C_LossOfControl.GetEventInfo(eventIndex)	
+				if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false then
+					EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "]..text, false )
+				end
+			end
+		else
+			local eventIndex = C_LossOfControl.GetActiveLossOfControlDataCount()
+			if eventIndex > 0 then
+				local LossOfControlData = C_LossOfControl.GetActiveLossOfControlData(eventIndex)
+				--local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType	
+				local name, rank, icon, castTime, minRange, maxRange, spellId =  GetSpellInfo( LossOfControlData.spellID )
+				--EMA:Print("test", LossOfControlData.spellID, name )
+				if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false and name ~= nil then
+					EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "].. name, false )
+				end
 			end
 		end
-	end
+	end	
 end
 
 function EMA:QUEST_SESSION_CREATED( event, ...)

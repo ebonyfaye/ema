@@ -13,7 +13,7 @@
 -- With Help From Jabberie, EMA Edit By Jennifer
 
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
-local dataobj = ldb:NewDataObject("EMA" .." ".. "Ebony's Muktiboxing Assistant", {
+local dataobj = ldb:NewDataObject("EMA" .." ".. "Ebony's Multiboxing Assistant", {
 	type = "data source",
 	text = "EMA",
 	OnLeave = dataObject_OnLeave

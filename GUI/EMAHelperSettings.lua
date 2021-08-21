@@ -27,7 +27,7 @@ local AceGUI = LibStub( "AceGUI-3.0" )
 AceGUI:RegisterLayout( "EMAManual", function(content, children) end )
 
 
-AceGUI:RegisterLayout("EMAFill",
+AceGUI:RegisterLayout("EMAuiFill",
 	function(content, children)
 		if children[1] then
 			local offset = 12
@@ -85,13 +85,15 @@ function EMAHelperSettings:CreateSettings( settingsControl, displayName, parentD
 		order = 1000
 	end	
 	
+	
 	local containerWidgetSettings = AceGUI:Create( "SimpleGroup" )
 	containerWidgetSettings:SetLayout( "Fill" )
 	
 	local widgetSettings = AceGUI:Create( "ScrollFrame" )
-	widgetSettings:SetLayout( "EMAFill" )
+	widgetSettings:SetLayout( "EMAuiFill" )
 	
 	containerWidgetSettings:AddChild( widgetSettings )
+	
 	
 	local button = AceGUI:Create( "Button" ) 
 	if displayName == "News" then
@@ -99,15 +101,15 @@ function EMAHelperSettings:CreateSettings( settingsControl, displayName, parentD
 	else	
 		button:SetText( L["PUSH_SETTINGS"] )
 	end
-	
 	containerWidgetSettings:AddChild( button )
 	button:SetWidth( 200 )
 	button:SetPoint( "TOPLEFT", containerWidgetSettings.frame, "TOPRIGHT", -200, 40 )
 	button:SetCallback( "OnClick", pushSettingsCallback )
 	settingsControl.widgetPushSettingsButton = button
-
+	
 	settingsControl.widgetSettingsHelp = widgetSettingsHelp
 	settingsControl.containerWidgetSettings = containerWidgetSettings
+	
 	settingsControl.widgetSettings = widgetSettings
 	EMAPrivate.SettingsFrame.Tree.Add( displayName, parentDisplayName, moduleIcon, order, settingsControl.containerWidgetSettings )
 end
@@ -132,11 +134,12 @@ end
 -------------------------------------------------------------------------------------------------------------
 
 function EMAHelperSettings:HeadingWidth( hasScrollBar )
-	local width = 600
+	
+	local width = 800 - 230
 	if hasScrollBar == true then
-		return width
+		return width - 20
 	else
-		return width + 20
+		return width
 	end
 end
 

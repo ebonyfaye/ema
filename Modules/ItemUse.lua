@@ -10,6 +10,7 @@
 --																					--
 -- ================================================================================ --
 
+
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"ItemUse", 
@@ -206,7 +207,8 @@ end
 
 local function CreateEMAItemUseFrame()
 	-- The frame.	EMAItemUseWindowFrame
-	local frame = CreateFrame("Frame", "EMAItemUseWindowFrame", UIParent, "SecureHandlerStateTemplate")Mixin(frame, BackdropTemplateMixin or {})
+	local frame = CreateFrame("Frame", "EMAItemUseWindowFrame", UIParent, "SecureHandlerStateTemplate") Mixin(frame, BackdropTemplateMixin or {})
+	--local frame = CreateFrame( "Frame", "EMAItemUseWindowFrame" , UIParent, "SecureHandlerStateTemplate" )
 	frame:SetAttribute("_onstate-page", [[
 		self:SetAttribute("state", newstate)
 		control:ChildUpdate("state", newstate)
@@ -237,14 +239,12 @@ local function CreateEMAItemUseFrame()
 			EMA.db.frameXOffset = xOffset
 			EMA.db.frameYOffset = yOffset
 		end	)	
-
 	frame:SetBackdrop( {
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
 		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
 		tile = true, tileSize = 10, edgeSize = 10, 
 		insets = { left = 3, right = 3, top = 3, bottom = 3 }
-	} )	
-	
+	} )
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.framePoint, nil, EMA.db.frameRelativePoint, EMA.db.frameXOffset, EMA.db.frameYOffset )
 	-- Clear Button

@@ -2789,7 +2789,12 @@ function EMA:SendHealthStatusUpdateCommand(unit)
 				--EMA:Print("itsme", unit)
 				local playerHealth = UnitHealth( unit )
 				local playerMaxHealth = UnitHealthMax( unit )
-				local inComingHeal = UnitGetIncomingHeals( unit )
+				-- TODO FIX ME!
+				if EMAPrivate.Core.isEmaClassicBuild() == false then
+					local inComingHeal = UnitGetIncomingHeals( unit )
+				else
+					local inComingHeal = 0
+				end
 				local _, class = UnitClass ("player")
 				
 				if EMA.db.showTeamListOnMasterOnly == true then
@@ -2803,7 +2808,12 @@ function EMA:SendHealthStatusUpdateCommand(unit)
 		else
 			local playerHealth = UnitHealth( unit )
 			local playerMaxHealth = UnitHealthMax( unit )
-			local inComingHeal = UnitGetIncomingHeals( unit )
+			if EMAPrivate.Core.isEmaClassicBuild() == false then
+				local inComingHeal = UnitGetIncomingHeals( unit )
+			else
+				local inComingHeal = 0
+			end
+			
 			local characterName, characterRealm = UnitName( unit )
 			local _, class = UnitClass ( unit )
 			local character = EMAUtilities:AddRealmToNameIfNotNil( characterName, characterRealm )
@@ -3312,14 +3322,11 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_LEVEL_UP" )		
 	EMA:RegisterEvent( "UNIT_HEALTH" )
 	EMA:RegisterEvent( "UNIT_MAXHEALTH" )
-	EMA:RegisterEvent( "UNIT_HEAL_PREDICTION" )
 	EMA:RegisterEvent( "UNIT_POWER_UPDATE", "UNIT_POWER" )
 	EMA:RegisterEvent( "UNIT_MAXPOWER", "UNIT_POWER" )
 	EMA:RegisterEvent( "UNIT_DISPLAYPOWER" )
 	EMA:RegisterEvent( "CHAT_MSG_COMBAT_FACTION_CHANGE" )
 	EMA:RegisterEvent( "UNIT_POWER_FREQUENT")
-	EMA:RegisterEvent( "RUNE_POWER_UPDATE" )
-	EMA:RegisterEvent( "PLAYER_TALENT_UPDATE")
 	EMA:RegisterEvent( "GROUP_ROSTER_UPDATE" )
 	EMA:RegisterEvent( "PLAYER_MONEY" )
 	EMA:RegisterEvent("UNIT_PORTRAIT_UPDATE")
@@ -3327,6 +3334,11 @@ function EMA:OnEnable()
 	EMA:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	EMA:RegisterEvent("UNIT_SPELLCAST_STOP")
 	EMA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
+	if EMAPrivate.Core.isEmaClassicBuild() == false then
+		EMA:RegisterEvent( "UNIT_HEAL_PREDICTION" )
+		EMA:RegisterEvent( "PLAYER_TALENT_UPDATE")
+		EMA:RegisterEvent( "RUNE_POWER_UPDATE" )
+	end
 	EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_Registered" )
     EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_SetGlobal" )	
 	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_CHARACTER_ADDED, "OnCharactersChanged" )

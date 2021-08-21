@@ -520,6 +520,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxPauseInCombat:SetValue( EMA.db.strobePauseInCombat )
 	EMA.settingsControl.checkBoxPauseDrinking:SetValue( EMA.db.strobePauseIfDrinking )
 	EMA.settingsControl.checkBoxPauseIfInVehicle:SetValue( EMA.db.strobePauseIfInVehicle )
+	EMA.settingsControl.checkBoxPauseIfInVehicle:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
 	EMA.settingsControl.checkBoxPauseIfDead:SetValue( EMA.db.strobePauseIfDead )
 	EMA.settingsControl.editBoxFollowStrobePauseTag:SetText( EMA.db.strobePauseTag )
 	EMA.settingsControl.editBoxFollowStrobeDelaySeconds:SetText( EMA.db.strobeFrequencySeconds )
@@ -761,9 +762,11 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )	
 	EMA:RegisterEvent( "PLAYER_CONTROL_GAINED" )
-	EMA:RegisterEvent( "UNIT_ENTERING_VEHICLE" )
-	EMA:RegisterEvent( "UNIT_EXITING_VEHICLE" )
-	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "PVP_FOLLOW" )
+	if EMAPrivate.Core.isEmaClassicBuild() == false then
+		EMA:RegisterEvent( "UNIT_ENTERING_VEHICLE" )
+		EMA:RegisterEvent( "UNIT_EXITING_VEHICLE" )
+		EMA:RegisterEvent( "UI_ERROR_MESSAGE", "PVP_FOLLOW" )
+	end
 	-- Initialise key bindings.
 	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
 	EMA:RegisterEvent( "UPDATE_BINDINGS" )		
@@ -940,19 +943,21 @@ function EMA:AutoFollowEndSend()
 	end
 	-- Do not warn if on Taxi
 	if UnitOnTaxi("player") == true then
-		--EMA:Print("taxi")
-		canWarn = false
+			--EMA:Print("taxi")
+			canWarn = false
 	end	
 	--Do not warn if in combat?
 	if EMA.db.doNotWarnFollowBreakInCombat == true and EMA.outOfCombat == false then
 		--EMA:Print("Do Not warn in comabt")
 		canWarn = false
 	end
-	--Do not warn if a passenger in a vehicle.
-	if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
-		--EMA:Print("UnitInVehicle")
-		canWarn = false
-	end
+	--Do not warn if a passenger in a vehicle. -- not in classic or bc
+	if EMAPrivate.Core.isEmaClassicBuild() == false then	
+		if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
+			--EMA:Print("UnitInVehicle")
+			canWarn = false
+		end
+	end	
 	-- Do not warn if any other members in combat?
 	if EMA.db.doNotWarnFollowBreakMembersInCombat == true and EMA:AreTeamMembersInCombat() == true or UnitAffectingCombat("player") == true then
 		--EMA:Print("doNotWarnFollowBreakMembersInCombat")
@@ -1031,7 +1036,7 @@ end
 
 function EMA:PVP_FOLLOW(event, arg1, message, ...  )
 	--EMA:Print("test", message, EMA.warnFollowPvPCombat )
-	if EMA.db.warnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false then
+	if EMA.db.warnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false and EMAPrivate.Core.isEmaClassicBuild() == true then
 		return
 	end
 	if message == ERR_INVALID_FOLLOW_TARGET_PVP_COMBAT or message == ERR_INVALID_FOLLOW_PVP_COMBAT then

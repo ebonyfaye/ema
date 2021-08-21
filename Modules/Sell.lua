@@ -31,9 +31,8 @@ EMA.moduleName = "Sell"
 EMA.settingsDatabaseName = "SellProfileDB"
 EMA.chatCommand = "ema-sell"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
-EMA.parentDisplayName = L["VENDER"]
-EMA.moduleDisplayName = L["VENDER"]
-EMA.moduleDisplayVenderName = L["VENDER_LIST_MODULE"]
+EMA.parentDisplayName = L["VENDOR"]
+EMA.moduleDisplayName = L["VENDOR"]
 -- Icon 
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\SellIcon.tga"
 -- order
@@ -595,7 +594,7 @@ function EMA:SettingslistScrollRefresh()
 			if listInformation.blackList == true then
 				blackListText = L["ITEM_ON_BLACKLIST"]
 			end
-			if 	listInformation.destroyItem == true then
+			if listInformation.destroyItem == true then
 				destroyText = L["DESTROY_ITEM"]
 			end
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetText( listInformation.name )
@@ -968,7 +967,9 @@ function EMA:DoMerchantSellItems()
 					local iLvl = C_Item.GetCurrentItemLevel( location )
 					local _, itemCount = GetContainerItemInfo( bagID, slotID )
 					local itemName, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
-					local hasToy = PlayerHasToy(bagItemID)
+					if EMAPrivate.Core.isEmaClassicBuild == false then	
+						local hasToy = PlayerHasToy(bagItemID)
+					end
 					--EMA:Print("ItemTest", bagItemID, itemLink, itemRarity, itemType, isBop, itemRarity, iLvl, itemSellPrice)
 					local canSell = false
 					local canDestroy = false
@@ -1051,7 +1052,7 @@ function EMA:DoMerchantSellItems()
 						end
 					end		
 					-- Toys
-					if EMA.db.autoSellToys == true then
+					if EMA.db.autoSellToys == true and EMAPrivate.Core.isEmaClassicBuild == false then
 						if hasToy == true and isBop == true then
 							--EMA:Print("ToyTest", hasToy, itemSellPrice )
 							if itemSellPrice > 0 then 
@@ -1060,12 +1061,11 @@ function EMA:DoMerchantSellItems()
 							else
 								--EMA:Print("canNotSellToy")
 								canSell = true
-								--canDestroy = true
 							end						
 						end
 					end
 					-- Mounts
-					if EMA.db.autoSellMounts == true then	
+					if EMA.db.autoSellMounts == true and EMAPrivate.Core.isEmaClassicBuild == false then	
 						local mountIDs = C_MountJournal.GetMountIDs()	
 						for i = 1, #mountIDs do
 							local creatureName,mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
@@ -1079,7 +1079,6 @@ function EMA:DoMerchantSellItems()
 									else
 										--EMA:Print("canNotSellToy")
 										canSell = true
-										--canDestroy = true
 									end				
 								end
 							end

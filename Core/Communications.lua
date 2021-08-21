@@ -149,7 +149,7 @@ local function CreateCommandToSend( moduleName, commandName, ... )
 	message = message..commandName..EMA.COMMAND_SEPERATOR
 	-- Add any arguments to the message (serialized and seperated).
 	local numberArguments = select( "#", ... )
-	
+	--EMA:Print("makecommand", numberArguments, "command",... )
 	for iterateArguments = 1, numberArguments do
 		local argument = select( iterateArguments, ... )
 		message = message..AceSerializer:Serialize( argument )
@@ -174,7 +174,7 @@ end
 	
 local function DefaultCommand( message )
 	local channel = nil
-	-- toon has to be in a group		
+	-- toon has to be in a group	
 	if UnitInBattleground( "player" ) then
 		channel = "INSTANCE_CHAT"
 	elseif IsInGroup() then
@@ -199,7 +199,7 @@ local function DefaultCommand( message )
 			end
 		end	
 	end	
-	--EMA:Print( "CHANNEL", channel)
+		--EMA:Print( "CHANNEL", channel)
 	if channel then
 	EMA:DebugMessage("Sending command to group.", message, "channel", channel, nil)
 		--EMA:Print("Sending command to group.", message, "channel", channel, nil)
@@ -244,12 +244,34 @@ local function CommandAll( moduleName, commandName, ... )
 	end
 end	
 
--- Should this get removed at some point and use all comms on one channel???
--- WHISPER's don't work cross-realm but do work connected-realm so sending msg to masters would not send.
--- TODO: Maybe remove masters???, and fall back to everyone being the master?
--- Not really sure what to do so for now will keep with the master, and whisper them, 
--- if was to use party/raid then everyone will get the command and masters would not work. 
+-- Classic/tbc Due to a Slow/nonsending Comms in party/raid when Sending settings Tables we need fall over Whisper/Guild
+local function CommandSettings( moduleName, commandName, ... )
+	if EMAPrivate.Core.isEmaClassicBuild() == false then
+		CommandAll( moduleName, commandName, ... )
+	else
+		local message = CreateCommandToSend( moduleName, commandName, ... )
+		if EMA.db.useGuildComms == true then 
+			CommandGuild(  message )
+		else
+			for characterName, characterOrder in EMAPrivate.Team.TeamList() do					
+				EMA:DebugMessage( "Toon not in party:", characterName)
+				if IsCharacterOnline( characterName ) == true then
+					EMA:DebugMessage("Sending command to others not in party/raid.", message, "WHISPER", characterName)	
+					EMA:SendCommMessage(
+					EMA.COMMAND_PREFIX,
+					message,
+					EMA.COMMUNICATION_WHISPER,
+					characterName,
+					EMA.COMMUNICATION_PRIORITY_BULK
+					)
+					--EMA:Print("testWis", EMA.COMMAND_PREFIX, EMA.COMMUNICATION_WHISPER, characterName , EMA.COMMUNICATION_PRIORITY_ALERT)	
+				end	
+			end
+		end	
+	end	
+end
 
+-- Is This is use?
 -- Send a command to the master.
 local function CommandMaster( moduleName, commandName, ... )
     EMA:DebugMessage( "Command Master: ", moduleName, commandName, ... )
@@ -269,7 +291,8 @@ local function CommandMaster( moduleName, commandName, ... )
 		end	
 end
 
--- Send a command to the master.
+-- Is This is use?
+-- Send a command to the Toon.
 local function CommandToon( moduleName, characterName, commandName, ... )
 	-- Get the message to send.
 	local message = CreateCommandToSend( moduleName, commandName, ... )
@@ -342,6 +365,7 @@ function EMA:CommandReceived( prefix, message, distribution, sender )
 					local argumentsTableSerialized = { strsplit( EMA.COMMAND_ARGUMENT_SEPERATOR, argumentsStringSerialized ) }
 					for index, argumentSerialized in ipairs( argumentsTableSerialized ) do
 						local success, argument = AceSerializer:Deserialize( argumentSerialized )
+						--EMA:Print("testSerialized", success, argument )
 						if success == true then
 							table.insert( argumentsTable, argument )
 						else
@@ -372,7 +396,7 @@ end
 local function SendSettings( moduleName, settings )
 	-- Send a push settings command to all.
 	--EMA:Print("test", moduleName, EMA.COMMAND_INTERNAL_SEND_SETTINGS, settings )
-	CommandAll( moduleName, EMA.COMMAND_INTERNAL_SEND_SETTINGS, settings )
+	CommandSettings( moduleName, EMA.COMMAND_INTERNAL_SEND_SETTINGS, settings )
 end
 
 -- Command all members of the current team.

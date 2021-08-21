@@ -563,8 +563,9 @@ do
 				self:SetPropagateKeyboardInput(true)
 			end
 		end)
-
-		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+		---TODO CHANGE ME!!!!
+		local version, build, _, tocversion = GetBuildInfo()
+		if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC and tocversion <= 20000 then
 			frame:SetBackdrop({
 				bgFile = [[Interface\DialogFrame\UI-DialogBox-Background-Dark]],
 				edgeFile = [[Interface\DialogFrame\UI-DialogBox-Border]],

@@ -11,10 +11,10 @@
 -- ================================================================================ --
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
-local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
-	"Interaction", 
-	"Module-1.0", 
-	"AceConsole-3.0", 
+local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
+	"Interaction",
+	"Module-1.0",
+	"AceConsole-3.0",
 	"AceEvent-3.0",
 	"AceHook-3.0",
 	"AceTimer-3.0"
@@ -32,7 +32,7 @@ EMA.chatCommand = "ema-Interaction"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["INTERACTION"]
 EMA.moduleDisplayName = L["INTERACTION"]
--- Icon 
+-- Icon
  EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\InteractionIcon.tga"
 -- order
 EMA.moduleOrder = 60
@@ -41,9 +41,25 @@ EMA.moduleOrder = 60
 BINDING_HEADER_MOUNT = L["MOUNT"]
 BINDING_NAME_TEAMMOUNT = L["MOUNT_WITH_TEAM"]
 
-
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
+	global = {
+		takeMastersTaxi = true,
+		requestTaxiStop = true,
+		changeTexiTime = 2,
+		--Mount
+		mountWithTeam = false,
+		dismountWithTeam = false,
+		dismountWithMaster = false,
+		mountInRange = false,
+		--Loot
+		autoLoot = false,
+		tellBoERare = false,
+		tellBoEEpic = false,
+		tellBoEMount = false,
+		messageArea = EMAApi.DefaultMessageArea(),
+		warningArea = EMAApi.DefaultWarningArea()
+	},
 	profile = {
 		takeMastersTaxi = true,
 		requestTaxiStop = true,
@@ -72,14 +88,14 @@ function EMA:GetConfiguration()
 		childGroups  = "tab",
 		get = "EMAConfigurationGetSetting",
 		set = "EMAConfigurationSetSetting",
-		args = {	
+		args = {
 			config = {
 				type = "input",
 				name = L["OPEN_CONFIG"],
 				desc = L["OPEN_CONFIG_HELP"],
 				usage = "/ema-interaction config",
 				get = false,
-				set = "",				
+				set = "",
 			},
 			mount = {
 				type = "input",
@@ -90,7 +106,7 @@ function EMA:GetConfiguration()
 				set = "RandomMountWithTeam",
 				order = 3,
 				guiHidden = true,
-			},			
+			},
 			push = {
 				type = "input",
 				name = L["PUSH_SETTINGS"],
@@ -130,6 +146,7 @@ EMA.MESSAGE_TAXI_TAKEN = "EMATaxiTaxiTaken"
 
 -- Initialise the module.
 function EMA:OnInitialize()
+	--EMA.config = nil
 	-- Taxi
 	EMA.TakesTaxi = false
 	EMA.LeavsTaxi = false
@@ -144,7 +161,6 @@ function EMA:OnInitialize()
 	EMA:EMAModuleInitialize( EMA.settingsControl.widgetSettings.frame )
 	-- Populate the settings.
 	EMA:SettingsRefresh()
-	--EMA:DisableAutoLoot()
 	if InCombatLockdown()  == false then
 		EMATeamSecureButtonMount = CreateFrame( "CheckButton", "EMATeamSecureButtonMount", nil, "SecureActionButtonTemplate" )
 		EMATeamSecureButtonMount:SetAttribute( "type", "macro" )
@@ -155,43 +171,46 @@ end
 
 -- Called when the addon is enabled.
 function EMA:OnEnable()
+
 	-- Hook the TaketaxiNode function.
 	EMA:SecureHook( "TakeTaxiNode" )
 	EMA:SecureHook( "TaxiRequestEarlyLanding" )
 	EMA:RegisterEvent( "PLAYER_ENTERING_WORLD" )
-	EMA:RegisterEvent( "UNIT_SPELLCAST_START" )
-	EMA:RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED" )
+	if EMAPrivate.Core.isEmaClassicBuild == false then
+		EMA:RegisterEvent( "UNIT_SPELLCAST_START" )
+		EMA:RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED" )
+	end
 	EMA:RegisterEvent( "LOOT_READY" )
 	EMA:RegisterEvent( "TAXIMAP_OPENED" )
 	EMA:RegisterEvent( "TAXIMAP_CLOSED" )
 	-- Initialise key bindings.
 	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
-	EMA:RegisterEvent( "UPDATE_BINDINGS" )		
+	EMA:RegisterEvent( "UPDATE_BINDINGS" )
 	EMA:UPDATE_BINDINGS()
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 end
 
 -- Called when the addon is disabled.
 function EMA:OnDisable()
-	-- AceHook-3.0 will tidy up the hooks for us. 
+	-- AceHook-3.0 will tidy up the hooks for us.
 end
 
 function EMA:SettingsCreate()
 	EMA.settingsControl = {}
 	-- Create the settings panel.
-	EMAHelperSettings:CreateSettings( 
-		EMA.settingsControl, 
-		EMA.moduleDisplayName, 
-		EMA.parentDisplayName, 
+	EMAHelperSettings:CreateSettings(
+		EMA.settingsControl,
+		EMA.moduleDisplayName,
+		EMA.parentDisplayName,
 		EMA.SettingsPushSettingsClick,
 		EMA.moduleIcon,
-		EMA.moduleOrder		
+		EMA.moduleOrder
 	)
 	local bottomOfInfo = EMA:SettingsCreateTaxi( EMAHelperSettings:TopOfSettings() )
 	EMA.settingsControl.widgetSettings.content:SetHeight( -bottomOfInfo )
 	-- Help
 	local helpTable = {}
-	EMAHelperSettings:CreateHelp( EMA.settingsControl, helpTable, EMA:GetConfiguration() )		
+	EMAHelperSettings:CreateHelp( EMA.settingsControl, helpTable, EMA:GetConfiguration() )
 end
 
 function EMA:SettingsPushSettingsClick( event )
@@ -200,6 +219,7 @@ end
 
 function EMA:SettingsCreateTaxi( top )
 	local checkBoxHeight = EMAHelperSettings:GetCheckBoxHeight()
+	local labelHeight = EMAHelperSettings:GetLabelHeight()
 	local iconSize = EMAHelperSettings:GetIconHeight()
 	local left = EMAHelperSettings:LeftOfSettings()
 	local sliderHeight = EMAHelperSettings:GetSliderHeight()
@@ -209,152 +229,163 @@ function EMA:SettingsCreateTaxi( top )
 	local halfWidthSlider = (headingWidth - horizontalSpacing) / 2
 	local dropdownHeight = EMAHelperSettings:GetDropdownHeight()
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
-	local leftIcon = left + iconSize	
+	local leftIcon = left + iconSize
 	local movingTop = top
 	-- A blank to get layout to show right?
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L[""], movingTop, false )
-	movingTop = movingTop - headingHeight	
+	movingTop = movingTop - headingHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["TAXI_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.checkBoxTakeMastersTaxi = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxTakeMastersTaxi = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["TAKE_TEAMS_TAXI"],
 		EMA.SettingsToggleTakeTaxi,
 		L["TAKE_TEAMS_TAXI_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxrequestStop = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxrequestStop = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["REQUEST_TAXI_STOP"],
 		EMA.SettingsTogglerequestStop,
 		L["REQUEST_TAXI_STOP_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight		
-	EMA.settingsControl.changeTexiTime = EMAHelperSettings:CreateSlider( 
-		EMA.settingsControl, 
-		halfWidthSlider, 
-		left, 
+	)
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControl.changeTexiTime = EMAHelperSettings:CreateSlider(
+		EMA.settingsControl,
+		halfWidthSlider,
+		left,
 		movingTop,
 		L["CLONES_TO_TAKE_TAXI_AFTER"]
-	)		
+	)
 	EMA.settingsControl.changeTexiTime:SetSliderValues( 0, 5, 0.5 )
 	EMA.settingsControl.changeTexiTime:SetCallback( "OnValueChanged", EMA.SettingsChangeTaxiTimer )
 	-- Mount
 	movingTop = movingTop - sliderHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["MOUNT_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.checkBoxMountWithTeam = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	--Disabled in classic note
+	if EMAPrivate.Core.isEmaClassicBuild == true then
+		EMA.settingsControl.labelInformation = EMAHelperSettings:CreateContinueLabel(
+			EMA.settingsControl,
+			headingWidth,
+			left,
+			movingTop,
+			L["DISABLED_IN_CLASSIC"]
+		)
+		movingTop = movingTop - labelHeight
+	end
+	EMA.settingsControl.checkBoxMountWithTeam = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["MOUNT_WITH_TEAM"],
 		EMA.SettingsToggleMountWithTeam,
 		L["MOUNT_WITH_TEAM_HELP"]
-	)	
+	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxDismountWithTeam = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxDismountWithTeam = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["DISMOUNT_WITH_TEAM"],
 		EMA.SettingsToggleDisMountWithTeam,
-		L["DISMOUNT_WITH_TEAM_HELP"] 
-	)	
+		L["DISMOUNT_WITH_TEAM_HELP"]
+	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxDismountWithMaster = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxDismountWithMaster = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["ONLY_DISMOUNT_WITH_MASTER"],
 		EMA.SettingsToggleDisMountWithMaster,
 		L["ONLY_DISMOUNT_WITH_MASTER_HELP"]
-	)	
+	)
 	--[[
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxMountInRange = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxMountInRange = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["ONLY_MOUNT_WHEN_IN_RANGE"],
 		EMA.SettingsToggleMountInRange,
 		L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"]
-	)	
+	)
 	]]
 	-- Loot
 	movingTop = movingTop - headingHeight
-	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["LOOT_OPTIONS"] , movingTop, false )	
+	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["LOOT_OPTIONS"] , movingTop, false )
 	movingTop = movingTop - headingHeight
-	EMA.settingsControl.checkBoxAutoLoot = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxAutoLoot = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["ENABLE_AUTO_LOOT"],
 		EMA.SettingsToggleAutoLoot,
 		L["ENABLE_AUTO_LOOT_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxTellBoERare = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxTellBoERare = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["TELL_TEAM_BOE_RARE"],
 		EMA.SettingsToggleTellBoERare,
 		L["TELL_TEAM_BOE_RARE_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxTellBoEEpic = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxTellBoEEpic = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["TELL_TEAM_BOE_EPIC"] ,
 		EMA.SettingsToggleTellBoEEpic,
 		L["TELL_TEAM_BOE_EPIC_HELP"]
 	)
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxTellBoEMount = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
+	EMA.settingsControl.checkBoxTellBoEMount = EMAHelperSettings:CreateCheckBox(
+		EMA.settingsControl,
+		headingWidth,
+		left,
 		movingTop,
 		L["TELL_TEAM_BOE_MOUNT"] ,
 		EMA.SettingsToggleTellBoEMount,
 		L["TELL_TEAM_BOE_MOUNT_HELP"]
-	)	
+	)
 	movingTop = movingTop - sliderHeight - verticalSpacing
-	EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
+	EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
 		L["MESSAGE_AREA"]
 	)
 	EMA.settingsControl.dropdownMessageArea:SetList( EMAApi.MessageAreaList() )
 	EMA.settingsControl.dropdownMessageArea:SetCallback( "OnValueChanged", EMA.SettingsSetMessageArea )
 	movingTop = movingTop - dropdownHeight - verticalSpacing
-	EMA.settingsControl.dropdownWarningArea = EMAHelperSettings:CreateDropdown( 
-		EMA.settingsControl, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["SEND_WARNING_AREA"] 
+	EMA.settingsControl.dropdownWarningArea = EMAHelperSettings:CreateDropdown(
+		EMA.settingsControl,
+		headingWidth,
+		left,
+		movingTop,
+		L["SEND_WARNING_AREA"]
 	)
 	EMA.settingsControl.dropdownWarningArea:SetList( EMAApi.MessageAreaList() )
 	EMA.settingsControl.dropdownWarningArea:SetCallback( "OnValueChanged", EMA.SettingsSetWarningArea )
 	movingTop = movingTop - dropdownHeight - verticalSpacing
-	return movingTop	
+	return movingTop
 end
 
 function EMA:OnMessageAreasChanged( message )
@@ -387,7 +418,7 @@ function EMA:SettingsChangeTaxiTimer( event, value )
 	EMA:SettingsRefresh()
 end
 
--- Mount 
+-- Mount
 function EMA:SettingsToggleMountWithTeam( event, checked )
 	EMA.db.mountWithTeam = checked
 	EMA:SettingsRefresh()
@@ -429,24 +460,24 @@ function EMA:SettingsToggleTellBoEMount( event, checked )
 end
 
 -- Settings received.
-function EMA:EMAOnSettingsReceived( characterName, settings )	
+function EMA:EMAOnSettingsReceived( characterName, settings )
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
 		EMA.db.takeMastersTaxi = settings.takeMastersTaxi
 		EMA.db.requestTaxiStop = settings.requestTaxiStop
 		EMA.db.changeTexiTime = settings.changeTexiTime
-		
+
 		EMA.db.mountWithTeam = settings.mountWithTeam
 		EMA.db.dismountWithTeam = settings.dismountWithTeam
 		EMA.db.dismountWithMaster = settings.dismountWithMaster
 		--EMA.db.mountInRange = settings.mountInRange
-		
+
 		EMA.db.autoLoot = settings.autoLoot
 		EMA.db.tellBoERare = settings.tellBoERare
 		EMA.db.tellBoEEpic = settings.tellBoEEpic
-		EMA.db.tellBoEMount = settings.tellBoEMount 
+		EMA.db.tellBoEMount = settings.tellBoEMount
 		EMA.db.messageArea = settings.messageArea
-		EMA.db.warningArea = settings.warningArea	
+		EMA.db.warningArea = settings.warningArea
 		-- Refresh the settings.
 		EMA:SettingsRefresh()
 		-- Tell the player.
@@ -454,14 +485,15 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 	end
 end
 
-function EMA:BeforeEMAProfileChanged()	
+function EMA:BeforeEMAProfileChanged()
 end
 
-function EMA:OnEMAProfileChanged()	
+function EMA:OnEMAProfileChanged()
 	EMA:SettingsRefresh()
 end
 
 function EMA:SettingsRefresh()
+--	EMA:Print("test", EMA.db, "vs",  EMA.db.global )
 	EMA.settingsControl.checkBoxTakeMastersTaxi:SetValue( EMA.db.takeMastersTaxi )
 	EMA.settingsControl.checkBoxrequestStop:SetValue( EMA.db.requestTaxiStop )
 	EMA.settingsControl.changeTexiTime:SetValue( EMA.db.changeTexiTime )
@@ -476,9 +508,11 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxTellBoEEpic:SetValue( EMA.db.tellBoEEpic )
 	EMA.settingsControl.checkBoxTellBoEMount:SetValue( EMA.db.tellBoEMount )
 	-- Set state.
-	--EMA.settingsControl.checkBoxDismountWithTeam:SetDisabled( not EMA.db.mountWithTeam )
-	--EMA.settingsControl.checkBoxDismountWithMaster:SetDisabled( not EMA.db.dismountWithTeam or not EMA.db.mountWithTeam )
-	--EMA.settingsControl.checkBoxMountInRange:SetDisabled( not EMA.db.mountWithTeam )
+	EMA.settingsControl.checkBoxMountWithTeam:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
+	EMA.settingsControl.checkBoxDismountWithTeam:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
+	EMA.settingsControl.checkBoxDismountWithMaster:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
+	EMA.settingsControl.checkBoxTellBoEMount:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
+	---EMA.settingsControl.checkBoxMountInRange:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -487,12 +521,12 @@ end
 
 function EMA:TAXIMAP_OPENED(event, ...)
 	local uiMapSystem = ...
-	if (uiMapSystem == Enum.UIMapSystem.Taxi) then	
+	if (uiMapSystem == Enum.UIMapSystem.Taxi) then
 		EMA.TaxiFrameName = TaxiFrame
 	else
 		EMA.TaxiFrameName = FlightMapFrame
 	end
-end	
+end
 
 -- Take a taxi.
 local function TakeTaxi( sender, nodeName, taxiNodeIndex )
@@ -519,7 +553,7 @@ local function TakeTaxi( sender, nodeName, taxiNodeIndex )
 						break
 					end
 				end
-			end	
+			end
 			-- If a node index was found...
 			if nodeIndex ~= nil then
 				-- Send a message to any listeners that a taxi is being taken.
@@ -539,7 +573,7 @@ function EMA.TakeTimedTaxi( event, nodeIndex, ...)
 	if nodeIndex ~= nil then
 		GetNumRoutes( nodeIndex )
 		TakeTaxiNode( nodeIndex )
-	end		
+	end
 end
 
 -- Called after the character has just taken a flight (hooked function).
@@ -562,9 +596,9 @@ local function LeaveTaxi ( sender )
 		if sender ~= EMA.characterName then
 			EMA.LeavsTaxi = true
 			TaxiRequestEarlyLanding()
-			EMA:EMASendMessageToTeam( EMA.db.messageArea,  L["REQUESTED_STOP_X"]( sender ), false )	
+			EMA:EMASendMessageToTeam( EMA.db.messageArea,  L["REQUESTED_STOP_X"]( sender ), false )
 		end
-	end	
+	end
 end
 
 function EMA.TaxiRequestEarlyLanding( sender )
@@ -601,11 +635,11 @@ end
 --EMA:UNIT_SPELLCAST_START(event, unitID, spell, rank, lineID, spellID, ...  )
 
 function EMA:PLAYER_ENTERING_WORLD(event, ... )
-	if EMA.db.autoLoot == true then 
+	if EMA.db.autoLoot == true then
 		EMA:EnableAutoLoot()
-	end	
-	if IsMounted() then	
-		local mountIDs = C_MountJournal.GetMountIDs()	
+	end
+	if IsMounted() and EMAPrivate.Core.isEmaClassicBuild() == false then
+		local mountIDs = C_MountJournal.GetMountIDs()
 		for i = 1, #mountIDs do
 			local creatureName, spellID, icon, active = C_MountJournal.GetMountInfoByID(mountIDs[i])
 			if active then
@@ -615,12 +649,13 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 			end
 		end
 	end
-end	
+end
 
 function EMA:UNIT_SPELLCAST_START(event, unitID, lineID, spellID,  ...  )
+	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
 	--EMA:Print("Looking for Spells.", unitID, spellID)
 	if unitID == "player" then
-	local mountIDs = C_MountJournal.GetMountIDs()	
+	local mountIDs = C_MountJournal.GetMountIDs()
 		for i = 1, #mountIDs do
 			--local name , id, icon, active = C_MountJournal.GetMountInfoByID(i)
 			local creatureName,mountSpellID,_,_,_,_,_,_,_,_,_,mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
@@ -628,19 +663,20 @@ function EMA:UNIT_SPELLCAST_START(event, unitID, lineID, spellID,  ...  )
 			if spellID == mountSpellID then
 				--EMA:Print("SendtoTeam", "name", creatureName, "id", mountID)
 				if IsShiftKeyDown() == false then
-					if EMA.responding == false then	
+					if EMA.responding == false then
 						EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_ME, creatureName, mountID )
 						EMA.castingMount = spellID
 						break
-					end	
-				end	
+					end
+				end
 			end
-		end	
+		end
 	end
 end
 
 
 function EMA:UNIT_SPELLCAST_SUCCEEDED(event, unitID, lineID, spellID, ... )
+	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
 	if EMA.db.mountWithTeam == false  or EMA.castingMount == nil or unitID ~= "player" or EMA.CommandLineMount == true then
 		return
 	end
@@ -648,40 +684,42 @@ function EMA:UNIT_SPELLCAST_SUCCEEDED(event, unitID, lineID, spellID, ... )
 	if spellID == EMA.castingMount then
 		--EMA:Print("Mounted!", EMA.isMounted)
 		EMA.isMounted = spellID
-		EMA.mountName = spell	
+		EMA.mountName = spell
 		EMA:RegisterEvent("UNIT_AURA")
 	end
 end
 
 
 function EMA:UNIT_AURA(event, unitID, ... )
+	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
 	--EMA:Print("tester", unitID, EMA.isMounted)
 	if unitID ~= "player" or EMA.isMounted == nil then
         return
     end
 	--EMA:Print("auraTrack", unitID, EMA.isMounted, EMA.mountName )
-	if not LibAuras:UnitAura(unitID, EMA.isMounted ) then 
+	if not LibAuras:UnitAura(unitID, EMA.isMounted ) then
 		--EMA:Print("I have Dismounted - Send to team!")
 		if EMA.db.dismountWithMaster == true then
 			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == true then
-				if IsShiftKeyDown() == false then	
+				if IsShiftKeyDown() == false then
 					--EMA:Print("test")
 					EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_DISMOUNT )
 					EMA:UnregisterEvent("UNIT_AURA")
-				end		
+				end
 			end
 		else
-			if EMA.db.dismountWithTeam == true then 
-				if IsShiftKeyDown() == false then	
+			if EMA.db.dismountWithTeam == true then
+				if IsShiftKeyDown() == false then
 					EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_DISMOUNT )
 					EMA:UnregisterEvent("UNIT_AURA")
-				end	
-			end		
-		end			
+				end
+			end
+		end
 	end
 end
 
 function EMA:TeamMount(characterName, name, mountID)
+	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
 	--EMA:Print("testTeamMount", characterName, name, mountID )
 	EMA.responding = true
 	--mount with team truned off.
@@ -689,14 +727,14 @@ function EMA:TeamMount(characterName, name, mountID)
 		return
 	end
 	-- already mounted.
-	if IsMounted() then 
+	if IsMounted() then
 		return
-	end	
+	end
 	-- Checks if character is in range.
 	if EMA.db.mountInRange == true then
 		if UnitIsVisible(Ambiguate(characterName, "none") ) == false then
 			--EMA:Print("UnitIsNotVisible", characterName)
-			return	
+			return
 		end
 	end
 	-- Checks done now the fun stuff!
@@ -722,51 +760,53 @@ function EMA:TeamMount(characterName, name, mountID)
 					hasMount = true
 					break
 				end
-			end	
+			end
 		end
-	end		
-	
+	end
+
 	--EMA:Print("test1420", mount, name)
-	-- for unsupported mounts.	
+	-- for unsupported mounts.
 	if hasMount == true then
 		--EMA:Print("test14550", mount, name )
 		if name == "Random" then  -- name doesn't seem to be set anywhere...
 			C_MountJournal.SummonByID(0)
 			EMA.responding = false
-		else 
+		else
 			--EMA:Print("test1054" )
 			C_MountJournal.SummonByID( mount )
 			EMA.responding = false
 		end
-		if IsMounted() == false then	
+		if IsMounted() == false then
 			EMA:ScheduleTimer( "AmNotMounted", 2 )
-		end		
-	end	
+		end
+	end
 end
 
 function EMA:AmNotMounted()
 	if IsMounted() == false then
 		--EMA:Print("test")
 		EMA:EMASendMessageToTeam( EMA.db.warningArea, L["I_AM_UNABLE_TO_MOUNT"], false )
-	end	
+	end
 end
 
 function EMA:RandomMountWithTeam( info, parameters )
+	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
 	local tag = parameters
 	--EMA:Print("test", tag )
 	EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_COMMAND, tag )
 end
 
 function EMA:ReceiveRandomMountWithTeam( characterName, tag)
+	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
 	--EMA:Print("test", characterName, tag )
 	if EMAApi.IsCharacterInGroup( EMA.characterName, tag ) == true then
-		if IsMounted() == false then	
+		if IsMounted() == false then
 			C_MountJournal.SummonByID(0)
 		else
 			if EMA.db.dismountWithTeam == true then
 				Dismount()
-			end	
-		end	
+			end
+		end
 	end
 end
 
@@ -779,7 +819,7 @@ end
 function EMA:LOOT_READY( event, ... )
 	if EMA.db.autoLoot == true then
 		EMA:doLoot()
-	end	
+	end
 end
 
 function EMA:doLoot( tries )
@@ -799,27 +839,27 @@ function EMA:doLoot( tries )
 					if lootQuality == 3 then
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
-				end		
+				end
 				if EMA.db.tellBoEEpic == true or EMA.db.tellBoEMount == true then
 					if lootQuality == 4 then
 						--EMA:Print("Can Tell")
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
-				end		
+				end
 				---EMA:Print("canLoot", "slot", slot, "name", name )
 				LootSlot(slot)
 				numloot = GetNumLootItems()
-			end	
+			end
 		end
 		tries = tries + 1
 		if tries < 8 then
 			EMA:doLootLoop( tries )
-		else	
+		else
 			CloseLoot()
-		end	
+		end
 	else
 		CloseLoot()
-	end	
+	end
 end
 
 function EMA:doLootLoop( tries )
@@ -828,18 +868,18 @@ function EMA:doLootLoop( tries )
 end
 
 function EMA:EnableAutoLoot()
-	if EMA.db.autoLoot == true then	
-		if GetCVar("autoLootDefault") == "0" then	
+	if EMA.db.autoLoot == true then
+		if GetCVar("autoLootDefault") == "0" then
 			--EMA:Print("testSetOFF")
 			SetCVar( "autoLootDefault", 1 )
-		end	
-	end	
+		end
+	end
 end
 
 function EMA:TellTeamEpicBoE( name )
 	--EMA:Print("loottest", name )
 		for bagID = 0, NUM_BAG_SLOTS do
-			for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+			for slotID = 1,GetContainerNumSlots( bagID ),1 do
 				--EMA:Print( "Bags OK. checking", itemLink )
 				local rarity = nil
 				local item = Item:CreateFromBagAndSlot(bagID, slotID)
@@ -862,16 +902,16 @@ function EMA:TellTeamEpicBoE( name )
 									else
 										rarity = L["RARE"]
 									end
-								end	
-								if rarity ~= nil then 
-									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )			
+								end
+								if rarity ~= nil then
+									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )
 								end
 							else
-								if EMA.db.tellBoEMount == true then 
+								if EMA.db.tellBoEMount == true and EMAPrivate.Core.isEmaClassicBuild() == false then
 									if isBop == false then
-										local mountIDs = C_MountJournal.GetMountIDs()	
+										local mountIDs = C_MountJournal.GetMountIDs()
 										for i = 1, #mountIDs do
-											local creatureName, mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])	
+											local creatureName, mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
 											--EMA:Print("test2", itemLink)
 											if name == creatureName then
 												--EMA:Print("FoundAMount", bagItemName)
@@ -879,19 +919,19 @@ function EMA:TellTeamEpicBoE( name )
 											end
 										end
 									end
-								end	
+								end
 							--EMA:Print("I have looted a Epic BOE Item: ", rarity, itemLink )
-							if rarity ~= nil then 
-								EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )			
+							if rarity ~= nil then
+								EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )
 							end
 						end
 					end
 				end
-			end	
-		end	
+			end
+		end
 	end
-end	
-	
+end
+
 -------------------------------------------------------------------------------------------------------------
 -- EMA Commands functionality.
 -------------------------------------------------------------------------------------------------------------
@@ -908,7 +948,7 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 				local TaxiFrame = EMA.TaxiFrameName
 				if TaxiFrame:IsVisible() then
 					TakeTaxi( characterName, ... )
-				end	
+				end
 			end
 		end
 		if commandName == EMA.COMMAND_EXIT_TAXI then
@@ -919,22 +959,22 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		if commandName == EMA.COMMAND_CLOSE_TAXI then
 			CloseTaxiMapFrame()
 		end
-		
+
 		if commandName == EMA.COMMAND_MOUNT_ME then
 			--EMA:Print("command")
-			EMA:TeamMount( characterName, ... )		
+			EMA:TeamMount( characterName, ... )
 		end
 		-- Dismount if mounted!
 		if commandName == EMA.COMMAND_MOUNT_DISMOUNT then
 			--EMA:Print("time to Dismount")
 			if IsMounted() then
 				Dismount()
-			end	
+			end
 		end
 	end
 	if commandName == EMA.COMMAND_MOUNT_COMMAND then
 		EMA:ReceiveRandomMountWithTeam( characterName, ... )
-	end	
+	end
 end
 
 function EMA:UPDATE_BINDINGS()
@@ -942,12 +982,12 @@ function EMA:UPDATE_BINDINGS()
 		return
 	end
 	ClearOverrideBindings( EMA.keyBindingFrame )
-	local key1, key2 = GetBindingKey( "TEAMMOUNT" )		
-	if key1 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonMount" ) 
+	local key1, key2 = GetBindingKey( "TEAMMOUNT" )
+	if key1 then
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMATeamSecureButtonMount" )
 	end
-	if key2 then 
-		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonMount" ) 
+	if key2 then
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATeamSecureButtonMount" )
 	end
 end
 

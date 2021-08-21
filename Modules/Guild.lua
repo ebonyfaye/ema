@@ -10,6 +10,9 @@
 --																					--
 -- ================================================================================ --
 
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
+	return
+end	
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
@@ -817,10 +820,14 @@ end
 
 function EMA:GUILDBANKFRAME_OPENED()
 	if 	EMA.db.showEMAGuildWindow == true then
-		EMA:AddAllToGuildBank()
+		if not IsShiftKeyDown() then
+			EMA:AddAllToGuildBank()
+		end	
 	end
 	if EMA.db.adjustMoneyWithGuildBank == true then
-		AddGoldToGuildBank()
+		if not IsShiftKeyDown() then
+			AddGoldToGuildBank()
+		end	
 	end
 end
 

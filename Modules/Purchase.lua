@@ -30,7 +30,7 @@ EMA.moduleName = "Purchase"
 EMA.settingsDatabaseName = "PurchaseProfileDB"
 EMA.chatCommand = "ema-purchase"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
-EMA.parentDisplayName = L["VENDER"]
+EMA.parentDisplayName = L["VENDOR"]
 EMA.moduleDisplayName = L["PURCHASE"]
 -- Icon 
 EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\SellIcon.tga"
@@ -233,8 +233,7 @@ local function SettingsCreateOptions( top )
 		left2 + 50, 
 		movingTop,
 		L["REMOVE"],
-		EMA.SettingsRemoveClick,
-		L["REMOVE_VENDER_LIST"]
+		EMA.SettingsRemoveClick
 	)
 	movingTop = movingTop -	buttonHeight - verticalSpacing
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["ADD_ITEM"], movingTop, false )

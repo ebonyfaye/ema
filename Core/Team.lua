@@ -1219,7 +1219,11 @@ end
 -- Invite team to party.
 
 function EMA.DoTeamPartyInvite()
-	C_PartyInfo.InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
+	if EMAPrivate.Core.isEmaClassicBuild() == true then
+		InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
+	else	
+		C_PartyInfo.InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
+	end
 	EMA.currentInviteCount = EMA.currentInviteCount + 1
 	if EMA.currentInviteCount < EMA.inviteCount then
 		--if GetTeamListMaximumOrderOnline() > 5 and EMA.db.inviteConvertToRaid == true then
@@ -1381,7 +1385,11 @@ end
 
 local function LeaveTheParty()
 	if IsInGroup( "player" ) then
-		C_PartyInfo.LeaveParty()
+		if EMAPrivate.Core.isEmaClassicBuild() == true then
+			LeaveParty()
+		else
+			C_PartyInfo.LeaveParty()
+		end		
 	end
 end
 

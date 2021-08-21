@@ -1,4 +1,4 @@
-## Interface: 90005
+## Interface: 20501
 ## Title: EMA
 ## Notes: Ebony's MultiBoxing Assistant
 ## Author: Jennifer Calladine 'Ebony'
@@ -25,4 +25,4 @@ Core\Tag.lua
 Core\Message.lua
 
 #Modules
-Modules\Modules.xml
+Modules\Modules-BC.xml
