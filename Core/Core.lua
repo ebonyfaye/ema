@@ -312,18 +312,22 @@ end
 -- EMA classic build
 local function isEmaClassicBuild()
 	local classic = false
-	local classicBC = false
-	local _, _, _, tocversion = GetBuildInfo()	
 	-- Classic
-	if tocversion >= 10000 and tocversion <= 40000 then
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
 		classic = true
 	end
-	-- TBC
-	if tocversion >= 20000 and tocversion <= 40000 then
-		classicBC = true
-	end
-	return 	classic, classicBC 
+	return 	classic
 end	
+
+-- EMA TBC Build
+local function isEmaClassicBccBuild()
+	local classicBcc = false
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+		classicBcc = true
+	end
+	return classicBcc
+end	
+
 -------------------------------------------------------------------------------------------------------------
 -- Module management.
 -------------------------------------------------------------------------------------------------------------
@@ -825,6 +829,8 @@ EMAPrivate.Core.SendCommandToMaster = SendCommandToMaster
 EMAPrivate.Core.SendCommandToToon = SendCommandToToon
 EMAPrivate.Core.OnCommandReceived = OnCommandReceived
 EMAPrivate.Core.isEmaClassicBuild = isEmaClassicBuild
+EMAPrivate.Core.isEmaClassicBccBuild = isEmaClassicBccBuild
+
 EMAPrivate.Core.isEmaAlphaBuild = isEmaAlphaBuild
 EMAPrivate.Core.SendSettingsAllModules = EMA.SendSettingsAllModules
 EMAPrivate.Core.RefreshSettingsAllModules = EMA.RefreshSettingsAllModules

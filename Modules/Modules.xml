@@ -23,13 +23,15 @@
 	<Script file="Guild.lua" />
 	<Script file="Mail.lua" />
 	
-	<Script file="Quest.lua" /> 
-	<Script file="Quest-Classic.lua" />
 	
+	<Script file="Quest-Classic.lua" /> 
+	<Script file="QuestWatcher-Classic.lua" /> 
+	<Script file="Quest.lua" /> 
 	<Script file="QuestWatcher.lua" /> 
 	
 	<Script file="DisplayTeam.lua" />
 	<Script file="Information.lua" />
+	<Script file="Information-Classic.lua" />
 	<Script file="ItemUse.lua" />
 	<Script file="LDBBar.lua" />
 </Ui>

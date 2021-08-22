@@ -75,9 +75,11 @@
 	<Binding name="FOLLOWSTOP" category="EMA">
 		--[[dummy]]
 	</Binding>
+	
 	<Binding name="TEAMMOUNT" header="MOUNT" category="EMA">
 		--[[dummy]]
 	</Binding>
+	
 	<!-- ItemUse Bindings-->
 	<Binding name="ITEMUSE1" header="ITEMUSE" category="EMA-Item Use">
 		--[[dummy]]

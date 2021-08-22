@@ -38,8 +38,10 @@ EMA.moduleDisplayName = L["INTERACTION"]
 EMA.moduleOrder = 60
 
 -- EMA key bindings.
-BINDING_HEADER_MOUNT = L["MOUNT"]
-BINDING_NAME_TEAMMOUNT = L["MOUNT_WITH_TEAM"]
+--if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+	BINDING_HEADER_MOUNT = L["MOUNT"]
+	BINDING_NAME_TEAMMOUNT = L["MOUNT_WITH_TEAM"]
+--end
 
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
@@ -176,7 +178,7 @@ function EMA:OnEnable()
 	EMA:SecureHook( "TakeTaxiNode" )
 	EMA:SecureHook( "TaxiRequestEarlyLanding" )
 	EMA:RegisterEvent( "PLAYER_ENTERING_WORLD" )
-	if EMAPrivate.Core.isEmaClassicBuild == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild == false then
 		EMA:RegisterEvent( "UNIT_SPELLCAST_START" )
 		EMA:RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED" )
 	end
@@ -265,62 +267,54 @@ function EMA:SettingsCreateTaxi( top )
 	)
 	EMA.settingsControl.changeTexiTime:SetSliderValues( 0, 5, 0.5 )
 	EMA.settingsControl.changeTexiTime:SetCallback( "OnValueChanged", EMA.SettingsChangeTaxiTimer )
-	-- Mount
 	movingTop = movingTop - sliderHeight
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+	-- Mount
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["MOUNT_OPTIONS"], movingTop, false )
 	movingTop = movingTop - headingHeight
 	--Disabled in classic note
-	if EMAPrivate.Core.isEmaClassicBuild == true then
-		EMA.settingsControl.labelInformation = EMAHelperSettings:CreateContinueLabel(
+		EMA.settingsControl.checkBoxMountWithTeam = EMAHelperSettings:CreateCheckBox(
 			EMA.settingsControl,
 			headingWidth,
 			left,
 			movingTop,
-			L["DISABLED_IN_CLASSIC"]
+			L["MOUNT_WITH_TEAM"],
+			EMA.SettingsToggleMountWithTeam,
+			L["MOUNT_WITH_TEAM_HELP"]
 		)
-		movingTop = movingTop - labelHeight
-	end
-	EMA.settingsControl.checkBoxMountWithTeam = EMAHelperSettings:CreateCheckBox(
-		EMA.settingsControl,
-		headingWidth,
-		left,
-		movingTop,
-		L["MOUNT_WITH_TEAM"],
-		EMA.SettingsToggleMountWithTeam,
-		L["MOUNT_WITH_TEAM_HELP"]
-	)
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxDismountWithTeam = EMAHelperSettings:CreateCheckBox(
-		EMA.settingsControl,
-		headingWidth,
-		left,
-		movingTop,
-		L["DISMOUNT_WITH_TEAM"],
-		EMA.SettingsToggleDisMountWithTeam,
-		L["DISMOUNT_WITH_TEAM_HELP"]
-	)
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxDismountWithMaster = EMAHelperSettings:CreateCheckBox(
-		EMA.settingsControl,
-		headingWidth,
-		left,
-		movingTop,
-		L["ONLY_DISMOUNT_WITH_MASTER"],
-		EMA.SettingsToggleDisMountWithMaster,
-		L["ONLY_DISMOUNT_WITH_MASTER_HELP"]
-	)
-	--[[
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxMountInRange = EMAHelperSettings:CreateCheckBox(
-		EMA.settingsControl,
-		headingWidth,
-		left,
-		movingTop,
-		L["ONLY_MOUNT_WHEN_IN_RANGE"],
-		EMA.SettingsToggleMountInRange,
-		L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"]
-	)
-	]]
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControl.checkBoxDismountWithTeam = EMAHelperSettings:CreateCheckBox(
+			EMA.settingsControl,
+			headingWidth,
+			left,
+			movingTop,
+			L["DISMOUNT_WITH_TEAM"],
+			EMA.SettingsToggleDisMountWithTeam,
+			L["DISMOUNT_WITH_TEAM_HELP"]
+		)
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControl.checkBoxDismountWithMaster = EMAHelperSettings:CreateCheckBox(
+			EMA.settingsControl,
+			headingWidth,
+			left,
+			movingTop,
+			L["ONLY_DISMOUNT_WITH_MASTER"],
+			EMA.SettingsToggleDisMountWithMaster,
+			L["ONLY_DISMOUNT_WITH_MASTER_HELP"]
+		)
+		--[[
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControl.checkBoxMountInRange = EMAHelperSettings:CreateCheckBox(
+			EMA.settingsControl,
+			headingWidth,
+			left,
+			movingTop,
+			L["ONLY_MOUNT_WHEN_IN_RANGE"],
+			EMA.SettingsToggleMountInRange,
+			L["ONLY_MOUNT_WHEN_IN_RANGE_HELP"]
+		)
+		]]
+	end	
 	-- Loot
 	movingTop = movingTop - headingHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["LOOT_OPTIONS"] , movingTop, false )
@@ -497,22 +491,18 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxTakeMastersTaxi:SetValue( EMA.db.takeMastersTaxi )
 	EMA.settingsControl.checkBoxrequestStop:SetValue( EMA.db.requestTaxiStop )
 	EMA.settingsControl.changeTexiTime:SetValue( EMA.db.changeTexiTime )
-	EMA.settingsControl.checkBoxMountWithTeam:SetValue( EMA.db.mountWithTeam )
-	EMA.settingsControl.checkBoxDismountWithTeam:SetValue( EMA.db.dismountWithTeam )
-	EMA.settingsControl.checkBoxDismountWithMaster:SetValue( EMA.db.dismountWithMaster )
-	--EMA.settingsControl.checkBoxMountInRange:SetValue( EMA.db.mountInRange )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControl.checkBoxMountWithTeam:SetValue( EMA.db.mountWithTeam )
+		EMA.settingsControl.checkBoxDismountWithTeam:SetValue( EMA.db.dismountWithTeam )
+		EMA.settingsControl.checkBoxDismountWithMaster:SetValue( EMA.db.dismountWithMaster )
+		--EMA.settingsControl.checkBoxMountInRange:SetValue( EMA.db.mountInRange )
+	end
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	EMA.settingsControl.dropdownWarningArea:SetValue( EMA.db.warningArea )
 	EMA.settingsControl.checkBoxAutoLoot:SetValue( EMA.db.autoLoot )
 	EMA.settingsControl.checkBoxTellBoERare:SetValue( EMA.db.tellBoERare )
 	EMA.settingsControl.checkBoxTellBoEEpic:SetValue( EMA.db.tellBoEEpic )
 	EMA.settingsControl.checkBoxTellBoEMount:SetValue( EMA.db.tellBoEMount )
-	-- Set state.
-	EMA.settingsControl.checkBoxMountWithTeam:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
-	EMA.settingsControl.checkBoxDismountWithTeam:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
-	EMA.settingsControl.checkBoxDismountWithMaster:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
-	EMA.settingsControl.checkBoxTellBoEMount:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
-	---EMA.settingsControl.checkBoxMountInRange:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -638,7 +628,7 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 	if EMA.db.autoLoot == true then
 		EMA:EnableAutoLoot()
 	end
-	if IsMounted() and EMAPrivate.Core.isEmaClassicBuild() == false then
+	if IsMounted() and EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		local mountIDs = C_MountJournal.GetMountIDs()
 		for i = 1, #mountIDs do
 			local creatureName, spellID, icon, active = C_MountJournal.GetMountInfoByID(mountIDs[i])
@@ -652,7 +642,7 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 end
 
 function EMA:UNIT_SPELLCAST_START(event, unitID, lineID, spellID,  ...  )
-	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("Looking for Spells.", unitID, spellID)
 	if unitID == "player" then
 	local mountIDs = C_MountJournal.GetMountIDs()
@@ -676,7 +666,7 @@ end
 
 
 function EMA:UNIT_SPELLCAST_SUCCEEDED(event, unitID, lineID, spellID, ... )
-	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	if EMA.db.mountWithTeam == false  or EMA.castingMount == nil or unitID ~= "player" or EMA.CommandLineMount == true then
 		return
 	end
@@ -691,7 +681,7 @@ end
 
 
 function EMA:UNIT_AURA(event, unitID, ... )
-	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("tester", unitID, EMA.isMounted)
 	if unitID ~= "player" or EMA.isMounted == nil then
         return
@@ -719,7 +709,7 @@ function EMA:UNIT_AURA(event, unitID, ... )
 end
 
 function EMA:TeamMount(characterName, name, mountID)
-	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("testTeamMount", characterName, name, mountID )
 	EMA.responding = true
 	--mount with team truned off.
@@ -790,14 +780,14 @@ function EMA:AmNotMounted()
 end
 
 function EMA:RandomMountWithTeam( info, parameters )
-	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	local tag = parameters
 	--EMA:Print("test", tag )
 	EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_COMMAND, tag )
 end
 
 function EMA:ReceiveRandomMountWithTeam( characterName, tag)
-	if EMAPrivate.Core.isEmaClassicBuild() == true then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("test", characterName, tag )
 	if EMAApi.IsCharacterInGroup( EMA.characterName, tag ) == true then
 		if IsMounted() == false then
@@ -907,7 +897,7 @@ function EMA:TellTeamEpicBoE( name )
 									EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_LOOTED_X_Y_ITEM"]( rarity, itemLink ), false )
 								end
 							else
-								if EMA.db.tellBoEMount == true and EMAPrivate.Core.isEmaClassicBuild() == false then
+								if EMA.db.tellBoEMount == true and EMAPrivate.Core.isEmaClassicBccBuild() == false then
 									if isBop == false then
 										local mountIDs = C_MountJournal.GetMountIDs()
 										for i = 1, #mountIDs do

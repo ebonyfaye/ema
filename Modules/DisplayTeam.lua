@@ -2789,8 +2789,8 @@ function EMA:SendHealthStatusUpdateCommand(unit)
 				--EMA:Print("itsme", unit)
 				local playerHealth = UnitHealth( unit )
 				local playerMaxHealth = UnitHealthMax( unit )
-				-- TODO FIX ME!
-				if EMAPrivate.Core.isEmaClassicBuild() == false then
+				-- TODO FIX ME! probs need to add libincoming heal.
+				if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 					local inComingHeal = UnitGetIncomingHeals( unit )
 				else
 					local inComingHeal = 0
@@ -2808,7 +2808,7 @@ function EMA:SendHealthStatusUpdateCommand(unit)
 		else
 			local playerHealth = UnitHealth( unit )
 			local playerMaxHealth = UnitHealthMax( unit )
-			if EMAPrivate.Core.isEmaClassicBuild() == false then
+			if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 				local inComingHeal = UnitGetIncomingHeals( unit )
 			else
 				local inComingHeal = 0
@@ -3334,7 +3334,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent("UNIT_SPELLCAST_SUCCEEDED")
 	EMA:RegisterEvent("UNIT_SPELLCAST_STOP")
 	EMA:RegisterEvent("UNIT_SPELLCAST_CHANNEL_STOP")
-	if EMAPrivate.Core.isEmaClassicBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		EMA:RegisterEvent( "UNIT_HEAL_PREDICTION" )
 		EMA:RegisterEvent( "PLAYER_TALENT_UPDATE")
 		EMA:RegisterEvent( "RUNE_POWER_UPDATE" )

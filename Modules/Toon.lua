@@ -307,38 +307,30 @@ local function SettingsCreateToon( top )
 		EMA.SettingsToggleAutoAcceptSummonRequest,
 		L["SUMMON_REQUEST_HELP"]
 	)
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlToon.checkBoxToggleWarMode = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlToon, 
+			halfWidth, 
+			left, 
+			movingTop, 
+			L["WAR_MODE"],
+			EMA.SettingsToggleWarMode,
+			L["WAR_MODE_HELP"]
+		)	
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlToon.checkBoxTogglePartySyncRequest = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlToon, 
+			halfWidth, 
+			left, 
+			movingTop, 
+			L["PARTY_SYNC"],
+			EMA.SettingsTogglePartySyncRequest,
+			L["PARTY_SYNC_HELP"]
+		)		
+	end
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlToon.checkBoxToggleWarMode = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlToon, 
-		halfWidth, 
-		left, 
-		movingTop, 
-		L["WAR_MODE"],
-		EMA.SettingsToggleWarMode,
-		L["WAR_MODE_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlToon.checkBoxTogglePartySyncRequest = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlToon, 
-		halfWidth, 
-		left, 
-		movingTop, 
-		L["PARTY_SYNC"],
-		EMA.SettingsTogglePartySyncRequest,
-		L["PARTY_SYNC_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight			
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["GROUPTOOLS_HEADING"], movingTop, false )
-	movingTop = movingTop - headingHeight
-	EMA.settingsControlToon.checkBoxAutoRoleCheck = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlToon, 
-		halfWidth, 
-		left, 
-		movingTop, 
-		L["ROLE_CHECKS"],
-		EMA.SettingsToggleAutoRoleCheck,
-		L["ROLE_CHECKS_HELP"]
-	)		
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControlToon.checkBoxAcceptReadyCheck = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControlToon, 
@@ -349,17 +341,29 @@ local function SettingsCreateToon( top )
 		EMA.SettingsToggleAcceptReadyCheck,
 		L["READY_CHECKS_HELP"]
 	)
- 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlToon.checkBoxLFGTeleport = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlToon, 
-		halfWidth, 
-		left, 
-		movingTop,
-		L["LFG_Teleport"],
-		EMA.SettingsToggleLFGTeleport,
-		L["LFG_Teleport_HELP"]
-	)
- 	movingTop = movingTop - checkBoxHeight
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		movingTop = movingTop - headingHeight
+		EMA.settingsControlToon.checkBoxAutoRoleCheck = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlToon, 
+			halfWidth, 
+			left, 
+			movingTop, 
+			L["ROLE_CHECKS"],
+			EMA.SettingsToggleAutoRoleCheck,
+			L["ROLE_CHECKS_HELP"]
+		)
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlToon.checkBoxLFGTeleport = EMAHelperSettings:CreateCheckBox( 
+				EMA.settingsControlToon, 
+				halfWidth, 
+				left, 
+				movingTop,
+				L["LFG_Teleport"],
+				EMA.SettingsToggleLFGTeleport,
+				L["LFG_Teleport_HELP"]
+			)
+ 	end
+	movingTop = movingTop - checkBoxHeight
  	EMA.settingsControlToon.checkBoxLootWithTeam = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControlToon, 
 		halfWidth, 
@@ -705,12 +709,14 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlToon.checkBoxAutoDenyDuels:SetValue( EMA.db.autoDenyDuels )
 	EMA.settingsControlToon.checkBoxAutoAcceptSummonRequest:SetValue( EMA.db.autoAcceptSummonRequest )
 	EMA.settingsControlToon.checkBoxAutoDenyGuildInvites:SetValue( EMA.db.autoDenyGuildInvites )
-	EMA.settingsControlToon.checkBoxAutoRoleCheck:SetValue( EMA.db.autoAcceptRoleCheck )
 	EMA.settingsControlToon.checkBoxAcceptReadyCheck:SetValue( EMA.db.acceptReadyCheck )
-	EMA.settingsControlToon.checkBoxLFGTeleport:SetValue( EMA.db.teleportLFGWithTeam )
 	EMA.settingsControlToon.checkBoxLootWithTeam:SetValue( EMA.db.rollWithTeam )
-	EMA.settingsControlToon.checkBoxToggleWarMode:SetValue( EMA.db.toggleWarMode )
-	EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetValue( EMA.db.autoAcceptPartySyncRequest )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControlToon.checkBoxToggleWarMode:SetValue( EMA.db.toggleWarMode )
+		EMA.settingsControlToon.checkBoxLFGTeleport:SetValue( EMA.db.teleportLFGWithTeam )
+		EMA.settingsControlToon.checkBoxAutoRoleCheck:SetValue( EMA.db.autoAcceptRoleCheck )
+		EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetValue( EMA.db.autoAcceptPartySyncRequest )
+	end
 	EMA.settingsControlToon.dropdownRequestArea:SetValue( EMA.db.requestArea )
 	EMA.settingsControlToon.checkBoxSetViewWithWithoutMaster:SetValue( EMA.db.setViewWithoutMaster )
 	EMA.settingsControlToon.SliderSetView:SetValue( EMA.db.setView )
@@ -733,11 +739,6 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxBagsFullMessage:SetDisabled( not EMA.db.warnBagsFull )
 	EMA.settingsControlWarnings.editBoxCCMessage:SetDisabled( not EMA.db.warnCC )
 	EMA.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam:SetDisabled( not EMA.db.autoAcceptResurrectRequest )
-	-- Disabled for Classic
-	EMA.settingsControlToon.checkBoxLFGTeleport:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
-	EMA.settingsControlToon.checkBoxToggleWarMode:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
-	EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
-	EMA.settingsControlToon.checkBoxAutoRoleCheck:SetDisabled( EMAPrivate.Core.isEmaClassicBuild )
 end
 
 function EMA:SettingsPushSettingsClick( event )

@@ -1,37 +1,48 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: Alpha-v4.0(0193)
-Game Version: 9.0.5/2.5.1
-Release Date: TBA
+EMA Version: Release-v4.0(0200)
+Game Version: 9.1.0/2.5.1
+Release Date: 22/08/2021
 ---------------------------
 
 ## Core
-	-- Now supports Classic-TBC 2.5.1
+	-- Now supports Classic-TBC 2.5.1 EMA-BCC.toc for tbc, EMA-MainLine.toc
+		-- All Non Working Live stuff on TBC removed!
 	-- New Config/GUI Layout.
-	-- Public API Removed!
+	-- Public API Reworked!
 	-- Added A WOW_KeyBindings Button to Main Setting Page.
 
 ## Communications
 	-- On Classic/Tbc When Sending Setting Table Data Over Non Guild Channels Will Send To Whisper
+
+## Item-Use
+	-- You Can Now use spells that the other team Members don't have without a Lua Error.
 	
 ## Toon
+	*TODO!
 	-- Added in loot options for tbc-classic
 	
 ## Trade
+	*TODO
 	-- Added a Keybinding To Accept Trade( must be pressed on all team members )
 
 ## Quest-Tracker
+	*TODO
 	-- Toggle EMA-Tracker with keybinding
 	-- Option to Hide Blizzard tracker olny when ema-tracker is showen.
 
-## Quest-Tracker (classic/tbc)
+## Quest-Tracker-Classic (classic/tbc)
 	-- Has its own copy for classic tracking due to many api changes.
 	
-## Quest (Classic/tbc)
+## Quest-Classic (Classic/tbc)
 	-- Has its own copy for classic tracking due to many api changes.
 	-- Added Choose Best Quest Reward		
 
+## Information-Classic
+	-- Has its own copy for classic tracking due to many api changes.
+	
+		
 ---------------------------
 EMA Version: v9.0.5-Release-v3.1(0189)
 Game Version: 9.0.5

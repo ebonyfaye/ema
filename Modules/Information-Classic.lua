@@ -10,6 +10,11 @@
 --																					--
 -- ================================================================================ --
 
+-- Only Load for Classic/TBC
+if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then
+	return
+end
+
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"Information", 
@@ -33,7 +38,7 @@ local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["DISPLAY"]
 EMA.moduleDisplayName = L["CURRENCY"]
 -- Icon 
-EMA.moduleIcon = "Interface\\Addons\\EMA-Classic\\Media\\SellIcon.tga"
+EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\SellIcon.tga"
 -- order
 EMA.moduleOrder = 3
 

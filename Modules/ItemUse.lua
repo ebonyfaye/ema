@@ -482,27 +482,41 @@ end
 
 --ebony test Using the wowapi and not the scanning of tooltips
 function EMA:CheckForQuestItemAndAddToBar()	
-	--for iterateQuests = 1, GetNumQuestLogEntries() do
-	--	local questLogTitleText,_,_,isHeader, _, _, _, questID = GetQuestLogTitle(iterateQuests)
-	
-	local index = C_QuestLog.GetNumQuestLogEntries()
-		for iterateQuests = 1, index do	
-			local info =  C_QuestLog.GetInfo( iterateQuests )	
-		
-		
-		if not info.isHeader then
-			--EMA:Print("test", questItemLink, iterateQuests, questLogTitleText, questID )
-			local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )	
-			if questItemLink ~= nil then
-				local itemName = GetItemInfo(questItemLink)
-				local questName, rank = GetItemSpell(questItemLink) -- Only means to detect if the item is usable
-				if questName then
-					--EMA:Print("addItem", questItemLink )
-					EMA:AddAnItemToTheBarIfNotExists( questItemLink, false)						
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
+		for bag = 0, NUM_BAG_SLOTS do
+			for slot = 1, GetContainerNumSlots(bag) do
+				local itemLink = GetContainerItemLink(bag, slot)
+				if itemLink and itemLink:match("item:%d") then
+					local name, itemLink,_,_,_,itemType,questItem = GetItemInfo( itemLink )
+					--EMA:Print("test", itemType,questItem )
+					if itemType ~= nil and itemType == "Quest" then
+					local spellName, spellID = GetItemSpell( itemLink )
+						if spellName then
+							--EMA:Print("test", itemLink, tooltipText )
+							EMA:AddAnItemToTheBarIfNotExists( itemLink, false )
+						end	
+					end
 				end
-			end			
+			end
 		end
-	end
+	else
+		local index = C_QuestLog.GetNumQuestLogEntries()
+		for iterateQuests = 1, index do	
+			local info =  C_QuestLog.GetInfo( iterateQuests )
+			if not info.isHeader then
+				--EMA:Print("test", questItemLink, iterateQuests, questLogTitleText, questID )
+				local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )	
+				if questItemLink ~= nil then
+					local itemName = GetItemInfo(questItemLink)
+					local questName, rank = GetItemSpell(questItemLink) -- Only means to detect if the item is usable
+					if questName then
+						--EMA:Print("addItem", questItemLink )
+						EMA:AddAnItemToTheBarIfNotExists( questItemLink, false)						
+					end
+				end			
+			end
+		end
+	end	
 end
 
 -- Removes unused items.

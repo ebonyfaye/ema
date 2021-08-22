@@ -187,10 +187,12 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetDisabled ( not EMA.db.autoSellEpic or not EMA.db.autoSellItem )
 	EMA.settingsControl.checkBoxAutoSellBoEEpic:SetDisabled ( not EMA.db.autoSellEpic or not EMA.db.autoSellItem )		
 	-- Toys
-	EMA.settingsControl.checkBoxAutoSellToys:SetValue( EMA.db.autoSellToys )
-	EMA.settingsControl.checkBoxAutoSellToys:SetDisabled ( not EMA.db.autoSellItem )
-EMA.settingsControl.checkBoxAutoSellMounts:SetValue( EMA.db.autoSellMounts )
-	EMA.settingsControl.checkBoxAutoSellMounts:SetDisabled ( not EMA.db.autoSellItem )	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then	
+		EMA.settingsControl.checkBoxAutoSellToys:SetValue( EMA.db.autoSellToys )
+		EMA.settingsControl.checkBoxAutoSellToys:SetDisabled ( not EMA.db.autoSellItem )
+		EMA.settingsControl.checkBoxAutoSellMounts:SetValue( EMA.db.autoSellMounts )
+		EMA.settingsControl.checkBoxAutoSellMounts:SetDisabled ( not EMA.db.autoSellItem )
+	end		
 	-- Messages.
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	-- list. 
@@ -505,25 +507,27 @@ local function SettingsCreateMain( top )
 	)	
 	EMA.settingsControl.editBoxAutoSellIlvlEpic:SetCallback( "OnEnterPressed", EMA.SettingsEditBoxChangedIlvlEpic )		
 -- Toy	
-	movingTop = movingTop - editBoxHeight - 3	
-	EMA.settingsControl.checkBoxAutoSellToys = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left, 
-		movingTop + movingTopEdit, 
-		L["AUTO_SELL_TOYS"],
-		EMA.SettingsToggleAutoSellToys,
-		L["AUTO_SELL_TOYS_HELP"]
-	)
-EMA.settingsControl.checkBoxAutoSellMounts = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2, 
-		movingTop + movingTopEdit, 
-		L["AUTO_SELL_MOUNTS"],
-		EMA.SettingsToggleAutoSellMounts,
-		L["AUTO_SELL_MOUNTS_HELP"]
-	)		
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then	
+		movingTop = movingTop - editBoxHeight - 3	
+		EMA.settingsControl.checkBoxAutoSellToys = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControl, 
+			thirdWidth, 
+			left, 
+			movingTop + movingTopEdit, 
+			L["AUTO_SELL_TOYS"],
+			EMA.SettingsToggleAutoSellToys,
+			L["AUTO_SELL_TOYS_HELP"]
+		)
+		EMA.settingsControl.checkBoxAutoSellMounts = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControl, 
+			thirdWidth, 
+			left2, 
+			movingTop + movingTopEdit, 
+			L["AUTO_SELL_MOUNTS"],
+			EMA.SettingsToggleAutoSellMounts,
+			L["AUTO_SELL_MOUNTS_HELP"]
+		)
+	end		
 	movingTop = movingTop - editBoxHeight - 3	
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SELL"]..L[" "]..L["MESSAGES_HEADER"], movingTop, false )
 	movingTop = movingTop - headingHeight	
@@ -967,7 +971,7 @@ function EMA:DoMerchantSellItems()
 					local iLvl = C_Item.GetCurrentItemLevel( location )
 					local _, itemCount = GetContainerItemInfo( bagID, slotID )
 					local itemName, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
-					if EMAPrivate.Core.isEmaClassicBuild == false then	
+					if EMAPrivate.Core.isEmaClassicBccBuild == false then	
 						local hasToy = PlayerHasToy(bagItemID)
 					end
 					--EMA:Print("ItemTest", bagItemID, itemLink, itemRarity, itemType, isBop, itemRarity, iLvl, itemSellPrice)
@@ -1052,7 +1056,7 @@ function EMA:DoMerchantSellItems()
 						end
 					end		
 					-- Toys
-					if EMA.db.autoSellToys == true and EMAPrivate.Core.isEmaClassicBuild == false then
+					if EMA.db.autoSellToys == true and EMAPrivate.Core.isEmaClassicBccBuild == false then
 						if hasToy == true and isBop == true then
 							--EMA:Print("ToyTest", hasToy, itemSellPrice )
 							if itemSellPrice > 0 then 
@@ -1065,7 +1069,7 @@ function EMA:DoMerchantSellItems()
 						end
 					end
 					-- Mounts
-					if EMA.db.autoSellMounts == true and EMAPrivate.Core.isEmaClassicBuild == false then	
+					if EMA.db.autoSellMounts == true and EMAPrivate.Core.isEmaClassicBccBuild == false then	
 						local mountIDs = C_MountJournal.GetMountIDs()	
 						for i = 1, #mountIDs do
 							local creatureName,mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])

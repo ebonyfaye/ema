@@ -428,14 +428,16 @@ local function SettingsCreateDisplayOptions( top )
 		EMA.SettingsTogglePauseDrinking
 	)		
 	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControl.checkBoxPauseIfInVehicle = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		halfWidth, 
-		left, 
-		movingTop, 
-		L["IN_A_VEHICLE"],
-		EMA.SettingsTogglePauseIfInVehicle
-	)
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControl.checkBoxPauseIfInVehicle = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControl, 
+			halfWidth, 
+			left, 
+			movingTop, 
+			L["IN_A_VEHICLE"],
+			EMA.SettingsTogglePauseIfInVehicle
+		)
+	end	
 	EMA.settingsControl.checkBoxPauseIfDead = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControl, 
 		halfWidth, 
@@ -519,8 +521,9 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxOverrideStrobeTargetWithMaster:SetValue( EMA.db.overrideStrobeTargetWithMaster )
 	EMA.settingsControl.checkBoxPauseInCombat:SetValue( EMA.db.strobePauseInCombat )
 	EMA.settingsControl.checkBoxPauseDrinking:SetValue( EMA.db.strobePauseIfDrinking )
-	EMA.settingsControl.checkBoxPauseIfInVehicle:SetValue( EMA.db.strobePauseIfInVehicle )
-	EMA.settingsControl.checkBoxPauseIfInVehicle:SetDisabled( EMAPrivate.Core.isEmaClassicBuild() )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControl.checkBoxPauseIfInVehicle:SetValue( EMA.db.strobePauseIfInVehicle )
+	end
 	EMA.settingsControl.checkBoxPauseIfDead:SetValue( EMA.db.strobePauseIfDead )
 	EMA.settingsControl.editBoxFollowStrobePauseTag:SetText( EMA.db.strobePauseTag )
 	EMA.settingsControl.editBoxFollowStrobeDelaySeconds:SetText( EMA.db.strobeFrequencySeconds )
@@ -762,7 +765,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )	
 	EMA:RegisterEvent( "PLAYER_CONTROL_GAINED" )
-	if EMAPrivate.Core.isEmaClassicBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		EMA:RegisterEvent( "UNIT_ENTERING_VEHICLE" )
 		EMA:RegisterEvent( "UNIT_EXITING_VEHICLE" )
 		EMA:RegisterEvent( "UI_ERROR_MESSAGE", "PVP_FOLLOW" )
@@ -952,7 +955,7 @@ function EMA:AutoFollowEndSend()
 		canWarn = false
 	end
 	--Do not warn if a passenger in a vehicle. -- not in classic or bc
-	if EMAPrivate.Core.isEmaClassicBuild() == false then	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then	
 		if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
 			--EMA:Print("UnitInVehicle")
 			canWarn = false
@@ -1036,7 +1039,7 @@ end
 
 function EMA:PVP_FOLLOW(event, arg1, message, ...  )
 	--EMA:Print("test", message, EMA.warnFollowPvPCombat )
-	if EMA.db.warnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false and EMAPrivate.Core.isEmaClassicBuild() == true then
+	if EMA.db.warnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false and EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		return
 	end
 	if message == ERR_INVALID_FOLLOW_TARGET_PVP_COMBAT or message == ERR_INVALID_FOLLOW_PVP_COMBAT then

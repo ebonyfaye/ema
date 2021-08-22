@@ -2155,6 +2155,7 @@ EMAPrivate.Team.MESSAGE_TEAM_ORDER_CHANGED = EMA.MESSAGE_TEAM_ORDER_CHANGED
 EMAPrivate.Team.MESSAGE_TEAM_CHARACTER_ADDED = EMA.MESSAGE_TEAM_CHARACTER_ADDED
 EMAPrivate.Team.MESSAGE_TEAM_CHARACTER_REMOVED = EMA.MESSAGE_TEAM_CHARACTER_REMOVED
 EMAPrivate.Team.TeamList = TeamList
+EMAPrivate.Team.TeamListOrdered = TeamListOrdered
 EMAPrivate.Team.IsCharacterInTeam = IsCharacterInTeam
 EMAPrivate.Team.IsCharacterTheMaster = IsCharacterTheMaster
 EMAPrivate.Team.GetMasterName = GetMasterName
@@ -2167,6 +2168,7 @@ EMAPrivate.Team.RemoveAllMembersFromTeam = RemoveAllMembersFromTeam
 EMAPrivate.Team.setOffline = setOffline
 EMAPrivate.Team.setOnline = setOline
 EMAPrivate.Team.RefreshGroupList = RefreshGroupList
+
 
 -- Functions available for other addons.
 EMAApi.MESSAGE_TEAM_MASTER_CHANGED = EMA.MESSAGE_TEAM_MASTER_CHANGED

@@ -10,6 +10,12 @@
 --																					--
 -- ================================================================================ --
 
+-- Only Load for Classic/TBC
+if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE then
+	return
+end
+
+
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"QuestWatcher", 

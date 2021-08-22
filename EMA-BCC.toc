@@ -2,12 +2,12 @@
 ## Title: EMA
 ## Notes: Ebony's MultiBoxing Assistant
 ## Author: Jennifer Calladine 'Ebony'
-## Version: Alpha-v4.0(0190)
+## Version: Release-v4.0(0200)
 ## SavedVariables: CoreProfileDB, CommunicationsProfileDB, TeamProfileDB, TagProfileDB, MessageProfileDB, InformationProfileDB, DisplayTeamProfileDB, FollowProfileDB, GuildProfileDB, InteractionProfileDB, ItemUseProfileDB, PurchaseProfileDB, QuestProfileDB,  QuestWatcherProfileDB, SellProfileDB, TalkProfileDB, ToonProfileDB, TradeProfileDB, MailProfileDB, BankProfileDB, ISBoxerProfileDB
 
 #Libs
 Embeds.xml
-EbonyUtilities.lua
+Libs\EbonyUtilities.lua
 
 #Locales
 Locales\Locales.xml
@@ -25,4 +25,4 @@ Core\Tag.lua
 Core\Message.lua
 
 #Modules
-Modules\Modules-BC.xml
+Modules\Modules.xml
