@@ -10,11 +10,9 @@
 --																					--
 -- ================================================================================ --
 
--- Only Load for Live
-if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE then
+if WOW_PROJECT_ID ~= WOW_PROJECT_CLASSIC then
 	return
-end
-
+end	
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
@@ -541,7 +539,7 @@ end
 
 function EMA:CreateQuestWatcherFrame()
 	-- The frame.
-	local frame = CreateFrame( "Frame", "EMAQuestWatcherWindowFrame", UIParent )
+	local frame = CreateFrame( "Frame", "EMAQuestWatcherWindowFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil )
 	frame.obj = EMA
 	frame:SetFrameStrata( "BACKGROUND" )
 	frame:SetClampedToScreen( true )

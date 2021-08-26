@@ -1,6 +1,24 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.0(0201)
+Game Version: 9.1.0/2.5.1
+Release Date: 26/08/2021
+
+
+## Toon
+	-- Fixed a GuildBank funds to repair issue #50 (Jumped the gun on this one)
+	
+## Interaction
+	-- Stoped Live Code leacking from Retail On Stop Fight! issue #51
+
+## Quest-Wascher
+	-- Wrong Version Of quest-watcher for retail was packed in this Build. Issue #56
+
+
+---------------------------
+ChangeLogs:
+---------------------------
 EMA Version: Release-v4.0(0200)
 Game Version: 9.1.0/2.5.1
 Release Date: 22/08/2021

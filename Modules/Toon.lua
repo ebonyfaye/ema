@@ -190,16 +190,18 @@ local function SettingsCreateMerchant( top )
 		EMA.SettingsToggleAutoRepair,
 		L["AUTO_REPAIR_HELP"]
 	)	
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlMerchant, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["REPAIR_GUILD_FUNDS"],
-		EMA.SettingsToggleAutoRepairUseGuildFunds,
-		L["REPAIR_GUILD_FUNDS_HELP"]
-	)	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlMerchant, 
+			headingWidth, 
+			left, 
+			movingTop, 
+			L["REPAIR_GUILD_FUNDS"],
+			EMA.SettingsToggleAutoRepairUseGuildFunds,
+			L["REPAIR_GUILD_FUNDS_HELP"]
+		)
+	end	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControlMerchant.dropdownMerchantArea = EMAHelperSettings:CreateDropdown( 
 		EMA.settingsControlMerchant, 
@@ -722,7 +724,9 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlToon.SliderSetView:SetValue( EMA.db.setView )
 	
 	EMA.settingsControlMerchant.checkBoxAutoRepair:SetValue( EMA.db.autoRepair )
-	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( EMA.db.autoRepairUseGuildFunds )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetValue( EMA.db.autoRepairUseGuildFunds )
+	end
 	EMA.settingsControlMerchant.dropdownMerchantArea:SetValue( EMA.db.merchantArea )
 	-- Set state.
 	EMA.settingsControlWarnings.editBoxHitFirstTimeMessage:SetDisabled( not EMA.db.warnHitFirstTimeCombat )
@@ -735,7 +739,9 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )	
 	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull:SetDisabled( not EMA.db.warnWhenBagsAlmostFullAmount )
-	EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not EMA.db.autoRepair )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControlMerchant.checkBoxAutoRepairUseGuildFunds:SetDisabled( not EMA.db.autoRepair )
+	end
 	EMA.settingsControlWarnings.editBoxBagsFullMessage:SetDisabled( not EMA.db.warnBagsFull )
 	EMA.settingsControlWarnings.editBoxCCMessage:SetDisabled( not EMA.db.warnCC )
 	EMA.settingsControlToon.checkBoxAutoAcceptResurrectRequestOnlyFromTeam:SetDisabled( not EMA.db.autoAcceptResurrectRequest )
@@ -1499,12 +1505,13 @@ function EMA:MERCHANT_SHOW( event, ... )
 	-- At least some cost...
 	if repairCost > 0 then
 		-- If allowed to use guild funds, then attempt to repair using guild funds.
--- TODO GUILD BANK STUFF FOR CLASSIC or TBC CLASSIC 
-		if EMA.db.autoRepairUseGuildFunds == true then
-			if IsInGuild() and CanGuildBankRepair() then
-				RepairAllItems( 1 )
+		if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+			if EMA.db.autoRepairUseGuildFunds == true then
+				if IsInGuild() and CanGuildBankRepair() then
+					RepairAllItems( 1 )
+				end
 			end
-		end
+		end	
 		-- After guild funds used, still need to repair?
 		repairCost = GetRepairAllCost()
 		-- At least some cost...

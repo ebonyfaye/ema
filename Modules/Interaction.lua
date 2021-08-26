@@ -595,10 +595,10 @@ function EMA.TaxiRequestEarlyLanding( sender )
 	-- If the take masters taxi option is on.
 	--EMA:Print("test")
 	if EMA.db.requestTaxiStop == true then
-		if UnitOnTaxi( "player" ) and CanExitVehicle() == true then
+		if UnitOnTaxi( "player" ) == true then
 			if EMA.LeavsTaxi == false then
 				-- Send a message to any listeners that a taxi is being taken.
-				EMA:EMASendCommandToTeam ( EMA.COMMAND_EXIT_TAXI )
+				EMA:EMASendCommandToTeam ( EMA.COMMA*ND_EXIT_TAXI )
 			end
 		end
 		EMA.LeavsTaxi = false
