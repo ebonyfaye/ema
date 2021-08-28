@@ -246,9 +246,11 @@ end
 
 -- Classic/tbc Due to a Slow/nonsending Comms in party/raid when Sending settings Tables we need fall over Whisper/Guild
 local function CommandSettings( moduleName, commandName, ... )
+--[[	
 	if EMAPrivate.Core.isEmaClassicBuild() == false then
 		CommandAll( moduleName, commandName, ... )
 	else
+]]	
 		local message = CreateCommandToSend( moduleName, commandName, ... )
 		if EMA.db.useGuildComms == true then 
 			CommandGuild(  message )
@@ -268,7 +270,7 @@ local function CommandSettings( moduleName, commandName, ... )
 				end	
 			end
 		end	
-	end	
+--	end	
 end
 
 -- Is This is use?

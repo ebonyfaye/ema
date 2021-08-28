@@ -1,6 +1,20 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.0(0202)
+Game Version: 9.1.0/2.5.1
+Release Date: 28/08/2021
+
+## Team
+	-- Fixed Team Invite On TBCC 
+	
+## Quest-Tracker
+	-- Has Come Back From Was AWL
+
+## Communications
+	-- Seems 9.1 is running like classic/tbc on sending big data though channels.
+
+---------------------------
 EMA Version: Release-v4.0(0201)
 Game Version: 9.1.0/2.5.1
 Release Date: 26/08/2021

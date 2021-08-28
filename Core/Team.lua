@@ -1219,7 +1219,7 @@ end
 -- Invite team to party.
 
 function EMA.DoTeamPartyInvite()
-	if EMAPrivate.Core.isEmaClassicBuild() == true then
+	if EMAPrivate.Core.isEmaClassicBuild() == true or EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
 	else	
 		C_PartyInfo.InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
