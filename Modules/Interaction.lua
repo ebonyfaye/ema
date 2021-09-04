@@ -178,7 +178,7 @@ function EMA:OnEnable()
 	EMA:SecureHook( "TakeTaxiNode" )
 	EMA:SecureHook( "TaxiRequestEarlyLanding" )
 	EMA:RegisterEvent( "PLAYER_ENTERING_WORLD" )
-	if EMAPrivate.Core.isEmaClassicBccBuild == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		EMA:RegisterEvent( "UNIT_SPELLCAST_START" )
 		EMA:RegisterEvent( "UNIT_SPELLCAST_SUCCEEDED" )
 	end
