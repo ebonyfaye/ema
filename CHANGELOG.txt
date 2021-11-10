@@ -1,6 +1,21 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.1(0203)
+Game Version: 9.1.5/2.5.2
+Release Date: 06/11/2021
+
+-- Sorry am not playing wow, so everything i do is if i can, (rember i don't get paid for this) 
+
+## interaction
+	-- Fixed a bug with mountWithTeam with retail issue #55
+	
+	
+
+
+
+
+---------------------------
 EMA Version: Release-v4.0(0202)
 Game Version: 9.1.0/2.5.1
 Release Date: 28/08/2021
