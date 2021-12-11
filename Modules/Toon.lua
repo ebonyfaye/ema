@@ -1397,7 +1397,7 @@ end
 
 function EMA:LFGTeleport( event, arg1, ... )
 	--EMA:Print("LFGtest")
-	if EMA.db.teleportLFGWithTeam == true and EMAPrivate.Core.isEmaClassicBuild() == false then
+	if EMA.db.teleportLFGWithTeam == true and EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		if IsShiftKeyDown() == false then
 			if EMA.isInternalCommand == false then
 				if IsInLFGDungeon() == true then
@@ -1411,7 +1411,7 @@ function EMA:LFGTeleport( event, arg1, ... )
 end
 
 function EMA:DoLFGTeleport(port)
-	if EMAPrivate.Core.isEmaClassicBuild() == ture then return end	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == ture then return end	
 	--EMA:Print("TeleCommand", port)
 	EMA.isInternalCommand = true
 	if IsShiftKeyDown() == false then
@@ -1465,7 +1465,7 @@ function EMA:CONFIRM_SUMMON( event, sender, location, ... )
 end
 
 function EMA:WARMODE(event, ...)
-	if EMA.db.toggleWarMode == true and EMAPrivate.Core.isEmaClassicBuild() == false then
+	if EMA.db.toggleWarMode == true and EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		if C_PvP.IsWarModeFeatureEnabled() == true then
 			local isWarMode = C_PvP.IsWarModeDesired()
 			if C_PvP.CanToggleWarMode(isWarMode) == true then
@@ -1479,7 +1479,7 @@ function EMA:WARMODE(event, ...)
 end
 
 function EMA:DoWarMode( isWarMode )
-	if EMAPrivate.Core.isEmaClassicBuild() == ture then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	EMA.isInternalCommand = true
 	if C_PvP.CanToggleWarMode( isWarMode ) == true and isWarMode ~= nil then
 		--EMA:Print("testwarmode", isWarMode )
@@ -1697,27 +1697,17 @@ end
 --Ebony CCed
 function EMA:LOSS_OF_CONTROL_ADDED( event, ... )
 	if EMA.db.warnCC == true then
-		if EMAPrivate.Core.isEmaClassicBuild() == true then
-			local eventIndex = C_LossOfControl.GetNumEvents()
-			if eventIndex > 0 then
-				local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType = C_LossOfControl.GetEventInfo(eventIndex)	
-				if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false then
-					EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "]..text, false )
-				end
-			end
-		else
-			local eventIndex = C_LossOfControl.GetActiveLossOfControlDataCount()
-			if eventIndex > 0 then
-				local LossOfControlData = C_LossOfControl.GetActiveLossOfControlData(eventIndex)
-				--local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType	
-				local name, rank, icon, castTime, minRange, maxRange, spellId =  GetSpellInfo( LossOfControlData.spellID )
-				--EMA:Print("test", LossOfControlData.spellID, name )
-				if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false and name ~= nil then
-					EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "].. name, false )
-				end
+		local eventIndex = C_LossOfControl.GetActiveLossOfControlDataCount()
+		if eventIndex > 0 then
+			local LossOfControlData = C_LossOfControl.GetActiveLossOfControlData(eventIndex)
+			--local locType, spellID, text, iconTexture, startTime, timeRemaining, duration, lockoutSchool, priority, displayType	
+			local name, rank, icon, castTime, minRange, maxRange, spellId =  GetSpellInfo( LossOfControlData.spellID )
+			--EMA:Print("test", LossOfControlData.spellID, name )
+			if EMAApi.IsCharacterTheMaster( EMA.characterName ) == false and name ~= nil then
+				EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.CcMessage..L[" "].. name, false )
 			end
 		end
-	end	
+	end
 end
 
 function EMA:QUEST_SESSION_CREATED( event, ...)
