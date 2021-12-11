@@ -1,6 +1,15 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.1(0205)
+Game Version: 9.1.5/2.5.2/1.1.14
+Release Date: 11/12/2021
+
+## Toon
+	--Fixed some errors in for classic/tbc
+
+
+---------------------------
 EMA Version: Release-v4.1(0204)
 Game Version: 9.1.5/2.5.2/1.1.14
 Release Date: 11/12/2021
