@@ -321,11 +321,15 @@ end
 
 -- EMA TBC Build
 local function isEmaClassicBccBuild()
-	local classicBcc = false
+	local classic = false
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
-		classicBcc = true
+		classic = true
 	end
-	return classicBcc
+	-- Classic
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
+		classic = true
+	end
+	return classic
 end	
 
 -------------------------------------------------------------------------------------------------------------
