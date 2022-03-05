@@ -2,7 +2,7 @@
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
 --				Current Author: Jennifer Cally (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2021 Jennifer Calladine					--
+--				License: All Rights Reserved 2018-2022 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -1487,7 +1487,7 @@ function EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
 					local progress = GetQuestProgressBarPercent( info.questID )
 					local amountCompleted = tostring(progress)..L["%"]																											
 					--EMA:Print("QuestPercent", title, objectiveText, amountCompleted )
-					local EditedQuestName = tostring("Bonus:")..(info.title)	
+					local EditedQuestName = tostring("Bonus: ")..(info.title)	
 					--EMA:Print("BarQuest", info.questID, name, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete)
 					if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then
 						EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, EditedQuestName, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )															 
@@ -1497,7 +1497,7 @@ function EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
 				if (EMA:QuestCacheUpdate( info.questID, iterateObjectives, amountCompleted, objectiveFinished ) == true) or (useCache == false) then									   
 					--EMA:Print( "UPDATE:", "cache:", useCache, "QuestID", questID, "ObjectID", iterateObjectives )
 					--EMA:Print("sendingquestdata", info.title, info.questID, objectiveText, amountCompleted, finished )
-					local name = tostring("Bonus:")..(info.title)
+					local name = tostring("Bonus: ")..(info.title)
 					EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_WATCH_OBJECTIVE_UPDATE, info.questID, name, iterateObjectives, objectiveText, amountCompleted, objectiveFinished, isComplete )
 					end
 				end

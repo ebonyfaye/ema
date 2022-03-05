@@ -600,7 +600,7 @@ function EMA.TaxiRequestEarlyLanding( sender )
 		if UnitOnTaxi( "player" ) == true then
 			if EMA.LeavsTaxi == false then
 				-- Send a message to any listeners that a taxi is being taken.
-				EMA:EMASendCommandToTeam ( EMA.COMMA*ND_EXIT_TAXI )
+				EMA:EMASendCommandToTeam ( EMA.COMMAND_EXIT_TAXI )
 			end
 		end
 		EMA.LeavsTaxi = false
@@ -644,7 +644,7 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 end
 
 function EMA:UNIT_SPELLCAST_START(event, unitID, lineID, spellID,  ...  )
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("Looking for Spells.", unitID, spellID)
 	if unitID == "player" then
 	local mountIDs = C_MountJournal.GetMountIDs()
@@ -668,7 +668,7 @@ end
 
 
 function EMA:UNIT_SPELLCAST_SUCCEEDED(event, unitID, lineID, spellID, ... )
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	if EMA.db.mountWithTeam == false  or EMA.castingMount == nil or unitID ~= "player" or EMA.CommandLineMount == true then
 		return
 	end
@@ -683,7 +683,7 @@ end
 
 
 function EMA:UNIT_AURA(event, unitID, ... )
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("tester", unitID, EMA.isMounted)
 	if unitID ~= "player" or EMA.isMounted == nil then
         return
@@ -711,7 +711,7 @@ function EMA:UNIT_AURA(event, unitID, ... )
 end
 
 function EMA:TeamMount(characterName, name, mountID)
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("testTeamMount", characterName, name, mountID )
 	EMA.responding = true
 	--mount with team truned off.
@@ -782,14 +782,14 @@ function EMA:AmNotMounted()
 end
 
 function EMA:RandomMountWithTeam( info, parameters )
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	local tag = parameters
 	--EMA:Print("test", tag )
 	EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_COMMAND, tag )
 end
 
 function EMA:ReceiveRandomMountWithTeam( characterName, tag)
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then return end
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("test", characterName, tag )
 	if EMAApi.IsCharacterInGroup( EMA.characterName, tag ) == true then
 		if IsMounted() == false then

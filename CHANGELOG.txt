@@ -1,6 +1,25 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.1(0206)
+Game Version: 9.2.0/2.5.2/1.1.14
+Release Date: 05/03/2022
+
+Updated TOC
+Updated CopyRight Dates (Happy New Year)
+
+
+## Interaction
+	-- Fixed Team Mount in Live (again!)
+		-- issue#63/#55
+	-- Fixed issue #85	
+	
+## Quest-Watcher
+	-- added a space Issue#60
+
+
+
+---------------------------
 EMA Version: Release-v4.1(0205)
 Game Version: 9.1.5/2.5.2/1.1.14
 Release Date: 11/12/2021
