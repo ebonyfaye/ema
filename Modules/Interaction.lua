@@ -630,7 +630,8 @@ function EMA:PLAYER_ENTERING_WORLD(event, ... )
 	if EMA.db.autoLoot == true then
 		EMA:EnableAutoLoot()
 	end
-	if IsMounted() and EMAPrivate.Core.isEmaClassicBccBuild() == false or EMAPrivate.Core.isEmaClassicBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
+	if IsMounted() then
 		local mountIDs = C_MountJournal.GetMountIDs()
 		for i = 1, #mountIDs do
 			local creatureName, spellID, icon, active = C_MountJournal.GetMountInfoByID(mountIDs[i])

@@ -1,6 +1,18 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.1(0207)
+Game Version: 9.2.0/2.5.2/1.1.14
+Release Date: 06/03/2022
+
+## Interaction
+	-- Fixed Team Mount in TBBC (again!)
+		-- come on please be fixxed!
+
+
+
+
+---------------------------
 EMA Version: Release-v4.1(0206)
 Game Version: 9.2.0/2.5.2/1.1.14
 Release Date: 05/03/2022
