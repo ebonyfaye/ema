@@ -10,8 +10,8 @@
 --																					--
 -- ================================================================================ --
 
--- Olny Load on Live!
-if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE then
+-- Olny Load on Live/Tbc!
+if WOW_PROJECT_ID == WOW_PROJECT_CLASSIC then
 	return
 end	
 

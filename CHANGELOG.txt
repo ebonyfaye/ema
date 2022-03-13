@@ -1,6 +1,22 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.1(0208)
+Game Version: 9.2.0/2.5.2/1.1.14
+Release Date: 06/03/2022
+
+## Core
+	--updated classic toc.
+
+## Information-Classic
+	-- should now save settings.
+	
+## Guild Bank
+	-- Now Loads With TBBC	
+
+
+
+---------------------------
 EMA Version: Release-v4.1(0207)
 Game Version: 9.2.0/2.5.2/1.1.14
 Release Date: 06/03/2022

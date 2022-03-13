@@ -32,7 +32,7 @@ EMA.SharedMedia = LibStub( "LibSharedMedia-3.0" )
 
 --  Constants and Locale for this module.
 EMA.moduleName = "Information"
-EMA.settingsDatabaseName = "CurrProfileDB"
+EMA.settingsDatabaseName = "InformationClassicProfileDB"
 EMA.chatCommand = "ema-information"
 local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 EMA.parentDisplayName = L["DISPLAY"]
