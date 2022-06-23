@@ -581,6 +581,7 @@ function EMA:OnInitialize()
 		EMA.moduleName, 
 		GetConfiguration() 
 	)
+	
 	-- Create the settings frame.
 	EMA:CoreSettingsCreate()
 	EMA.settingsFrame = EMA.settingsControl.widgetSettings.frame
@@ -601,7 +602,7 @@ function EMA:OnInitialize()
 	-- Register the chat command.
 	EMA:RegisterChatCommand( EMA.chatCommand, "EMAChatCommand" )
 	-- Populate the settings.
-	EMA:SettingsRefresh()	
+	--EMA:SettingsRefresh()
 end
 --[[
 function EMA:LoadEMAModule( moduleName )

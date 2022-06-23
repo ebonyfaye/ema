@@ -1433,7 +1433,7 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	if commandName == EMA.COMMAND_FOLLOW_TRAIN then
 		EMA:ReceiveCommandFollowTrain( ... )
 	end
-	if commandName == EMA.COMMAND_FOLLOW_ME then
+	if commandName == EMA.COMMAND_FOLLOW_ME then 
 		EMA:ReceiveCommandFollowMe( characterName, ... )
 	end
 	if commandName == EMA.COMMAND_FOLLOW_STOP then

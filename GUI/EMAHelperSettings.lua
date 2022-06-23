@@ -91,6 +91,7 @@ function EMAHelperSettings:CreateSettings( settingsControl, displayName, parentD
 	
 	local widgetSettings = AceGUI:Create( "ScrollFrame" )
 	widgetSettings:SetLayout( "EMAuiFill" )
+	--widgetSettings:SetLayout( "Fill" )
 	
 	containerWidgetSettings:AddChild( widgetSettings )
 	
