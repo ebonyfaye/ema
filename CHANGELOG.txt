@@ -1,6 +1,42 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Beta-v4.2(0210)
+Game Version: 9.2.5/3.4.0/2.5.4/1.14.3
+Release Date: TBC
+
+EMA BETA 4.2 WOTLK Support
+
+## Core
+	-Added Bindings to there own Game Releases So you don't get borken KeyBindings on 
+	   -- clients that don't support some of the keybindings the game does.
+	-Added support for Wotlk classic 3.4.0
+	Added TOC File for Wotlk
+
+## Team
+	-- Added KeyBinding to "Follow" Master
+	-- Added KeyBinding to Stop Follow 
+		--Dev Note: as the follow is now a protected function you need to press the key on all clients
+		
+	
+## Follow
+	- Removed for WOTLKC
+	 -- Dev Note: Follow Is now a protected function.
+	    most of the functions in this module will nolonger work.
+	-- Follow warning nolonger defualts to this module.	
+				
+## Toon
+	-- Moved Follow Warning to this Module Under warnings
+		-- Old Installs will move over follow here you can trun it off and use the follow module.	
+
+## 	Quest-Watcher
+	-- Made changes to support Wotlk
+	
+## Quest
+	-- Made changes to support Wotlk
+
+
+---------------------------
 EMA Version: Release-v4.1(0209)
 Game Version: 9.2.5/2.5.2/1.1.14
 Release Date: 23/06/2022

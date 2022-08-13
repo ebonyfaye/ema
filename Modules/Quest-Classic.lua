@@ -1887,11 +1887,19 @@ function EMA:EMADoQuest_TrackQuest(questID, questLogIndex)
 	if EMA.isInternalCommand == false then
 		if ( not IsQuestWatched(questID) ) then
 			AddQuestWatch(questLogIndex, true)
-			AutoQuestWatch_Insert(questLogIndex, QUEST_WATCH_NO_EXPIRE)
-			QuestWatch_Update()
+			local _, _, _, tocversion = GetBuildInfo()
+			if tocversion >= 30000 and tocversion <= 40000 then
+				AddQuestWatch( questIndex )
+			else	
+				AutoQuestWatch_Insert(questLogIndex, QUEST_WATCH_NO_EXPIRE)
+				QuestWatch_Update()
+			end
 		end
-		QuestLog_SetSelection(questLogIndex)
-		QuestLog_Update()
+		local _, _, _, tocversion = GetBuildInfo()
+		if tocversion <= 30000 then
+			QuestLog_SetSelection(questLogIndex)
+			QuestLog_Update()
+		end	
 	end	
 end
 
@@ -1899,11 +1907,19 @@ end
 function EMA:EMADoQuest_UnTrackQuest(questID, questLogIndex)
 	--EMA:Print("test2", questID, questLogIndex )
 	if ( IsQuestWatched(questLogIndex) ) then
-		RemoveQuestWatch(questLogIndex)
-		QuestWatch_Update()
+		local _, _, _, tocversion = GetBuildInfo()
+		if tocversion >= 30000 and tocversion <= 40000 then
+			RemoveQuestWatch( questIndex )
+		else
+			RemoveQuestWatch(questLogIndex)
+			QuestWatch_Update()
+		end	
 	end
-	QuestLog_SetSelection(questLogIndex)
-	QuestLog_Update()
+	local _, _, _, tocversion = GetBuildInfo()
+	if tocversion <= 30000 then
+		QuestLog_SetSelection(questLogIndex)
+		QuestLog_Update()
+	end	
 end
 
 function EMA:QuestMapQuestOptions_EMA_DoAbandonQuest( sender, questID, title )
@@ -1937,7 +1953,12 @@ function EMA:CreateEMAMiniQuestLogFrame()
 	if IsAddOnLoaded("ElvUI" ) == true then  
 		frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 40, -80)
 	else
-		frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 40, -30)
+		local _, _, _, tocversion = GetBuildInfo()
+		if tocversion >= 30000 and tocversion <= 40000 then
+			frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 10 , -70 )--40, -30)
+		else
+			frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 40, -30)
+		end	
 	end	
 		frame:SetBackdrop( {
 		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 

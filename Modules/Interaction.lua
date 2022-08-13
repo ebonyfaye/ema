@@ -783,18 +783,19 @@ function EMA:AmNotMounted()
 end
 
 function EMA:RandomMountWithTeam( info, parameters )
-	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
+	--if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	local tag = parameters
 	--EMA:Print("test", tag )
 	EMA:EMASendCommandToTeam( EMA.COMMAND_MOUNT_COMMAND, tag )
 end
 
 function EMA:ReceiveRandomMountWithTeam( characterName, tag)
-	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
+	--if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
 	--EMA:Print("test", characterName, tag )
 	if EMAApi.IsCharacterInGroup( EMA.characterName, tag ) == true then
 		if IsMounted() == false then
 			C_MountJournal.SummonByID(0)
+			--CallCompanion("mount", "2")
 		else
 			if EMA.db.dismountWithTeam == true then
 				Dismount()
@@ -966,6 +967,7 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		end
 	end
 	if commandName == EMA.COMMAND_MOUNT_COMMAND then
+		
 		EMA:ReceiveRandomMountWithTeam( characterName, ... )
 	end
 end

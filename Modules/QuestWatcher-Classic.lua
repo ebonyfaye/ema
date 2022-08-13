@@ -965,15 +965,29 @@ function EMA:UpdateHideBlizzardWatchFrame()
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	if EMA.db.hideBlizzardWatchFrame == true then
-		if QuestWatchFrame:IsVisible() then
-			--QuestLogFrame:Hide()
-			QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
-			QuestWatchFrame:Hide()
+	-- WOLTK workaround!
+	local _, _, _, tocversion = GetBuildInfo()
+	if tocversion >= 30000 and tocversion <= 40000 then
+		if EMA.db.hideBlizzardWatchFrame == true then
+			if WatchFrame:IsVisible() then
+				--QuestLogFrame:Hide()
+				WatchFrame:HookScript("OnShow", function(self) self:Hide() end)
+				WatchFrame:Hide()
+			end
+		else
+			WatchFrame:Show()
 		end
 	else
-		QuestWatchFrame:Show()
-	end
+		if EMA.db.hideBlizzardWatchFrame == true then
+			if QuestWatchFrame:IsVisible() then
+				--QuestLogFrame:Hide()
+				QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
+				QuestWatchFrame:Hide()
+			end
+		else
+			QuestWatchFrame:Show()
+		end
+	end	
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1011,10 +1025,14 @@ function EMA:AddQuestWatch( questIndex )
 end
 
 function EMA:RemoveQuestWatch( questIndex )
+	local questIndex = questIndex
 	if EMA.db.enableQuestWatcher == false then
 		return
     end
-    EMA:DebugMessage( "RemoveQuestWatch", questIndex )
+    if questIndex == nil then
+		questIndex = GetQuestLogSelection()
+	end
+	--EMA:Print( "RemoveQuestWatch", questIndex )
 	EMA:UpdateHideBlizzardWatchFrame()
 	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 0.3 )
 	local title, level, suggestedGroup, isHeader, isCollapsed, isComplete, frequency, questID, startEvent, displayQuestID, isOnMap, hasLocalPOI, isTask, isStory = GetQuestLogTitle( questIndex )

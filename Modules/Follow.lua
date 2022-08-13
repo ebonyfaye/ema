@@ -10,6 +10,13 @@
 --																					--
 -- ================================================================================ --
 
+-- DO NOT lOAD FOR WOTLK.
+local _, _, _, tocversion = GetBuildInfo()
+if tocversion >= 30000 and tocversion <= 40000 then
+--if WOW_PROJECT_ID == WOW_PROJECT_WOTLKC then
+	return
+end	
+
 -- Create the addon using AceAddon-3.0 and embed some libraries.
 local EMA = LibStub( "AceAddon-3.0" ):NewAddon( 
 	"Follow", 
@@ -46,7 +53,7 @@ BINDING_NAME_FOLLOWSTOP = L["FOLLOW_STOP"]
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
-		warnWhenFollowBreaks = true, 
+		warnWhenFollowBreaks = false, 
 		followBrokenMessage = L["FOLLOW_BROKEN_MSG"],
 		autoFollowAfterCombat = false,  
 		useAfterCombatDelay = false,
@@ -708,6 +715,7 @@ end
 function EMA:OnInitialize()
 	EMA.EMAExternalNoWarnNextBreak = false
 	EMA.EMAExternalNoWarnNextSecondBreak = false	
+	-- build change moving follow to toon
 	-- An empty team list.
 	EMA.teamList = {}
 	-- Create the settings control.
@@ -759,6 +767,7 @@ end
 
 -- Called when the addon is enabled.
 function EMA:OnEnable()
+	EMA.db.warnWhenFollowBreaks = false	
 	-- WoW events.
 	EMA:RegisterEvent( "AUTOFOLLOW_BEGIN" )
 	EMA:RegisterEvent( "AUTOFOLLOW_END" )

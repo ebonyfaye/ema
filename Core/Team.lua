@@ -42,6 +42,8 @@ BINDING_NAME_TEAMINVITE = L["INVITE_GROUP"]
 BINDING_NAME_TEAMDISBAND = L["DISBAND_GROUP"]
 BINDING_NAME_TEAMMASTER = L["SET_MASTER"]
 BINDING_NAME_CLICKTOMOVE = L["BINDING_CLICK_TO_MOVE"]
+BINDING_NAME_MASTERFOLLOW = L["SET_MASTER_FOLLOW"]
+BINDING_NAME_FOLLOWSTOPNEW = L["SET_FOLLOW_STOP"]
 BINDING_NAME_MASTERFOCUS = L["SET_FOCUS_MASTER"]
 BINDING_NAME_MASTERTARGET = L["SET_MASTER_TARGET"]
 BINDING_NAME_MASTERASSIST = L["SET_MASTER_ASSIST"]
@@ -1398,13 +1400,18 @@ function EMA:UpdateMacros()
 		return
 	end
 	local characterName = ( Ambiguate(EMA.db.master, "none" ) )
+	local ownName = ( Ambiguate(EMA.characterName, "none" ) ) 
 	local focus = "/focus " .. characterName
 	local target = "/target " .. characterName
 	local assist = "/assist " .. characterName
-	--EMA:Print("test", characterName, "M", focus )
+	local follow = "/follow " .. characterName
+	local followStop = "/follow " .. ownName
+	EMA:Print("test", ownName , "M", followStop )
 	EMAFocusMaster:SetAttribute( "macrotext", focus )
 	EMATargetMaster:SetAttribute( "macrotext", target )
 	EMAAssistMaster:SetAttribute( "macrotext", assist )
+	EMAFollowMaster:SetAttribute( "macrotext", follow )
+	EMAFollowStopNew:SetAttribute( "macrotext", followStop )
 	
 	local EMAFocusOneName = ( Ambiguate(EMAApi.GetCharacterNameAtOrderPosition(1), "none" ) ) 
 		EMAFocusOne:SetAttribute( "macrotext", "/focus " .. EMAFocusOneName  )
@@ -1536,6 +1543,14 @@ function EMA:OnInitialize()
 		EMAAssistMaster = CreateFrame( "CheckButton", "EMAAssistMaster", nil, "SecureActionButtonTemplate" )
 		EMAAssistMaster:SetAttribute( "type", "macro" )
 		EMAAssistMaster:Hide()
+		
+		EMAFollowMaster = CreateFrame( "CheckButton", "EMAFollowMaster", nil, "SecureActionButtonTemplate" )
+		EMAFollowMaster:SetAttribute( "type", "macro" )
+		EMAFollowMaster:Hide()
+		
+		EMAFollowStopNew = CreateFrame( "CheckButton", "EMAFollowStopNew", nil, "SecureActionButtonTemplate" )
+		EMAFollowStopNew:SetAttribute( "type", "macro" )
+		EMAFollowStopNew:Hide()
 		
 		EMAFocusOne = CreateFrame( "CheckButton", "EMAFocusOne", nil, "SecureActionButtonTemplate" )
 		EMAFocusOne:SetAttribute( "type", "macro" )
@@ -2035,6 +2050,20 @@ function EMA:UPDATE_BINDINGS()
 	end
 	if key2 then 
 		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMATargetMaster" ) 
+	end
+	local key1, key2 = GetBindingKey( "MASTERFOLLOW" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowMaster" ) 
+	end
+	if key2 then
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowMaster" ) 
+	end
+	local key1, key2 = GetBindingKey( "FOLLOWSTOPNEW" )		
+	if key1 then 
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key1, "EMAFollowStopNew" ) 
+	end
+	if key2 then
+		SetOverrideBindingClick( EMA.keyBindingFrame, false, key2, "EMAFollowStopNew" ) 
 	end
 	local key1, key2 = GetBindingKey( "MASTERASSIST" )		
 	if key1 then 

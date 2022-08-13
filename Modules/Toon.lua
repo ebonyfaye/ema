@@ -52,6 +52,14 @@ BINDING_NAME_SETVIEW= L["SET_VIEW"]
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
+		--Follow Stuff
+		warnWhenFollowBreaks = true, 
+		followBrokenMessage = L["FOLLOW_BROKEN_MSG"],
+		warnFollowPvP = true,
+		onlyWarnIfOutOfFollowRange = false,
+		doNotWarnFollowBreakInCombat = false,
+		doNotWarnFollowBreakMembersInCombat = false,
+		-- WARNINGS
 		warnHitFirstTimeCombat = false,
 		hitFirstTimeMessage = L["ATTACKED"],
 		warnTargetNotMasterEnterCombat = false,
@@ -74,6 +82,7 @@ EMA.settings = {
 		warnCC = true,
 		CcMessage = L["CCED"],
 		warningArea = EMAApi.DefaultWarningArea(),
+		-- Toon
 		autoAcceptResurrectRequest = true,
 		autoAcceptResurrectRequestOnlyFromTeam = true,
 		acceptDeathRequests = true,
@@ -431,6 +440,78 @@ local function SettingsCreateWarnings( top )
 	local left2 = left + thirdWidth
 	local left3 = left + (thirdWidth * 2)
 	local movingTop = top
+	EMAHelperSettings:CreateHeading( EMA.settingsControlWarnings, "", movingTop, true )
+	movingTop = movingTop - headingHeight
+	EMAHelperSettings:CreateHeading( EMA.settingsControlWarnings, L["FOLLOW"], movingTop, true )
+	movingTop = movingTop - headingHeight
+	EMA.settingsControlWarnings.checkBoxWarnWhenFollowBreaks = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlWarnings, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["WARN_STOP_FOLLOWING"],
+		EMA.SettingsToggleWarnWhenFollowBreaks,
+		L["WARN_STOP_FOLLOWING_HELP"]
+	)	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControlWarnings.checkBoxWarnInFollowPvP = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlWarnings, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["WRAN_IN_PVP_COMBAT"],
+		EMA.SettingsToggleWarnWhenFollowPvP,
+		L["WRAN_IN_PVP_COMBAT_HELP"]
+	)
+	end	
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControlWarnings.checkBoxOnlyWarnIfOutOfFollowRange = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlWarnings, 
+		headingWidth, 
+		left, 
+		movingTop, 
+		L["ONLY_IF_OUTSIDE_RANGE"],
+		EMA.SettingsToggleOnlyWarnIfOutOfFollowRange,
+		L["ONLY_IF_OUTSIDE_RANGE_HELP"]
+	)	
+	movingTop = movingTop - checkBoxHeight
+	EMA.settingsControlWarnings.editBoxFollowBrokenMessage = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
+		headingWidth,
+		left,
+		movingTop,
+		L["FOLLOW_BROKEN_MESSAGE"]
+	)
+	EMA.settingsControlWarnings.editBoxFollowBrokenMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedFollowBrokenMessage )
+	movingTop = movingTop - editBoxHeight
+	
+	EMA.settingsControlWarnings.labelDoNotWarnIf = EMAHelperSettings:CreateLabel( 
+		EMA.settingsControlWarnings, 
+		headingWidth, 
+		left, 
+		movingTop,
+		L["DO_NOT_WARN"]
+	)	
+	movingTop = movingTop - labelHeight	
+	EMA.settingsControlWarnings.checkBoxDoNotWarnInCombat = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlWarnings, 
+		halfWidth, 
+		left, 
+		movingTop, 
+		L["IN_COMBAT"],
+		EMA.SettingsToggleDoNotWarnInCombat,
+		L["IN_COMBAT"]
+	)	
+	EMA.settingsControlWarnings.checkBoxDoNotWarnMembersInCombat = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControlWarnings, 
+		halfWidth, 
+		column2left, 
+		movingTop, 
+		L["ANY_MEMBER_IN_COMBAT"],
+		EMA.SettingsToggleDoNotWarnMembersInCombat
+	)	
+	movingTop = movingTop - checkBoxHeight
+	
 	EMAHelperSettings:CreateHeading( EMA.settingsControlWarnings, L["COMBAT"], movingTop, true )
 	movingTop = movingTop - headingHeight
 	EMA.settingsControlWarnings.checkBoxWarnHitFirstTimeCombat = EMAHelperSettings:CreateCheckBox( 
@@ -684,6 +765,17 @@ function EMA:OnEMAProfileChanged()
 end
 
 function EMA:SettingsRefresh()
+	EMA.settingsControlWarnings.checkBoxWarnWhenFollowBreaks:SetValue( EMA.db.warnWhenFollowBreaks )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA.settingsControlWarnings.checkBoxWarnInFollowPvP:SetValue( EMA.db.warnFollowPvP )
+	end
+	EMA.settingsControlWarnings.checkBoxOnlyWarnIfOutOfFollowRange:SetValue( EMA.db.onlyWarnIfOutOfFollowRange )
+	EMA.settingsControlWarnings.editBoxFollowBrokenMessage:SetText( EMA.db.followBrokenMessage )
+	
+	EMA.settingsControlWarnings.checkBoxDoNotWarnInCombat:SetValue( EMA.db.doNotWarnFollowBreakInCombat )
+	EMA.settingsControlWarnings.checkBoxDoNotWarnMembersInCombat:SetValue( EMA.db.doNotWarnFollowBreakMembersInCombat )
+	
+	
 	EMA.settingsControlWarnings.checkBoxWarnHitFirstTimeCombat:SetValue( EMA.db.warnHitFirstTimeCombat )
 	EMA.settingsControlWarnings.editBoxHitFirstTimeMessage:SetText( EMA.db.hitFirstTimeMessage )
 	EMA.settingsControlWarnings.checkBoxWarnTargetNotMasterEnterCombat:SetValue( EMA.db.warnTargetNotMasterEnterCombat )
@@ -823,6 +915,38 @@ function EMA:SettingsTogglePartySyncRequest(event, checked )
 end	
 
 -- Warnings Toggles
+
+function EMA:SettingsToggleWarnWhenFollowBreaks( event, checked )
+	EMA.db.warnWhenFollowBreaks = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleWarnWhenFollowPvP( event, checked )
+	EMA.db.warnFollowPvP = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleOnlyWarnIfOutOfFollowRange( event, checked )
+	EMA.db.onlyWarnIfOutOfFollowRange = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:EditBoxChangedFollowBrokenMessage( event, text )
+	EMA.db.followBrokenMessage = text
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleDoNotWarnInCombat( event, checked )
+	EMA.db.doNotWarnFollowBreakInCombat = checked
+	EMA:SettingsRefresh()
+end
+
+function EMA:SettingsToggleDoNotWarnMembersInCombat( event, checked )
+	EMA.db.doNotWarnFollowBreakMembersInCombat = checked
+	EMA:SettingsRefresh()
+end
+
+--combat
 
 function EMA:SettingsToggleWarnHitFirstTimeCombat( event, checked )
 	EMA.db.warnHitFirstTimeCombat = checked
@@ -964,12 +1088,21 @@ end
 
 -- Initialise the module.
 function EMA:OnInitialize()
+	EMA.EMAExternalNoWarnNextBreak = false
+	EMA.EMAExternalNoWarnNextSecondBreak = false
+	
 	-- Create the settings control.
 	SettingsCreate()
 	-- Initialise the EMAModule part of this module.
 	EMA:EMAModuleInitialize( EMA.settingsControlWarnings.widgetSettings.frame )
 	-- Populate the settings.
 	EMA:SettingsRefresh()
+	-- Following flag.
+	EMA.isFollowing = false
+	EMA.warnFollowPvPCombat = true
+	EMA.PvPTimerReset = nil
+	-- Set to true if EMA initiated a follow.
+	EMA.SetFollowTarget = false
 	-- Flag set when told the master about health falling below a certain percentage.
 	EMA.toldMasterAboutHealth = false
 	-- Flag set when told the master about mana falling below a certain percentage.
@@ -991,6 +1124,14 @@ end
 function EMA:OnEnable()
 	EMA.isInternalCommand = false
 	-- WoW events.
+	EMA:RegisterEvent( "AUTOFOLLOW_BEGIN" )
+	EMA:RegisterEvent( "AUTOFOLLOW_END" )
+	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
+	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA:RegisterEvent( "UI_ERROR_MESSAGE", "PVP_FOLLOW" )
+	end	
+	
 	EMA:RegisterEvent( "UNIT_COMBAT" )
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )
@@ -1038,6 +1179,13 @@ end
 function EMA:EMAOnSettingsReceived( characterName, settings )	
 	if characterName ~= EMA.characterName then
 		-- Update the settings.
+		EMA.db.warnWhenFollowBreaks = settings.warnWhenFollowBreaks
+		EMA.db.followBrokenMessage = settings.followBrokenMessage
+		EMA.db.doNotWarnFollowBreakInCombat = settings.doNotWarnFollowBreakInCombat
+		EMA.db.doNotWarnFollowBreakMembersInCombat = settings.doNotWarnFollowBreakMembersInCombat
+		EMA.db.warnFollowPvP = settings.warnFollowPvP		
+		EMA.db.onlyWarnIfOutOfFollowRange = settings.onlyWarnIfOutOfFollowRange
+		
 		EMA.db.warnHitFirstTimeCombat = settings.warnHitFirstTimeCombat
 		EMA.db.hitFirstTimeMessage = settings.hitFirstTimeMessage
 		EMA.db.warnTargetNotMasterEnterCombat = settings.warnTargetNotMasterEnterCombat
@@ -1084,6 +1232,128 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA:Print( L["SETTINGS_RECEIVED_FROM_A"]( characterName ) )
 	end
 end
+
+-- new follow
+function EMA:AUTOFOLLOW_BEGIN( event, target, ... )	
+	EMA.currentFollowTarget = target
+	EMA.isFollowing = true	
+end
+
+function EMA:AUTOFOLLOW_END( event, ... )
+	EMA.isFollowing = false
+	EMA:ScheduleTimer( "AutoFollowEndUpdate", 0.5 )
+end
+
+-- checks the follow system Msg, is there under 1 always 1 unless it fadeing.
+function EMA:AutoFollowEndUpdate()
+	local alpha = AutoFollowStatus:GetAlpha()
+	--EMA:Print("updatetest", test)
+	if alpha < 1 then
+		--EMA:Print("canSend")
+		EMA:AutoFollowEndSend()
+	end
+end
+
+function EMA:AutoFollowEndSend()
+	-- If warn if auto follow breaks is on...
+	local canWarn = false
+	EMA:Print("test", canWarn)
+	if EMA.db.warnWhenFollowBreaks == true then
+		if EMA.SetFollowTarget == false then
+			canWarn = true			
+		end
+	end
+	-- Do not warn if on Taxi
+	if UnitOnTaxi("player") == true then
+			--EMA:Print("taxi")
+			canWarn = false
+	end	
+	--Do not warn if in combat?
+	if EMA.db.doNotWarnFollowBreakInCombat == true and EMA.outOfCombat == false then
+		--EMA:Print("Do Not warn in comabt")
+		canWarn = false
+	end
+	--Do not warn if a passenger in a vehicle. -- not in classic or bc
+	
+	local _, _, _, tocversion = GetBuildInfo()
+	if tocversion >= 10000 and tocversion <= 40000 then	
+		if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
+			--EMA:Print("UnitInVehicle")
+			canWarn = false
+		end
+	end	
+	
+	-- Do not warn if any other members in combat?
+	if EMA.db.doNotWarnFollowBreakMembersInCombat == true and EMA:AreTeamMembersInCombat() == true or UnitAffectingCombat("player") == true then
+		--EMA:Print("doNotWarnFollowBreakMembersInCombat")
+		canWarn = false
+	end
+	-- Check to see if range warning is in effect. This olny works in a party it seems!!
+	if EMA.db.onlyWarnIfOutOfFollowRange == true then
+		if CheckInteractDistance( EMA.currentFollowTarget, 4 ) then
+			--EMA:Print("CheckInteractDistance")
+			canWarn = false
+		end
+	end	
+	if EMA.EMAExternalNoWarnNextBreak == true then
+		--EMA:Print("test", EMA.EMAExternalNoWarnNextBreak )
+		canWarn = false		
+		EMA.EMAExternalNoWarnNextBreak = false
+	end
+	-- If allowed to warn, then warn.
+	if canWarn == true then
+		EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.followBrokenMessage, false )
+	end
+	EMA.SetFollowTarget = false		
+end
+
+function EMA:PLAYER_REGEN_ENABLED()
+	EMA.outOfCombat = true
+end
+
+function EMA:PLAYER_REGEN_DISABLED()
+	EMA.outOfCombat = false
+end
+
+function EMA:PVP_FOLLOW(event, arg1, message, ...  )
+	--EMA:Print("test", message, EMA.warnFollowPvPCombat )
+	if EMA.db.warnFollowPvP == false and EMA.db.warnWhenFollowBreaks == false and EMAPrivate.Core.isEmaClassicBccBuild() == true then
+		return
+	end
+	if message == ERR_INVALID_FOLLOW_TARGET_PVP_COMBAT or message == ERR_INVALID_FOLLOW_PVP_COMBAT then
+		
+		if EMA.warnFollowPvPCombat == true then
+			EMA:EMASendMessageToTeam( EMA.db.warningArea, L["PVP_FOLLOW_ERR"], false )
+			EMA.warnFollowPvPCombat = false
+			EMA:ScheduleTimer("ResetPvpWarn", 10, nil )
+			EMA.PvPTimerReset = EMA:EMASendMessageToTeam( EMA.db.warningArea, L["PVP_FOLLOW_ERR"], false )
+		end
+	end
+end
+
+function EMA:ResetPvpWarn()
+	EMA.warnFollowPvPCombat = true
+	EMA:CancelTimer( EMA.PvPTimerReset )
+end	
+
+function EMA:AreTeamMembersInCombat()
+	local inCombat = false
+	for index, characterName in EMAApi.TeamListOrdered() do
+		-- Is the team member online?
+		if EMAApi.GetCharacterOnlineStatus( characterName ) == true then
+			-- Yes, is the character in combat?
+			if UnitAffectingCombat( Ambiguate( characterName, "none" ) ) then
+			inCombat = true
+				break
+			end
+		end
+	end
+	return inCombat
+end
+
+---
+
+
 
 function EMA:UNIT_COMBAT( event, unitAffected, action )
 	if EMA.db.warnHitFirstTimeCombat == false then

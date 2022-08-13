@@ -30,6 +30,12 @@
 	<Binding name="MASTERASSIST" category="EMA">
 		--[[dummy]]
 	</Binding>
+	<Binding name="MASTERFOLLOW" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOLLOWSTOPNEW" category="EMA">
+		--[[dummy]]
+	</Binding>
 	<Binding name="FOCUS1" category="EMA-Set-Team-Focus">
 		--[[dummy]]
 	</Binding>
@@ -73,10 +79,6 @@
 		--[[dummy]]
 	</Binding>
 	<Binding name="FOLLOWSTOP" category="EMA">
-		--[[dummy]]
-	</Binding>
-	
-	<Binding name="TEAMMOUNT" header="MOUNT" category="EMA">
 		--[[dummy]]
 	</Binding>
 	

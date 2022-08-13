@@ -46,7 +46,6 @@ local AceGUI = LibStub("AceGUI-3.0")
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
 local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 
-
 -- Create frame for EMA Settings.
 EMAPrivate.SettingsFrame = {}
 EMAPrivate.SettingsFrame.Widget = AceGUI:Create( "EMAWindow" )
@@ -319,7 +318,7 @@ local function isEmaClassicBuild()
 	return 	classic
 end	
 
--- EMA TBC Build
+-- EMA WOTLK Build
 local function isEmaClassicBccBuild()
 	local classic = false
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then

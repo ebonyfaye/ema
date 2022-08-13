@@ -60,7 +60,7 @@ local str_match, format, tinsert, tremove = string.match, format, tinsert, tremo
 local function isClassicBuild()
 	local isClassicBuild = false
 	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 10000 and tocversion <= 30000 then
+	if tocversion >= 10000 and tocversion <= 40000 then
 		isClassicBuild = true
 	end
 	return isClassicBuild

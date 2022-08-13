@@ -1,0 +1,142 @@
+<!--
+				EMA - ( Ebony's MultiBoxing Assistant )      
+				Current Author: Jennifer Cally (Ebony)				
+				License: MIT License 2018-2020 Jennifer Cally	
+				
+				Some Code Used from 'Jamba' that is 
+				Released under the MIT License
+				'Jamba' Copyright 2008-2015  Michael "Jafula" Miller
+-->
+<Bindings>
+	<!-- Team Bindings -->
+	<Binding name="TEAMINVITE" header="TEAM" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="TEAMDISBAND" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="TEAMMASTER" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="CLICKTOMOVE" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="MASTERFOCUS" header="ASTERISK" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="MASTERTARGET" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="MASTERASSIST" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="MASTERFOLLOW" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOLLOWSTOPNEW" category="EMA">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS1" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS2" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS3" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS4" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS5" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS6" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS7" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS8" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS9" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	<Binding name="FOCUS10" category="EMA-Set-Team-Focus">
+		--[[dummy]]
+	</Binding>
+	
+	<!-- Interaction Bindings-->
+	<Binding name="TEAMMOUNT" header="MOUNT" category="EMA">
+		--[[dummy]]
+	</Binding>
+	
+	<!-- ItemUse Bindings-->
+	<Binding name="ITEMUSE1" header="ITEMUSE" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE2" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE3" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE4" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE5" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE6" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE7" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE8" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE9" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE10" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE11" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE12" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE13" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE14" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE15" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE16" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE17" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE18" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE19" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	<Binding name="ITEMUSE20" category="EMA-Item Use">
+		--[[dummy]]
+	</Binding>
+	
+	<!-- Toon Bindings-->
+	<Binding name="SETVIEW" header="TOON" category="EMA">
+		--[[dummy]]
+	</Binding>
+	
+</Bindings>
