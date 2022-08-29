@@ -1,6 +1,30 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.2(0212)
+Game Version: 9.2.7/3.4.0/2.5.4/1.14.3
+Release Date: 29/08/22
+
+EMA BETA 4.2 WOTLK Support
+
+## core
+	Updated TOC for live
+
+## Toon
+	
+	-- Removed some debug code when leader of follow updates.
+	-- fixed a bug where follow updates was spamming follow borken whern in a Vehicle they was not in contal off.
+	
+## Disaply-Team
+	
+	-- When in a Vehicle Will no longer spam the follow bar.
+
+
+
+
+
+---------------------------
+
 EMA Version: Beta-v4.2(0210)
 Game Version: 9.2.5/3.4.0/2.5.4/1.14.3
 Release Date: TBC
@@ -9,14 +33,14 @@ EMA BETA 4.2 WOTLK Support
 
 ## Core
 	-Added Bindings to there own Game Releases So you don't get borken KeyBindings on 
-	   -- clients that don't support some of the keybindings the game does.
+	   -- clients that don't support some of the keybindings the client offers.
 	-Added support for Wotlk classic 3.4.0
 	Added TOC File for Wotlk
 
 ## Team
 	-- Added KeyBinding to "Follow" Master
 	-- Added KeyBinding to Stop Follow 
-		--Dev Note: as the follow is now a protected function you need to press the key on all clients
+		--Dev Note: as the follow is now a protected function you need to press the key on all Game clients
 		
 	
 ## Follow

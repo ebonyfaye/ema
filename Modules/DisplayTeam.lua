@@ -2384,6 +2384,15 @@ function EMA:SendFollowStatusUpdateCommand( isFollowing )
 		if isFollowing == true then
 			canSend = true	
 		end	
+		local _, _, _, tocversion = GetBuildInfo()
+		if tocversion >= 30000 then	
+			if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
+				EMA:Print("UnitInVehicle")
+				canSend = false
+			end
+		end	
+		
+		
 		-- Check to see if EMAFollow is enabled and follow strobing is on.  If this is the case then
 		-- do not send the follow update.
 		if EMAApi.Follow ~= nil then

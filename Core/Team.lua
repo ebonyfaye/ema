@@ -1406,7 +1406,7 @@ function EMA:UpdateMacros()
 	local assist = "/assist " .. characterName
 	local follow = "/follow " .. characterName
 	local followStop = "/follow " .. ownName
-	EMA:Print("test", ownName , "M", followStop )
+	--EMA:Print("test", ownName , "M", followStop )
 	EMAFocusMaster:SetAttribute( "macrotext", focus )
 	EMATargetMaster:SetAttribute( "macrotext", target )
 	EMAAssistMaster:SetAttribute( "macrotext", assist )

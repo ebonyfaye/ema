@@ -1257,7 +1257,7 @@ end
 function EMA:AutoFollowEndSend()
 	-- If warn if auto follow breaks is on...
 	local canWarn = false
-	EMA:Print("test", canWarn)
+	--EMA:Print("test", canWarn)
 	if EMA.db.warnWhenFollowBreaks == true then
 		if EMA.SetFollowTarget == false then
 			canWarn = true			
@@ -1276,7 +1276,7 @@ function EMA:AutoFollowEndSend()
 	--Do not warn if a passenger in a vehicle. -- not in classic or bc
 	
 	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 10000 and tocversion <= 40000 then	
+	if tocversion >= 30000 then	
 		if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
 			--EMA:Print("UnitInVehicle")
 			canWarn = false
