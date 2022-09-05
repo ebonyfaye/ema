@@ -328,6 +328,9 @@ local function isEmaClassicBccBuild()
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
 		classic = true
 	end
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC then
+		classic = true
+	end
 	return classic
 end	
 

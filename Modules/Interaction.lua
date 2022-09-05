@@ -24,6 +24,7 @@ local EMA = LibStub( "AceAddon-3.0" ):NewAddon(
 local EMAUtilities = LibStub:GetLibrary( "EbonyUtilities-1.0" )
 local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local LibAuras = LibStub:GetLibrary("LibAuras")
+local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
 
 --  Constants and Locale for this module.
 EMA.moduleName = "Interaction"
@@ -820,11 +821,15 @@ function EMA:doLoot( tries )
 	if tries == nil then
 		tries = 0
 	end
+	local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+	if numberFreeSlots <= 0 then 
+		return 
+	end
 	local numloot = GetNumLootItems()
 	if numloot ~= 0 then
 		for slot = 1, numloot do
 			local _, name, _, _, lootQuality, locked = GetLootSlotInfo(slot)
-			--EMA:Print("items", slot, locked, name, tries)
+			--EMA:Print("items", slot, locked, name, tries, numberFreeSlots)
 			if locked ~= nil and ( not locked ) then
 				--DEBUG
 					--EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , "Minion of Grumpus")
@@ -857,7 +862,7 @@ function EMA:doLoot( tries )
 end
 
 function EMA:doLootLoop( tries )
-	--EMA:Print("loop", tries)
+	EMA:Print("loop", tries)
 	EMA:ScheduleTimer("doLoot", 0.6, tries )
 end
 

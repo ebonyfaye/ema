@@ -1,11 +1,27 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.2(0213)
+Game Version: 9.2.7/3.4.0/2.5.4/1.14.3
+Release Date: 5/09/22
+
+## Core
+	-- Nice to blizzard to hotfix somthing that should of been in beta!
+		"_G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC"
+
+
+## interaction
+	-- Auto Loot should no-longer try to keep looting when your bags are full!	
+
+
+
+
+---------------------------
 EMA Version: Release-v4.2(0212)
 Game Version: 9.2.7/3.4.0/2.5.4/1.14.3
 Release Date: 29/08/22
 
-EMA BETA 4.2 WOTLK Support
+EMA Beta 4.2 WOTLK Support
 
 ## core
 	Updated TOC for live
