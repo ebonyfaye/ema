@@ -862,7 +862,7 @@ function EMA:doLoot( tries )
 end
 
 function EMA:doLootLoop( tries )
-	EMA:Print("loop", tries)
+	--EMA:Print("loop", tries)
 	EMA:ScheduleTimer("doLoot", 0.6, tries )
 end
 

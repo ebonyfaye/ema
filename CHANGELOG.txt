@@ -1,6 +1,17 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.2(0214)
+Game Version: 9.2.7/3.4.0/2.5.4/1.14.3
+Release Date: 9/09/22
+
+## interaction
+	-- Removed some debug code issue #71
+
+
+
+
+---------------------------
 EMA Version: Release-v4.2(0213)
 Game Version: 9.2.7/3.4.0/2.5.4/1.14.3
 Release Date: 5/09/22
