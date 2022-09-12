@@ -470,7 +470,12 @@ end
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	EMA:RegisterEvent( "MERCHANT_SHOW" )
-	EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true)
+	if EMAPrivate.Core.isEmaBetaBuild() == false then
+		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", "EmaContainerFrameItem", true )
+	else
+		-- Needs to update for 10.x
+		--EMA:RawHook( "ContainerFrameItemButtonMixin:OnModifiedClick", "EMAContainerFrameItem", true )
+	end
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end

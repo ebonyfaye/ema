@@ -1,6 +1,23 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Beta-v5.0(0215)
+Game Version: 9.2.7/3.4.0/2.5.4/1.14.3/10.0.2
+Release Date: TBC
+
+## Core
+	--Changed resize to work with 10.x
+	--All Parts using ContainerFrameItemButton_OnModifiedClick needs to be added for 10.x removed for now (Bank/sell, etc....)
+
+## Team
+	-- Fixed keybindings for 10.x
+
+## item-Use
+	-- Updated code for 10.x
+
+
+
+---------------------------
 EMA Version: Release-v4.2(0214)
 Game Version: 9.2.7/3.4.0/2.5.4/1.14.3
 Release Date: 9/09/22

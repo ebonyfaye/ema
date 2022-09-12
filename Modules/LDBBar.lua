@@ -27,7 +27,10 @@ local baseFont = CreateFont("baseFont")
 
 -- Check for ElvUI
 if (ElvUI == nil) or (ElvUI == '') then 
-	baseFont:SetFont(GameTooltipText:GetFont(), 10)
+	-- Need fixing for 10.x
+	if EMAPrivate.Core.isEmaBetaBuild() == false then
+		baseFont:SetFont(GameTooltipText:GetFont(), 10)
+	end	
 elseif LibSharedMedia:IsValid('font', ElvUI[1].db.general.font) then
 	baseFont:SetFont(LibSharedMedia:Fetch('font', ElvUI[1].db.general.font), 10)
 else

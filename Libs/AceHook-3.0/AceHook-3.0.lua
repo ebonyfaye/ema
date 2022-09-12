@@ -318,7 +318,6 @@ function AceHook:RawHook(object, method, handler, hookSecure)
 	if handler == true then
 		handler, hookSecure = nil, true
 	end
-
 	hook(self, object, method, handler, false, false, true, hookSecure or false,  "Usage: RawHook([object], method, [handler], [hookSecure])")
 end
 

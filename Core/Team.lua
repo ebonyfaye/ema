@@ -1221,6 +1221,7 @@ end
 -- Invite team to party.
 
 function EMA.DoTeamPartyInvite()
+	--EMA:Print("teamInvite", EMA.inviteList[EMA.currentInviteCount])	
 	if EMAPrivate.Core.isEmaClassicBuild() == true or EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
 	else	
@@ -1511,85 +1512,142 @@ function EMA:OnInitialize()
 	-- Adds DefaultGroups to GUI
 	EMA.characterGroupList = {}
 	-- Key bindings.
-	if InCombatLockdown()  == false then
-		EMAInvite = CreateFrame( "CheckButton", "EMAInvite", nil, "SecureActionButtonTemplate" )
+		if InCombatLockdown()  == false then
+		EMAInvite = CreateFrame( "CheckButton", "EMAInvite", nil, "SecureActionButtonTemplate , SecureHandlerBaseTemplate" )
 		EMAInvite:SetAttribute( "type", "macro" )
 		EMAInvite:SetAttribute( "macrotext", "/ema-team invite" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAInvite:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAInvite:Hide()	
 		
 		EMADisband = CreateFrame( "CheckButton", "EMADisband", nil, "SecureActionButtonTemplate" )
 		EMADisband:SetAttribute( "type", "macro" )
 		EMADisband:SetAttribute( "macrotext", "/ema-team disband" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMADisband:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMADisband:Hide()
 		
 		EMAMaster = CreateFrame( "CheckButton", "EMAMaster", nil, "SecureActionButtonTemplate" )
 		EMAMaster:SetAttribute( "type", "macro" )
 		EMAMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+			EMAMaster:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAMaster:Hide()
 		
 		EMAClickToMove = CreateFrame( "CheckButton", "EMAClickToMove", nil, "SecureActionButtonTemplate" )
 		EMAClickToMove:SetAttribute( "type", "macro" )
 		EMAClickToMove:SetAttribute( "macrotext", "/ema-team ctm all" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAClickToMove:RegisterForClicks( "AnyUp", "AnyDown" )
+		end	
 		EMAClickToMove:Hide()		
 		
 		EMAFocusMaster = CreateFrame( "CheckButton", "EMAFocusMaster", nil, "SecureActionButtonTemplate" )
 		EMAFocusMaster:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusMaster:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusMaster:Hide()
 		
 		EMATargetMaster = CreateFrame( "CheckButton", "EMATargetMaster", nil, "SecureActionButtonTemplate" )
 		EMATargetMaster:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMATargetMaster:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMATargetMaster:Hide()	
 		
 		EMAAssistMaster = CreateFrame( "CheckButton", "EMAAssistMaster", nil, "SecureActionButtonTemplate" )
 		EMAAssistMaster:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAAssistMaster:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAAssistMaster:Hide()
 		
 		EMAFollowMaster = CreateFrame( "CheckButton", "EMAFollowMaster", nil, "SecureActionButtonTemplate" )
 		EMAFollowMaster:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFollowMaster:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFollowMaster:Hide()
 		
 		EMAFollowStopNew = CreateFrame( "CheckButton", "EMAFollowStopNew", nil, "SecureActionButtonTemplate" )
 		EMAFollowStopNew:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFollowStopNew:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFollowStopNew:Hide()
 		
 		EMAFocusOne = CreateFrame( "CheckButton", "EMAFocusOne", nil, "SecureActionButtonTemplate" )
 		EMAFocusOne:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusOne:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusOne:Hide()
 		
 		EMAFocusTwo = CreateFrame( "CheckButton", "EMAFocusTwo", nil, "SecureActionButtonTemplate" )
 		EMAFocusTwo:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+			EMAFocusTwo:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusTwo:Hide()
 		
 		EMAFocusThree = CreateFrame( "CheckButton", "EMAFocusThree", nil, "SecureActionButtonTemplate" )
 		EMAFocusThree:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusThree:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusThree:Hide()
 		
 		EMAFocusFour = CreateFrame( "CheckButton", "EMAFocusFour", nil, "SecureActionButtonTemplate" )
 		EMAFocusFour:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusFour:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusFour:Hide()
 		
 		EMAFocusFive = CreateFrame( "CheckButton", "EMAFocusFive", nil, "SecureActionButtonTemplate" )
 		EMAFocusFive:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusFive:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusFive:Hide()
 		
 		EMAFocusSix = CreateFrame( "CheckButton", "EMAFocusSix", nil, "SecureActionButtonTemplate" )
 		EMAFocusSix:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+			EMAFocusSix:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusSix:Hide()
 		
 		EMAFocusSeven = CreateFrame( "CheckButton", "EMAFocusSeven", nil, "SecureActionButtonTemplate" )
 		EMAFocusSeven:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusSeven:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusSeven:Hide()
 		
 		EMAFocusEight = CreateFrame( "CheckButton", "EMAFocusEight", nil, "SecureActionButtonTemplate" )
 		EMAFocusEight:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusEight:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusEight:Hide()
 		
 		EMAFocusNine = CreateFrame( "CheckButton", "EMAFocusNine", nil, "SecureActionButtonTemplate" )
 		EMAFocusNine:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusNine:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusNine:Hide()
 		
 		EMAFocusTen = CreateFrame( "CheckButton", "EMAFocusTen", nil, "SecureActionButtonTemplate" )
 		EMAFocusTen:SetAttribute( "type", "macro" )
+		if EMAPrivate.Core.isEmaBetaBuild() == true then
+			EMAFocusTen:RegisterForClicks( "AnyUp", "AnyDown" )
+		end
 		EMAFocusTen:Hide()
 		
 		EMA:UpdateMacros()

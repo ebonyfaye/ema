@@ -308,6 +308,16 @@ local function isEmaAlphaBuild()
 		return false
 	end	
 end
+-- WoW 10.0
+local function isEmaBetaBuild()
+	local beta = false
+	local WoW10 = select(4, GetBuildInfo()) >= 100000
+	if WoW10 == true then
+		beta = true
+	end
+	return beta
+end
+
 -- EMA classic build
 local function isEmaClassicBuild()
 	local classic = false
@@ -837,7 +847,7 @@ EMAPrivate.Core.SendCommandToToon = SendCommandToToon
 EMAPrivate.Core.OnCommandReceived = OnCommandReceived
 EMAPrivate.Core.isEmaClassicBuild = isEmaClassicBuild
 EMAPrivate.Core.isEmaClassicBccBuild = isEmaClassicBccBuild
-
+EMAPrivate.Core.isEmaBetaBuild = isEmaBetaBuild
 EMAPrivate.Core.isEmaAlphaBuild = isEmaAlphaBuild
 EMAPrivate.Core.SendSettingsAllModules = EMA.SendSettingsAllModules
 EMAPrivate.Core.RefreshSettingsAllModules = EMA.RefreshSettingsAllModules

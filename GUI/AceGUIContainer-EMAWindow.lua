@@ -214,10 +214,13 @@ local function Constructor()
 	frame:SetResizable(true)
 	--frame:SetFrameStrata("FULLSCREEN_DIALOG")
 	frame:SetFrameStrata("HIGH")
-
 	frame:SetBackdrop(FrameBackdrop)
 	frame:SetBackdropColor(0, 0, 0, 1)
-	frame:SetMinResize(400, 200)
+	if frame.SetResizeBounds then -- WoW 10.0
+		frame:SetResizeBounds(400,200)
+	else
+		frame:SetMinResize(400,200)
+	end
 	frame:SetToplevel(true)
 	frame:SetScript("OnHide", Frame_OnClose)
 	frame:SetScript("OnMouseDown", Frame_OnMouseDown)

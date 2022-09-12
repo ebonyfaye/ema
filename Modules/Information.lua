@@ -12,7 +12,7 @@
 
 -- Only Load for Live
 if _G.WOW_PROJECT_ID ~= _G.WOW_PROJECT_MAINLINE then
-	return
+	return 
 end	
 
 -- Create the addon using AceAddon-3.0 and embed some libraries.
@@ -1101,8 +1101,14 @@ function EMA:CreateEMAToonCurrencyListFrame()
 			EMA.db.currencyFrameXOffset = xOffset
 			EMA.db.currencyFrameYOffset = yOffset
 	end	)
-	frame:SetWidth( 500 )
-	frame:SetHeight( 200 )
+	--frame:SetWidth( 500 )
+	--frame:SetHeight( 200 )
+	if frame.SetResizeBounds then -- WoW 10.0
+		frame:SetResizeBounds(500,200)
+	else
+		frame:SetWidth( 500 )
+		frame:SetHeight( 200 )
+	end
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.currencyFramePoint, UIParent, EMA.db.currencyFrameRelativePoint, EMA.db.currencyFrameXOffset, EMA.db.currencyFrameYOffset )
 

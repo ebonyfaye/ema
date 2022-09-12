@@ -66,6 +66,8 @@ local function isClassicBuild()
 	return isClassicBuild
 end	
 
+local WoW10 = select(4, GetBuildInfo()) >= 100000
+
 local KeyBound = LibStub("LibKeyBound-1.0", true)
 local CBH = LibStub("CallbackHandler-1.0")
 local LBG = LibStub("LibButtonGlow-1.0", true)
@@ -124,7 +126,8 @@ local ButtonRegistry, ActiveButtons, ActionButtons, NonActionButtons = lib.butto
 
 local Update, UpdateButtonState, UpdateUsable, UpdateCount, UpdateCooldown, UpdateTooltip, UpdateNewAction, ClearNewActionHighlight
 local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, UpdateOverlayGlow
-local UpdateFlyout, ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
+--local UpdateFlyout
+local ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
 local ShowOverlayGlow, HideOverlayGlow
 local EndChargeCooldown
 local UpdateRange									 
@@ -180,7 +183,11 @@ function lib:CreateButton(id, name, header, config)
 
 	local button = setmetatable(CreateFrame("CheckButton", name, header, "SecureActionButtonTemplate, ActionButtonTemplate"), Generic_MT)
 	button:RegisterForDrag("LeftButton", "RightButton")
-	button:RegisterForClicks("AnyUp")
+	if WoW10 then
+		button:RegisterForClicks("AnyDown", "AnyUp")
+	else
+		button:RegisterForClicks("AnyUp")
+	end
 
 	-- Frame Scripts
 	button:SetScript("OnEnter", Generic.OnEnter)
@@ -694,7 +701,9 @@ function Generic:UpdateConfig(config)
 	UpdateHotkeys(self)
 	UpdateGrid(self)
 	Update(self, true)
-	self:RegisterForClicks(self.config.clickOnDown and "AnyDown" or "AnyUp")
+	if not WoW10 then
+		self:RegisterForClicks(self.config.clickOnDown and "AnyDown" or "AnyUp")
+	end
 end
 
 -----------------------------------------------------------
@@ -1225,21 +1234,34 @@ function Update(self, fromUpdateConfig)
 		self.icon:SetTexture(texture)
 		self.icon:Show()
 		self.rangeTimer = - 1
-		self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
-
-		if not self.LBFSkinned and not self.MasqueSkinned then
-			self.NormalTexture:SetTexCoord(0, 0, 0, 0)
+		if not WoW10 then
+			self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
+			if not self.LBFSkinned and not self.MasqueSkinned then
+				self.NormalTexture:SetTexCoord(0, 0, 0, 0)
+			end
 		end
 	else
 		self.icon:Hide()
 		self.cooldown:Hide()
 		self.rangeTimer = nil
-		self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot")
-
-		if not self.LBFSkinned and not self.MasqueSkinned then
-			self.NormalTexture:SetTexCoord(-0.15, 1.15, -0.15, 1.17)
+		if self.HotKey:GetText() == RANGE_INDICATOR then
+			self.HotKey:Hide()
+		else
+			self.HotKey:SetVertexColor(0.75, 0.75, 0.75)
+		end
+		if not WoW10 then
+			self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot")
+			if not self.LBFSkinned and not self.MasqueSkinned then
+				self.NormalTexture:SetTexCoord(-0.15, 1.15, -0.15, 1.17)
+			end
 		end
 	end
+		
+		self:SetNormalTexture("Interface\\Buttons\\UI-Quickslot2")
+
+		if not self.LBFSkinned and not self.MasqueSkinned then
+			self.NormalTexture:SetTexCoord(0, 0, 0, 0)
+		end
 
 	self:UpdateLocal()
 
@@ -1247,7 +1269,7 @@ function Update(self, fromUpdateConfig)
 
 	UpdateCount(self)
 
-	UpdateFlyout(self)
+	--UpdateFlyout(self)
 
 	UpdateOverlayGlow(self)
 
@@ -1553,6 +1575,7 @@ function UpdateNewAction(self)
 end
 
 -- Hook UpdateFlyout so we can use the blizzy templates
+--[[
 hooksecurefunc("ActionButton_UpdateFlyout", function(self, ...)
 	if ButtonRegistry[self] then
 		UpdateFlyout(self)
@@ -1602,7 +1625,7 @@ function UpdateFlyout(self)
 	end
 	self.FlyoutArrow:Hide()
 end
-
+]]
 function UpdateRangeTimer()
 	rangeTimer = -1
 end
