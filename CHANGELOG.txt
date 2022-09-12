@@ -1,7 +1,7 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: Beta-v5.0(0215)
+EMA Version: Beta-v4.3(0215)
 Game Version: 9.2.7/3.4.0/2.5.4/1.14.3/10.0.2
 Release Date: TBC
 
