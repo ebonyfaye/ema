@@ -166,7 +166,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "MAIL_CLOSED" )
 	EMA:RegisterEvent( "MAIL_SEND_SUCCESS")
 	if EMAPrivate.Core.isEmaBetaBuild() == false then
-		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", "EmaContainerFrameItem", true )
+		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
 		-- Needs to update for 10.x
 		--EMA:RawHook( "ContainerFrameItemButtonMixin:OnModifiedClick", "EMAContainerFrameItem", true )

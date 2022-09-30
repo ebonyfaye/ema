@@ -1,5 +1,5 @@
 --[[
-Copyright (c) 2015-2017, Hendrik "nevcairiel" Leppkes <h.leppkes@gmail.com>
+Copyright (c) 2015-2020, Hendrik "nevcairiel" Leppkes <h.leppkes@gmail.com>
 
 All rights reserved.
 
@@ -28,7 +28,7 @@ NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 ]]
 local MAJOR_VERSION = "LibButtonGlow-1.0"
-local MINOR_VERSION = 6
+local MINOR_VERSION = 8
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -56,9 +56,21 @@ local function OverlayGlow_OnHide(self)
 	end
 end
 
+local function OverlayGlow_OnUpdate(self, elapsed)
+	AnimateTexCoords(self.ants, 256, 256, 48, 48, 22, elapsed, 0.01)
+	local cooldown = self:GetParent().cooldown
+	-- we need some threshold to avoid dimming the glow during the gdc
+	-- (using 1500 exactly seems risky, what if casting speed is slowed or something?)
+	if cooldown and cooldown:IsShown() and cooldown:GetCooldownDuration() > 3000 then
+		self:SetAlpha(0.5)
+	else
+		self:SetAlpha(1.0)
+	end
+end
+
 local function CreateScaleAnim(group, target, order, duration, x, y, delay)
 	local scale = group:CreateAnimation("Scale")
-	scale:SetTarget(target:GetName())
+	scale:SetTarget(target)
 	scale:SetOrder(order)
 	scale:SetDuration(duration)
 	scale:SetScale(x, y)
@@ -70,7 +82,7 @@ end
 
 local function CreateAlphaAnim(group, target, order, duration, fromAlpha, toAlpha, delay)
 	local alpha = group:CreateAnimation("Alpha")
-	alpha:SetTarget(target:GetName())
+	alpha:SetTarget(target)
 	alpha:SetOrder(order)
 	alpha:SetDuration(duration)
 	alpha:SetFromAlpha(fromAlpha)
@@ -185,7 +197,7 @@ local function CreateOverlayGlow()
 	overlay.animOut:SetScript("OnFinished", OverlayGlowAnimOutFinished)
 
 	-- scripts
-	overlay:SetScript("OnUpdate", ActionButton_OverlayGlowOnUpdate)
+	overlay:SetScript("OnUpdate", OverlayGlow_OnUpdate)
 	overlay:SetScript("OnHide", OverlayGlow_OnHide)
 
 	overlay.__LBGVersion = MINOR_VERSION

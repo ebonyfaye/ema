@@ -1728,7 +1728,8 @@ function EMA:CanAutoAcceptSharedQuestFromPlayer()
 	if EMA.db.allAcceptAnyQuest == true then
 		canAccept = true
 	elseif EMA.db.onlyAcceptQuestsFrom == true then
-		local questSourceName, questSourceRealm = UnitName( "npc" )
+		local questSourceName, questSourceRealm = UnitName( "questnpc" )
+		--EMA:Print("test", questSourceName, questSourceRealm, canAccept )
 		local character = EMAUtilities:AddRealmToNameIfNotNil( questSourceName, questSourceRealm )
 		if EMA.db.acceptFromTeam == true then	
 			if EMAApi.IsCharacterInTeam( character ) == true then
@@ -1745,18 +1746,18 @@ function EMA:CanAutoAcceptSharedQuestFromPlayer()
 			end	
 		end
 		if EMA.db.acceptFromParty == true then	
-			if UnitInParty( "npc" ) then
+			if UnitInParty( "questnpc" ) then
 				EMA:DebugMessage( "test" )
 				canAccept = true
 			end
 		end
 		if EMA.db.acceptFromRaid == true then	
-			if UnitInRaid( "npc" ) then
+			if UnitInRaid( "questnpc" ) then
 				canAccept = true
 			end
 		end
 		if EMA.db.acceptFromGuild == true then
-			if UnitIsInMyGuild( "npc" ) then
+			if UnitIsInMyGuild( "questnpc" ) then
 				canAccept = true
 			end
 		end			
@@ -1797,7 +1798,7 @@ end
 function EMA:QuestWatch_Update()
 	local lastQuestIndex = GetQuestLogSelection()
 	local title, _, _, _, _, _, _, questID = GetQuestLogTitle(lastQuestIndex)
-	EMA:Print("test", questID )
+	--EMA:Print("test", questID )
 	if ( IsQuestWatched(lastQuestIndex) ) then
 		--EMA:Print("TrackingQuest")
 		EMA:EMASendCommandToTeam( EMA.COMMAND_QUEST_TRACK, questID, title, true )	

@@ -1,6 +1,26 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0216)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
+Release Date: 30/09/2022
+
+## Core
+	-- Removed References to tbcc ( Game got removed )#
+	-- Updated LibAction bat to work with 10.x
+
+## Quest & Quest-Classic 
+	-Can Auto Accept Shared Quest From the List Will now work right with the Team Setting.
+	
+## Trade
+	-- Added Trade Grays Back from EMA-Classic.
+	
+## Toon
+	-- WIP! Added New Options to change Talets with Team. (Olny DF)
+	
+
+
+---------------------------
 EMA Version: Beta-v4.3(0215)
 Game Version: 9.2.7/3.4.0/2.5.4/1.14.3/10.0.2
 Release Date: TBC
