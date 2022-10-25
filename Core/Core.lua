@@ -311,7 +311,7 @@ end
 -- WoW 10.0
 local function isEmaBetaBuild()
 	local beta = false
-	local WoW10 = select(4, GetBuildInfo()) >= 100000
+	local WoW10 = select(4, GetBuildInfo()) >= 100002
 	if WoW10 == true then
 		beta = true
 	end

@@ -72,9 +72,7 @@ EMA.settings = {
 		autoSellBoEEpic	=  false,		
 		-- Toys
 		autoSellToys = false,
-		autoSellMounts = false,
-		-- 9.0.3
-		alreadyWipedLists = false	
+		autoSellMounts = false,	
 	},
 }
 
@@ -197,15 +195,12 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	-- list. 
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetValue( EMA.db.blackListItem )
-	--EMA.settingsControl.listCheckBoxBoxOtherDestroy:SetValue( EMA.db.destroyItem )
 	EMA.settingsControl.listEditBoxOtherTag:SetText( EMA.autoSellOtherItemTag )
 	EMA.settingsControl.listEditBoxOtherItem:SetDisabled( not EMA.db.autoSellItem )
 	EMA.settingsControl.listEditBoxOtherTag:SetDisabled( not EMA.db.autoSellItem )
 	EMA.settingsControl.listButtonRemove:SetDisabled( not EMA.db.autoSellItem )
 	EMA.settingsControl.listButtonAdd:SetDisabled( not EMA.db.autoSellItem )
 	EMA.settingsControl.listCheckBoxBoxOtherBlackListItem:SetDisabled( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
-	--EMA.settingsControl.listCheckBoxBoxOtherDestroy:SetDisabled( not EMA.db.autoSellItem or not EMA.db.autoSellItem )
-	--EMA.settingsControl.listEditBoxOtherItem:RegisterForClicks( "RightButtonDown" )
 	
 	
 	EMA:SettingslistScrollRefresh()
@@ -320,19 +315,15 @@ local function SettingsCreateMain( top )
 	list.columnsToDisplay = 3
 	list.columnInformation = {}
 	list.columnInformation[1] = {}
-	list.columnInformation[1].width = 60
+	list.columnInformation[1].width = 70
 	list.columnInformation[1].alignment = "LEFT"
 	list.columnInformation[2] = {}
-	list.columnInformation[2].width = 20
+	list.columnInformation[2].width = 10
 	list.columnInformation[2].alignment = "LEFT"
 	list.columnInformation[3] = {}
 	list.columnInformation[3].width = 20
 	list.columnInformation[3].alignment = "LEFT"
-	--[[
-	list.columnInformation[4] = {}
-	list.columnInformation[4].width = 20
-	list.columnInformation[4].alignment = "LEFT"	
-	]]
+	
 	list.scrollRefreshCallback = EMA.SettingslistScrollRefresh
 	list.rowClickCallback = EMA.SettingslistRowClick
 	EMA.settingsControl.list = list
@@ -367,17 +358,6 @@ local function SettingsCreateMain( top )
 		EMA.SettingsToggleBlackListItem,
 		L["BLACKLIST_ITEM_HELP"]
 	)
-	--[[
-	EMA.settingsControl.listCheckBoxBoxOtherDestroy = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControl, 
-		thirdWidth, 
-		left2,
-		movingTop + movingTopEdit,
-		L["DESTROY_ITEM"],
-		EMA.SettingsToggleDestroyItem,
-		L["DESTROY_ITEM_HELP"]
-	)
-	]]
 	EMA.settingsControl.listEditBoxOtherTag = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl, 
 		dropBoxWidth,	
@@ -584,8 +564,6 @@ function EMA:SettingslistScrollRefresh()
 		EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetTextColor( 1.0, 1.0, 1.0, 1.0 )		
 		EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetText( "" )
 		EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetTextColor( 1.0, 0, 0, 1.0 )
-		--EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetText( "" )
-		--EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetTextColor( 1.0, 0, 0, 1.0 )
 		
 		EMA.settingsControl.list.rows[iterateDisplayRows].highlight:SetColorTexture( 0.0, 0.0, 0.0, 0.0 )
 		-- Get data.
@@ -594,17 +572,13 @@ function EMA:SettingslistScrollRefresh()
 			-- Put data information into columns
 			local listInformation = EMA:GetOtherAtPosition( dataRowNumber )
 			local blackListText = ""
-			local destroyText = ""
+			
 			if listInformation.blackList == true then
 				blackListText = L["ITEM_ON_BLACKLIST"]
-			end
-			if listInformation.destroyItem == true then
-				destroyText = L["DESTROY_ITEM"]
 			end
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[1].textString:SetText( listInformation.name )
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[2].textString:SetText( listInformation.tag )
 			EMA.settingsControl.list.rows[iterateDisplayRows].columns[3].textString:SetText( blackListText )
-			--EMA.settingsControl.list.rows[iterateDisplayRows].columns[4].textString:SetText( destroyText )	
 			-- Highlight the selected row.
 			if dataRowNumber == EMA.settingsControl.listHighlightRow then
 				EMA.settingsControl.list.rows[iterateDisplayRows].highlight:SetColorTexture( 1.0, 1.0, 0.0, 0.5 )
@@ -754,17 +728,11 @@ function EMA:SettingsToggleBlackListItem( event, checked )
 	EMA:SettingsRefresh()
 end	
 
---[[
-function EMA:SettingsToggleDestroyItem( event, checked )
-	EMA.db.destroyItem = checked
-	EMA:SettingsRefresh()
-end	
-]]
 
 function EMA:SettingslistAddClick( event )
-	--EMA:Print("test",  EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag )
+	--EMA:Print("test",  EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag, EMA.autoKeepAmount )
 	if EMA.autoSellOtherItemLink ~= nil and EMA.autoSellOtherItemTag ~= nil then
-		EMA:AddOther( EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag, EMA.db.blackListItem ) --,  EMA.db.destroyItem  )
+		EMA:AddOther( EMA.autoSellOtherItemLink, EMA.autoSellOtherItemTag, EMA.db.blackListItem )
 		EMA.autoSellOtherItemLink = nil
 		EMA.settingsControl.listEditBoxOtherItem:SetText( "" )
 		EMA:SettingsRefresh()
@@ -816,8 +784,6 @@ function EMA:OnInitialize()
 	EMA:SettingsRefresh()	
 	-- Initialise the popup dialogs.
 	InitializePopupDialogs()
-	-- 9.0.3 Remove DESTROY_ITEM
-	EMA:ClearList()
 end
 
 -- Called when the addon is enabled.
@@ -825,7 +791,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "MERCHANT_SHOW" )
 	EMA:RegisterEvent( "MERCHANT_CLOSED" )
 	-- Hook the item click event.
-	if EMAPrivate.Core.isEmaBetaBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
 		-- Needs to update for 10.x
@@ -907,7 +873,7 @@ function EMA:GetOtherAtPosition( position )
 	end
 end
 
-function EMA:AddOther( itemLink, itemTag, blackList) --, destroy )
+function EMA:AddOther( itemLink, itemTag, blackList )
 	--EMA:Print( itemLink, itemTag, blackList, destroy )
 	-- Get some more information about the item.
 	local name, link, quality, iLevel, reqLevel, class, subclass, maxStack, equipSlot, texture, vendorPrice = GetItemInfo( itemLink )
@@ -918,7 +884,6 @@ function EMA:AddOther( itemLink, itemTag, blackList) --, destroy )
 		itemInformation.name = name
 		itemInformation.tag = itemTag
 		itemInformation.blackList = blackList
-		itemInformation.destroyItem = destroy
 		if EMA.db.globalSellList == true then
 			table.insert( EMA.db.global.autoSellOtherItemsListGlobal, itemInformation )
 		else
@@ -961,8 +926,14 @@ function EMA:DoMerchantSellItems()
 	local count = 0
 	local sellCount = 0
 	local gold = 0
+	local bagContainerName = GetContainerNumSlots
+	local itemCount = 0
+	if EMAPrivate.Core.isEmaBetaBuild() == true then
+		-- 10.x changes
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ) do 
+		for slotID = 1, bagContainerName( bagID ) do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -974,7 +945,14 @@ function EMA:DoMerchantSellItems()
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
 					local iLvl = C_Item.GetCurrentItemLevel( location )
-					local _, itemCount = GetContainerItemInfo( bagID, slotID )
+					if EMAPrivate.Core.isEmaBetaBuild() == true then
+					local containerInfo = C_Container.GetContainerItemInfo( bagID, slotID )
+						itemCount =  containerInfo.stackCount
+					else
+						local _, itemCountOld = GetContainerItemInfo( bagID, slotID )
+						itemCount = itemCountOld
+					end
+					--EMA:Print("test", itemLink, itemCount, count)
 					local itemName, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
 					if EMAPrivate.Core.isEmaClassicBccBuild == false then	
 						local hasToy = PlayerHasToy(bagItemID)
@@ -1102,8 +1080,8 @@ function EMA:DoMerchantSellItems()
 						for position, itemInformation in pairs( itemTable ) do
 						if EMAApi.IsCharacterInGroup( EMA.characterName, itemInformation.tag ) == true then
 							if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
-								--EMA:Print("DataTest", itemInformation.blackList, itemInformation.destroyItem )
-								--EMA:Print("test", itemLink)
+								--EMA:Print("DataTest", itemInformation.blackList, itemInformation.amount )
+								--EMA:Print("test", itemLink, itemInformation.amount, "vs", count)
 								canSell = true
 								if itemInformation.blackList == true then
 									canSell = false
@@ -1141,9 +1119,13 @@ end
 
 
 function EMA:SellItem( bagID, slotID, itemCount )
-	--EMA:Print("sellItem", bagID, slotID )
+	--EMA:Print("sellItem", bagID, slotID, itemCount )
 	if EMAUtilities:MerchantFrameIsShown() == true then	
-		UseContainerItem( bagID, slotID )		
+		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+			C_Container.UseContainerItem( bagID, slotID )	
+		else		
+			UseContainerItem( bagID, slotID )
+		end		
 	end	
 end
 
@@ -1162,25 +1144,3 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 		EMA:DoSellItem( ... )
 	end
 end
-
--- 9.0.3 Remove destroyItem from the tables
-function EMA:ClearList()
-	if EMA.db.alreadyWipedLists	== false then	
-		local itemTable = EMA.db.global.autoSellOtherItemsListGlobal
-		local itemTableTwo = EMA.db.autoSellOtherItemsList
-		for position, itemInformation in pairs( itemTable ) do
-			if itemInformation.destroyItem == true then
-				table.remove( EMA.db.global.autoSellOtherItemsListGlobal, position )
-			end
-		end
-		for position, itemInformation in pairs( itemTableTwo ) do
-			if itemInformation.destroyItem == true then
-				table.remove( EMA.db.autoSellOtherItemsList, position )
-			end
-		end
-		EMA:SettingsRefresh()
-		EMA.db.alreadyWipedLists = true
-	end
-end	
-
-EMAApi.ClearList = EMA.ClearList

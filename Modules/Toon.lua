@@ -94,14 +94,16 @@ EMA.settings = {
 		autoRepairUseGuildFunds = true,
 		merchantArea = EMAApi.DefaultMessageArea(),
 		autoAcceptRoleCheck = false,
-		enterLFGWithTeam = false,
+		autoAcceptRoleCheckWithTeam = false, 
 		acceptReadyCheck = false,
 		teleportLFGWithTeam = false,
 		rollWithTeam = false,
 		toggleWarMode = false,
 		autoAcceptPartySyncRequest = false,
+		autoAcceptPartySyncRequestFromTeam = false,
 		setViewWithoutMaster = true,
 		setView = 1,
+		setTalents = false,
 		--Debug Suff
 		testAlwaysOff = true
 	},
@@ -158,7 +160,8 @@ EMA.COMMAND_READY_CHECK = "EMAReadyCheck"
 EMA.COMMAND_TELE_PORT = "EMAteleport"
 EMA.COMMAND_LOOT_ROLL = "EMALootRoll"
 EMA.COMMAND_WAR_MODE = "EMAWarMode"
-EMA.COMMAND_SET_VIEW = "Set View Point"
+EMA.COMMAND_SET_VIEW = "EMASetViewPoint"
+EMA.COMMAND_TRAIT_CHANGE = "EMATraitChange"
 
 -------------------------------------------------------------------------------------------------------------
 -- Messages module sends.
@@ -338,8 +341,21 @@ local function SettingsCreateToon( top )
 			L["PARTY_SYNC"],
 			EMA.SettingsTogglePartySyncRequest,
 			L["PARTY_SYNC_HELP"]
-		)		
+		)
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlToon.checkBoxTogglePartySyncRequestFromTeam = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlToon, 
+			halfWidth, 
+			left + 20, 
+			movingTop, 
+			L["PARTY_SYNC_FROM_TEAM"],
+			EMA.SettingsTogglePartySyncRequestFromTeam,
+			L["PARTY_SYNC_FROM_TEAM_HELP"]
+		)	
 	end
+	
+	
+	
 	movingTop = movingTop - checkBoxHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControlToon, L["GROUPTOOLS_HEADING"], movingTop, false )
 	movingTop = movingTop - checkBoxHeight
@@ -353,7 +369,7 @@ local function SettingsCreateToon( top )
 		L["READY_CHECKS_HELP"]
 	)
 	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
-		movingTop = movingTop - headingHeight
+		movingTop = movingTop - checkBoxHeight
 		EMA.settingsControlToon.checkBoxAutoRoleCheck = EMAHelperSettings:CreateCheckBox( 
 			EMA.settingsControlToon, 
 			halfWidth, 
@@ -362,6 +378,16 @@ local function SettingsCreateToon( top )
 			L["ROLE_CHECKS"],
 			EMA.SettingsToggleAutoRoleCheck,
 			L["ROLE_CHECKS_HELP"]
+		)
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlToon.checkBoxAutoRoleCheckWithTeam = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlToon, 
+			halfWidth, 
+			left + 10, 
+			movingTop, 
+			L["ROLE_CHECKS_WITH_TEAM"],
+			EMA.SettingsToggleAutoRoleCheckWithTeam,
+			L["ROLE_CHECKS_WITH_TEAM_HELP"]
 		)
 		movingTop = movingTop - checkBoxHeight
 		EMA.settingsControlToon.checkBoxLFGTeleport = EMAHelperSettings:CreateCheckBox( 
@@ -809,7 +835,9 @@ function EMA:SettingsRefresh()
 		EMA.settingsControlToon.checkBoxToggleWarMode:SetValue( EMA.db.toggleWarMode )
 		EMA.settingsControlToon.checkBoxLFGTeleport:SetValue( EMA.db.teleportLFGWithTeam )
 		EMA.settingsControlToon.checkBoxAutoRoleCheck:SetValue( EMA.db.autoAcceptRoleCheck )
+		EMA.settingsControlToon.checkBoxAutoRoleCheckWithTeam:SetValue( EMA.db.autoAcceptRoleCheckWithTeam )
 		EMA.settingsControlToon.checkBoxTogglePartySyncRequest:SetValue( EMA.db.autoAcceptPartySyncRequest )
+		EMA.settingsControlToon.checkBoxTogglePartySyncRequestFromTeam:SetValue( EMA.db.autoAcceptPartySyncRequestFromTeam )
 	end
 	EMA.settingsControlToon.dropdownRequestArea:SetValue( EMA.db.requestArea )
 	EMA.settingsControlToon.checkBoxSetViewWithWithoutMaster:SetValue( EMA.db.setViewWithoutMaster )
@@ -889,6 +917,11 @@ function EMA:SettingsToggleAutoRoleCheck( event, checked )
 	EMA:SettingsRefresh()
 end
 
+function EMA:SettingsToggleAutoRoleCheckWithTeam( event, checked )
+	EMA.db.autoAcceptRoleCheckWithTeam = checked
+	EMA:SettingsRefresh()
+end
+
 function EMA:SettingsToggleAcceptReadyCheck( event, checked )
 	EMA.db.acceptReadyCheck = checked 	
 	EMA:SettingsRefresh()
@@ -911,6 +944,11 @@ end
 
 function EMA:SettingsTogglePartySyncRequest(event, checked )
 	EMA.db.autoAcceptPartySyncRequest = checked
+	EMA:SettingsRefresh()
+end	
+
+function EMA:SettingsTogglePartySyncRequestFromTeam(event, checked )
+	EMA.db.autoAcceptPartySyncRequestFromTeam = checked
 	EMA:SettingsRefresh()
 end	
 
@@ -1154,8 +1192,14 @@ function EMA:OnEnable()
 	EMA:RegisterEvent("LOSS_OF_CONTROL_ADDED")
 	EMA:RegisterEvent( "UI_ERROR_MESSAGE", "BAGS_FULL" )
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
-	EMA:RegisterEvent( "PLAYER_FLAGS_CHANGED", "WARMODE" )
 	EMA:RegisterEvent( "QUEST_SESSION_CREATED" )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		EMA:RegisterEvent( "PLAYER_SPECIALIZATION_CHANGED" )
+	end
+	-- Will not work for ""classic"" as well 
+	if EMAPrivate.Core.isEmaBetaBuild() == true then
+		--EMA:RegisterEvent( "TRAIT_CONFIG_UPDATED" )
+	end
 	-- Initialise key bindings.
 	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
 	EMA:RegisterEvent( "UPDATE_BINDINGS" )
@@ -1165,8 +1209,10 @@ function EMA:OnEnable()
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged" )
 	-- Ace Hooks
 	EMA:SecureHook( "ConfirmReadyCheck" )
-	if EMAPrivate.Core.isEmaClassicBuild == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		EMA:SecureHook( "LFGTeleport" )
+		-- WarMode Hooking off the toggle then the event!!
+		EMA:SecureHook( C_PvP, "ToggleWarMode", "ToogleWarMode")
 	end
 	EMA:SecureHook( "RollOnLoot" )
 end
@@ -1213,7 +1259,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.autoAcceptSummonRequest = settings.autoAcceptSummonRequest
 		EMA.db.autoDenyGuildInvites = settings.autoDenyGuildInvites
 		EMA.db.autoAcceptRoleCheck = settings.autoAcceptRoleCheck
-		EMA.db.enterLFGWithTeam = settings.enterLFGWithTeam
+		EMA.db.autoAcceptRoleCheckWithTeam = settings.autoAcceptRoleCheckWithTeam
 		EMA.db.acceptReadyCheck = settings.acceptReadyCheck
 		EMA.db.teleportLFGWithTeam = settings.teleportLFGWithTeam
 		EMA.db.rollWithTeam = settings.rollWithTeam
@@ -1221,6 +1267,7 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		EMA.db.setView = settings.setView
 		EMA.db.setViewWithoutMaster = settings.setViewWithoutMaster
 		EMA.db.autoAcceptPartySyncRequest = settings.autoAcceptPartySyncRequest
+		EMA.db.autoAcceptPartySyncRequestFromTeam = settings.autoAcceptPartySyncRequestFromTeam
 		EMA.db.autoRepair = settings.autoRepair
 		EMA.db.autoRepairUseGuildFunds = settings.autoRepairUseGuildFunds
 		EMA.db.warningArea = settings.warningArea
@@ -1696,8 +1743,16 @@ end
 
 function EMA:LFG_ROLE_CHECK_SHOW( event, ... )
 	if EMA.db.autoAcceptRoleCheck == true then	
-		--EMA:Print("testPopup?")
-		CompleteLFGRoleCheck("ture")
+		if EMA.db.autoAcceptRoleCheckWithTeam == true then
+			local leadername = EMAUtilities:PartyLeaderName()
+			local characterName = EMAUtilities:AddRealmToNameIfMissing( leadername )
+			--EMA:Print("test", characterName)
+			if EMAApi.IsCharacterInTeam( characterName) == true then
+				CompleteLFGRoleCheck("ture")
+			end
+		else
+			CompleteLFGRoleCheck("ture")
+		end
 	end	
 end
 
@@ -1734,13 +1789,20 @@ function EMA:CONFIRM_SUMMON( event, sender, location, ... )
 	end
 end
 
-function EMA:WARMODE(event, ...)
+function EMA:ToogleWarMode()
+	--EMA:Print("testTimer")
+	--Ebony, Data from C_PvP.IsWarModeDesired is not updated in hook so added a small timmer to get right infomation
+	EMA:ScheduleTimer("WarMode", 0.5 )
+end	
+
+function EMA:WarMode()
 	if EMA.db.toggleWarMode == true and EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		--EMA:Print("WarModeInternal", EMA.isInternalCommand )
 		if C_PvP.IsWarModeFeatureEnabled() == true then
 			local isWarMode = C_PvP.IsWarModeDesired()
 			if C_PvP.CanToggleWarMode(isWarMode) == true then
 				if EMA.isInternalCommand == false then	
-					--EMA:Print("SendWarMode", isWarMode, EMA.isInternalCommand )
+					--EMA:Print("SendWarMode", isWarMode )
 					EMA:EMASendCommandToTeam( EMA.COMMAND_WAR_MODE, isWarMode )
 				end	
 			end	
@@ -1749,10 +1811,12 @@ function EMA:WARMODE(event, ...)
 end
 
 function EMA:DoWarMode( isWarMode )
-	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end
+	--EMA:Print("test", isWarMode )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then 
+		return 
+	end
 	EMA.isInternalCommand = true
 	if C_PvP.CanToggleWarMode( isWarMode ) == true and isWarMode ~= nil then
-		--EMA:Print("testwarmode", isWarMode )
 		C_PvP.SetWarModeDesired( isWarMode )
 	end
 	EMA.isInternalCommand = false
@@ -1981,8 +2045,23 @@ function EMA:LOSS_OF_CONTROL_ADDED( event, ... )
 end
 
 function EMA:QUEST_SESSION_CREATED( event, ...)
-	--EMA:Print("test")
+	if EMAApi.isEmaClassicBccBuild == true then return end
 	if EMA.db.autoAcceptPartySyncRequest == true then
+		--EMA:Print("test", event )
+		if EMA.db.autoAcceptPartySyncRequestFromTeam == true then
+			local details = C_QuestSession.GetSessionBeginDetails()
+			if details == nil then
+				--EMA:Print("failed")
+				EMA:QUEST_SESSION_CREATED()
+				return
+			end	
+			local characterName = EMAUtilities:AddRealmToNameIfMissing( details.name )
+			--EMA:Print("test", characterName )
+			if EMAApi.IsCharacterInTeam( characterName) == true then
+				C_QuestSession.SendSessionBeginResponse( "true" )
+			end	
+		end	
+	else		
 		C_QuestSession.SendSessionBeginResponse( "true" )
 	end	
 end	
@@ -1998,6 +2077,41 @@ function EMA:DoSetView(characterName, ...)
 		
 	SetView( EMA.db.setView);SetView( EMA.db.setView)
 end
+
+function EMA:TRAIT_CONFIG_UPDATED(event, configId)	 
+	--TODO WHEN BLIZZAES FIXES IT!
+	--local configId = C_ClassTalents.GetActiveConfigID()
+	--local configId = 403281
+	local configInfo = C_Traits.GetConfigInfo(configId)
+	local localizedClass, englishClass, classIndex = UnitClass("player")
+	
+	EMA:Print("TestChange Talents", configInfo.name, classIndex, englishClass)
+	EMA:Print("test444", configId )
+	EMA:EMASendCommandToTeam( EMA.COMMAND_TRAIT_CHANGE, name, classIndex )
+	
+end
+
+function EMA:DoTraitChange( name, classIndex )
+	EMA:Print("DoTraitChange", name, classIndex )
+	local found = nil
+	for _, configInfoIDs in pairs(C_ClassTalents.GetConfigIDsBySpecID()) do
+		local configInfo = C_Traits.GetConfigInfo( configInfoIDs )
+		EMA:Print("test", configInfoIDs, configInfo.name)
+		EMA:Print("testA4", name, "vs", configInfo.name )
+		if name == configInfo.name then
+			EMA:Print("Found")
+			C_ClassTalents.LoadConfig("403281", true)
+			break
+		end
+	end
+end
+
+
+function EMA:PLAYER_SPECIALIZATION_CHANGED( event, arg1, arg2, arg3)
+	
+	--EMA:Print("TestChange ClassSpec2", arg1)
+end
+
 
 -- A EMA command has been received.
 function EMA:EMAOnCommandReceived( characterName, commandName, ... )
@@ -2029,8 +2143,12 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	end
 	if commandName == EMA.COMMAND_WAR_MODE then
 		if characterName ~= self.characterName then
-			--EMA.isInternalCommand = false
 			EMA.DoWarMode( characterName, ... )
+		end	
+	end
+	if commandName == EMA.COMMAND_TRAIT_CHANGE then
+		if characterName ~= self.characterName then
+			EMA.DoTraitChange(  characterName, ... )
 		end	
 	end
 	if commandName == EMA.COMMAND_SET_VIEW then

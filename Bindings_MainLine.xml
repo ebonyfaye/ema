@@ -67,21 +67,6 @@
 		--[[dummy]]
 	</Binding>
 	
-	
-	<!-- Follow Bindings-->
-	<Binding name="FOLLOWME" header="FOLLOW" category="EMA">
-		--[[dummy]]
-	</Binding>
-	<Binding name="FOLLOWSTROBEME" category="EMA">
-		--[[dummy]]
-	</Binding>
-	<Binding name="FOLLOWSTROBEOFF" category="EMA">
-		--[[dummy]]
-	</Binding>
-	<Binding name="FOLLOWSTOP" category="EMA">
-		--[[dummy]]
-	</Binding>
-	
 	<Binding name="TEAMMOUNT" header="MOUNT" category="EMA">
 		--[[dummy]]
 	</Binding>

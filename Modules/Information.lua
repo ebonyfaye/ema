@@ -53,6 +53,7 @@ EMA.simpleCurrList = {}
 local function allAlwaysCurrencys()
 	local allAlwaysCurrencys = {}
 		allAlwaysCurrencys.Honor = 1792
+		allAlwaysCurrencys.Conquest = 1602
 		allAlwaysCurrencys.TimeWalker = 1166
 		allAlwaysCurrencys.Darkmoon = 515
 	return allAlwaysCurrencys
@@ -133,7 +134,17 @@ local function shadowlandsCurrencys()
 	return shadowlandsCurrencys
 end	
 		
-
+local function dragonflightCurrencys()
+	local dragonflightCurrencys = {}
+		dragonflightCurrencys.DragonIslesSupplies = 2003
+		dragonflightCurrencys.elementalOverflow = 2118
+		dragonflightCurrencys.StormSigil = 2122
+		dragonflightCurrencys.DragonGlyphEmbers = 2045
+		dragonflightCurrencys.CobaltAssembly = 2134
+		dragonflightCurrencys.EffigyAdornments = 2011
+		dragonflightCurrencys.PurifiedArcaneEnergy = 2105
+	return dragonflightCurrencys
+end	
 
 local function testcode()
 	return EMA.currTypes
@@ -180,6 +191,11 @@ function EMA:AddCurrencyToTable()
 			EMA.currTypes[name] = id
 		end
 	end
+	if EMA.db.currDragonflight == true then 
+		for name, id in pairs( dragonflightCurrencys() ) do
+			EMA.currTypes[name] = id
+		end
+	end
 end	
 	
 -- Settings - the values to store and their defaults for the settings database.
@@ -193,7 +209,8 @@ EMA.settings = {
 		currWodCurrencys = false, 
 		currLegionCurrencys = false,
 		currBattleforAzerothCurrencys = false,
-		currShadowlands = true,
+		currShadowlands = false,
+		currDragonflight = false,
 		-- Currency default's ALL NONE! (saves updating every xpac....)
 		CcurrTypeOne = 1,
 		CcurrTypeOneName = "",
@@ -218,7 +235,7 @@ EMA.settings = {
 		currencyFrameBackgroundColourA = 1.0,
 		currencyFrameBorderColourR = 1.0,
 		currencyFrameBorderColourG = 1.0,
-		currencyFrameBorerColourB = 1.0,
+		currencyFrameBorderColourB = 1.0,
 		currencyFrameBorderColourA = 1.0,		
 		currencyBorderStyle = L["BLIZZARD_TOOLTIP"],
 		currencyBackgroundStyle = L["BLIZZARD_DIALOG_BACKGROUND"],
@@ -343,7 +360,7 @@ function EMA:SettingsCreateCurrency( top )
 	local horizontalSpacing = EMAHelperSettings:GetHorizontalSpacing()
 	local indent = horizontalSpacing * 12
 	local verticalSpacing = EMAHelperSettings:GetVerticalSpacing()
-	local halfWidth = (headingWidth - horizontalSpacing) / 2
+	local halfWidth = (headingWidth - horizontalSpacing) / 2 - 10
 	local thirdWidth = (headingWidth - (horizontalSpacing * 2)) / 3
 	local halfWidthSlider = (headingWidth - horizontalSpacing) / 2
 	local column2left = left + halfWidthSlider
@@ -446,6 +463,15 @@ function EMA:SettingsCreateCurrency( top )
 		EMA.SettingsToggleCurrencyShadowlands,
 		L["CURRENCY_SHADOWLANDS_HELP"]
 	)
+	EMA.settingsControl.checkBoxCurrencyShowDragonflight = EMAHelperSettings:CreateCheckBox( 
+		EMA.settingsControl, 
+		thirdWidth, 
+		left3, 
+		movingTop, 
+		L["CURRENCY_DRAGONFLIGHT"],
+		EMA.SettingsToggleCurrencyDragonflight,
+		L["CURRENCY_DRAGONFLIGHT_HELP"]
+	)	
 	--Currency One & Two	
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.editBoxCurrencyTypeOneID = EMAHelperSettings:CreateDropdown( 
@@ -703,6 +729,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.checkBoxCurrencyShowLegion:SetValue( EMA.db.currLegionCurrencys )
 	EMA.settingsControl.checkBoxCurrencyShowBattleforAzeroth:SetValue( EMA.db.currBattleforAzerothCurrencys) 
 	EMA.settingsControl.checkBoxCurrencyShowShadowlands:SetValue( EMA.db.currShadowlands )
+	EMA.settingsControl.checkBoxCurrencyShowDragonflight:SetValue( EMA.db.currDragonflight )
 	EMA.settingsControl.editBoxCurrencyTypeOneID:SetValue( EMA.db.CcurrTypeOne )
 	EMA.settingsControl.editBoxCurrencyTypeOneID:SetList( EMA.CurrDropDownBox() )
 	EMA.settingsControl.editBoxCurrencyTypeTwoID:SetValue ( EMA.db.CcurrTypeTwo )	
@@ -733,6 +760,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.currencySliderSpaceBetweenValues:SetValue( EMA.db.currencySpacingWidth )
 	EMA.settingsControl.checkBoxCurrencyLockWindow:SetValue( EMA.db.currencyLockWindow )
 	EMA.CurrDropDownBox()
+	
 	if EMA.currencyListFrameCreated == true then
 		EMA:CurrencyListSetColumnWidth()
 		EMA:SettingsUpdateBorderStyle()
@@ -743,7 +771,6 @@ function EMA:SettingsRefresh()
 		EMA:CurrencyListSetHeight()
 	end
 end
-
 function EMA:SettingsPushSettingsClick( event )
 	EMA:EMASendSettings()
 end
@@ -797,6 +824,12 @@ function EMA:SettingsToggleCurrencyShadowlands( event, checked )
 	EMA:AddCurrencyToTable()
 	EMA:SettingsRefresh()
 end	
+
+function EMA:SettingsToggleCurrencyDragonflight( event, checked )
+	EMA.db.currDragonflight = checked
+	EMA:AddCurrencyToTable()
+	EMA:SettingsRefresh()
+end
 
 function EMA:EditBoxChangedCurrencyTypeOneID( event, value )
 	local currName, id = EMA:MatchCurrValue(value)
@@ -951,7 +984,7 @@ function EMA:OnInitialize()
 	-- Initialise the EMAModule part of this module.
 	EMA:EMAModuleInitialize( EMA.settingsControl.widgetSettings.frame )
 	-- Create the currency list frame.
-	EMA:CreateEMAToonCurrencyListFrame()
+	EMA:CreateToonCurrencyListFrame()
 	EMA:AddCurrencyToTable()
 	-- Populate the settings.
 	EMA:SettingsRefresh()
@@ -1076,7 +1109,7 @@ function EMA:DrawGroup1(container)
 end	
 
 
-function EMA:CreateEMAToonCurrencyListFrame()
+function EMA:CreateToonCurrencyListFrame()
 	-- The frame.
 	local frame = CreateFrame( "Frame", "EMAToonCurrencyListWindowFrame", UIParent, BackdropTemplateMixin and "BackdropTemplate" or nil )
 	frame.obj = EMA
@@ -1101,8 +1134,6 @@ function EMA:CreateEMAToonCurrencyListFrame()
 			EMA.db.currencyFrameXOffset = xOffset
 			EMA.db.currencyFrameYOffset = yOffset
 	end	)
-	--frame:SetWidth( 500 )
-	--frame:SetHeight( 200 )
 	if frame.SetResizeBounds then -- WoW 10.0
 		frame:SetResizeBounds(500,200)
 	else
@@ -1111,7 +1142,13 @@ function EMA:CreateEMAToonCurrencyListFrame()
 	end
 	frame:ClearAllPoints()
 	frame:SetPoint( EMA.db.currencyFramePoint, UIParent, EMA.db.currencyFrameRelativePoint, EMA.db.currencyFrameXOffset, EMA.db.currencyFrameYOffset )
-
+	frame:SetBackdrop( {
+		bgFile = "Interface\\DialogFrame\\UI-DialogBox-Background", 
+		edgeFile = "Interface\\Tooltips\\UI-Tooltip-Border", 
+		tile = true, tileSize = 10, edgeSize = 10, 
+		insets = { left = 3, right = 3, top = 3, bottom = 3 }
+	} )
+	
 	-- Create the title for the frame.
 	local titleName = frame:CreateFontString( "EMAToonCurrencyListWindowFrameTitleText", "OVERLAY", "GameFontNormal" )
 	titleName:SetPoint( "TOPLEFT", frame, "TOPLEFT", 3, -8 )
@@ -1388,7 +1425,6 @@ function EMA:SettingsUpdateFontStyle()
 	frame.TotalGoldTitleText:SetFont( textFont , textSize , "OUTLINE")
 	for characterName, currencyFrameCharacterInfo in pairs( EMA.currencyFrameCharacterInfo ) do
 		--EMA:Print("test", characterName)
-		--currencyFrameCharacterInfo.characterNameText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.characterNameText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.GoldText:SetFont( textFont , textSize , "OUTLINE")
 		currencyFrameCharacterInfo.BagSpaceText:SetFont( textFont , textSize , "OUTLINE")

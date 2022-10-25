@@ -1,24 +1,69 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0220)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.0/10.0.2
+Release Date: 25/10/2022
+
+##Core
+	-- Updated Ace3
+	-- With DF Phase 1 prepatch there is less API changes then Phase2 and over (10.0.2)
+		-- EMA should auto understand when the game updates in later phases.
+
+## Information
+	-- Fixed a bug with colour picker code.
+	-- Added Dragon Flight Currencies.
+	-- Fixed a Layout on DropDown Box for Currencies.
+
+## Toon
+	-- Added Option To Auto Accept Party/Quest Sync Requests Only From EMA Team Member
+	-- Added Option To Auto Accept LFG Role Check Requests Only From EMA Team Member
+	-- Fixed Warmode from Spaming "on and off"
+	-- Added some "test" code to change Talents with the "Team"
+		- DevNote:Blizzard code is still borken on this so i can not get the right information from the Api
+	
+## Trade	
+	-- Updated Api for 10.0.2	
+	# Known issue clicking from bags to EMA frame is not working for 10.x
+
+## Sell	
+	-- Updated Api for 10.0.2
+	# Known issue clicking from bags to EMA frame is not working for 10.x	
+	# Alt Selling a item with team is not working with 10.x
+	
+## Guild	
+	-- Updated Api for 10.0.2
+	# Known issue clicking from bags to EMA frame is not working for 10.x
+	
+## Bank
+	-- Updated Api for 10.0.2
+	# Known issue clicking from bags to EMA frame is not working for 10.x
+	
+## Mail	
+	-- Updated Api for 10.0.2	
+	# Known issue clicking from bags to EMA frame is not working for 10.x
+
+
+##	Follow
+	-- Removed Follow from Retail See: EMA-Beta-4.2(0210)
+	
+##	LibDataBroker
+	-- Removed In 10.X For Now Waiting On Lib Updates.	
+	
+---------------------------
 EMA Version: Release-v4.3(0216)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
 Release Date: 30/09/2022
 
 ## Core
-	-- Removed References to tbcc ( Game got removed )#
+	-- Removed References to tbcc ( Game got removed )(#Some code stays incase)
 	-- Updated LibAction bat to work with 10.x
 
 ## Quest & Quest-Classic 
-	-Can Auto Accept Shared Quest From the List Will now work right with the Team Setting.
+	-- Can Auto Accept Shared Quest From the List Will now work right with the Team Setting.
 	
 ## Trade
 	-- Added Trade Grays Back from EMA-Classic.
-	
-## Toon
-	-- WIP! Added New Options to change Talets with Team. (Olny DF)
-	
-
 
 ---------------------------
 EMA Version: Beta-v4.3(0215)

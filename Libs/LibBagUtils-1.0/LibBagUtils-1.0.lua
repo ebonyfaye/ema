@@ -46,6 +46,9 @@ local function isClassicBuild()
 	return isClassicBuild
 end	
 
+local WoW10 = select(4, GetBuildInfo()) >= 100002
+											
+
 local BANK_CONTAINER = BANK_CONTAINER
 -- local KEYRING_CONTAINER = KEYRING_CONTAINER
 local NUM_BANKBAGSLOTS = NUM_BANKBAGSLOTS
@@ -347,7 +350,11 @@ function lib:CountSlots(which, itemFamily)
 		end
 	elseif itemFamily==0 then
 		for bag in pairs(baglist) do
-			local f,bagFamily = GetContainerNumFreeSlots(bag)
+			if WoW10 == true then 
+				local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
+			else
+				local f,bagFamily = GetContainerNumFreeSlots(bag)
+			end
 			if bagFamily==0 then
 				free = free + f
 				tot = tot + GetContainerNumSlots(bag)

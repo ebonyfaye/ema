@@ -10,6 +10,12 @@
 --																					--
 -- ================================================================================ --
 
+-- DO NOT lOAD over WOLTK.
+local _, _, _, tocversion = GetBuildInfo()
+if tocversion >= 30000 then
+	return
+end	
+
 -- With Help From Jabberie, EMA Edit By Jennifer
 
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
@@ -25,24 +31,25 @@ local L = LibStub( "AceLocale-3.0" ):GetLocale( "Core" )
 
 local baseFont = CreateFont("baseFont")
 
--- Check for ElvUI
-if (ElvUI == nil) or (ElvUI == '') then 
-	-- Need fixing for 10.x
-	if EMAPrivate.Core.isEmaBetaBuild() == false then
-		baseFont:SetFont(GameTooltipText:GetFont(), 10)
-	end	
-elseif LibSharedMedia:IsValid('font', ElvUI[1].db.general.font) then
-	baseFont:SetFont(LibSharedMedia:Fetch('font', ElvUI[1].db.general.font), 10)
-else
-	baseFont:SetFont(GameTooltipText:GetFont(), 10)
-end
+-- Check for ElvUI -- not working for 10.x
+if EMAPrivate.Core.isEmaClassicBccBuild() == true then	
+	if (ElvUI == nil) or (ElvUI == '') then 
 
-local function OnEnter(self)
-	GameTooltip:SetOwner(self, "ANCHOR_NONE")
-	GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
-	GameTooltip:ClearLines()
-	dataobj.OnTooltipShow(GameTooltip)
-	GameTooltip:Show()
+		baseFont:SetFont(GameTooltipText:GetFont(), 10)	
+
+	elseif LibSharedMedia:IsValid('font', ElvUI[1].db.general.font) then
+		baseFont:SetFont(LibSharedMedia:Fetch('font', ElvUI[1].db.general.font), 10)
+	else
+		baseFont:SetFont(GameTooltipText:GetFont(), 10)
+	end
+
+	local function OnEnter(self)
+		GameTooltip:SetOwner(self, "ANCHOR_NONE")
+		GameTooltip:SetPoint("TOPLEFT", self, "BOTTOMLEFT")
+		GameTooltip:ClearLines()
+		dataobj.OnTooltipShow(GameTooltip)
+		GameTooltip:Show()
+	end
 end
 
 function dataobj:OnTooltipShow()

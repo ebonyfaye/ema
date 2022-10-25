@@ -165,7 +165,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "MAIL_SHOW" )
 	EMA:RegisterEvent( "MAIL_CLOSED" )
 	EMA:RegisterEvent( "MAIL_SEND_SUCCESS")
-	if EMAPrivate.Core.isEmaBetaBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
 		-- Needs to update for 10.x
@@ -932,8 +932,13 @@ function EMA:AddAllToMailBox()
 	SendMailMoneyCopper:SetText( "" )
 	SendMailNameEditBox:ClearFocus()
 	EMA.Count = 1 
+	local bagContainerName = GetContainerNumSlots
+	if EMAPrivate.Core.isEmaBetaBuild() == true then
+		-- 10.x changes
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1, bagContainerName( bagID ),1 do 
 			
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -1009,8 +1014,14 @@ function EMA:AddAllToMailBox()
 								EMA.Count = EMA.Count + 1
 								SendMailNameEditBox:SetText( toonName )
 								SendMailSubjectEditBox:SetText( L["SENT_AUTO_MAILER"] )
-								PickupContainerItem( bagID, slotID )
-								UseContainerItem( bagID , slotID  )
+								-- More 10.x Changes
+								if EMAPrivate.Core.isEmaBetaBuild() == true then
+									C_Container.PickupContainerItem( bagID, slotID )
+									C_Container.UseContainerItem( bagID , slotID  )
+								else
+									PickupContainerItem( bagID, slotID )
+									UseContainerItem( bagID , slotID  )
+								end	
 							end	
 						end				
 					end

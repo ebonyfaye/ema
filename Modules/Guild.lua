@@ -182,7 +182,7 @@ end
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	EMA:RegisterEvent( "GUILDBANKFRAME_OPENED" )
-	if EMAPrivate.Core.isEmaBetaBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
 		-- Needs to update for 10.x
@@ -839,8 +839,13 @@ end
 
 function EMA:AddAllToGuildBank()
 	local delay = 0
+	local bagContainerName = GetContainerNumSlots
+	if EMAPrivate.Core.isEmaBetaBuild() == true then
+		-- 10.x changes
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1, bagContainerName( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -923,7 +928,11 @@ function EMA:PlaceItemInGuildBank(bagID, slotID, tab)
 					local texture, count, locked = GetGuildBankItemInfo(tab, slot)
 					if not locked then
 						--PickupContainerItem( bagID ,slotID  )
-						UseContainerItem( bagID ,slotID  )
+						if EMAPrivate.Core.isEmaBetaBuild() == true then
+							C_Container.UseContainerItem( bagID ,slotID  )
+						else
+							UseContainerItem( bagID ,slotID  )
+						end
 					end
 				end				
 			end

@@ -121,6 +121,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControl.editBoxAmount:SetText( EMA.autoBuyAmount )
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )	
 	EMA.settingsControl.checkBoxAutoBuyOverflow:SetDisabled( not EMA.db.autoBuy )
+	--Set Disabled
 	EMA.settingsControl.editBoxItem:SetDisabled( not EMA.db.autoBuy )
 	EMA.settingsControl.editBoxTag:SetDisabled( not EMA.db.autoBuy )
 	EMA.settingsControl.editBoxAmount:SetDisabled( not EMA.db.autoBuy )
@@ -470,7 +471,7 @@ end
 -- Called when the addon is enabled.
 function EMA:OnEnable()
 	EMA:RegisterEvent( "MERCHANT_SHOW" )
-	if EMAPrivate.Core.isEmaBetaBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
 		-- Needs to update for 10.x

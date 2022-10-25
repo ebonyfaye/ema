@@ -342,3 +342,27 @@ function EbonyUtilities:endsWith(str, ending)
 		return false
 	end
 end
+
+function EbonyUtilities:PartyLeaderName()
+	 local leaderName = nil
+	 for iteratePartyMembers = 1, GetNumGroupMembers() do	
+		local inRaid = IsInRaid()
+		if inRaid == true then
+			local unit = ( "raid".. iteratePartyMembers)
+			if  UnitIsGroupLeader( unit ) == true then
+				local character = UnitName( unit )
+				--print("Leader",character ) 
+				leaderName = character	
+			end	
+		else
+			local unit = ( "party".. iteratePartyMembers)
+			if  UnitIsGroupLeader( unit ) == true then
+				local character = UnitName( unit )
+				--print("Leader",character )
+				leaderName = character
+			end	
+		end
+	end
+	return leaderName
+end
+

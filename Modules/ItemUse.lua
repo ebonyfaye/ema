@@ -1186,7 +1186,6 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "BAG_UPDATE_DELAYED" )
-	--EMA:RegisterEvent( "ITEM_PUSH" ) -- Using Bag Update this seems to be running a little more then it did < 8.0.3
 	EMA:RegisterEvent( "PLAYER_ENTERING_WORLD" )
 	EMA:RegisterEvent( "UNIT_QUEST_LOG_CHANGED", "QUEST_UPDATE" )
 	EMA.SharedMedia.RegisterCallback( EMA, "LibSharedMedia_Registered" )

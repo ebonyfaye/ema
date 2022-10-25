@@ -151,6 +151,12 @@ end
 function EMA:OnEnable()
 	EMA:RegisterEvent( "BANKFRAME_OPENED" )
 	EMA:RegisterEvent( "BANKFRAME_CLOSED" )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
+		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
+	else
+		-- Needs to update for 10.x
+		--EMA:RawHook( "ContainerFrameItemButtonMixin:OnModifiedClick", "EMAContainerFrameItem", true )
+	end
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
 end
@@ -700,6 +706,26 @@ end
 -- Bank functionality.
 -------------------------------------------------------------------------------------------------------------
 
+function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
+	local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
+	if isConfigOpen == true and IsShiftKeyDown() == true then
+		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+		local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+		--EMA:Print("test2", GUIPanel, "vs", currentModule )
+		if currentModule ~= nil then
+			local itemID, itemLink = GameTooltip:GetItem()
+			--EMA:Print("test1", itemID, itemLink )
+			if itemLink ~= nil then
+				EMA.settingsControl.BankItemsEditBoxBankItem:SetText( "" )
+				EMA.settingsControl.BankItemsEditBoxBankItem:SetText( itemLink )
+				EMA.autoBankItemLink = itemLink
+				return
+			end
+		end	
+	end	
+	return EMA.hooks["ContainerFrameItemButton_OnModifiedClick"]( self, event, ... )
+end
+
 function EMA:GetBankItemsMaxPosition()
 	if EMA.db.globalBankList == true then
 		return #EMA.db.global.autoBankItemsListGlobal
@@ -769,7 +795,7 @@ function EMA:AmountInBank( itemLink )
 	local countBags = GetItemCount( itemLink )
 	local countTotal = GetItemCount( itemLink , true)
 	local countBank = countTotal - countBags
-	EMA:Print("test2", countBags, countTotal, countBank )
+	--EMA:Print("test2", countBags, countTotal, countBank )
 	
 	return countBank
 
@@ -778,8 +804,13 @@ end
 
 function EMA:AddAllToBank()
 	--EMA:Print("run")
+	local bagContainerName = GetContainerNumSlots
+	if EMAPrivate.Core.isEmaBetaBuild() == true then
+		-- 10.x changes
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1,bagContainerName( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -833,13 +864,26 @@ function EMA:AddAllToBank()
 					end
 					
 					if canSend == true then
-						PickupContainerItem( bagID, slotID )
-						--EMA:Print("test", isCraftingReagent )
-						if isCraftingReagent == true then
-							UseContainerItem( bagID , slotID, nil, true )
+						if EMAPrivate.Core.isEmaBetaBuild() == true then
+							C_Container.PickupContainerItem( bagID, slotID )
 						else
-							UseContainerItem( bagID , slotID )
-						end						
+							PickupContainerItem( bagID, slotID )
+						end
+						--EMA:Print("test", isCraftingReagent )
+						-- 10.x stuff
+						if 	EMAPrivate.Core.isEmaBetaBuild() == true then
+							if isCraftingReagent == true then
+								C_Container.UseContainerItem( bagID , slotID, nil, true )
+							else
+								C_Container.UseContainerItem( bagID , slotID )
+							end
+						else
+							if isCraftingReagent == true then
+								UseContainerItem( bagID , slotID, nil, true )
+							else
+								UseContainerItem( bagID , slotID )
+							end
+						end	
 					end
 				end	
 			end

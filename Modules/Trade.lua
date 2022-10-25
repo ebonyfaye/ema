@@ -158,7 +158,7 @@ end
 function EMA:OnEnable()
 	EMA:RegisterEvent( "TRADE_SHOW" )
 	EMA:RegisterEvent( "TRADE_CLOSED" ) -- Unsued but we keep it for now!
-	if EMAPrivate.Core.isEmaBetaBuild() == false then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
 		-- Needs to update for 10.x
@@ -838,8 +838,13 @@ function EMA:TradeAllItems()
 	if EMAApi.IsCharacterInTeam ( characterName ) == false and EMAUtilities:CheckIsFromMyRealm(characterName) == false then
 		return
 	end
-	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+	local bagContainerName = GetContainerNumSlots
+	if EMAPrivate.Core.isEmaBetaBuild() == true then
+		-- 10.x changes
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
+	for bagID = 0, NUM_BAG_SLOTS do		
+		for slotID = 1, bagContainerName( bagID ),1 do	
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -895,22 +900,27 @@ function EMA:TradeAllItems()
 					else
 						itemTable = EMA.db.autoTradeItemsList
 					end
-					for position, itemInformation in pairs( itemTable ) do
-						if EMAApi.IsCharacterInGroup( characterName, itemInformation.tag ) == true then	
-							if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
-								--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )
-								--EMA:Print("test", itemLink)
-								canTrade = true
-								if itemInformation.blackList == true then
-									canTrade = false
+						for position, itemInformation in pairs( itemTable ) do
+							if EMAApi.IsCharacterInGroup( characterName, itemInformation.tag ) == true then	
+								if EMAUtilities:DoItemLinksContainTheSameItem( itemLink, itemInformation.link ) then
+									--EMA:Print("DataTest", itemInformation.link, itemInformation.blackList )
+									--EMA:Print("test", itemLink)
+									canTrade = true
+									if itemInformation.blackList == true then
+										canTrade = false
+									end
 								end
 							end
-						end
-					end	
+						end	
 					if canTrade == true then
 						for iterateTradeSlots = 1, ( MAX_TRADE_ITEMS - 1 ) do	
 							if GetTradePlayerItemLink( iterateTradeSlots ) == nil then
-								PickupContainerItem( bagID, slotID )
+								-- More 10.x Changes
+								if EMAPrivate.Core.isEmaBetaBuild() == true then
+									C_Container.PickupContainerItem( bagID, slotID )
+								else
+									PickupContainerItem( bagID, slotID )
+								end	
 								ClickTradeButton( iterateTradeSlots )	
 							end
 						end	
@@ -918,7 +928,7 @@ function EMA:TradeAllItems()
 				end	
 			end
 		end
-	end	
+	end			
 end
 
 function EMA:TRADE_CLOSED()

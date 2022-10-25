@@ -10,10 +10,9 @@
 --																					--
 -- ================================================================================ --
 
--- DO NOT lOAD FOR WOTLK.
+-- DO NOT lOAD over WOLTK.
 local _, _, _, tocversion = GetBuildInfo()
-if tocversion >= 30000 and tocversion <= 40000 then
---if WOW_PROJECT_ID == WOW_PROJECT_WOTLKC then
+if tocversion >= 30000 then
 	return
 end	
 
