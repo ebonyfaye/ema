@@ -154,8 +154,8 @@ function EMA:OnEnable()
 	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
-		-- Needs to update for 10.x
-		--EMA:RawHook( "ContainerFrameItemButtonMixin:OnModifiedClick", "EMAContainerFrameItem", true )
+		--10.x
+		hooksecurefunc("HandleModifiedItemClick", EMA.HandleModifiedItemClick)
 	end
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
@@ -708,7 +708,7 @@ end
 
 function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
 	local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
-	if isConfigOpen == true and IsShiftKeyDown() == true then
+	if isConfigOpen == true and IsControlKeyDown() == true then
 		local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
 		local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
 		--EMA:Print("test2", GUIPanel, "vs", currentModule )
@@ -725,6 +725,33 @@ function EMA:ContainerFrameItemButton_OnModifiedClick( self, event, ... )
 	end	
 	return EMA.hooks["ContainerFrameItemButton_OnModifiedClick"]( self, event, ... )
 end
+
+function EMA.HandleModifiedItemClick(itemLink, itemLocation)
+	if itemLocation ~= nil then -- item location is only not nil for bag item clicks
+		local button = GetMouseButtonClicked()
+		local bag, slot = itemLocation.bagID, itemLocation.slotIndex
+		
+		local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
+		if isConfigOpen == true and IsControlKeyDown() == true then
+			local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
+			local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
+			--EMA:Print("test2", GUIPanel, "vs", currentModule )
+			if currentModule ~= nil then
+				local itemID, itemLink = GameTooltip:GetItem()
+				local ItemLink = GetContainerItemLink(bag, slot)
+				--EMA:Print("test1", itemID, itemLink )
+				if itemLink ~= nil then
+					EMA.settingsControl.BankItemsEditBoxBankItem:SetText( "" )
+				EMA.settingsControl.BankItemsEditBoxBankItem:SetText( itemLink )
+				EMA.autoBankItemLink = itemLink	
+					return
+				end
+			end
+		end
+	end
+	return
+end
+
 
 function EMA:GetBankItemsMaxPosition()
 	if EMA.db.globalBankList == true then

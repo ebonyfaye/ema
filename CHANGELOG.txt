@@ -1,6 +1,38 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0221)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.0/10.0.2
+Release Date: 01/11/2022
+
+
+## Sell	
+	--Clicking items in bags now work is crtl not shift due to api changes in 10.x
+	--Fixed issue clicking from bags to EMA frame for 10.x
+	-- Fixed Alt Selling a item with team
+	
+## Guild	
+	--Clicking items in bags now work is crtl not shift due to api changes in 10.x
+	--Fixed issue clicking from bags to EMA frame for 10.x
+	
+## Bank
+	--Clicking items in bags now work is crtl not shift due to api changes in 10.x
+	--Fixed issue clicking from bags to EMA frame for 10.x
+	
+## Mail	
+	--Clicking items in bags now work is crtl not shift due to api changes in 10.x
+	--Fixed issue clicking from bags to EMA frame for 10.x
+
+## Purchase
+	--Clicking items in bags now work is crtl not shift due to api changes in 10.x
+	--Fixed issue clicking from bags to EMA frame for 10.x
+
+## Trade
+	--Clicking items in bags now work is crtl not shift due to api changes in 10.x
+	--Fixed issue clicking from bags to EMA frame for 10.x
+	
+
+---------------------------
 EMA Version: Release-v4.3(0220)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.0/10.0.2
 Release Date: 25/10/2022
