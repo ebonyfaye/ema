@@ -797,6 +797,7 @@ function EMA:OnEnable()
 	else
 		--10.x
 		hooksecurefunc("HandleModifiedItemClick", EMA.HandleModifiedItemClick)
+		--EMA:RawHook( "HandleModifiedItemClick", true )
 	end
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
@@ -847,33 +848,6 @@ function EMA.HandleModifiedItemClick(itemLink, itemLocation)
 			EMA:EMASendCommandToTeam( EMA.COMMAND_SELL_ITEM, link )
 		end
 		-- EMA CONFIG WINDOW
-		local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
-		if isConfigOpen == true and IsControlKeyDown() == true then
-			local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected
-			local currentModule = string.find(GUIPanel, EMA.moduleDisplayName) 
-			--EMA:Print("test2", GUIPanel, "vs", currentModule )
-			if currentModule ~= nil then
-				local itemID, itemLink = GameTooltip:GetItem()
-				local ItemLink = GetContainerItemLink(bag, slot)
-				--EMA:Print("test1", itemID, itemLink )
-				if itemLink ~= nil then
-					EMA.settingsControl.listEditBoxOtherItem:SetText( "" )
-					EMA.settingsControl.listEditBoxOtherItem:SetText( itemLink )
-					EMA.autoSellOtherItemLink = itemLink
-					return
-				end
-			end
-		end
-	end
-	return
-end
-
--- WOW 10.0
-function EMA.HandleModifiedItemClick(itemLink, itemLocation)
-	if itemLocation ~= nil then -- item location is only not nil for bag item clicks
-		local button = GetMouseButtonClicked()
-		local bag, slot = itemLocation.bagID, itemLocation.slotIndex
-		
 		local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
 		if isConfigOpen == true and IsControlKeyDown() == true then
 			local GUIPanel = EMAPrivate.SettingsFrame.TreeGroupStatus.selected

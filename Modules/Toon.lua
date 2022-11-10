@@ -1198,7 +1198,7 @@ function EMA:OnEnable()
 	end
 	-- Will not work for ""classic"" as well 
 	if EMAPrivate.Core.isEmaBetaBuild() == true then
-		--EMA:RegisterEvent( "TRAIT_CONFIG_UPDATED" )
+		EMA:RegisterEvent( "TRAIT_CONFIG_UPDATED" )
 	end
 	-- Initialise key bindings.
 	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
@@ -2045,24 +2045,24 @@ function EMA:LOSS_OF_CONTROL_ADDED( event, ... )
 end
 
 function EMA:QUEST_SESSION_CREATED( event, ...)
-	if EMAApi.isEmaClassicBccBuild == true then return end
+	--EMA:Print("test")
+	if EMAApi.isEmaClassicBccBuild == true then 
+		return 
+	end
 	if EMA.db.autoAcceptPartySyncRequest == true then
 		--EMA:Print("test", event )
 		if EMA.db.autoAcceptPartySyncRequestFromTeam == true then
 			local details = C_QuestSession.GetSessionBeginDetails()
-			if details == nil then
-				--EMA:Print("failed")
-				EMA:QUEST_SESSION_CREATED()
-				return
+			if details ~= nil then
+				local characterName = EMAUtilities:AddRealmToNameIfMissing( details.name )
+				--EMA:Print("test", characterName )
+				if EMAApi.IsCharacterInTeam( characterName) == true then
+					C_QuestSession.SendSessionBeginResponse( "true" )
+				end	
 			end	
-			local characterName = EMAUtilities:AddRealmToNameIfMissing( details.name )
-			--EMA:Print("test", characterName )
-			if EMAApi.IsCharacterInTeam( characterName) == true then
-				C_QuestSession.SendSessionBeginResponse( "true" )
-			end	
-		end	
+		end
 	else		
-		C_QuestSession.SendSessionBeginResponse( "true" )
+		C_QuestSession.SendSessionBeginResponse( "true" )	
 	end	
 end	
 

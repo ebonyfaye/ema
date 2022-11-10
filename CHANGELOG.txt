@@ -1,6 +1,19 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0222)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.0/10.0.2
+Release Date: 10/11/2022
+
+## Toon
+	-- Fixed a Loopcode bug with PartySync.
+	
+
+## Sell
+	-- Fixed double code for Alt Sell a item for 10.x!
+
+
+---------------------------
 EMA Version: Release-v4.3(0221)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.0/10.0.2
 Release Date: 01/11/2022
