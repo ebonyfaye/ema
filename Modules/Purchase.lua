@@ -733,8 +733,12 @@ function EMA:BuyItemFromMerchant( itemIndexMerchant, amountToBuy )
 		end
 		-- Is there enough free space for this item in the characters bags?				
 		--TODO - need to find items family type and compare to each container.
-		local numFreeSlots, numTotalSlots = LibBagUtils:CountSlots("BAGS", 0)
-        if numFreeSlots == 0 then
+		if EMAPrivate.Core.isEmaClassicBccBuild() == true then 	
+			local numFreeSlots, numTotalSlots = LibBagUtils:CountSlots("BAGS", 0)
+        else
+			local numFreeSlots = EMAUtilities:FreeBagSpace()
+		end
+		if numFreeSlots == 0 then
             noFreeBagSpace = true
         end
 		-- Buy from the merchant, if there is a valid amount to buy and the character has enough money.

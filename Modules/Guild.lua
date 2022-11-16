@@ -181,7 +181,12 @@ end
 
 -- Called when the addon is enabled.
 function EMA:OnEnable()
-	EMA:RegisterEvent( "GUILDBANKFRAME_OPENED" )
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
+		EMA:RegisterEvent( "GUILDBANKFRAME_OPENED" )
+	else	
+		EMA:RegisterEvent( "PLAYER_INTERACTION_MANAGER_FRAME_SHOW" )
+	end
+	
 	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA:RawHook( "ContainerFrameItemButton_OnModifiedClick", true )
 	else
@@ -190,7 +195,6 @@ function EMA:OnEnable()
 	end
 	EMA:RegisterMessage( EMAApi.MESSAGE_MESSAGE_AREAS_CHANGED, "OnMessageAreasChanged" )
 	EMA:RegisterMessage( EMAApi.GROUP_LIST_CHANGED , "OnGroupAreasChanged" )
-	-- Update DropDownList
 	EMA:ScheduleTimer("RefreshTabDropDownList", 1 )
 end
 
@@ -850,6 +854,14 @@ function EMA:RemoveItem()
 	EMA:SettingsGuildItemsRowClick( EMA.settingsControl.GuildItemsHighlightRow  - 1, 1 )		
 end
 
+function EMA:PLAYER_INTERACTION_MANAGER_FRAME_SHOW( event, frame , ... )
+	--EMA:Print("test", frame)
+	if frame == 10 then
+		EMA.GUILDBANKFRAME_OPENED()
+	end
+end
+
+
 function EMA:GUILDBANKFRAME_OPENED()
 	if 	EMA.db.showEMAGuildWindow == true then
 		if not IsShiftKeyDown() then
@@ -866,7 +878,7 @@ end
 function EMA:AddAllToGuildBank()
 	local delay = 0
 	local bagContainerName = GetContainerNumSlots
-	if EMAPrivate.Core.isEmaBetaBuild() == true then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		-- 10.x changes
 		bagContainerName = C_Container.GetContainerNumSlots
 	end
@@ -938,10 +950,12 @@ function EMA:AddAllToGuildBank()
 end
 
 function EMA:SelectBankTab( tab )
-	if GetCurrentGuildBankTab() == tab then
-	else
-		GuildBankTab_OnClick(_G["GuildBankTab" .. tab], "LeftButton", tab )
-	end
+	if GetCurrentGuildBankTab() ~= tab then
+		if EMAPrivate.Core.isEmaClassicBccBuild() == false then			GuildBankFrame.BankTabs[tab]:OnClick("LeftButton")
+		else
+			GuildBankTab_OnClick(_G["GuildBankTab" .. tab], "LeftButton", tab )
+		end
+	end	
 end
 
 function EMA:PlaceItemInGuildBank(bagID, slotID, tab)
@@ -954,7 +968,7 @@ function EMA:PlaceItemInGuildBank(bagID, slotID, tab)
 					local texture, count, locked = GetGuildBankItemInfo(tab, slot)
 					if not locked then
 						--PickupContainerItem( bagID ,slotID  )
-						if EMAPrivate.Core.isEmaBetaBuild() == true then
+						if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 							C_Container.UseContainerItem( bagID ,slotID  )
 						else
 							UseContainerItem( bagID ,slotID  )
@@ -967,7 +981,6 @@ function EMA:PlaceItemInGuildBank(bagID, slotID, tab)
 end
 
 -- gold
-
 function AddGoldToGuildBank()
 	if not CanWithdrawGuildBankMoney() then
 		return
@@ -980,12 +993,11 @@ function AddGoldToGuildBank()
 		return
 	end
 	if moneyToDepositOrWithdraw > 0 then
-	--	EMA:Print(" test", moneyToDepositOrWithdraw )
-		--DepositGuildBankMoney( moneyToDepositOrWithdraw )
+		--EMA:Print(" test", moneyToDepositOrWithdraw )
 		EMA:ScheduleTimer("SendMoneyToGuild", 0.5, moneyToDepositOrWithdraw)
 	else
 		local takeoutmoney = -1 * moneyToDepositOrWithdraw
-	--	EMA:Print("takeout", takeoutmoney)
+		--EMA:Print("takeout", takeoutmoney)
 		EMA:ScheduleTimer("TakeMoneyOut", 0.5, takeoutmoney )
 	end
 end

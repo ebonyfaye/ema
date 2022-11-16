@@ -369,6 +369,7 @@ function lib:CountSlots(which, itemFamily)
 			end
 		end
 	end
+	--print( free )
 	return free,tot
 end
 

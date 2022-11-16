@@ -681,14 +681,16 @@ function EMA:CoreSettingsCreateInfo( top )
 	)
 	
 	movingTop = movingTop - labelHeight * 14
-	EMA.settingsControl.buttonKeyBindings = EMAHelperSettings:CreateButton( 
-		EMA.settingsControl, 
-		buttonWidth, 
-		left, 
-		movingTop,
-		L["KEY_BINDINGS"],
-		EMA.SettingsKeyBindingsCommandClick
-	)	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
+		EMA.settingsControl.buttonKeyBindings = EMAHelperSettings:CreateButton( 
+			EMA.settingsControl, 
+			buttonWidth, 
+			left, 
+			movingTop,
+			L["KEY_BINDINGS"],
+			EMA.SettingsKeyBindingsCommandClick
+		)	
+	end
 	-- Special thanks Heading
 	movingTop = movingTop - buttonHeight * 1
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SPECIAL_THANKS"], movingTop, false )	

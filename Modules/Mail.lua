@@ -961,8 +961,7 @@ function EMA:AddAllToMailBox()
 	SendMailNameEditBox:ClearFocus()
 	EMA.Count = 1 
 	local bagContainerName = GetContainerNumSlots
-	if EMAPrivate.Core.isEmaBetaBuild() == true then
-		-- 10.x changes
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		bagContainerName = C_Container.GetContainerNumSlots
 	end
 	for bagID = 0, NUM_BAG_SLOTS do
@@ -1043,7 +1042,7 @@ function EMA:AddAllToMailBox()
 								SendMailNameEditBox:SetText( toonName )
 								SendMailSubjectEditBox:SetText( L["SENT_AUTO_MAILER"] )
 								-- More 10.x Changes
-								if EMAPrivate.Core.isEmaBetaBuild() == true then
+								if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 									C_Container.PickupContainerItem( bagID, slotID )
 									C_Container.UseContainerItem( bagID , slotID  )
 								else

@@ -962,8 +962,7 @@ function EMA:DoMerchantSellItems()
 	local gold = 0
 	local bagContainerName = GetContainerNumSlots
 	local itemCount = 0
-	if EMAPrivate.Core.isEmaBetaBuild() == true then
-		-- 10.x changes
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		bagContainerName = C_Container.GetContainerNumSlots
 	end
 	for bagID = 0, NUM_BAG_SLOTS do
@@ -979,8 +978,8 @@ function EMA:DoMerchantSellItems()
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
 					local iLvl = C_Item.GetCurrentItemLevel( location )
-					if EMAPrivate.Core.isEmaBetaBuild() == true then
-					local containerInfo = C_Container.GetContainerItemInfo( bagID, slotID )
+					if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+						local containerInfo = C_Container.GetContainerItemInfo( bagID, slotID )
 						itemCount =  containerInfo.stackCount
 					else
 						local _, itemCountOld = GetContainerItemInfo( bagID, slotID )
@@ -988,7 +987,7 @@ function EMA:DoMerchantSellItems()
 					end
 					--EMA:Print("test", itemLink, itemCount, count)
 					local itemName, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
-					if EMAPrivate.Core.isEmaClassicBccBuild == false then	
+					if EMAPrivate.Core.isEmaClassicBccBuild() == false then	
 						local hasToy = PlayerHasToy(bagItemID)
 					end
 					--EMA:Print("ItemTest", bagItemID, itemLink, itemRarity, itemType, isBop, itemRarity, iLvl, itemSellPrice)
@@ -1073,7 +1072,7 @@ function EMA:DoMerchantSellItems()
 						end
 					end		
 					-- Toys
-					if EMA.db.autoSellToys == true and EMAPrivate.Core.isEmaClassicBccBuild == false then
+					if EMA.db.autoSellToys == true and EMAPrivate.Core.isEmaClassicBccBuild() == false then
 						if hasToy == true and isBop == true then
 							--EMA:Print("ToyTest", hasToy, itemSellPrice )
 							if itemSellPrice > 0 then 
@@ -1086,7 +1085,7 @@ function EMA:DoMerchantSellItems()
 						end
 					end
 					-- Mounts
-					if EMA.db.autoSellMounts == true and EMAPrivate.Core.isEmaClassicBccBuild == false then	
+					if EMA.db.autoSellMounts == true and EMAPrivate.Core.isEmaClassicBccBuild() == false then	
 						local mountIDs = C_MountJournal.GetMountIDs()	
 						for i = 1, #mountIDs do
 							local creatureName,mountSpellID,_,_,_,_,_,_,_,_, isCollected, mountID = C_MountJournal.GetMountInfoByID(mountIDs[i])
@@ -1155,7 +1154,7 @@ end
 function EMA:SellItem( bagID, slotID, itemCount )
 	--EMA:Print("sellItem", bagID, slotID, itemCount )
 	if EMAUtilities:MerchantFrameIsShown() == true then	
-		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+		if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 			C_Container.UseContainerItem( bagID, slotID )	
 		else		
 			UseContainerItem( bagID, slotID )

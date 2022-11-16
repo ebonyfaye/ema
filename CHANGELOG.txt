@@ -2,6 +2,23 @@
 ChangeLogs:
 ---------------------------
 EMA Version: Release-v4.3(0222)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
+Release Date: 15/11/2022
+
+## Core
+	-- Updated Toc for live 
+	-- Removed Temp 10.0.0 stuff
+
+
+## Guild
+	-- fixed some GuildBank API Chnages!
+	
+
+
+
+
+---------------------------
+EMA Version: Release-v4.3(0222)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.0/10.0.2
 Release Date: 10/11/2022
 

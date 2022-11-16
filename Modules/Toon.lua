@@ -1197,9 +1197,11 @@ function EMA:OnEnable()
 		EMA:RegisterEvent( "PLAYER_SPECIALIZATION_CHANGED" )
 	end
 	-- Will not work for ""classic"" as well 
+	--[[
 	if EMAPrivate.Core.isEmaBetaBuild() == true then
 		EMA:RegisterEvent( "TRAIT_CONFIG_UPDATED" )
 	end
+	]]
 	-- Initialise key bindings.
 	EMA.keyBindingFrame = CreateFrame( "Frame", nil, UIParent )
 	EMA:RegisterEvent( "UPDATE_BINDINGS" )
@@ -1988,7 +1990,11 @@ function EMA:BAGS_FULL( event, arg1, message, ... )
 		if UnitIsDead( "player" ) then 
 			return 
 		end
-		local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+		if EMAPrivate.Core.isEmaClassicBccBuild() == true then 
+			local numberFreeSlots, numberTotalSlots = LibBagUtils:CountSlots( "BAGS", 0 )
+		else
+			local numFreeSlots = EMAUtilities:FreeBagSpace()
+		end
 		if message == ERR_INV_FULL or message == INVENTORY_FULL then
 			--EMA:Print("fullbag")
 			if numberFreeSlots == 0 then

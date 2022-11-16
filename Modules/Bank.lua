@@ -832,7 +832,7 @@ end
 function EMA:AddAllToBank()
 	--EMA:Print("run")
 	local bagContainerName = GetContainerNumSlots
-	if EMAPrivate.Core.isEmaBetaBuild() == true then
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		-- 10.x changes
 		bagContainerName = C_Container.GetContainerNumSlots
 	end
@@ -891,14 +891,14 @@ function EMA:AddAllToBank()
 					end
 					
 					if canSend == true then
-						if EMAPrivate.Core.isEmaBetaBuild() == true then
+						if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 							C_Container.PickupContainerItem( bagID, slotID )
 						else
 							PickupContainerItem( bagID, slotID )
 						end
 						--EMA:Print("test", isCraftingReagent )
 						-- 10.x stuff
-						if 	EMAPrivate.Core.isEmaBetaBuild() == true then
+						if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 							if isCraftingReagent == true then
 								C_Container.UseContainerItem( bagID , slotID, nil, true )
 							else

@@ -366,3 +366,11 @@ function EbonyUtilities:PartyLeaderName()
 	return leaderName
 end
 
+function EbonyUtilities:FreeBagSpace()
+	local freeBagSpace = 0
+	for bagID = 0, NUM_BAG_SLOTS do
+		local freeslots = C_Container.GetContainerNumFreeSlots( bagID )
+		freeBagSpace = freeBagSpace + freeslots
+	end
+	return freeBagSpace
+end
