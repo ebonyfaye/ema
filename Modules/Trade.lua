@@ -864,9 +864,9 @@ function EMA:TradeAllItems()
 	if EMAApi.IsCharacterInTeam ( characterName ) == false and EMAUtilities:CheckIsFromMyRealm(characterName) == false then
 		return
 	end
+	-- 10.x changes
 	local bagContainerName = GetContainerNumSlots
-	if EMAPrivate.Core.isEmaBetaBuild() == true then
-		-- 10.x changes
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		bagContainerName = C_Container.GetContainerNumSlots
 	end
 	for bagID = 0, NUM_BAG_SLOTS do		

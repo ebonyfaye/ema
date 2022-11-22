@@ -2387,7 +2387,7 @@ function EMA:SendFollowStatusUpdateCommand( isFollowing )
 		local _, _, _, tocversion = GetBuildInfo()
 		if tocversion >= 30000 then	
 			if UnitInVehicle("Player") == true and UnitControllingVehicle("player") == false then
-				EMA:Print("UnitInVehicle")
+				--EMA:Print("UnitInVehicle")
 				canSend = false
 			end
 		end	

@@ -482,9 +482,12 @@ end
 
 --ebony test Using the wowapi and not the scanning of tooltips
 function EMA:CheckForQuestItemAndAddToBar()	
-	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
+	local bagContainerName = GetContainerNumSlots
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 		for bag = 0, NUM_BAG_SLOTS do
-			for slot = 1, GetContainerNumSlots(bag) do
+			for slot = 1, bagContainerName(bag) do
 				local itemLink = GetContainerItemLink(bag, slot)
 				if itemLink and itemLink:match("item:%d") then
 					local name, itemLink,_,_,_,itemType,questItem = GetItemInfo( itemLink )
@@ -611,10 +614,18 @@ end
 ]]
 	
 --Checks the item is in the Toon players bag 8.0.1 using min/min code!
+
+	
 function EMA:IsInInventory(itemID)
 	local InBags = false
+	local bagContainerName = GetContainerNumSlots
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		-- 10.x changes
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
+	
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1, GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
