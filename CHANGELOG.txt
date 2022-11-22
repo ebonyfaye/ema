@@ -1,6 +1,17 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0225)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
+Release Date: 22/11/2022
+
+## item-Use
+	-- OPPS!
+		* Dev note always test!!!!!!!!!
+
+
+
+---------------------------
 EMA Version: Release-v4.3(0224)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
 Release Date: 22/11/2022
@@ -10,7 +21,6 @@ Release Date: 22/11/2022
 	
 ## Item-Use	
 	-- Fixed bag API change.
-
 
 
 ---------------------------
