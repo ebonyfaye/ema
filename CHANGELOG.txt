@@ -1,6 +1,16 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0226)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
+Release Date: 22/11/2022
+
+## item-Use
+	-- fixed a api change again.
+
+
+
+---------------------------
 EMA Version: Release-v4.3(0225)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
 Release Date: 22/11/2022

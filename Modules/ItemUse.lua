@@ -624,9 +624,11 @@ function EMA:IsInInventory(itemID)
 		-- 10.x changes
 		bagContainerName = C_Container.GetContainerNumSlots
 	end
-	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1, GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1, bagContainerName( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
