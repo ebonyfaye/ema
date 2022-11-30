@@ -839,13 +839,16 @@ end
 
 -- The ContainerFrameItemButton_OnModifiedClick hook. 10.x
 function EMA.HandleModifiedItemClick(itemLink, itemLocation)
+	--EMA:Print("test")
 	if itemLocation ~= nil then -- item location is only not nil for bag item clicks
 		local button = GetMouseButtonClicked()
 		local bag, slot = itemLocation.bagID, itemLocation.slotIndex
 		if EMA.db.sellItemOnAllWithAltKey == true and IsAltKeyDown() and EMAUtilities:MerchantFrameIsShown() then
 			--local bag, slot = self:GetParent():GetID(), self:GetID()
-			local texture, count, locked, quality, readable, lootable, link = GetContainerItemInfo( bag, slot )
-			EMA:EMASendCommandToTeam( EMA.COMMAND_SELL_ITEM, link )
+			local containerInfo = C_Container.GetContainerItemInfo(bag, slot)
+			local _, item = GetItemInfo( containerInfo.itemID )
+			--EMA:Print("test", item)
+			EMA:EMASendCommandToTeam( EMA.COMMAND_SELL_ITEM, item )
 		end
 		-- EMA CONFIG WINDOW
 		local isConfigOpen = EMAPrivate.SettingsFrame.Widget:IsVisible()
@@ -855,7 +858,7 @@ function EMA.HandleModifiedItemClick(itemLink, itemLocation)
 			--EMA:Print("test2", GUIPanel, "vs", currentModule )
 			if currentModule ~= nil then
 				local itemID, itemLink = GameTooltip:GetItem()
-				local ItemLink = GetContainerItemLink(bag, slot)
+				local ItemLink = C_Container.GetContainerItemLink(bag, slot)
 				--EMA:Print("test1", itemID, itemLink )
 				if itemLink ~= nil then
 					EMA.settingsControl.listEditBoxOtherItem:SetText( "" )
@@ -870,8 +873,13 @@ function EMA.HandleModifiedItemClick(itemLink, itemLocation)
 end
 
 function EMA:DoSellItem( itemlink )
+	local bagContainerName = GetContainerNumSlots
+	local itemCount = 0
+	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+		bagContainerName = C_Container.GetContainerNumSlots
+	end
 	for bagID = 0, NUM_BAG_SLOTS do
-		for slotID = 1,GetContainerNumSlots( bagID ),1 do 
+		for slotID = 1, bagContainerName( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then
@@ -880,7 +888,7 @@ function EMA:DoSellItem( itemlink )
 				if (bagItemLink ) then
 					if EMAUtilities:DoItemLinksContainTheSameItem( bagItemLink, itemlink ) then
 						if EMAUtilities:MerchantFrameIsShown() == true then	
-							UseContainerItem( bagID, slotID ) 
+							C_Container.UseContainerItem( bagID, slotID ) 
 							-- Tell the Boss.
 							EMA:EMASendMessageToTeam( EMA.db.messageArea, L["I_HAVE_SOLD_X"]( bagItemLink ), false )
 						end
