@@ -143,6 +143,7 @@ local function dragonflightCurrencys()
 		dragonflightCurrencys.CobaltAssembly = 2134
 		dragonflightCurrencys.EffigyAdornments = 2011
 		dragonflightCurrencys.PurifiedArcaneEnergy = 2105
+		dragonflightCurrencys.BloodyTokens = 2123
 	return dragonflightCurrencys
 end	
 

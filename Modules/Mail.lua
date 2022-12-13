@@ -867,7 +867,7 @@ function EMA.HandleModifiedItemClick(itemLink, itemLocation)
 			--EMA:Print("test2", GUIPanel, "vs", currentModule )
 			if currentModule ~= nil then
 				local itemID, itemLink = GameTooltip:GetItem()
-				local ItemLink = GetContainerItemLink(bag, slot)
+				local ItemLink = C_Container.GetContainerItemLink(bag, slot)
 				--EMA:Print("test1", itemID, itemLink )
 				if itemLink ~= nil then
 					EMA.settingsControl.MailItemsEditBoxMailItem:SetText( "" )

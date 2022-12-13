@@ -843,7 +843,7 @@ function EMA.HandleModifiedItemClick(itemLink, itemLocation)
 	if itemLocation ~= nil then -- item location is only not nil for bag item clicks
 		local button = GetMouseButtonClicked()
 		local bag, slot = itemLocation.bagID, itemLocation.slotIndex
-		if EMA.db.sellItemOnAllWithAltKey == true and IsAltKeyDown() and EMAUtilities:MerchantFrameIsShown() then
+		if EMA.db.sellItemOnAllWithAltKey == true and IsAltKeyDown() and EMAUtilities:MerchantFrameIsShown() and button ~= nil then
 			--local bag, slot = self:GetParent():GetID(), self:GetID()
 			local containerInfo = C_Container.GetContainerItemInfo(bag, slot)
 			local _, item = GetItemInfo( containerInfo.itemID )

@@ -1,6 +1,18 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0228)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
+Release Date: 13/12/2022
+
+
+## Information
+	-- Added Bloody Tokens.
+
+
+
+
+---------------------------
 EMA Version: Release-v4.3(0227)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
 Release Date: 29/11/2022
