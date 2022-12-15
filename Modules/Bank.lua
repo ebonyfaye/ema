@@ -832,11 +832,13 @@ end
 function EMA:AddAllToBank()
 	--EMA:Print("run")
 	local bagContainerName = GetContainerNumSlots
+	local EMA_NUMBER_BAG_SLOTS = NUM_BAG_SLOTS
 	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 		-- 10.x changes
 		bagContainerName = C_Container.GetContainerNumSlots
+		EMA_NUMBER_BAG_SLOTS = 5
 	end
-	for bagID = 0, NUM_BAG_SLOTS do
+	for bagID = 0, EMA_NUMBER_BAG_SLOTS do
 		for slotID = 1,bagContainerName( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)

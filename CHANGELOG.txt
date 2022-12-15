@@ -1,6 +1,32 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0229)
+Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
+Release Date: 15/12/2022
+
+## Core
+	-- Updated Ace3
+		- Should fix a callback handler! Error
+
+## Sell
+	--Now uses the new ReagentBag slot.
+
+## Trade
+	--Now uses the new ReagentBag slot.
+	
+## Mail
+	--Now uses the new ReagentBag slot.
+
+## Guild
+	--Now uses the new ReagentBag slot.
+
+
+## Bank
+	--Now uses the new ReagentBag slot.
+
+
+---------------------------
 EMA Version: Release-v4.3(0228)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
 Release Date: 13/12/2022
