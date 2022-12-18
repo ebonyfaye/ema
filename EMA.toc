@@ -1,4 +1,4 @@
-## Interface: 10020
+## Interface: 100002
 ## Title: EMA
 ## Notes: Ebony's MultiBoxing Assistant
 ## Author: Jennifer Calladine 'Ebony/Blossom'
