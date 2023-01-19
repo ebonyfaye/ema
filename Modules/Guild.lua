@@ -1,8 +1,8 @@
 -- ================================================================================ --
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
---				Current Author: Jennifer Cally (Ebony)								--
+--				Current Author: Jennifer Calladine (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2022 Jennifer Calladine					--
+--				License: All Rights Reserved 2018-2023 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -877,12 +877,14 @@ end
 
 function EMA:AddAllToGuildBank()
 	local delay = 0
+	-- 10.x changes
 	local bagContainerName = GetContainerNumSlots
 	local EMA_NUMBER_BAG_SLOTS = NUM_BAG_SLOTS
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
-		-- 10.x changes
+	if EMAPrivate.Core.isEmaClassicBuild() == false then
 		bagContainerName = C_Container.GetContainerNumSlots
-		EMA_NUMBER_BAG_SLOTS = 5
+		if EMAPrivate.Core.isEmaClassicBccBuild()  == false then
+			EMA_NUMBER_BAG_SLOTS = 5
+		end
 	end
 	for bagID = 0, EMA_NUMBER_BAG_SLOTS do
 		for slotID = 1, bagContainerName( bagID ),1 do 
@@ -970,7 +972,7 @@ function EMA:PlaceItemInGuildBank(bagID, slotID, tab)
 					local texture, count, locked = GetGuildBankItemInfo(tab, slot)
 					if not locked then
 						--PickupContainerItem( bagID ,slotID  )
-						if EMAPrivate.Core.isEmaClassicBccBuild() == false then
+						if EMAPrivate.Core.isEmaClassicBuild() == false then
 							C_Container.UseContainerItem( bagID ,slotID  )
 						else
 							UseContainerItem( bagID ,slotID  )

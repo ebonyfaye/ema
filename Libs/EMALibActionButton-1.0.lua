@@ -1722,7 +1722,9 @@ Item.GetCharges              = function(self) return nil end
 --Item.GetCount                = function(self) return GetItemCount(self._state_action, nil, true) end
 -- Ebony changes for Ema to count the stacks all chars and display in the bar!
 Item.GetCount                = function(self) return EMAApi.GetMaxItemCountFromItemID( self._state_action ) end
-Item.GetCooldown             = function(self) return GetItemCooldown(getItemId(self._state_action)) end
+--Item.GetCooldown             = function(self) return GetItemCooldown(getItemId(self._state_action)) end
+-- item cooldown needs fixing
+Item.GetCooldown             = function(self) return 0, 0, 0 end
 Item.IsAttack                = function(self) return nil end
 Item.IsEquipped              = function(self) return IsEquippedItem(self._state_action) end
 Item.IsCurrentlyActive       = function(self) return IsCurrentItem(self._state_action) end

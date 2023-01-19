@@ -1,8 +1,8 @@
 -- ================================================================================ --
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
---				Current Author: Jennifer Cally (Ebony)								--
+--				Current Author: Jennifer Calladine (Ebony)								--
 --																					--
---				License: All Rights Reserved 2018-2020 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2020 Jennifer Calladine					--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -251,8 +251,13 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "CHAT_MSG_SYSTEM", "QUEST_FAIL" )
    -- Quest post hooks.
     EMA:SecureHook( "SelectGossipOption" )
-    EMA:SecureHook( "SelectGossipActiveQuest" )
-    EMA:SecureHook( "SelectGossipAvailableQuest" )
+    if EMAPrivate.Core.isEmaClassicBuild() == true then
+		EMA:SecureHook( "SelectGossipActiveQuest" )
+		EMA:SecureHook( "SelectGossipAvailableQuest" )
+	else	
+		EMA:SecureHook( C_GossipInfo, "SelectActiveQuest" )
+		EMA:SecureHook( C_GossipInfo, "SelectAvailableQuest" )
+    end
     EMA:SecureHook( "SelectActiveQuest" )
     EMA:SecureHook( "SelectAvailableQuest" )
     EMA:SecureHook( "AcceptQuest" )

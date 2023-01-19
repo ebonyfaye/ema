@@ -1,6 +1,16 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.3(0231)
+Game Version: 9.2.7/3.4.1/1.14.3/10.0.2
+Release Date: 19/01/2023
+
+## Core
+	-- Updated WOLTKC to work with the new 10.x client changes.
+
+
+
+---------------------------
 EMA Version: Release-v4.3(0230)
 Game Version: 9.2.7/3.4.0/1.14.3/10.0.2
 Release Date: 18/12/2022
