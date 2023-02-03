@@ -366,7 +366,11 @@ function lib:CountSlots(which, itemFamily)
 			if WoW10 == true then 
 				local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
 			else
+				if isClassicBuild() == true then
+				local f,bagFamily = GetContainerNumFreeSlots(bag)
+				else
 				local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
+				end
 			end
 			if bagFamily==0 then
 				free = free + f
