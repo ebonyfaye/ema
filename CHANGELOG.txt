@@ -1,11 +1,21 @@
 ﻿---------------------------
 ChangeLogs:
+EMA Version: Release-v4.3(0234)
+Game Version: 3.4.1/1.14.3/10.0.7
+Release Date: 19/01/2023
+
+# Core Updated ToC
+
+
+
+
 ---------------------------
 EMA Version: Release-v4.3(0233)
 Game Version: 3.4.1/1.14.3/10.0.5
 Release Date: 19/01/2023
 
--- updated toc on live
+## core
+	--updated toc on live
 
 ## Libs
 	-- fixed a bug on classic-ear wow 
