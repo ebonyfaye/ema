@@ -1782,14 +1782,17 @@ function EMA:GetQuestItemFromQuestID(findQuestID)
 	end
 end	
 
-local function GetInlineFactionIcon()
-	local faction = UnitFactionGroup("player");
-	local coords = faction == "Horde" and QUEST_TAG_TCOORDS.HORDE or QUEST_TAG_TCOORDS.ALLIANCE;
-	return CreateTextureMarkup(QUEST_ICONS_FILE, QUEST_ICONS_FILE_WIDTH, QUEST_ICONS_FILE_HEIGHT, 18, 18
-	, coords[1]
-	, coords[2] - 0.02 -- Offset to stop bleeding from next image
-	, coords[3]
-	, coords[4], 0, 2);
+local function GetInlineFactionIcon(questID)
+	local tagInfo = C_QuestLog.GetQuestTagInfo(questID)
+	
+	
+	EMA:Print("test1q1", questID, factionGroup)
+	--local coords = faction == "Horde" and QUEST_TAG_TCOORDS.HORDE or QUEST_TAG_TCOORDS.ALLIANCE;
+	--return CreateTextureMarkup(QUEST_ICONS_FILE, QUEST_ICONS_FILE_WIDTH, QUEST_ICONS_FILE_HEIGHT, 18, 18
+	--, coords[1]
+	--, coords[2] - 0.02 -- Offset to stop bleeding from next image
+	--, coords[3]
+	--, coords[4], 0, 2);
 end
 
 function EMA:GetQuestHeaderInWatchList( questID, questName, characterName )
@@ -1812,7 +1815,7 @@ function EMA:GetQuestHeaderInWatchList( questID, questName, characterName )
 	end
 	if (C_CampaignInfo.IsCampaignQuest(questID) ) then
 			--EMA:Print("CampaignQuest", questName)
-		icon = GetInlineFactionIcon()
+		--icon = GetInlineFactionIcon(questID)
 	end	
 	local questWatchInfo = EMA:CreateQuestWatchInfo( questID, "QUEST_HEADER", -1, "", questName, icon )
 	
