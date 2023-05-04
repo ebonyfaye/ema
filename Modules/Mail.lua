@@ -936,13 +936,14 @@ function EMA:MAIL_SHOW(event, ...)
 	--EMA:Print("test")
 	if EMA.db.showEMAMailWindow == true then
 		if not IsShiftKeyDown() then
-			EMA:AddAllToMailBox()
+			--EMA:AddAllToMailBox()
+			EMA:ScheduleTimer( "AddAllToMailBox", 0.3 )
 		else 
 			EMA.ShiftkeyDown = true
 		end	
 	end
 	if EMA.db.adjustMoneyWithMail == true and EMA.db.showEMAMailWindow == true then
-		EMA:ScheduleTimer( "AddGoldToMailBox", 0.3 )
+		EMA:ScheduleTimer( "AddGoldToMailBox", 0.6 )
 	end
 end
 
@@ -1048,8 +1049,12 @@ function EMA:AddAllToMailBox()
 								SendMailSubjectEditBox:SetText( L["SENT_AUTO_MAILER"] )
 								-- More 10.x Changes
 								if EMAPrivate.Core.isEmaClassicBuild() == false then
+									--EMA:Print("B$s", bagID , slotID)
+									--Container.PickupItem( bagID, slotID )
 									C_Container.PickupContainerItem( bagID, slotID )
-									C_Container.UseContainerItem( bagID , slotID  )
+									ClickSendMailItemButton()
+									-- Does not work 10.1???? use command above
+									--C_Container.UseContainerItem( bagID , slotID  )
 								else
 									PickupContainerItem( bagID, slotID )
 									UseContainerItem( bagID , slotID  )

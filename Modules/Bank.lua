@@ -895,11 +895,6 @@ function EMA:AddAllToBank()
 					end
 					
 					if canSend == true then
-						if EMAPrivate.Core.isEmaClassicBuild() == false then
-							C_Container.PickupContainerItem( bagID, slotID )
-						else
-							PickupContainerItem( bagID, slotID )
-						end
 						--EMA:Print("test", isCraftingReagent )
 						-- 10.x stuff
 						if EMAPrivate.Core.isEmaClassicBuild() == false then

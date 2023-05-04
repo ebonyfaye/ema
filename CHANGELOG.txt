@@ -1,5 +1,20 @@
 ﻿---------------------------
 ChangeLogs:
+EMA Version: Release-v4.3(0236)
+Game Version: 3.4.1/1.14.3/10.1.0
+Release Date: 04/05/2023
+
+#Core
+	- Added a Sexy Icon on addon list!
+
+# Bank
+	-Fixed issue with not putting items in bank
+	
+# Mail
+	- Fixed a issue #95 with the items not sending anymore.	
+
+---------------------------
+ChangeLogs:
 EMA Version: Release-v4.3(0235)
 Game Version: 3.4.1/1.14.3/10.1.0
 Release Date: 03/05/2023
