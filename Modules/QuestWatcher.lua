@@ -1060,6 +1060,7 @@ function EMA:QUEST_LOG_UPDATE( event, ... )
 		-- Wait a bit for the correct information to come through from the server...
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )
 		-- For PopUpQuests!
+		--[[
 		for i = 1, GetNumAutoQuestPopUps() do
 			local questID, popUpType = GetAutoQuestPopUp(i);
 			if ( not C_QuestLog.IsQuestBounty(questID) ) then
@@ -1073,6 +1074,7 @@ function EMA:QUEST_LOG_UPDATE( event, ... )
 				end
 			end
 		end
+	]]
 	end
 end
 
@@ -1287,7 +1289,7 @@ function EMA:QUEST_AUTOCOMPLETE( event, questID, ... )
 end
 
 function EMA:DoAutoQuestFieldComplete( characterName, questID )
-	EMA:EMAAddAutoQuestPopUp( questID, "COMPLETE", characterName )
+	--EMA:EMAAddAutoQuestPopUp( questID, "COMPLETE", characterName )
 end
 
 function EMA:QUEST_COMPLETE()
@@ -1318,7 +1320,7 @@ function EMA:QUEST_DETAIL(event, ...)
 end		
 
 function EMA:DoAutoQuestFieldOffer( characterName, questID )
-	EMA:EMAAddAutoQuestPopUp( questID, "OFFER", characterName )
+	--EMA:EMAAddAutoQuestPopUp( questID, "OFFER", characterName )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -1426,10 +1428,10 @@ function EMA:EMAQuestWatcherQuestLogUpdate( useCache )
 				--EMA:Print("testAA", info.title, info.questLogIndex, info.questID, info.campaignID, info.level, info.difficultyLevel, info.suggestedGroup, info.frequency, info.isHeader, info.isCollapsed, info.startEvent, info.isTask, info.isBounty, info.isStory, info.isScaling, info.isOnMap, info.hasLocalPOI, info.isHidden, info.isAutoComplete, info.overridesSortOrder, info.readyForTranslation )
 				local questLogIndex = C_QuestLog.GetLogIndexForQuestID(info.questID)
 				local numObjectives = GetNumQuestLeaderBoards(questLogIndex )
-				local isComplete = C_QuestLog.IsComplete( info.questID)
+				local isComplete = C_QuestLog.IsComplete( info.questID )
 				--local isComplete = EMA:IsCompletedAutoCompleteFieldQuest( questIndex, isComplete )
 				if info.isHeader == false and info.isHidden == false then
-				--EMA:Print("EMAQuestData", questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden)
+				--EMA:Print("EMAQuestData", questID, title, questLogIndex, numObjectives, requiredMoney, isComplete, startEvent, isAutoComplete, failureTime, timeElapsed, questType, isTask, isBounty, isStory, isOnMap, hasLocalPOI, isHidden, "map", IsOnMap)
 				if numObjectives > 0 then							 
 					for iterateObjectives = 1, numObjectives do
 						--EMA:Print( "NumObjs:", numObjectives )
@@ -2173,7 +2175,7 @@ function EMA:QuestWatcherQuestListScrollRefresh()
 			frame.questWatchList.rowHeight
 		)
 	end
-	EMA:DisplayAutoQuestPopUps()
+	--EMA:DisplayAutoQuestPopUps()
 end
 
 
@@ -2379,7 +2381,7 @@ function EMA:EMAAddAutoQuestPopUp( questID, popUpType, characterName )
 		EMA.currentAutoQuestPopups[questID] = {}
 	end	
 	EMA.currentAutoQuestPopups[questID][characterName] = popUpType
-	EMA:DisplayAutoQuestPopUps()
+	--EMA:DisplayAutoQuestPopUps()
 end
 
 function EMA:EMARemoveAutoQuestPopUp( questID, characterName )

@@ -1,5 +1,22 @@
 ﻿---------------------------
 ChangeLogs:
+EMA Version: Release-v4.3(0237)
+Game Version: 3.4.1/1.14.3/10.1.0
+Release Date: 05/05/2023
+
+# Quest
+	-- Fixed Gossip not working on npcs with other Options such as vender, "Where Can I Fly" etc,
+	-- Team will Close Gossip Windows with Team!	
+	
+# Toon
+	-- Closes Merchant Frame With Team
+
+# Quest Wacher
+	-- Removed Popup Quests as this system is full on borken.
+	
+	
+---------------------------
+ChangeLogs:
 EMA Version: Release-v4.3(0236)
 Game Version: 3.4.1/1.14.3/10.1.0
 Release Date: 04/05/2023

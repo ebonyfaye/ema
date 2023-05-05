@@ -159,6 +159,7 @@ EMA.COMMAND_SOUL_STONE = "EMAToonSoulStone"
 EMA.COMMAND_READY_CHECK = "EMAReadyCheck"
 EMA.COMMAND_TELE_PORT = "EMAteleport"
 EMA.COMMAND_LOOT_ROLL = "EMALootRoll"
+EMA.COMMAND_CLOSE_MERCHANT_FRAME = "closeMerchantFrame"
 EMA.COMMAND_WAR_MODE = "EMAWarMode"
 EMA.COMMAND_SET_VIEW = "EMASetViewPoint"
 EMA.COMMAND_TRAIT_CHANGE = "EMATraitChange"
@@ -1217,6 +1218,7 @@ function EMA:OnEnable()
 		EMA:SecureHook( C_PvP, "ToggleWarMode", "ToogleWarMode")
 	end
 	EMA:SecureHook( "RollOnLoot" )
+	EMA:SecureHook( "CloseMerchant" )
 end
 
 -- Called when the addon is disabled.
@@ -1780,6 +1782,23 @@ function EMA:DoLootRoll( id, rollType, name )
 	EMA.isInternalCommand = false
 end
 
+function EMA:CloseMerchant()
+	--EMA:Print("CloseMerchant")
+	if IsShiftKeyDown() == false then
+		if EMA.isInternalCommand == false then
+			EMA:EMASendCommandToTeam( EMA.COMMAND_CLOSE_MERCHANT_FRAME)
+		end		
+	end
+end
+
+function EMA:DoCloseMerchant()
+	--EMA:Print("DoCloseMerchant)
+	EMA.isInternalCommand = true
+		CloseMerchant()
+	EMA.isInternalCommand = false
+end
+
+
 function EMA:CONFIRM_SUMMON( event, sender, location, ... )
 	local sender, location = C_SummonInfo.GetSummonConfirmSummoner(), C_SummonInfo.GetSummonConfirmAreaName()
 	if EMA.db.autoAcceptSummonRequest == true then
@@ -2145,6 +2164,11 @@ function EMA:EMAOnCommandReceived( characterName, commandName, ... )
 	if commandName == EMA.COMMAND_LOOT_ROLL then
 		if characterName ~= self.characterName then
 			EMA.DoLootRoll( characterName, ... )
+		end	
+	end
+	if commandName == EMA.COMMAND_CLOSE_MERCHANT_FRAME then
+		if characterName ~= self.characterName then
+			EMA.DoCloseMerchant( characterName, ... )
 		end	
 	end
 	if commandName == EMA.COMMAND_WAR_MODE then
