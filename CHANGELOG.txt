@@ -1,6 +1,6 @@
 ﻿---------------------------
 ChangeLogs:
-EMA Version: Release-v4.3(0237)
+EMA Version: Release-v4.3(0237-9)
 Game Version: 3.4.1/1.14.3/10.1.0
 Release Date: 05/05/2023
 
