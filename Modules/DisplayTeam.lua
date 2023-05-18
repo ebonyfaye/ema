@@ -3079,7 +3079,6 @@ end
 function EMA:SendComboStatusUpdateCommand()
 	--EMA:Print("test")
 	if EMA.db.showTeamList == true and EMA.db.showComboStatus == true then
-		-- get powerType from http://wowprogramming.com/docs/api_types#powerType as there no real API to get this infomation as of yet.
 		local Class = select(2, UnitClass("player"))
 		--EMA:Print("class", Class)
 		-- Combo Points
@@ -3119,13 +3118,13 @@ function EMA:SendComboStatusUpdateCommand()
 					end	
 			end
 		end	
-		--EMA:Print ("PowerType", PowerType, playerCombo, playerMaxCombo, class)
+		--EMA:Print ("PowerType", PowerType, playerCombo, playerMaxCombo, Class)
 		if EMA.db.showTeamListOnMasterOnly == true then
 			EMA:DebugMessage( "SendComboStatusUpdateCommand TO Master!" )
-			EMA:EMASendCommandToMaster( EMA.COMMAND_COMBO_STATUS_UPDATE, playerCombo, playerMaxCombo, class )
+			EMA:EMASendCommandToMaster( EMA.COMMAND_COMBO_STATUS_UPDATE, playerCombo, playerMaxCombo, Class )
 		else
 			EMA:DebugMessage( "SendComboStatusUpdateCommand TO TEAM!" )
-			EMA:EMASendCommandToTeam( EMA.COMMAND_COMBO_STATUS_UPDATE, playerCombo, playerMaxCombo, class )
+			EMA:EMASendCommandToTeam( EMA.COMMAND_COMBO_STATUS_UPDATE, playerCombo, playerMaxCombo, Class )
 		end
 	end	
 end
