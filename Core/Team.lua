@@ -1232,10 +1232,10 @@ function EMA.DoTeamPartyInvite()
 		--if GetTeamListMaximumOrderOnline() > 5 and EMA.db.inviteConvertToRaid == true then
 		if EMA.inviteCount > 4 and EMA.db.inviteConvertToRaid == true then
 			if EMA.db.inviteSetAllAssistant == true then	
-				C_PartyInfo.ConvertToRaid()
+				ConvertToRaid()
 				SetEveryoneIsAssistant(true)
 			else				
-				C_PartyInfo.ConvertToRaid()
+				ConvertToRaid()
 			end
 		end
 		EMA:ScheduleTimer( "DoTeamPartyInvite", 0.5 )
