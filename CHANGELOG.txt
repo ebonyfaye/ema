@@ -1,5 +1,20 @@
 ﻿---------------------------
 ChangeLogs:
+EMA Version: Release-v4.3(0241)
+Game Version: 3.4.1/1.14.3/10.1.5
+Release Date: 12/07/2023
+
+## dev note:
+	--Yes am still here there people saying am not working on EMA anymore, i am just don't have the time i used to and finding the xpac hard on me.
+
+## Core
+	- Updated Ace3 for WoW	10.1.5
+	
+	
+
+
+---------------------------
+ChangeLogs:
 EMA Version: Release-v4.3(0240)
 Game Version: 3.4.1/1.14.3/10.1.0
 Release Date: 18/05/2023
@@ -7,8 +22,6 @@ Release Date: 18/05/2023
 # Display-Team
 	-Fixed class Power bar (combo points etc)
 	
-
-
 
 
 ---------------------------

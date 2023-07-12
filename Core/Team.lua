@@ -1235,7 +1235,11 @@ function EMA.DoTeamPartyInvite()
 				C_PartyInfo.ConvertToRaid()
 				SetEveryoneIsAssistant(true)
 			else				
-				C_PartyInfo.ConvertToRaid()
+				if EMAPrivate.Core.isEmaClassicBuild() == true then
+					ConvertToRaid()
+				else
+					C_PartyInfo.ConvertToRaid()
+				end
 			end
 		end
 		EMA:ScheduleTimer( "DoTeamPartyInvite", 0.5 )
