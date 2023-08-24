@@ -1,6 +1,6 @@
 ﻿---------------------------
 ChangeLogs:
-EMA Version: Release-v4.3(0242)
+EMA Version: Release-v4.3(0242-2043)
 Game Version: 3.4.1/1.14/10.1.5
 
 # Core
