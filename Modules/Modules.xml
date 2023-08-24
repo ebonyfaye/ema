@@ -13,7 +13,6 @@
 	<Script file="Purchase.lua" />
 
 	<Script file="Toon.lua" />
-	<Script file="Follow.lua" />
 	<Script file="Talk.lua" />
 	<Script file="Macro.lua" />
 	
@@ -33,5 +32,5 @@
 	<Script file="Information.lua" />
 	<Script file="Information-Classic.lua" />
 	<Script file="ItemUse.lua" />
-	<Script file="LDBBar.lua" />
+<!--	<Script file="LDBBar.lua" /> -->
 </Ui>

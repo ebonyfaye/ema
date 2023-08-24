@@ -322,7 +322,8 @@ end
 local function isEmaClassicBuild()
 	local classic = false
 	-- Classic
-	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CLASSIC then
+	local classicBuild  = select(4, GetBuildInfo()) <= 11403
+	if 	classicBuild  == true then
 		classic = true
 	end
 	return 	classic

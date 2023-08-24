@@ -40,7 +40,7 @@ local GetItemInfo, GetItemFamily = GetItemInfo, GetItemFamily
 local function isClassicBuild()
 	local isClassicBuild = false
 	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 10000 and tocversion <= 40000 then
+	if tocversion >= 10000 and tocversion <= 20000 then
 		isClassicBuild = true
 	end
 	return isClassicBuild
@@ -353,28 +353,15 @@ function lib:CountSlots(which, itemFamily)
 	
 	if not itemFamily then
 		for bag in pairs(baglist) do
-			if isWotlkBuild() == false then
-				free = free + myGetContainerNumFreeSlots(bag)
-				tot = tot + GetContainerNumSlots(bag)
-			else
 				free = free + C_Container.myGetContainerNumFreeSlots(bag)
 				tot = tot + C_Container.GetContainerNumSlots(bag)
-			end	
 		end
 	elseif itemFamily==0 then
 		for bag in pairs(baglist) do
-			if WoW10 == true then 
-				local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
-			else
-				if isClassicBuild() == true then
-				local f,bagFamily = GetContainerNumFreeSlots(bag)
-				else
-				local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
-				end
-			end
+			local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
 			if bagFamily==0 then
 				free = free + f
-				tot = tot + GetContainerNumSlots(bag)
+				tot = tot + C_Container.GetContainerNumSlots(bag)
 			end
 		end
 	else
@@ -382,7 +369,7 @@ function lib:CountSlots(which, itemFamily)
 			local f,bagFamily = myGetContainerNumFreeSlots(bag)
 			if bagFamily and band(itemFamily,bagFamily)~=0 then
 				free = free + f
-				tot = tot + GetContainerNumSlots(bag)
+				tot = tot + C_Container.GetContainerNumSlots(bag)
 			end
 		end
 	end

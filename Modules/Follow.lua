@@ -12,7 +12,7 @@
 
 -- DO NOT lOAD over WOLTK.
 local _, _, _, tocversion = GetBuildInfo()
-if tocversion >= 30000 then
+if tocversion >= 11404 then
 	return
 end	
 

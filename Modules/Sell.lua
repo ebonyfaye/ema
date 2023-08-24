@@ -989,14 +989,14 @@ function EMA:DoMerchantSellItems()
 	local gold = 0
 	local itemCount = 0
 -- 10.x changes
-	local bagContainerName = GetContainerNumSlots
+	local bagContainerName = C_Container.GetContainerNumSlots
 	local EMA_NUMBER_BAG_SLOTS = NUM_BAG_SLOTS
-	if EMAPrivate.Core.isEmaClassicBuild() == false then
-		bagContainerName = C_Container.GetContainerNumSlots
+	--if EMAPrivate.Core.isEmaClassicBuild() == false then
+	--	bagContainerName = C_Container.GetContainerNumSlots
 		if EMAPrivate.Core.isEmaClassicBccBuild() == false then
 			EMA_NUMBER_BAG_SLOTS = 5
 		end
-	end
+	--end
 	for bagID = 0, EMA_NUMBER_BAG_SLOTS do
 		for slotID = 1, bagContainerName( bagID ) do 
 			--EMA:Print( "Bags OK. checking", itemLink )
@@ -1010,14 +1010,15 @@ function EMA:DoMerchantSellItems()
 					local isBop = C_Item.IsBound( location )
 					local itemRarity =  C_Item.GetItemQuality( location )
 					local iLvl = C_Item.GetCurrentItemLevel( location )
-					if EMAPrivate.Core.isEmaClassicBuild() == false then
+					--if EMAPrivate.Core.isEmaClassicBuild() == false then
 						local containerInfo = C_Container.GetContainerItemInfo( bagID, slotID )
 						itemCount =  containerInfo.stackCount
+					--[[
 					else
 						local _, itemCountOld = GetContainerItemInfo( bagID, slotID )
 						itemCount = itemCountOld
 					end
-					--EMA:Print("test", itemLink, itemCount, count)
+					]]					--EMA:Print("test", itemLink, itemCount, count)
 					local itemName, _, _, _, _, _, _, _, _, _, itemSellPrice = GetItemInfo( itemLink )
 					if EMAPrivate.Core.isEmaClassicBccBuild() == false then	
 						local hasToy = PlayerHasToy(bagItemID)
@@ -1186,11 +1187,13 @@ end
 function EMA:SellItem( bagID, slotID, itemCount )
 	--EMA:Print("sellItem", bagID, slotID, itemCount )
 	if EMAUtilities:MerchantFrameIsShown() == true then	
-		if EMAPrivate.Core.isEmaClassicBuild() == false then
+		--if EMAPrivate.Core.isEmaClassicBuild() == false then
 			C_Container.UseContainerItem( bagID, slotID )	
+		--[[
 		else		
 			UseContainerItem( bagID, slotID )
-		end		
+		end
+]]		
 	end	
 end
 

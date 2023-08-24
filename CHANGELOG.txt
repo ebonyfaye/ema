@@ -1,5 +1,21 @@
 ﻿---------------------------
 ChangeLogs:
+EMA Version: Release-v4.3(0242)
+Game Version: 3.4.1/1.14/10.1.5
+
+# Core
+	-- classic is running a DF build so nolonger using older API's
+	
+	
+# Follow
+	-- Removed.
+		*Like Live/Wotlk follow can nolonger be called by addons so EMA to do a "Auto" follow.
+
+ 
+
+
+---------------------------
+ChangeLogs:
 EMA Version: Release-v4.3(0241)
 Game Version: 3.4.1/1.14.3/10.1.5
 Release Date: 12/07/2023

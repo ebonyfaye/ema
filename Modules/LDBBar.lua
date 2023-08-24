@@ -10,12 +10,6 @@
 --																					--
 -- ================================================================================ --
 
--- DO NOT lOAD over WOLTK.
-local _, _, _, tocversion = GetBuildInfo()
-if tocversion >= 30000 then
-	return
-end	
-
 -- With Help From Jabberie, EMA Edit By Jennifer
 
 local ldb = LibStub:GetLibrary("LibDataBroker-1.1")
