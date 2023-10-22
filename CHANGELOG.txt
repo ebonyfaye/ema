@@ -1,7 +1,18 @@
 ﻿---------------------------
 ChangeLogs:
-EMA Version: Release-v4.3(0242-2043)
+EMA Version: Release-v4.4(0244)
 Game Version: 3.4.1/1.14/10.1.5
+
+# libbags
+	-- Fixed a error on < retail games.
+
+
+
+
+---------------------------
+ChangeLogs:
+EMA Version: Release-v4.3(0242-2043)
+Game Version: 3.4.1/1.14/10.1.7
 
 # Core
 	-- classic is running a DF build so nolonger using older API's
