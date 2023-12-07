@@ -56,6 +56,7 @@ local function allAlwaysCurrencys()
 		allAlwaysCurrencys.Conquest = 1602
 		allAlwaysCurrencys.TimeWalker = 1166
 		allAlwaysCurrencys.Darkmoon = 515
+		allAlwaysCurrencys.TradersTender = 2032
 	return allAlwaysCurrencys
 end	
 
@@ -144,6 +145,10 @@ local function dragonflightCurrencys()
 		dragonflightCurrencys.EffigyAdornments = 2011
 		dragonflightCurrencys.PurifiedArcaneEnergy = 2105
 		dragonflightCurrencys.BloodyTokens = 2123
+		dragonflightCurrencys.RenascentDream = 2796
+		dragonflightCurrencys.WyrmsDreamingCrest = 2708
+		dragonflightCurrencys.DreamInfusion = 2777
+		dragonflightCurrencys.WhelplingsDreamingCrest = 2706
 	return dragonflightCurrencys
 end	
 

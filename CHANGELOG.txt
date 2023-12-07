@@ -1,5 +1,23 @@
 ﻿---------------------------
 ChangeLogs:
+EMA Version: Release-v4.4(0245)
+Game Version: 3.4.3/1.15.0/10.2.0
+
+# Updated All Toc's
+
+#Information
+	-- Currencys
+		- Renascent Dream = 2796
+		- Wyrms Dreaming-Crest = 2708
+		- Dream Infusion = 2777
+		- Whelplings Dreaming Crest = 2706
+
+
+
+
+
+---------------------------
+ChangeLogs:
 EMA Version: Release-v4.4(0244)
 Game Version: 3.4.1/1.14/10.1.5
 
