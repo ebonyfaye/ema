@@ -329,6 +329,7 @@ function EMA:SettingsCreateTaxi( top )
 		EMA.SettingsToggleAutoLoot,
 		L["ENABLE_AUTO_LOOT_HELP"]
 	)
+	--[[
 	movingTop = movingTop - checkBoxHeight
 	EMA.settingsControl.checkBoxTellBoERare = EMAHelperSettings:CreateCheckBox(
 		EMA.settingsControl,
@@ -361,6 +362,7 @@ function EMA:SettingsCreateTaxi( top )
 			L["TELL_TEAM_BOE_MOUNT_HELP"]
 		)
 	end
+	]]
 	movingTop = movingTop - sliderHeight - verticalSpacing
 	EMA.settingsControl.dropdownMessageArea = EMAHelperSettings:CreateDropdown(
 		EMA.settingsControl,
@@ -441,6 +443,7 @@ function EMA:SettingsToggleAutoLoot( event, checked )
 	EMA:SettingsRefresh()
 end
 
+--[[
 function EMA:SettingsToggleTellBoERare( event, checked )
 	EMA.db.tellBoERare = checked
 	EMA:SettingsRefresh()
@@ -455,6 +458,7 @@ function EMA:SettingsToggleTellBoEMount( event, checked )
 	EMA.db.tellBoEMount = checked
 	EMA:SettingsRefresh()
 end
+--]]
 
 -- Settings received.
 function EMA:EMAOnSettingsReceived( characterName, settings )
@@ -470,9 +474,9 @@ function EMA:EMAOnSettingsReceived( characterName, settings )
 		--EMA.db.mountInRange = settings.mountInRange
 
 		EMA.db.autoLoot = settings.autoLoot
-		EMA.db.tellBoERare = settings.tellBoERare
-		EMA.db.tellBoEEpic = settings.tellBoEEpic
-		EMA.db.tellBoEMount = settings.tellBoEMount
+		--EMA.db.tellBoERare = settings.tellBoERare
+		--EMA.db.tellBoEEpic = settings.tellBoEEpic
+		--EMA.db.tellBoEMount = settings.tellBoEMount
 		EMA.db.messageArea = settings.messageArea
 		EMA.db.warningArea = settings.warningArea
 		-- Refresh the settings.
@@ -499,13 +503,13 @@ function EMA:SettingsRefresh()
 		EMA.settingsControl.checkBoxDismountWithTeam:SetValue( EMA.db.dismountWithTeam )
 		EMA.settingsControl.checkBoxDismountWithMaster:SetValue( EMA.db.dismountWithMaster )
 		--EMA.settingsControl.checkBoxMountInRange:SetValue( EMA.db.mountInRange )
-		EMA.settingsControl.checkBoxTellBoEMount:SetValue( EMA.db.tellBoEMount )
+		--EMA.settingsControl.checkBoxTellBoEMount:SetValue( EMA.db.tellBoEMount )
 	end
 	EMA.settingsControl.dropdownMessageArea:SetValue( EMA.db.messageArea )
 	EMA.settingsControl.dropdownWarningArea:SetValue( EMA.db.warningArea )
 	EMA.settingsControl.checkBoxAutoLoot:SetValue( EMA.db.autoLoot )
-	EMA.settingsControl.checkBoxTellBoERare:SetValue( EMA.db.tellBoERare )
-	EMA.settingsControl.checkBoxTellBoEEpic:SetValue( EMA.db.tellBoEEpic )
+	--EMA.settingsControl.checkBoxTellBoERare:SetValue( EMA.db.tellBoERare )
+	--EMA.settingsControl.checkBoxTellBoEEpic:SetValue( EMA.db.tellBoEEpic )
 end
 
 -------------------------------------------------------------------------------------------------------------
@@ -834,6 +838,7 @@ function EMA:doLoot( tries )
 				--DEBUG
 					--EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , "Minion of Grumpus")
 				--
+				--[[
 				if EMA.db.tellBoERare == true then
 					if lootQuality == 3 then
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
@@ -845,6 +850,7 @@ function EMA:doLoot( tries )
 						EMA:ScheduleTimer( "TellTeamEpicBoE", 1 , name)
 					end
 				end
+				]]
 				---EMA:Print("canLoot", "slot", slot, "name", name )
 				LootSlot(slot)
 				numloot = GetNumLootItems()
@@ -875,6 +881,7 @@ function EMA:EnableAutoLoot()
 	end
 end
 
+--[[
 function EMA:TellTeamEpicBoE( name )
 	--EMA:Print("loottest", name )
 		for bagID = 0, NUM_BAG_SLOTS do
@@ -930,7 +937,7 @@ function EMA:TellTeamEpicBoE( name )
 		end
 	end
 end
-
+]]
 -------------------------------------------------------------------------------------------------------------
 -- EMA Commands functionality.
 -------------------------------------------------------------------------------------------------------------

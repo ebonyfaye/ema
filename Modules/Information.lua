@@ -145,10 +145,13 @@ local function dragonflightCurrencys()
 		dragonflightCurrencys.EffigyAdornments = 2011
 		dragonflightCurrencys.PurifiedArcaneEnergy = 2105
 		dragonflightCurrencys.BloodyTokens = 2123
-		dragonflightCurrencys.RenascentDream = 2796
+		dragonflightCurrencys.FlightStones = 2245
+		dragonflightCurrencys.EmeraldDewdrop = 2650
+		dragonflightCurrencys.WhelplingsDreamingCrest = 2706
+		dragonflightCurrencys.DrakesDreamingCrest = 2707
 		dragonflightCurrencys.WyrmsDreamingCrest = 2708
 		dragonflightCurrencys.DreamInfusion = 2777
-		dragonflightCurrencys.WhelplingsDreamingCrest = 2706
+		dragonflightCurrencys.RenascentDream = 2796
 	return dragonflightCurrencys
 end	
 

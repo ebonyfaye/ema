@@ -1,0 +1,59 @@
+------------------------------------------------------------------------
+r1328 | nevcairiel | 2024-03-20 22:36:27 +0000 (Wed, 20 Mar 2024) | 1 line
+Changed paths:
+   M /trunk
+   M /trunk/AceDB-3.0/AceDB-3.0.lua
+
+AceDB-3.0: Sync type checks for New and ResetDB defaultProfile
+------------------------------------------------------------------------
+r1327 | nevcairiel | 2024-03-20 07:23:40 +0000 (Wed, 20 Mar 2024) | 1 line
+Changed paths:
+   M /trunk
+   M /trunk/Ace3.toc
+
+Update TOC for 10.2.6
+------------------------------------------------------------------------
+r1326 | nevcairiel | 2024-03-11 13:41:10 +0000 (Mon, 11 Mar 2024) | 1 line
+Changed paths:
+   D /trunk/.docmeta
+
+Remove docmeta, the generation hasn't worked in years
+------------------------------------------------------------------------
+r1325 | nevcairiel | 2024-03-11 13:38:36 +0000 (Mon, 11 Mar 2024) | 1 line
+Changed paths:
+   M /trunk
+   A /trunk/Ace3_Cata.toc
+
+Add TOC for Cata Classic
+------------------------------------------------------------------------
+r1324 | funkehdude | 2024-02-22 00:57:48 +0000 (Thu, 22 Feb 2024) | 1 line
+Changed paths:
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+
+AceGUI-3.0: ColorPicker: No need to force enable mouse anymore, this was fixed in a mini patch after 10.2.5
+------------------------------------------------------------------------
+r1323 | nevcairiel | 2024-02-22 00:30:09 +0000 (Thu, 22 Feb 2024) | 1 line
+Changed paths:
+   M /trunk
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+
+AceGUI-3.0: ColorPicker: Sanity check that alpha exists before calculating with it
+------------------------------------------------------------------------
+r1322 | nevcairiel | 2024-02-22 00:25:11 +0000 (Thu, 22 Feb 2024) | 4 lines
+Changed paths:
+   M /trunk
+   M /trunk/.luacheckrc
+   M /trunk/AceGUI-3.0/widgets/AceGUIWidget-ColorPicker.lua
+
+AceGUI-3.0: ColorPicker: Fix alpha handling on Classic Era
+
+Fixes WoWHead Ticket #655
+Closes GitHub #11
+------------------------------------------------------------------------
+r1321 | funkehdude | 2024-02-07 12:06:48 +0000 (Wed, 07 Feb 2024) | 1 line
+Changed paths:
+   M /trunk/Ace3_Vanilla.toc
+
+bump toc
+------------------------------------------------------------------------
+

@@ -1,11 +1,41 @@
 ﻿---------------------------
 ChangeLogs:
+---------------------------
+EMA Version: Release-v4.5(0247)
+Game Version: 3.4.3.5/1.15.1/10.2.6
+
+# Updated TOC's vers.
+	- Issue #111
+		
+# Updated ACE3
+
+# Item-Bar
+	--LibActionButton
+		- Removed IsItemInRange As the API is now protected.
+	- Fixed #106	
+
+# Interaction
+	Removed Tell Team About BoE epic/rare and Mounts.
+
+
+
+---------------------------
+EMA Version: Release-v4.4(0246)
+Game Version: 3.4.3/1.15.0/10.2.0
+
+# Information
+	-- Currencys
+		- Added Flightstones = 2245
+        - Added EmeraldDewdrop = 2650
+        - Added DrakesDreamingCrest = 2707
+
+---------------------------
 EMA Version: Release-v4.4(0245)
 Game Version: 3.4.3/1.15.0/10.2.0
 
 # Updated All Toc's
 
-#Information
+# Information
 	-- Currencys
 		- Renascent Dream = 2796
 		- Wyrms Dreaming-Crest = 2708

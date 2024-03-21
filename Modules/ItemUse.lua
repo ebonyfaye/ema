@@ -489,7 +489,7 @@ function EMA:CheckForQuestItemAndAddToBar()
 	if EMAPrivate.Core.isEmaClassicBccBuild() == true then	
 		for bag = 0, NUM_BAG_SLOTS do
 			for slot = 1, bagContainerName(bag) do
-				local itemLink = GetContainerItemLink(bag, slot)
+				local itemLink = bagContainerName(bag, slot)
 				if itemLink and itemLink:match("item:%d") then
 					local name, itemLink,_,_,_,itemType,questItem = GetItemInfo( itemLink )
 					--EMA:Print("test", itemType,questItem )

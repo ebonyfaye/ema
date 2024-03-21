@@ -27,12 +27,12 @@ LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-the file was edit for Ema by Jennifer cally 2016-2020 9.0
+the file was edit for Ema by Jennifer "Ebony" 2016-2024 9.0
 
 ]]
 
 local MAJOR_VERSION = "EMALibActionButton-1.0"
-local MINOR_VERSION = 75
+local MINOR_VERSION = 76
 
 if not LibStub then error(MAJOR_VERSION .. " requires LibStub.") end
 local lib, oldversion = LibStub:NewLibrary(MAJOR_VERSION, MINOR_VERSION)
@@ -52,7 +52,7 @@ local str_match, format, tinsert, tremove = string.match, format, tinsert, tremo
 -- GLOBALS: GetSpellCooldown, GetSpellCount, GetSpellInfo, GetSpellTexture, HasAction, HasZoneAbility, InCombatLockdown, IsActionInRange
 -- GLOBALS: IsAltKeyDown, IsAttackAction, IsAttackSpell, IsAutoRepeatAction, IsAutoRepeatSpell, IsConsumableAction, IsConsumableItem
 -- GLOBALS: IsConsumableSpell, IsControlKeyDown, IsCurrentAction, IsCurrentItem, IsCurrentSpell, IsEquippedAction, IsEquippedItem
--- GLOBALS: IsItemAction, IsItemInRange, IsShiftKeyDown, IsSpellInRange, IsSpellOverlayed, IsStackableAction, IsUsableAction, IsUsableItem
+-- GLOBALS: IsItemAction, IsShiftKeyDown, IsSpellInRange, IsSpellOverlayed, IsStackableAction, IsUsableAction, IsUsableItem
 -- GLOBALS: IsUsableSpell, LibStub, PickupAction, PickupCompanion, PickupEquipmentSet, PickupItem, PickupMacro, PickupPetAction, PickupSpell
 -- GLOBALS: RANGE_INDICATOR, SetBinding, SetBindingClick, SetClampedTextureRotation, SpellFlyout, TOOLTIP_UPDATE_TIME, UIParent, ZoneAbilityFrame
 
@@ -94,8 +94,8 @@ local Generic_MT = {__index = Generic}
 local Action = setmetatable({}, {__index = Generic})
 local Action_MT = {__index = Action}
 
-local PetAction = setmetatable({}, {__index = Generic})
-local PetAction_MT = {__index = PetAction}
+--local PetAction = setmetatable({}, {__index = Generic})
+--local PetAction_MT = {__index = PetAction}
 
 local Spell = setmetatable({}, {__index = Generic})
 local Spell_MT = {__index = Spell}
@@ -130,7 +130,7 @@ local StartFlash, StopFlash, UpdateFlash, UpdateHotkeys, UpdateRangeTimer, Updat
 local ShowGrid, HideGrid, UpdateGrid, SetupSecureSnippets, WrapOnClick
 local ShowOverlayGlow, HideOverlayGlow
 local EndChargeCooldown
-local UpdateRange									 
+--local UpdateRange									 
 
 local InitializeEventHandler, OnEvent, ForAllButtons, OnUpdate
 
@@ -949,7 +949,7 @@ function OnUpdate(_, elapsed)
 
 			-- Range
 			if rangeTimer <= 0 then
-				UpdateRange(button)
+--				UpdateRange(button)
 				--[[
 				local inRange = button:IsInRange()
 				local oldRange = button.outOfRange
@@ -1033,7 +1033,7 @@ function UpdateGrid(self)
 		self:SetAlpha(0.0)
 	end
 end
-
+--[[
 function UpdateRange(self, force)
 	local inRange = self:IsInRange()
 	local oldRange = self.outOfRange
@@ -1058,7 +1058,8 @@ function UpdateRange(self, force)
 			end
 		end
 	end
-end															  
+end	
+]]														  
 -----------------------------------------------------------
 --- KeyBound integration
 
@@ -1265,7 +1266,7 @@ function Update(self, fromUpdateConfig)
 
 	self:UpdateLocal()
 
-	UpdateRange(self, fromUpdateConfig) -- Sezz: update range check on state change
+--	UpdateRange(self, fromUpdateConfig) -- Sezz: update range check on state change
 
 	UpdateCount(self)
 
@@ -1734,7 +1735,7 @@ Item.IsUsable                = function(self) return IsUsableItem(self._state_ac
 -- i always want to show even if there is just want item so return true.
 --Item.IsConsumableOrStackable = function(self) return IsConsumableItem(self._state_action) end
 Item.IsConsumableOrStackable = function(self) return true end
-Item.IsUnitInRange           = function(self, unit) return IsItemInRange(self._state_action, unit) end
+--Item.IsUnitInRange           = function(self, unit) return IsItemInRange(self._state_action, unit) end
 Item.SetTooltip              = function(self) return GameTooltip:SetHyperlink(self._state_action) end
 Item.GetSpellId              = function(self) return nil end
 
