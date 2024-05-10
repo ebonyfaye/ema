@@ -482,14 +482,10 @@ end
 
 --ebony test Using the wowapi and not the scanning of tooltips
 function EMA:CheckForQuestItemAndAddToBar()	
-	local bagContainerName = GetContainerNumSlots
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
-		bagContainerName = C_Container.GetContainerNumSlots
-	end
 	if EMAPrivate.Core.isEmaClassicBccBuild() == true then	
 		for bag = 0, NUM_BAG_SLOTS do
-			for slot = 1, bagContainerName(bag) do
-				local itemLink = bagContainerName(bag, slot)
+			for slot = 1, C_Container.GetContainerNumSlots(bag) do
+				local itemLink = C_Container.GetContainerItemLink(bag, slot)
 				if itemLink and itemLink:match("item:%d") then
 					local name, itemLink,_,_,_,itemType,questItem = GetItemInfo( itemLink )
 					--EMA:Print("test", itemType,questItem )
@@ -577,57 +573,11 @@ function EMA:SyncButton()
 	end	
 end
 
---[[
--- Add satchels to item bar.
-function EMA:CheckForSatchelsItemAndAddToBar()
-	for bag = 0, NUM_BAG_SLOTS do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local _, _, _, _, _, lootable = GetContainerItemInfo(bag, slot)
-			if link then
-				local tooltipText = EMAUtilities:TooltipScaner( link )
-				if lootable == true then	
-					if tooltipText ~= LOCKED then
-						EMA:AddAnItemToTheBarIfNotExists( link, false )
-					end
-				end	
-			end
-		end
-	end
-end
-
-
--- NOWW VENDER TRASH 8.0
--- Adds artifact power items to item bar.
-function EMA:CheckForArtifactItemAndAddToBar()
-	for bag = 0, NUM_BAG_SLOTS do
-		for slot = 1, GetContainerNumSlots(bag) do
-			local itemLink = GetContainerItemLink(bag, slot)
-			if itemLink and itemLink:match("item:%d") then
-				local tooltipText = EMAUtilities:TooltipScaner(itemLink)
-				if tooltipText and tooltipText:match(ARTIFACT_POWER) then
-					EMA:AddAnItemToTheBarIfNotExists( itemLink, false )
-				end
-			end
-		end
-	end
-end		
-
-]]
-	
 --Checks the item is in the Toon players bag 8.0.1 using min/min code!
-
-	
 function EMA:IsInInventory(itemID)
 	local InBags = false
-	local bagContainerName = GetContainerNumSlots
-	local EMA_NUMBER_BAG_SLOTS = NUM_BAG_SLOTS
-	if EMAPrivate.Core.isEmaClassicBccBuild() == false then
-		bagContainerName = C_Container.GetContainerNumSlots
-		EMA_NUMBER_BAG_SLOTS = 5
-	end
-	
-	for bagID = 0, EMA_NUMBER_BAG_SLOTS do
-		for slotID = 1, bagContainerName( bagID ),1 do 
+	for bagID = 0, NUM_BAG_SLOTS do
+		for slotID = 1, C_Container.GetContainerNumSlots( bagID ),1 do 
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then

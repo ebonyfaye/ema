@@ -864,17 +864,14 @@ function EMA:TradeAllItems()
 	if EMAApi.IsCharacterInTeam ( characterName ) == false and EMAUtilities:CheckIsFromMyRealm(characterName) == false then
 		return
 	end
-	-- 10.x changes
-	local bagContainerName = GetContainerNumSlots
 	local EMA_NUMBER_BAG_SLOTS = NUM_BAG_SLOTS
 	if EMAPrivate.Core.isEmaClassicBuild() == false then
-		bagContainerName = C_Container.GetContainerNumSlots
 		if EMAPrivate.Core.isEmaClassicBccBuild()  == false then
 			EMA_NUMBER_BAG_SLOTS = 5
 		end
 	end
 	for bagID = 0, EMA_NUMBER_BAG_SLOTS do		
-		for slotID = 1, bagContainerName( bagID ),1 do	
+		for slotID = 1, C_Container.GetContainerNumSlots( bagID ),1 do	
 			--EMA:Print( "Bags OK. checking", itemLink )
 			local item = Item:CreateFromBagAndSlot(bagID, slotID)
 			if ( item ) then

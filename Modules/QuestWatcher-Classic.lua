@@ -979,11 +979,19 @@ function EMA:UpdateHideBlizzardWatchFrame()
 		end
 	else
 		if EMA.db.hideBlizzardWatchFrame == true then
-			if QuestWatchFrame:IsVisible() then
-				--QuestLogFrame:Hide()
-				QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
-				QuestWatchFrame:Hide()
-			end
+			if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC then 
+				if WatchFrame:IsVisible() then
+					--QuestLogFrame:Hide()
+					WatchFrame:HookScript("OnShow", function(self) self:Hide() end)
+					WatchFrame:Hide()
+				end
+			else	
+				if QuestWatchFrame:IsVisible() then
+					--QuestLogFrame:Hide()
+					QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
+					QuestWatchFrame:Hide()
+				end
+			end	
 		else
 			QuestWatchFrame:Show()
 		end

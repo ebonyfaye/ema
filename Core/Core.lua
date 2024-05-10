@@ -331,6 +331,7 @@ end
 
 -- EMA WOTLK Build
 local function isEmaClassicBccBuild()
+	--EMA:Print("t", _G.WOW_PROJECT_ID)
 	local classic = false
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 		classic = true
@@ -342,7 +343,10 @@ local function isEmaClassicBccBuild()
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_WRATH_CLASSIC then
 		classic = true
 	end
-	return classic
+	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC then
+		classic = true
+	end	
+ 	return classic
 end	
 
 -------------------------------------------------------------------------------------------------------------
@@ -682,6 +686,7 @@ function EMA:CoreSettingsCreateInfo( top )
 	)
 	
 	movingTop = movingTop - labelHeight * 14
+	--[[
 	if EMAPrivate.Core.isEmaClassicBccBuild() == true then
 		EMA.settingsControl.buttonKeyBindings = EMAHelperSettings:CreateButton( 
 			EMA.settingsControl, 
@@ -692,6 +697,7 @@ function EMA:CoreSettingsCreateInfo( top )
 			EMA.SettingsKeyBindingsCommandClick
 		)	
 	end
+	]]
 	-- Special thanks Heading
 	movingTop = movingTop - buttonHeight * 1
 	EMAHelperSettings:CreateHeading( EMA.settingsControl, L["SPECIAL_THANKS"], movingTop, false )	

@@ -1,6 +1,16 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.6(0250)
+Game Version: 4.4.0/1.15.2/10.2.7
+
+#Fixed for wow classic-Cata! 4.4.0
+
+
+Dev-Note: I don't play wow and there was free time so i fought i update it find bugs fast as i don't know if i can play again anytime soon!!
+
+
+---------------------------
 EMA Version: Release-v4.5(0247)
 Game Version: 3.4.3.5/1.15.1/10.2.6
 

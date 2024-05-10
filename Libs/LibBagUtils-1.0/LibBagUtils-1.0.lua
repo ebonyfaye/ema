@@ -40,7 +40,7 @@ local GetItemInfo, GetItemFamily = GetItemInfo, GetItemFamily
 local function isClassicBuild()
 	local isClassicBuild = false
 	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 10000 and tocversion <= 40000 then
+	if tocversion >= 10000 and tocversion <= 50000 then
 		isClassicBuild = true
 	end
 	return isClassicBuild
