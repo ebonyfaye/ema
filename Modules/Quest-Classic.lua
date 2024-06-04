@@ -1960,7 +1960,7 @@ function EMA:CreateEMAMiniQuestLogFrame()
 		frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 40, -80)
 	else
 		local _, _, _, tocversion = GetBuildInfo()
-		if tocversion >= 30000 and tocversion <= 40000 then
+		if tocversion >= 30000 and tocversion <= 50000 then
 			frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 10 , -70 )--40, -30)
 		else
 			frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 40, -30)

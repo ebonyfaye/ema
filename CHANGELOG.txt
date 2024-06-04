@@ -1,6 +1,15 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.6(0251)
+Game Version: 4.4.0/1.15.2/10.2.7
+
+#quest
+	-fixed a error with questextra button bars showing in wrong place.
+	
+	
+
+---------------------------
 EMA Version: Release-v4.6(0250)
 Game Version: 4.4.0/1.15.2/10.2.7
 
