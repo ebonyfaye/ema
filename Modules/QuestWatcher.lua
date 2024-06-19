@@ -48,7 +48,7 @@ EMA.moduleOrder = 20
 -- Settings - the values to store and their defaults for the settings database.
 EMA.settings = {
 	profile = {
-		enableQuestWatcher = true,
+		enableQuestWatcher = false,
 		watcherFramePoint = "RIGHT",
 		watcherFrameRelativePoint = "RIGHT",
 		watcherFrameXOffset = 0,
@@ -1049,7 +1049,8 @@ function EMA:QUEST_WATCH_UPDATE( event, ... )
 	--EMA:Print("test4")
 	if EMA.db.enableQuestWatcher == true then
 		-- Wait a bit for the correct information to come through from the server...
-		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )		
+		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )
+		EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
 	end
 end
 
@@ -1059,6 +1060,7 @@ function EMA:QUEST_LOG_UPDATE( event, ... )
 	if EMA.db.enableQuestWatcher == true then
 		-- Wait a bit for the correct information to come through from the server...
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )
+		EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 1 )
 		-- For PopUpQuests!
 		--[[
 		for i = 1, GetNumAutoQuestPopUps() do

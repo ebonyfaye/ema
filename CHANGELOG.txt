@@ -1,7 +1,17 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
-EMA Version: Release-v4.6(0251)
+EMA Version: Release-v4.7(0253)
+Game Version: 4.4.0/1.15.2/11.0.0
+
+Updating for wow 11
+
+Can not hide blizzard quest tracker anymore it will always come back!
+
+
+
+---------------------------
+EMA Version: Release-v4.6(0252)
 Game Version: 4.4.0/1.15.2/10.2.7
 
 #quest
