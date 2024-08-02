@@ -1,17 +1,37 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+<<<<<<< HEAD
 EMA Version: Release-v4.7(0253)
 Game Version: 4.4.0/1.15.2/11.0.0
 
 Updating for wow 11
 
 Can not hide blizzard quest tracker anymore it will always come back!
+=======
+EMA Version: Release-v4.6(0252)
+Game Version: 4.4.0/1.15.2/11.0.0
+
+#Disaply-Team
+	-Fixed rep bar!
+		-- Still does not work with the newer reowned stuff as it needs a lot of work. is this bar even used???!?
+		
+#Team
+	- Fixed a LUA error if the invite list is "NIL"
+
+#Quest-Tracker
+	- Now Hides Blizzard questTracker again!	
+		
+>>>>>>> 8908422 (Release-v4.6(0252) 11.0)
 
 
 
 ---------------------------
+<<<<<<< HEAD
 EMA Version: Release-v4.6(0252)
+=======
+EMA Version: Release-v4.6(0251)
+>>>>>>> 8908422 (Release-v4.6(0252) 11.0)
 Game Version: 4.4.0/1.15.2/10.2.7
 
 #quest
