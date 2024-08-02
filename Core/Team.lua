@@ -1222,10 +1222,12 @@ end
 
 function EMA.DoTeamPartyInvite()
 	--EMA:Print("teamInvite", EMA.inviteList[EMA.currentInviteCount])	
-	if EMAPrivate.Core.isEmaClassicBuild() == true or EMAPrivate.Core.isEmaClassicBccBuild() == true then
+	if EMAPrivate.Core.isEmaClassicBuild() == true then
 		InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
 	else	
-		C_PartyInfo.InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
+		if EMA.inviteList[EMA.currentInviteCount] ~= nil then
+			C_PartyInfo.InviteUnit( EMA.inviteList[EMA.currentInviteCount] )
+		end	
 	end
 	EMA.currentInviteCount = EMA.currentInviteCount + 1
 	if EMA.currentInviteCount < EMA.inviteCount then

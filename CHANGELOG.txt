@@ -1,6 +1,23 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.6(0252)
+Game Version: 4.4.0/1.15.2/11.0.0
+
+#Disaply-Team
+	-Fixed rep bar!
+		-- Still does not work with the newer reowned stuff as it needs a lot of work. is this bar even used???!?
+		
+#Team
+	- Fixed a LUA error if the invite list is "NIL"
+
+#Quest-Tracker
+	- Now Hides Blizzard questTracker again!	
+		
+
+
+
+---------------------------
 EMA Version: Release-v4.6(0251)
 Game Version: 4.4.0/1.15.2/10.2.7
 

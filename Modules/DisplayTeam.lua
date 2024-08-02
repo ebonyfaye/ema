@@ -2672,7 +2672,19 @@ end
 
 function EMA:SendReputationStatusUpdateCommand()
 	if EMA.db.showTeamList == true and EMA.db.showRepStatus == true then
-		local reputationName, reputationStandingID, reputationBarMin, reputationBarMax, reputationBarValue = GetWatchedFactionInfo()
+		if EMAPrivate.Core.isEmaClassicBccBuild() == true then
+			local reputationName, reputationStandingID, reputationBarMin, reputationBarMax, reputationBarValue = GetWatchedFactionInfo()
+		else
+			local watchedFactionData = C_Reputation.GetWatchedFactionData()
+			--EMA:Print("test", watchedFactionData, watchedFactionData.name, watchedFactionData.reaction, watchedFactionData.currentReactionThreshold, watchedFactionData.nextReactionThreshold, watchedFactionData.currentStanding)    
+			reputationName = watchedFactionData.name
+			reputationStandingID = watchedFactionData.reaction
+			reputationBarMin = watchedFactionData.currentReactionThreshold
+			reputationBarMax = watchedFactionData.nextReactionThreshold
+			reputationBarValue = watchedFactionData.currentStanding
+				
+		end
+		
 		if EMA.db.showTeamListOnMasterOnly == true then
 			EMA:EMASendCommandToMaster( EMA.COMMAND_REPUTATION_STATUS_UPDATE, reputationName, reputationStandingID, reputationBarMin, reputationBarMax, reputationBarValue )
 		else
@@ -3355,7 +3367,14 @@ function EMA:OnEnable()
 	EMA:RegisterMessage( EMAApi.MESSAGE_TEAM_MASTER_CHANGED, "OnMasterChanged" )
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_ONLINE, "OnCharactersChanged")
 	EMA:RegisterMessage( EMAApi.MESSAGE_CHARACTER_OFFLINE, "OnCharactersChanged")
-	EMA:SecureHook( "SetWatchedFactionIndex" )
+	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then	
+		EMA:SecureHook( "SetWatchedFactionIndex" )
+	else
+		EMA:SecureHook( C_Reputation, "SetWatchedFactionByIndex", "SetWatchedFactionIndex" )
+	end
+	
+	
 	EMA:ScheduleTimer( "RefreshTeamListControls", 3 )
 	EMA:ScheduleTimer( "SendExperienceStatusUpdateCommand", 8 )
 	EMA:ScheduleTimer( "SendReputationStatusUpdateCommand", 5 )
