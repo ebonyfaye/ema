@@ -206,8 +206,10 @@ function EMA:OnEnable()
 	EMA:UpdateUnlockWatcherFrame()
 	-- To Hide After elv changes. --ebony
 	EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 2 )
+	
 	if EMA.db.enableQuestWatcher == true then
 		EMA:QuestWatcherQuestListScrollRefresh()
+		EMA:ScheduleRepeatingTimer( "UpdateHideBlizzardWatchFrame", 0.01)
 	end
 	EMAQuestMapQuestOptionsDropDown.questID = 0
 	EMAQuestMapQuestOptionsDropDown.questText = nil
@@ -1061,6 +1063,8 @@ function EMA:QUEST_LOG_UPDATE( event, ... )
 		-- Wait a bit for the correct information to come through from the server...
 		EMA:ScheduleTimer( "EMAQuestWatcherUpdate", 1, true, "all" )
 		EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 1 )
+		--EMA:ScheduleTimer( "UpdateHideBlizzardWatchFrame", 1 )
+		--EMA:UpdateHideBlizzardWatchFrame()
 		-- For PopUpQuests!
 		--[[
 		for i = 1, GetNumAutoQuestPopUps() do
@@ -1467,6 +1471,7 @@ function EMA:EMAQuestWatcherQuestLogUpdate( useCache )
 	end
 	--EMA:Print("QUESTWATCHUPDATING DONE")
 	EMA.QUESTWATCHUPDATING = false
+	
 end
 
 function EMA:EMAQuestWatcherWorldQuestUpdate( useCache )
@@ -2244,7 +2249,7 @@ function EMA.QuestWatcherQuestListRowOnEnter( rowNumber, columnNumber )
 		end	
 			if columnNumber == 1 then
 				toolTipFrame:SetAlpha( 1.0 )
-				if ( HaveQuestData(questID) and GetQuestLogRewardXP(questID) == 0 and GetNumQuestLogRewardCurrencies(questID) == 0
+				if ( HaveQuestData(questID) and GetQuestLogRewardXP(questID) == 0 and C_QuestLog.GetQuestRewardCurrencies(questID) == 0
 					and GetNumQuestLogRewards(questID) == 0 and GetQuestLogRewardMoney(questID) == 0 and GetQuestLogRewardArtifactXP(questID) == 0 ) then
 					GameTooltip:Hide()
 					return
