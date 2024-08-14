@@ -26,7 +26,7 @@ local EMAHelperSettings = LibStub:GetLibrary( "EMAHelperSettings-1.0" )
 local LibBagUtils = LibStub:GetLibrary( "LibBagUtils-1.0" )
 local LibButtonGlow = LibStub:GetLibrary( "LibButtonGlow-1.0" )
 EMA.SharedMedia = LibStub( "LibSharedMedia-3.0" )
-local TrufiGCD = IsAddOnLoaded( "TrufiGCD" )
+local TrufiGCD = C_AddOns.IsAddOnLoaded( "TrufiGCD" )
 TrufiGCDGlSave = TrufiGCDGlSave
 
 
@@ -3260,7 +3260,7 @@ function EMA:UpdateSpellStatus( unitTarget, spellID )
 	local GCDFrame = characterStatusBar["GCDFrame"]	
 	local GCDFrameText = characterStatusBar["GCDFrameText"]
 	--EMA:Print("testUpdate", unitTarget )
-	if IsAddOnLoaded( "TrufiGCD" ) == true then
+	if C_AddOns.IsAddOnLoaded( "TrufiGCD" ) == true then
 		local i, _ = TrGCDPlayerDetect(unitTarget)
 		--EMA:Print("test", unitTarget, i )
 		if i > 0 and i <= 5 then
@@ -3277,7 +3277,7 @@ function EMA:SetTrGCOpt()
 	if EMA.db.showTeamList == false and EMA.db.showGCDFrame == false then
 		return
 	end
-	if IsAddOnLoaded( "TrufiGCD" ) == true then
+	if C_AddOns.IsAddOnLoaded( "TrufiGCD" ) == true then
 		local TimeGcd = 1.6
 		for i=1,5 do
 		-- enable
