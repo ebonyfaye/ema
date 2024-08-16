@@ -695,6 +695,7 @@ function EMA:UNIT_AURA(event, unitID, ... )
         return
     end
 	--EMA:Print("auraTrack", unitID, EMA.isMounted, EMA.mountName )
+	local name, _, count = LibAuras:UnitAura( unitID, EMA.isMounted )
 	if not LibAuras:UnitAura(unitID, EMA.isMounted ) then
 		--EMA:Print("I have Dismounted - Send to team!")
 		if EMA.db.dismountWithMaster == true then

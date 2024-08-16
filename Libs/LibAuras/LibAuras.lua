@@ -1,3 +1,4 @@
+-- Fixxed by Ebony For EMA! wow 11.x 16/08/24
 local lib = LibStub:NewLibrary("LibAuras", 1)
 
 if not lib then return end
@@ -127,35 +128,40 @@ addDebuff = function(unitId, guid, index)
 end
 
 addAura = function(unitId, guid, index, type)
-    local filter = nil
+	local filter = nil
     if type == "BUFF" then filter = "HELPFUL" end
     if type == "DEBUFF" then filter = "HARMFUL" end
     if not filter then return end
-    local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura(unitId, index, filter)
-    if not name then
+    --local name, icon, count, debuffType, duration, expirationTime, unitCaster, canStealOrPurge, nameplateShowPersonal, spellId, canApplyAura, isBossDebuff, isCastByPlayer, nameplateShowAll, timeMod, value1, value2, value3 = UnitAura(unitId, index, filter)
+	local dataTable = C_UnitAuras.GetAuraDataByIndex(unitId, index, filter)
+	if not dataTable then
         return false
     end
-    lib.AURAS[guid][type][spellId] = {}
-    lib.AURAS[guid][type][spellId].name = name
-    lib.AURAS[guid][type][spellId].icon = icon
-    lib.AURAS[guid][type][spellId].count = count
-    lib.AURAS[guid][type][spellId].debuffType = debuffType
-    lib.AURAS[guid][type][spellId].duration = duration
-    lib.AURAS[guid][type][spellId].expirationTime = expirationTime
-    lib.AURAS[guid][type][spellId].unitCaster = unitCaster
-    lib.AURAS[guid][type][spellId].canStealOrPurge = canStealOrPurge
-    lib.AURAS[guid][type][spellId].nameplateShowPersonal = nameplateShowPersonal
-    lib.AURAS[guid][type][spellId].canApplyAura = canApplyAura
-    lib.AURAS[guid][type][spellId].isBossDebuff = isBossDebuff
-    lib.AURAS[guid][type][spellId].isCastByPlayer = isCastByPlayer
-    lib.AURAS[guid][type][spellId].nameplateShowAll = nameplateShowAll
-    lib.AURAS[guid][type][spellId].timeMod = timeMod
-    lib.AURAS[guid][type][spellId].value1 = value1
-    lib.AURAS[guid][type][spellId].value2 = value2
-    lib.AURAS[guid][type][spellId].value3 = value3
+    --print("test", dataTable.name)
+	local spellId = dataTable.spellId
+	local name = dataTable.name
+	lib.AURAS[guid][type][spellId] = {}
+    lib.AURAS[guid][type][spellId].name = dataTable.name
+    lib.AURAS[guid][type][spellId].icon = dataTable.icon
+    lib.AURAS[guid][type][spellId].count = dataTable.count
+    lib.AURAS[guid][type][spellId].debuffType = dataTable.debuffType
+    lib.AURAS[guid][type][spellId].duration = dataTable.duration
+    lib.AURAS[guid][type][spellId].expirationTime = dataTable.expirationTime
+    lib.AURAS[guid][type][spellId].unitCaster = dataTable.unitCaster
+    lib.AURAS[guid][type][spellId].canStealOrPurge = dataTable.canStealOrPurge
+    lib.AURAS[guid][type][spellId].nameplateShowPersonal = dataTable.nameplateShowPersonal
+    lib.AURAS[guid][type][spellId].canApplyAura = dataTable.canApplyAura
+    lib.AURAS[guid][type][spellId].isBossDebuff = dataTable.isBossDebuff
+    lib.AURAS[guid][type][spellId].isCastByPlayer = dataTable.isCastByPlayer
+    lib.AURAS[guid][type][spellId].nameplateShowAll = dataTable.nameplateShowAll
+    lib.AURAS[guid][type][spellId].timeMod = dataTable.timeMod
+    lib.AURAS[guid][type][spellId].value1 = dataTable.value1
+    lib.AURAS[guid][type][spellId].value2 = dataTable.value2
+    lib.AURAS[guid][type][spellId].value3 = dataTable.value3
     if not lib.AURAS[guid][type].NAMES[name] then
         lib.AURAS[guid][type].NAMES[name] = spellId
-    end
+    
+	end
     return true
 end
 
