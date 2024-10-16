@@ -559,7 +559,7 @@ local function SettingsCreatePartyInvitationsControl( top )
 		headingWidth, 
 		left, 
 		top - headingHeight  - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight - checkBoxHeight,
-		"You Can Use the current [\Click] in macros"
+		"You Can Use the current [/click] in macros"
 	)	
 	EMA.settingsControl.CickInformationlabel = EMAHelperSettings:CreateLabel( 
 		EMA.settingsControl, 

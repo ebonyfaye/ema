@@ -1,6 +1,19 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.7(0264)
+Game Version: 4.4.0/1.15.2/11.0.0
+
+# Information 
+	-- Added The WarWithIn Currencies
+	
+#Quest
+	- Fixed Bug #126
+	- Fixes Bug #125
+	
+
+
+---------------------------
 EMA Version: Release-v4.7(0263)
 Game Version: 4.4.0/1.15.2/11.0.0
 

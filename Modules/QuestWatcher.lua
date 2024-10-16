@@ -1780,6 +1780,7 @@ function EMA:GetQuestItemFromQuestID(findQuestID)
 		if not info.isHeader then	
 			if findQuestID == info.questID then
 				local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )
+				--local data = C_TooltipInfo.GetQuestLogSpecialItem(iterateQuests)
 				if questItemLink then
 					--EMA:Print("Item", questItemLink, questItemIcon, questID)
 					return questItemLink, questItemIcon

@@ -1790,7 +1790,9 @@ function EMA:EMADoQuest_TrackQuest(questID, questLogIndex)
 	--EMA:Print("test", questID, questLogIndex )
 	if ( not QuestUtils_IsQuestWatched(questID) ) then	
 		C_QuestLog.AddQuestWatch(questID, Enum.QuestWatchType.Manual)
-		QuestSuperTracking_OnQuestTracked(questID)
+		--QuestSuperTracking_OnQuestTracked(questID)
+		--C_QuestLog.AddQuestWatch(questID)
+			
 	end
 end
 
@@ -1798,7 +1800,9 @@ end
 function EMA:EMADoQuest_UnTrackQuest(questID, questLogIndex)
 	--EMA:Print("test2", questID, questLogIndex )
 	if ( QuestUtils_IsQuestWatched(questID) ) then
-		QuestObjectiveTracker_UntrackQuest(nil, questID)
+		--QuestObjectiveTracker_UntrackQuest(nil, questID)
+		--QuestObjectiveTrackerMixin_UntrackQuest(nil, questID)
+		C_QuestLog.RemoveQuestWatch(questID)
 	end
 end
 
