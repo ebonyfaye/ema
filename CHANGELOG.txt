@@ -1,6 +1,14 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.7(0265)
+Game Version: 4.4.0/1.15.2/11.0.7
+
+--updated toc
+--updated ace3
+
+
+---------------------------
 EMA Version: Release-v4.7(0264)
 Game Version: 4.4.0/1.15.2/11.0.0
 
