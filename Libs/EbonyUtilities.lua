@@ -226,7 +226,7 @@ function EbonyUtilities:MerchantFrameIsShown()
 	if MerchantFrame:IsVisible() == true then
 		Show = true
 	else
-		if IsAddOnLoaded("TradeSkillMaster" ) == true then
+		if C_AddOns.IsAddOnLoaded("TradeSkillMaster" ) == true then
 			if TSM_API.IsUIVisible("VENDORING") == true then
 				Show = true
 			end
