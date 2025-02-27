@@ -1853,7 +1853,7 @@ function UpdateCount(self)
 	end
 	if self:IsConsumableOrStackable() then	
 		local count = self:GetCount()
-		print("test", count )
+		--print("test", count )
 		if count ~= 0 then	
 			if count > (self.maxDisplayCount or 9999) then
 				--TODO: Relly this should show digits then * if over 999
