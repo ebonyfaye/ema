@@ -1,8 +1,8 @@
 -- ================================================================================ --
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
---				Current Author: Jennifer Calladine (Ebony)								--
+--				Current Author: Jennifer Calladine (Ebony)						    --
 --																					--
---				License: All Rights Reserved 2018-2025 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2025 Jennifer Cally			    --
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
@@ -99,7 +99,8 @@ EMA.settings = {
 		frameBorderColourR = 1.0,
 		frameBorderColourG = 1.0,
 		frameBorderColourB = 1.0,
-		frameBorderColourA = 1.0,		
+		frameBorderColourA = 1.0,
+		runOnce = false	
 	},
 }
 
@@ -398,11 +399,13 @@ function EMA:UpdateItemsInBar()
 		end
 		local containerButton = itemContainer["container"]
 		local itemInfo = EMA:GetItemFromItemDatabase( iterateItems )
+		--EMA:Print("test", itemInfo.kind, itemInfo.action )
 		local kind = itemInfo.kind
 		local action = itemInfo.action
 		if kind == "item" and not tonumber( action ) then
 			action = action:sub(6)
 		end
+			
         --EMA:Print(state, kind, action)
 		if kind == "mount" or kind == "battlepet" then
             containerButton:ClearStates()
@@ -413,7 +416,8 @@ function EMA:UpdateItemsInBar()
 end
 
 function EMA:AddItemToItemDatabase( itemNumber, kind, action )
-    if kind == "mount" or kind == "battlepet" then
+    --EMA:Print("test", itemNumber, kind, action)
+	if kind == "mount" or kind == "battlepet" then
         return
     end
 	if EMA.db.itemsAdvanced[itemNumber] == nil then
@@ -433,10 +437,12 @@ function EMA:GetItemFromItemDatabase( itemNumber )
 end
 
 function EMA:OnButtonContentsChanged( event, button, state, type, value, ... )
-    if type == "mount" or type == "battlepet" then
+    --EMA:Print("tester", event, button, state, type, value)
+	if type == "mount" or type == "battlepet" then
 		return
     end
-    EMA:AddItemToItemDatabase( button.itemNumber, type, value )
+	--EMA:Print("testonchange", event, button, state, type, value)
+	EMA:AddItemToItemDatabase( button.itemNumber, type, value )
     EMA:EMASendUpdate(button.itemNumber, type, value )
 	EMA:SettingsRefresh()
 end
@@ -504,8 +510,9 @@ function EMA:CheckForQuestItemAndAddToBar()
 		for iterateQuests = 1, index do	
 			local info =  C_QuestLog.GetInfo( iterateQuests )
 			if not info.isHeader then
-				--EMA:Print("test", questItemLink, iterateQuests, questLogTitleText, questID )
+				--EMA:Print("test12", questItemLink, iterateQuests, questLogTitleText, questID )
 				local questItemLink, questItemIcon, questItemCharges = GetQuestLogSpecialItemInfo( iterateQuests )	
+				--EMA:Print("test13", questItemLink, questItemIcon, questItemCharges )
 				if questItemLink ~= nil then
 					local itemName = GetItemInfo(questItemLink)
 					local questName, rank = GetItemSpell(questItemLink) -- Only means to detect if the item is usable
@@ -604,12 +611,13 @@ function EMA:AddAnItemToTheBarIfNotExists( itemLink, startsQuest)
 	local iterateItems
 	local alreadyExists = false
 	local itemId = EMAUtilities:GetItemIdFromItemLink( itemLink )
+	--EMA:Print("itemIDfromlink", itemId, itemLink)
 	for iterateItems = 1, EMA.db.numberOfItems, 1 do
 		local itemInfo = EMA:GetItemFromItemDatabase( iterateItems )
 			--EMA:Print("check", itemLink, itemInfo.action)
 		if itemInfo.kind == "item" and itemInfo.action == itemId then
 			alreadyExists = true
-		--	EMA:Print("test", itemLink )
+			--EMA:Print("test", itemLink )
 			return
 		end
 	end
@@ -619,6 +627,7 @@ function EMA:AddAnItemToTheBarIfNotExists( itemLink, startsQuest)
 			itemInfo = EMA:GetItemFromItemDatabase( iterateItems )
 			--Checks the items we talking about is in the bags of the player.
 			if itemInfo.kind == "empty" then
+				--EMA:Print("add", iterateItems, "item", itemId )
 				EMA:AddItemToItemDatabase( iterateItems, "item", itemId )
 				EMA:EMASendUpdate( iterateItems, "item", itemId )
 				EMA:SettingsRefresh()	
@@ -1286,7 +1295,12 @@ function EMA:ITEM_PUSH()
 end
 
 function EMA:PLAYER_ENTERING_WORLD( event, ... )
-	EMA:ScheduleTimer( "GetEMAItemCount", 0.5 )	
+	EMA:ScheduleTimer( "GetEMAItemCount", 0.5 )
+	local runOnce = false
+	if EMA.db.runOnce == false then
+		EMA:ClearItemUseCommand()
+		EMA.db.runOnce = true
+	end	
 end		
 
 local function GetMaxItemCountFromItemID(itemID)

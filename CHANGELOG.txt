@@ -1,6 +1,23 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.7(0268)
+Game Version: 4.4.2/1.15.6/11.1.5
+Date: 04/05/2025
+
+Updated TOC
+
+#Item-bar
+	--fixed a error when adding quests to Bar
+		--dev note: you might need to clear your bars! use the button in the GUI not just clear them by hand!!!!! or "/ema-itemuse clear" it might do it on Login but not 100% sure!
+		
+	
+# EMALib
+	- fixed ItemStringFromID blizard changed the colour code!
+	
+	
+
+---------------------------
 EMA Version: Release-v4.7(0266)
 Game Version: 4.4.2/1.15.6/11.1.0
 Date: 27/02/2025
