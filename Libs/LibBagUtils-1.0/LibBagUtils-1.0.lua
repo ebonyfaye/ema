@@ -1,190 +1,82 @@
-local MAJOR,MINOR = "LibBagUtils-1.0", tonumber(("$Revision: 35 $"):match("%d+"))
-local lib = LibStub:NewLibrary(MAJOR,MINOR)
-
---
--- LibBagUtils
--- 
--- Several useful bag related APIs that you wish were built into the WoW API:
---   :PutItem()
---   :Iterate()
---   :LinkIsItem() - which amongst other things handles the 3.2 wotlk randomstat item madness (changing while in AH/mail/gbank)
---   :GetNumFreeSlots()
---   .. and more!
---
--- Pains have been taken to make sure to use as much FrameXML data and constants as possible,
--- which should let the library (and dependant addons) keep functioning if Blizzard desides
--- to add more bags, or reorder them.
---
--- Read the well-commented "API" function headers for each function below for usage and descriptions.
---
-
-
-
+-- LibBagUtils-1.0 - Updated for WoW 11.2 API
+local MAJOR, MINOR = "LibBagUtils-1.0", tonumber(("$Revision: 36 $"):match("%d+"))
+local lib = LibStub:NewLibrary(MAJOR, MINOR)
 if not lib then return end -- no upgrade needed
 
-local strmatch=string.match
-local gsub=string.gsub
-local floor=math.floor
-local tconcat = table.concat
-local band=bit.band
-local pairs,select,type,next,tonumber,tostring=pairs,select,type,next,tonumber,tostring
-local GetTime=GetTime
-local GetContainerNumSlots, GetContainerNumFreeSlots = GetContainerNumSlots, GetContainerNumFreeSlots
-local GetContainerItemLink,GetContainerItemInfo = GetContainerItemLink,GetContainerItemInfo
+-- Lua API
+local strmatch, gsub, floor = string.match, string.gsub, math.floor
+local tconcat, band = table.concat, bit.band
+local pairs, select, type, next, tonumber, tostring = pairs, select, type, next, tonumber, tostring
+
+-- WoW API (modernized for 11.2)
+local GetTime = GetTime
 local GetItemInfo, GetItemFamily = GetItemInfo, GetItemFamily
-
--- GLOBALS: error, geterrorhandler, PickupContainerItem
--- GLOBALS: CursorHasItem, ClearCursor, GetCursorInfo
--- GLOBALS: DEFAULT_CHAT_FRAME, SELECTED_CHAT_FRAME
-
-local function isClassicBuild()
-	local isClassicBuild = false
-	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 10000 and tocversion <= 50000 then
-		isClassicBuild = true
-	end
-	return isClassicBuild
-end	
-
-local function isWotlkBuild()
-	local isWotlkBuild = false
-	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 30000 and tocversion <= 40000 then
-		isWotlkBuild = true
-	end
-	return isWotlkBuild
-end	
-
-local WoW10 = select(4, GetBuildInfo()) >= 100000											
-
-local BANK_CONTAINER = BANK_CONTAINER
--- local KEYRING_CONTAINER = KEYRING_CONTAINER
-local NUM_BANKBAGSLOTS = NUM_BANKBAGSLOTS
-local NUM_BAG_SLOTS = NUM_BAG_SLOTS
-local REAGENTBANK_CONTAINER = REAGENTBANK_CONTAINER
-
--- no longer used: lib.frame = lib.frame or CreateFrame("frame", string.gsub(MAJOR,"[^%w]", "_").."_Frame")
-if lib.frame then
-	lib.frame:Hide()
-	lib.frame:UnregisterAllEvents()
-end
-
------------------------------------------------------------------------
--- General-purpose utilities:
-
-local t = {}
-local function print(...) 
-   local msg
-   if select("#",...)>1 then
-      for k=1,select("#",...) do
-         t[k]=tostring(select(k,...))
-      end
-      msg = tconcat(t, " ", 1, select("#",...))
-   else
-      msg = ...
-   end
-	msg = gsub(msg, "\124", "\\124");
-	(SELECTED_CHAT_FRAME or DEFAULT_CHAT_FRAME):AddMessage(MAJOR..": "..msg)
-end
+local C_Container = C_Container
+local C_Cursor = C_Cursor
+local C_Bank = C_Bank
+local Enum_BagIndex = Enum.BagIndex
+local Enum_BankType = Enum.BankType
 
 local function escapePatterns(str)
-	return ( gsub(str, "([-+.?*%%%[%]%(%)])", "%%%1") )
+	return (gsub(str, "([-+.?*%%%[%]%(%)])", "%%%1"))
 end
 
-
-
 -----------------------------------------------------------------------
--- makeLinkComparator()
--- Take an itemnumber, name, itemstring, or full link, and return a (funcref,arg2,arg3) tuple that can be used to test against several itemlinks
-
-local floor=math.floor
+-- Fuzzy link comparator for random suffix items
 local function compareFuzzySuffix(link, pattern, uniq16)
 	local uniq = strmatch(link, pattern)
-	if not uniq then	-- first 8 params didn't match
+	if not uniq then
 		return false
 	end
-	return floor(tonumber(uniq)/65536)==uniq16
+	return floor(tonumber(uniq) / 65536) == uniq16
 end
 
 local function makeLinkComparator(lookingfor)
-	if type(lookingfor)=="number" then
-		-- "item:-12345" -> "item:%-12345[:|]"
-		return strmatch, "|Hitem:"..escapePatterns(lookingfor).."[:|]",nil
-	
-	elseif type(lookingfor)=="string" then
-	
-		if strmatch(lookingfor, "^item:") or strmatch(lookingfor, "|H") then	
-			-- (convert to itemstring) and ensure there's no level info in it (9th param)
+	if type(lookingfor) == "number" then
+		return strmatch, "|Hitem:" .. escapePatterns(lookingfor) .. "[:|]", nil
+	elseif type(lookingfor) == "string" then
+		if strmatch(lookingfor, "^item:") or strmatch(lookingfor, "|H") then
 			local str = strmatch(lookingfor, "(item:.-:.-:.-:.-:.-:.-:.-:.-)[:|]")
 			if not str then
 				str = strmatch(lookingfor, "(item:[-0-9:]+)")
 			else
-				-- hokay, we have an itemstring. now we need to check for wobbly suffix factors thanks to 3.2 madness
-				-- see http://www.wowwiki.com/ItemString#3.2_wotlk_randomstat_items_changing_their_suffix_factors
-				local firsteight,uniq = strmatch(str, "(item:.-:.-:.-:.-:.-:.-:%-.-:)([-0-9]+)")
-
-				if uniq then                                                 
-					-- suffix was negative, so suffix factors can wobble (really only with wotlk items, not BC ones, but meh)
-					return compareFuzzySuffix, 
-						"|H"..escapePatterns(firsteight).."([-0-9]+)[:|]", 
-						floor(tonumber(uniq)/65536)
-				else
-					-- unwobbly item, we're done, fall through
+				local firsteight, uniq = strmatch(str, "(item:.-:.-:.-:.-:.-:.-:%-.-:)([-0-9]+)")
+				if uniq then
+					return compareFuzzySuffix,
+						"|H" .. escapePatterns(firsteight) .. "([-0-9]+)[:|]",
+						floor(tonumber(uniq) / 65536)
 				end
 			end
 			if not str then
-				error(MAJOR..": MakeLinkComparator(): '"..tostring(lookingfor).."' does not appear to be a valid itemstring / itemlink", 3)
+				error(MAJOR .. ": MakeLinkComparator(): '" .. tostring(lookingfor) .. "' is invalid", 3)
 			end
-			return strmatch, "|H" .. escapePatterns(str) .. "[:|]",nil
-			
-		else	-- put "|h[" and "]|h" around a name
-			return strmatch, "|h%["..escapePatterns(lookingfor).."%]|h",nil
+			return strmatch, "|H" .. escapePatterns(str) .. "[:|]", nil
+		else
+			return strmatch, "|h%[" .. escapePatterns(lookingfor) .. "%]|h", nil
 		end
 	end
-	
-	error(MAJOR..": MakeLinkComparator(): Expected number or string", 3)
+	error(MAJOR .. ": MakeLinkComparator(): Expected number or string", 3)
 end
 
-
-
-
-
-
 -----------------------------------------------------------------------
--- Internal slot locking utilities - unfortunately slots where we just dropped an item arent considered locked by the API until the server processes it and returns a bag update event, so we consider them locked for 2 seconds ourselves
-
+-- Internal slot lock system
 lib.slotLocks = {}
-
-local GetTime = GetTime
-
-local function lockSlot(bag,slot)
+local function lockSlot(bag, slot)
 	local slots = lib.slotLocks[bag] or {}
-	if not lib.slotLocks[bag] then 
-		lib.slotLocks[bag] = slots
-	end
+	lib.slotLocks[bag] = slots
 	slots[slot] = GetTime()
 end
 
-local function isLocked(bag,slot)
+local function isLocked(bag, slot)
 	local slots = lib.slotLocks[bag]
 	if not slots then return false end
 	return GetTime() - (slots[slot] or 0) < 2
 end
 
-
-
 -----------------------------------------------------------------------
--- Own family/freeslots handling
--- Pre 4.2: This was to handle the goddamn keyring that doesn't behave like anything else, 
--- but i'm keeping these functions in in case blizzard adds something new that behaves badly (tabard rack anyone?)
-
+-- Container family and free slots wrappers
 local function GetContainerFamily(bag)
---[[ pre 4.2
-	if bag==KEYRING_CONTAINER then
-		return 256
-	end
-]]
-	local free,fam = GetContainerNumFreeSlots(bag)
+	local free, fam = C_Container.GetContainerNumFreeSlots(bag)
 	return fam
 end
 
@@ -192,65 +84,22 @@ function lib:GetContainerFamily(bag)
 	return GetContainerFamily(bag)
 end
 
-
 local function myGetContainerNumFreeSlots(bag)
---[[ pre 4.2
-	if bag==KEYRING_CONTAINER then
-		local free=0
-		for slot=1,GetContainerNumSlots(bag) do
-			if not GetContainerItemLink(bag,slot) then
-				free=free+1
-			end
-		end
-		return free,256
-	end
-]]
-	return GetContainerNumFreeSlots(bag)
+	return C_Container.GetContainerNumFreeSlots(bag)
 end
 
 function lib:GetContainerNumFreeSlots(bag)
 	return myGetContainerNumFreeSlots(bag)
 end
 
-
-
-
-
 -----------------------------------------------------------------------
--- API :MakeLinkComparator("itemstring" or "itemLink" or "itemName" or itemId)
---
--- Returns a comparator function and two arguments, that can be used to
--- rapidly compare several itemlinks to a set search pattern.
---
--- This comparator will
---   1) Ignore the 9th "level" parameter introduced in 3.0
---   2) Correctly match items with changing stats in inventory vs AH/Mail/GBank
---      see http://www.wowwiki.com/ItemString#3.2_wotlk_randomstat_items_changing_their_suffix_factors--
---   3) Pick the smartest way to compare available
---
--- local comparator,arg1,arg2 = LBU:MakeLinkComparator(myItemString)
--- for _,itemLink in pairs(myItems) do
---   if comparator(itemLink, arg1,arg2) then
---     print(itemLink, "matches", myItemString)
---
-
+-- MakeLinkComparator API
 function lib:MakeLinkComparator(lookingfor)
 	return makeLinkComparator(lookingfor)
 end
 
-
-
 -----------------------------------------------------------------------
--- API :IterateBags("which", itemFamily)
---
--- which       - string: "BAGS", "BANK", "BAGSBANK", "REAGENTBANK"
--- itemFamily  - number: bitmasked itemFamily; will accept combinations
---                       0: will only iterate regular bags
---               nil: will iterate all bags (including possible future special bags!)
---
--- Returns an iterator that can be used in a for loop, e.g.:
---   for bag in LBU:IterateBags("BAGS") do  -- loop all carried bags (including backpack & possible future special bags)
-
+-- Bag set definitions
 local bags = {
 	BAGS = {},
 	BANK = {},
@@ -258,32 +107,29 @@ local bags = {
 	REAGENTBANK = {},
 }
 
--- Carried bags
-for i=1,NUM_BAG_SLOTS do
-	bags.BAGS[i]=i
-end
-bags.BAGS[BACKPACK_CONTAINER]=BACKPACK_CONTAINER
--- bags.BAGS[KEYRING_CONTAINER]=KEYRING_CONTAINER
-
--- Bank bags
-for i=NUM_BAG_SLOTS+1,NUM_BAG_SLOTS+NUM_BANKBAGSLOTS do
-	bags.BANK[i]=i
-end
-bags.BANK[BANK_CONTAINER]=BANK_CONTAINER
-
--- Both
-for k,v in pairs(bags.BAGS) do
-	bags.BAGSBANK[k]=v
-end
-for k,v in pairs(bags.BANK) do
-	bags.BAGSBANK[k]=v
+-- Fill BAGS (backpack + equipped bags)
+for i = Enum_BagIndex.Backpack, Enum_BagIndex.Bag_4 do
+	bags.BAGS[i] = i
 end
 
--- Reagent Bank
-if isClassicBuild() == false then
-	bags.REAGENTBANK[REAGENTBANK_CONTAINER] = REAGENTBANK_CONTAINER
+-- Fill BANK dynamically
+for _, bagID in ipairs(C_Bank.FetchPurchasedBankTabIDs(Enum_BankType.Character) or {}) do
+	bags.BANK[bagID] = bagID
 end
 
+-- Merge BAGS and BANK into BAGSBANK
+for k, v in pairs(bags.BAGS) do
+	bags.BAGSBANK[k] = v
+end
+for k, v in pairs(bags.BANK) do
+	bags.BAGSBANK[k] = v
+end
+
+-- Reagent bank (if available)
+bags.REAGENTBANK[Enum_BagIndex.ReagentBag] = Enum_BagIndex.ReagentBag
+
+-----------------------------------------------------------------------
+-- Iterators
 local function iterbags(tab, cur)
 	cur = next(tab, cur)
 	while cur do
@@ -297,8 +143,8 @@ end
 local function iterbagsfam0(tab, cur)
 	cur = next(tab, cur)
 	while cur do
-		local free,fam = GetContainerNumFreeSlots(cur)
-		if fam==0 then
+		local free, fam = C_Container.GetContainerNumFreeSlots(cur)
+		if fam == 0 then
 			return cur
 		end
 		cur = next(tab, cur)
@@ -306,24 +152,20 @@ local function iterbagsfam0(tab, cur)
 end
 
 function lib:IterateBags(which, itemFamily)
-	
-	local baglist=bags[which]
+	local baglist = bags[which]
 	if not baglist then
 		error([[Usage: LibBagUtils:IterateBags("which"[, itemFamily])]], 2)
 	end
-	
-	if which == "REAGENTBANK" and not IsReagentBankUnlocked() then return function() end, baglist end
-	
 	if not itemFamily then
 		return iterbags, baglist
-	elseif itemFamily==0 then
+	elseif itemFamily == 0 then
 		return iterbagsfam0, baglist
 	else
 		return function(tab, cur)
 			cur = next(tab, cur)
 			while cur do
 				local fam = GetContainerFamily(cur)
-				if fam and band(itemFamily,fam)~=0 then
+				if fam and band(itemFamily, fam) ~= 0 then
 					return cur
 				end
 				cur = next(tab, cur)
@@ -332,292 +174,188 @@ function lib:IterateBags(which, itemFamily)
 	end
 end
 
-
 -----------------------------------------------------------------------
--- API: CountSlots(which, itemFamily)
---
--- which       - string: "BAGS", "BANK", "BAGSBANK", "REAGENTBANK"
--- itemFamily  - bitmasked itemFamily; see :IterateBags
---
--- Returns: numFreeSlots, numTotalSlots
---          BANK is considered to have 0 slots if bank window is not open
-
+-- CountSlots
 function lib:CountSlots(which, itemFamily)
-	local baglist=bags[which]
+	local baglist = bags[which]
 	if not baglist then
-		error([[Usage: LibBagUtils:IterateBags("which"[, itemFamily])]], 2)
+		error([[Usage: LibBagUtils:CountSlots("which"[, itemFamily])]], 2)
 	end
-	
-	local free,tot=0,0
-	if which == "REAGENTBANK" and not IsReagentBankUnlocked() then return free,tot end
-	
+	local free, tot = 0, 0
 	if not itemFamily then
 		for bag in pairs(baglist) do
-				free = free + C_Container.myGetContainerNumFreeSlots(bag)
-				tot = tot + C_Container.GetContainerNumSlots(bag)
+			local f = C_Container.GetContainerNumFreeSlots(bag)
+			free = free + f
+			tot = tot + C_Container.GetContainerNumSlots(bag)
 		end
-	elseif itemFamily==0 then
+	elseif itemFamily == 0 then
 		for bag in pairs(baglist) do
-			local f,bagFamily = C_Container.GetContainerNumFreeSlots(bag)
-			if bagFamily==0 then
+			local f, fam = C_Container.GetContainerNumFreeSlots(bag)
+			if fam == 0 then
 				free = free + f
 				tot = tot + C_Container.GetContainerNumSlots(bag)
 			end
 		end
 	else
 		for bag in pairs(baglist) do
-			local f,bagFamily = myGetContainerNumFreeSlots(bag)
-			if bagFamily and band(itemFamily,bagFamily)~=0 then
+			local f, fam = C_Container.GetContainerNumFreeSlots(bag)
+			if fam and band(itemFamily, fam) ~= 0 then
 				free = free + f
 				tot = tot + C_Container.GetContainerNumSlots(bag)
 			end
 		end
 	end
-	--print( free )
-	return free,tot
-end
-
-
------------------------------------------------------------------------
--- API :IsBank(bag)
---
--- bag        - number: bag number
---
--- Returns true if the given bag is a bank bag
-
-function lib:IsBank(bag, incReagentBank)
-	return bag==BANK_CONTAINER or
-		(bag>=NUM_BAG_SLOTS+1 and bag<=NUM_BAG_SLOTS+NUM_BANKBAGSLOTS) or (incReagentBank and lib:IsReagentBank(bag))
+	return free, tot
 end
 
 -----------------------------------------------------------------------
--- API :IsReagentBank(bag)
---
--- bag        - number: bag number
---
--- Returns true if the given bag is the reagent bank "bag"
+-- IsBank & IsReagentBank
+function lib:IsBank(bag)
+	return bags.BANK[bag] ~= nil
+end
 
 function lib:IsReagentBank(bag)
-	return IsReagentBankUnlocked() and (bag==REAGENTBANK_CONTAINER and true or nil) or nil
+	return bag == Enum_BagIndex.ReagentBag
 end
 
 -----------------------------------------------------------------------
--- API :Iterate("which"[, "lookingfor"])
--- 
--- which       - string: "BAGS", "BANK", "BAGSBANK", "REAGENTBANK"
--- lookingfor  - OPTIONAL: itemLink, itemName, itemString or itemId(number)
---
--- Returns an iterator that can be used in a for loop, e.g.:
---   for bag,slot,link in LBU:Iterate("BAGS") do   -- loop all slots in carried bags (including backpack & keyring)
---   for bag,slot,link in LBU:Iterate("BAGSBANK", 29434) do  -- find all badges of justice
-
+-- Iterate
 function lib:Iterate(which, lookingfor)
-	if which == "REAGENTBANK" and not IsReagentBankUnlocked() then return function() end end
-	
-	local baglist=bags[which]
+	local baglist = bags[which]
 	if not baglist then
 		error([[Usage: LibBagUtils:Iterate(which [, item])]], 2)
 	end
-	
-	local bag,slot,curbagsize=nil,0,0
+	local bag, slot, curbagsize = nil, 0, 0
 	local function iterator()
-		while slot>=curbagsize do
+		while slot >= curbagsize do
 			bag = iterbags(baglist, bag)
 			if not bag then return nil end
-			curbagsize=GetContainerNumSlots(bag) or 0
-			slot=0
-		end	
-		
-		slot=slot+1
-		return bag,slot,GetContainerItemLink(bag,slot)
+			curbagsize = C_Container.GetContainerNumSlots(bag) or 0
+			slot = 0
+		end
+		slot = slot + 1
+		return bag, slot, C_Container.GetContainerItemLink(bag, slot)
 	end
-	
-	if lookingfor==nil then
+	if lookingfor == nil then
 		return iterator
 	else
-		local comparator,arg1,arg2 = makeLinkComparator(lookingfor)
+		local comparator, arg1, arg2 = makeLinkComparator(lookingfor)
 		return function()
-			for bag,slot,link in iterator do
-				if link and comparator(link, arg1,arg2) then
-					return bag,slot,link
+			for bag, slot, link in iterator do
+				if link and comparator(link, arg1, arg2) then
+					return bag, slot, link
 				end
 			end
 		end
 	end
-	
 end
 
-
 -----------------------------------------------------------------------
--- API :Find("where", "lookingfor", findLocked])
---
--- where       - string: "BAGS", "BANK", "BAGSBANK", "REAGENTBANK"
--- lookingfor  - itemLink, itemName, itemString or itemId(number)
--- findLocked   - OPTIONAL: if true, will also return locked slots
---
--- Returns:  bag,slot,link    or nil on failure
-
-function lib:Find(where,lookingfor,findLocked)
-	if where == "REAGENTBANK" and not IsReagentBankUnlocked() then return nil end
-	
-	for bag,slot,link in lib:Iterate(where,lookingfor) do
-		local _, itemCount, locked, _, _ = GetContainerItemInfo(bag,slot)
-		if findLocked or not locked then
-			return bag,slot,link
+-- Find
+function lib:Find(where, lookingfor, findLocked)
+	for bag, slot, link in lib:Iterate(where, lookingfor) do
+		local info = C_Container.GetContainerItemInfo(bag, slot)
+		if findLocked or not (info and info.isLocked) then
+			return bag, slot, link
 		end
 	end
 end
 
-
 -----------------------------------------------------------------------
--- API :FindSmallestStack("where", "lookingfor"[, findLocked])
---
--- where       - string: "BAGS", "BANK", "BAGSBANK", "REAGENTBANK"
--- lookingfor  - itemLink, itemName, itemString or itemId(number)
--- findLocked   - OPTIONAL: if true, will also return locked slots
---
--- Returns:  bag,slot,size    or nil on failure
-
-function lib:FindSmallestStack(where,lookingfor,findLocked)
-	if where == "REAGENTBANK" and not IsReagentBankUnlocked() then return nil end
-
-	local smallest=9e9
-	local smbag,smslot
-	for bag,slot in lib:Iterate(where,lookingfor) do
-		local _, itemCount, locked, _, _ = GetContainerItemInfo(bag,slot)
-		if itemCount and itemCount<smallest and (findLocked or not locked) then
-			smbag=bag
-			smslot=slot
-			smallest=itemCount
+-- FindSmallestStack
+function lib:FindSmallestStack(where, lookingfor, findLocked)
+	local smallest, smbag, smslot = math.huge
+	for bag, slot in lib:Iterate(where, lookingfor) do
+		local info = C_Container.GetContainerItemInfo(bag, slot)
+		if info and info.stackCount < smallest and (findLocked or not info.isLocked) then
+			smbag, smslot, smallest = bag, slot, info.stackCount
 		end
 	end
 	if smbag then
-		return smbag,smslot,smallest
+		return smbag, smslot, smallest
 	end
 end
 
-
 -----------------------------------------------------------------------
--- API :PutItem("where"[, dontClearOnFail[, count]])
---
--- Put the item currently held by the cursor in the most suitable bag 
--- (considering specialty bags, already-existing stacks..)
---
--- where           - string: "BAGS", "BANK", "BAGSBANK", "REAGENTBANK"
--- count           - OPTIONAL: number: if given, PutItem() will attempt to stack the item on top of another suitable stack. This is not possible without knowing the count.
--- dontClearOnFail - OPTIONAL: boolean: If the put operation fails due to no room, do NOT clear the cursor. (Note that some other wow client errors WILL clear the cursor)
---
--- Returns:  bag,slot    or false for out-of-room
---           0,0 will be returned if the function is called without an item in the cursor
---           nil         when which is REAGENTBANK and the ReagentBank has not been unlocked
-
+-- PutItem
 local function putinbag(destbag)
-	if where == "REAGENTBANK" and not IsReagentBankUnlocked() then return nil end
-
-	for slot=1,GetContainerNumSlots(destbag) do
-		if (not GetContainerItemInfo(destbag,slot)) and (not isLocked(destbag,slot)) then	-- empty!
-			PickupContainerItem(destbag,slot)
-			if not CursorHasItem() then -- success!
-				lockSlot(destbag,slot)
+	for slot = 1, C_Container.GetContainerNumSlots(destbag) do
+		local info = C_Container.GetContainerItemInfo(destbag, slot)
+		if not info and not isLocked(destbag, slot) then
+			C_Container.PickupContainerItem(destbag, slot)
+			if not C_Cursor.GetCursorItem() then
+				lockSlot(destbag, slot)
 				return slot
 			end
-			-- If we get here, something is probably severely broken. But we keep looping hoping for the best.
 		end
 	end
 end
 
 function lib:PutItem(where, count, dontClearOnFail)
-	if where == "REAGENTBANK" and not IsReagentBankUnlocked() then return nil end
-
-	local cursorType,itemId,itemLink = GetCursorInfo()
-	if cursorType~="item" then
-		geterrorhandler()(MAJOR..": PutItem(): There was no item in the cursor.")
-		return 0,0	-- we consider nothing-at-all successfully disposed of (0,0 contains nil)
+	local cursorItem = C_Cursor.GetCursorItem()
+	if not cursorItem then
+		geterrorhandler()(MAJOR .. ": PutItem(): No item on cursor.")
+		return 0, 0
 	end
-
-	local baglist=bags[where]
+	local baglist = bags[where]
 	if not baglist then
 		error("Usage: LibBagUtils:PutItem(where[, count[, dontClearOnFail]])", 2)
 	end
-
-	-- FIRST: if we have a known count, and the item is stackable, we try putting it on top of something else (look for the BIGGEST stack to put it on top of for max packing!)
-	if count and count>=1 then
+	local itemLink = C_Item.GetItemLink(cursorItem)
+	local itemID = C_Item.GetItemID(cursorItem)
+	if count and count >= 1 then
 		local _, _, _, _, _, _, _, itemStackCount = GetItemInfo(itemLink)
-		if itemStackCount>1 and count<itemStackCount then
-			local bestsize,bestbag,bestslot=0
-			for bag,slot in lib:Iterate(where, itemId) do -- Only look for itemId, not the full string; we assume everything of the same itemId is stackable. Looking at the full itemstring is futile since everything has unique IDs these days.
-				local _, ciCount, ciLocked, _, _ = GetContainerItemInfo(bag,slot)
-				if ciLocked then
-					-- nope!
-				elseif isLocked(bag,slot) then
-					-- nope!
-				elseif ciCount+count<=itemStackCount and ciCount>bestsize then
-					bestsize=ciCount
-					bestbag=bag
-					bestslot=slot
+		if itemStackCount > 1 and count < itemStackCount then
+			local bestsize, bestbag, bestslot = 0
+			for bag, slot in lib:Iterate(where, itemID) do
+				local info = C_Container.GetContainerItemInfo(bag, slot)
+				if info and not info.isLocked and not isLocked(bag, slot) then
+					if info.stackCount + count <= itemStackCount and info.stackCount > bestsize then
+						bestsize, bestbag, bestslot = info.stackCount, bag, slot
+					end
 				end
 			end
-			if bestbag then	-- Place it!
-				PickupContainerItem(bestbag,bestslot)
-				if not CursorHasItem() then	-- success!
-					
-					lockSlot(bestbag,bestslot)
-					local _, ciCount, ciLocked, _, _ = GetContainerItemInfo(bestbag,bestslot)
-					return bestbag,bestslot
+			if bestbag then
+				C_Container.PickupContainerItem(bestbag, bestslot)
+				if not C_Cursor.GetCursorItem() then
+					lockSlot(bestbag, bestslot)
+					return bestbag, bestslot
 				end
-				-- if we got here, the item couldn't be placed on top of the other for some reason, possibly because our assumption about equal itemids being wrong
-				-- either way, we fall down and continue looking for somewhere to put it
 			end
-			-- Fall down and look for empty slots instead
 		end
 	end
-	
-	-- Put the item in the first empty slot that it CAN be put in!
 	local itemFam = GetItemFamily(itemLink)
-	if itemFam~=0 and select(9,GetItemInfo(itemLink))=="INVTYPE_BAG" then
-		itemFam = 0	-- Ouch, it was a bag. Bags are always family 0 for purposes of trying to PUT them somewhere.
+	if itemFam ~= 0 and select(9, GetItemInfo(itemLink)) == "INVTYPE_BAG" then
+		itemFam = 0
 	end
-	
-	-- If this is a specialty item, we try specialty bags first
-	if itemFam~=0 then
+	if itemFam ~= 0 then
 		for bag in iterbags, baglist do
-			local bagFree, bagFam = myGetContainerNumFreeSlots(bag)
-			if bagFam~=0 and band(itemFam,bagFam)~=0 then
+			local _, bagFam = C_Container.GetContainerNumFreeSlots(bag)
+			if bagFam ~= 0 and band(itemFam, bagFam) ~= 0 then
 				local slot = putinbag(bag)
 				if slot then
-					return bag,slot
+					return bag, slot
 				end
 			end
 		end
 	end
-	
-	-- If we couldn't put it in a special bag, try normal bags
 	for bag in iterbagsfam0, baglist do
-		if GetContainerNumFreeSlots(bag)>0 then
+		if C_Container.GetContainerNumFreeSlots(bag) > 0 then
 			local slot = putinbag(bag)
 			if slot then
-				return bag,slot
+				return bag, slot
 			end
 		end
 	end
-	
-	
-	-- Set sail on the failboat!
 	if not dontClearOnFail then
-		ClearCursor()
+		C_Cursor.ClearCursor()
 	end
-	return false	-- no room for it!
+	return false
 end
 
-
-
 -----------------------------------------------------------------------
--- API :LinkIsItem(fullLink, lookingfor)
--- 
--- See if "lookingfor" equals the full link given. "lookingfor" can be any kind of item identifier.
--- Level information is always ignored. Wobbly 3.2 randomstats are compensated for.
-
+-- LinkIsItem
 function lib:LinkIsItem(fullLink, lookingfor)
-	local comparator,arg1,arg2 = makeLinkComparator(lookingfor)
-	return comparator(fullLink, arg1,arg2)
+	local comparator, arg1, arg2 = makeLinkComparator(lookingfor)
+	return comparator(fullLink, arg1, arg2)
 end
