@@ -1,6 +1,28 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.7(0269)
+Game Version: 4.4.2/1.15.6/11.2.0
+Date: 10/08/2025
+
+11.2 ONLY!!!!!!!!!!!!!!!!!!
+
+--Dev note i don't know how long i can keep doing this really! classic might be borken i can not test as i don't have game time! just roll back. 
+
+Updated ace3
+
+#lib:Libbags
+	- Code not been updated sence 2014 not sure if anyone is still using this this needs to be removed 
+	  and own code added into EMA code hopefully everything am using it is ok atm.
+	
+# Team
+	- Add Character with popup boxing is working again
+		-- Removed code that checks if character name is under 3.
+			-- Can not longer press the EnterKey and will need to use button for now.
+			
+	
+
+---------------------------
 EMA Version: Release-v4.7(0268)
 Game Version: 4.4.2/1.15.6/11.1.5
 Date: 04/05/2025

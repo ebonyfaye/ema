@@ -18,7 +18,7 @@
 	
 	<Script file="Interaction.lua" />	
 	<Script file="Trade.lua" />
-	<Script file="Bank.lua" />
+	<Script file="Bank.lua" /> 
 	<Script file="Guild.lua" />
 	<Script file="Mail.lua" />
 	

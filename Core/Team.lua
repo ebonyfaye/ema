@@ -616,35 +616,44 @@ end
 -- Initialize Popup Dialogs.
 local function InitializePopupDialogs()
    -- Ask the name of the character to add as a new member.
+   -- DEV: 11.2 do i really wanna fix the < 3 chars for a name bullshit??
    StaticPopupDialogs["EMATEAM_ASK_CHARACTER_NAME"] = {
         text = L["STATICPOPUP_ADD"],
         button1 = ACCEPT,
         button2 = CANCEL,
         hasEditBox = 1,
-        timeout = 0,
+		timeout = 0,
 		whileDead = 1,
 		hideOnEscape = 1,
 		OnShow = function( self )
-			self.editBox:SetText("")
-            self.button1:Disable()
-            self.editBox:SetFocus()
+			self.EditBox:SetText("")
+            --self.GetButton1():Disable()
+            self.EditBox:SetFocus()
         end,
 		OnAccept = function( self )
-			EMA:AddMemberGUI( self.editBox:GetText() )
+			EMA:AddMemberGUI( self.EditBox:GetText() )
 		end,
+		--[[
 		EditBoxOnTextChanged = function( self )
-            if not self:GetText() or self:GetText():trim() == "" then
-				self:GetParent().button1:Disable()
+			if not self:GetText() or self:GetText():trim() == "" then
+				--self:button1:Disable()
+				--self:GetParent().
+				--slef:GetButton1():Disable()
             else
-                self:GetParent().button1:Enable()
-            end
+               --self:GetParent().button1:Enable()
+            end	
         end,
-		EditBoxOnEnterPressed = function( self )
-            if self:GetParent().button1:IsEnabled() then
+		]]
+		--DEV NOTE: mixinout bullshit
+		--EditBoxOnEnterPressed = function( self )
+		--	EMA:AddMemberGUI( self.EditBox:GetText() )   
+			--[[
+			if self:GetParent().button1:IsEnabled() then
 				EMA:AddMemberGUI( self:GetText() )
             end
             self:GetParent():Hide()
-        end,			
+			]]
+        --end,			
     }
    -- Confirm removing characters from member list.
    StaticPopupDialogs["EMATEAM_CONFIRM_REMOVE_CHARACTER"] = {

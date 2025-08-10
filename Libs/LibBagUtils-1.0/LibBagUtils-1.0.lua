@@ -59,7 +59,8 @@ local WoW10 = select(4, GetBuildInfo()) >= 100000
 
 local BANK_CONTAINER = BANK_CONTAINER
 -- local KEYRING_CONTAINER = KEYRING_CONTAINER
-local NUM_BANKBAGSLOTS = NUM_BANKBAGSLOTS
+-- Not sure if this will be a problem ebony!
+--local NUM_BANKBAGSLOTS = NUM_BANKBAGSLOTS
 local NUM_BAG_SLOTS = NUM_BAG_SLOTS
 local REAGENTBANK_CONTAINER = REAGENTBANK_CONTAINER
 
@@ -264,13 +265,13 @@ for i=1,NUM_BAG_SLOTS do
 end
 bags.BAGS[BACKPACK_CONTAINER]=BACKPACK_CONTAINER
 -- bags.BAGS[KEYRING_CONTAINER]=KEYRING_CONTAINER
-
+--[[
 -- Bank bags
 for i=NUM_BAG_SLOTS+1,NUM_BAG_SLOTS+NUM_BANKBAGSLOTS do
 	bags.BANK[i]=i
 end
 bags.BANK[BANK_CONTAINER]=BANK_CONTAINER
-
+]]
 -- Both
 for k,v in pairs(bags.BAGS) do
 	bags.BAGSBANK[k]=v
@@ -280,9 +281,11 @@ for k,v in pairs(bags.BANK) do
 end
 
 -- Reagent Bank
+--[[
 if isClassicBuild() == false then
 	bags.REAGENTBANK[REAGENTBANK_CONTAINER] = REAGENTBANK_CONTAINER
 end
+]]
 
 local function iterbags(tab, cur)
 	cur = next(tab, cur)
@@ -384,12 +387,12 @@ end
 -- bag        - number: bag number
 --
 -- Returns true if the given bag is a bank bag
-
+--[[
 function lib:IsBank(bag, incReagentBank)
 	return bag==BANK_CONTAINER or
 		(bag>=NUM_BAG_SLOTS+1 and bag<=NUM_BAG_SLOTS+NUM_BANKBAGSLOTS) or (incReagentBank and lib:IsReagentBank(bag))
 end
-
+]]
 -----------------------------------------------------------------------
 -- API :IsReagentBank(bag)
 --
