@@ -1299,93 +1299,85 @@ function EMA:doTagParty(event, characterName, tag, ...)
 	 end
 end
 
-function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
-	--EMA:Print("Inviter", inviter)
-	-- Accept this invite, initially no.
-	local acceptInvite = false
-	-- Is character not in a group?
-	if not IsInGroup( "player" ) then	
-		-- Accept an invite from members?
-		if EMA.db.inviteAcceptTeam == true then 
-			-- If inviter found in team list, allow the invite to be accepted.
-			if IsCharacterInTeam( inviter ) then
-			acceptInvite = true
-			end
-		end			
-		-- Accept an invite from friends?
-		if EMA.db.inviteAcceptFriends == true then
-			-- Iterate each friend; searching for the inviter in the friends list.
-			for friendIndex = 1, C_FriendList.GetNumOnlineFriends() do
-				local f = C_FriendList.GetFriendInfoByIndex( friendIndex )
-				-- Inviter found in friends list, allow the invite to be accepted.
-				--EMA:Print("test", inviter, f.name )
-				if inviter == f.name then
-					acceptInvite = true
-					break
-				end
-			end	
-		end
-		-- Accept an invite from BNET/RealD?
-		if EMA.db.inviteAcceptFriends == true and BNFeaturesEnabledAndConnected() == true then
-			-- Iterate each friend; searching for the inviter in the friends list.
-			local _, numFriends = BNGetNumFriends()
-			for bnIndex = 1, numFriends do
-				for toonIndex = 1, C_BattleNet.GetFriendNumGameAccounts( bnIndex ) do
-					local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo ( bnIndex, toonIndex )
-					--EMA:Print("BNFrindsTest", bnIndex, toonIndex, "a", gameAccountInfo.characterName, gameAccountInfo.clientProgram, gameAccountInfo.realmName, "inviter", inviter)
-					if gameAccountInfo.clientProgram == "WoW" and gameAccountInfo.wowProjectID == 1 then
-						if gameAccountInfo.realmName ~= nil then
-							if gameAccountInfo.characterName == inviter or gameAccountInfo.characterName.."-"..gameAccountInfo.realmName == inviter then
-								acceptInvite = true
-								break
-							end
-						end			
-					end
-				end
-			end	
-		end					
-		-- Accept and invite from guild members?
-		if EMA.db.inviteAcceptGuild == true then
-			if UnitIsInMyGuild( inviter ) then
-				acceptInvite = true
-			end
-		end	
-	end	
-	-- Hide the party invite popup?
-	local hidePopup = false
-	-- Accept the group invite if allowed.
-	if acceptInvite == true then
-		AcceptGroup()
-		hidePopup = true
-	else
-		-- Otherwise decline the invite if permitted.
-		if EMA.db.inviteDeclineStrangers == true then
-			DeclineGroup()
-			hidePopup = true
-		end
-	end		
-	-- Hide the popup group invitation request if accepted or declined the invite.
-	if hidePopup == true then
-		-- Make sure the invite dialog does not decline the invitation when hidden.
-		for iteratePopups = 1, STATICPOPUP_NUMDIALOGS do
-			local dialog = _G["StaticPopup"..iteratePopups]
-			if dialog.which == "PARTY_INVITE" then
-				-- Set the inviteAccepted flag to true (even if the invite was declined, as the
-				-- flag is only set to stop the dialog from declining in its OnHide event).
-				dialog.inviteAccepted = 1
-				break
-			end
-			-- Ebony Sometimes invite is from XREALM even though Your on the same realm and have joined the party. This should hide the Popup.
-			if dialog.which == "PARTY_INVITE_XREALM" then
-				-- Set the inviteAccepted flag to true (even if the invite was declined, as the
-				-- flag is only set to stop the dialog from declining in its OnHide event).
-				dialog.inviteAccepted = 1
-				break
-			end
-		end
-		StaticPopup_Hide( "PARTY_INVITE" )
-		StaticPopup_Hide( "PARTY_INVITE_XREALM" )
-	end	
+function EMA:PARTY_INVITE_REQUEST(event, inviter, ...)
+    local acceptInvite = false
+
+    if not IsInGroup("player") then
+        -- Accept from team
+        if EMA.db.inviteAcceptTeam == true and IsCharacterInTeam(inviter) then
+            acceptInvite = true
+        end
+
+        -- Accept from friends
+        if EMA.db.inviteAcceptFriends == true then
+            local numOnlineFriends = tonumber(C_FriendList.GetNumOnlineFriends()) or 0
+            if numOnlineFriends > 0 then
+                for friendIndex = 1, numOnlineFriends do
+                    local f = C_FriendList.GetFriendInfoByIndex(friendIndex)
+                    if f and inviter == f.name then
+                        acceptInvite = true
+                        break
+                    end
+                end
+            end
+        end
+
+        -- Accept from BNet friends
+        if EMA.db.inviteAcceptFriends == true and BNFeaturesEnabledAndConnected() == true then
+            local _, numFriends = BNGetNumFriends()
+            numFriends = tonumber(numFriends) or 0
+            if numFriends > 0 then
+                for bnIndex = 1, numFriends do
+                    local numGameAccounts = tonumber(C_BattleNet.GetFriendNumGameAccounts(bnIndex)) or 0
+                    if numGameAccounts > 0 then
+                        for toonIndex = 1, numGameAccounts do
+                            local gameAccountInfo = C_BattleNet.GetFriendGameAccountInfo(bnIndex, toonIndex)
+                            if gameAccountInfo
+                               and gameAccountInfo.clientProgram == "WoW"
+                               and gameAccountInfo.wowProjectID == 1
+                               and gameAccountInfo.realmName
+                               and (
+                                    gameAccountInfo.characterName == inviter or
+                                    (gameAccountInfo.characterName.."-"..gameAccountInfo.realmName) == inviter
+                               ) then
+                                acceptInvite = true
+                                break
+                            end
+                        end
+                    end
+                    if acceptInvite then break end
+                end
+            end
+        end
+
+        -- Accept from guild
+        if EMA.db.inviteAcceptGuild == true and UnitIsInMyGuild(inviter) then
+            acceptInvite = true
+        end
+    end
+
+    -- Hide popup if we accept/decline
+    local hidePopup = false
+
+    if acceptInvite then
+        AcceptGroup()
+        hidePopup = true
+    elseif EMA.db.inviteDeclineStrangers == true then
+        DeclineGroup()
+        hidePopup = true
+    end
+
+    if hidePopup then
+        local function hideInvitePopup(frameName)
+            local dialog = _G[frameName]
+            if dialog and (dialog.which == "PARTY_INVITE" or dialog.which == "PARTY_INVITE_XREALM") then
+                dialog.inviteAccepted = 1
+                StaticPopup_Hide(dialog.which)
+            end
+        end
+        hideInvitePopup("StaticPopup1")
+        hideInvitePopup("StaticPopup2")
+    end
 end
 
 function EMA:DisbandTeamFromParty()
