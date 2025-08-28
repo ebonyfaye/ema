@@ -1,6 +1,20 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v4.7(0270)
+Game Version: 4.4.2/1.15.6/11.2.0
+Date: 28/08/2025
+
+#Toon
+	- Removed warmode
+		-- Is now a protected callback.
+	
+	- Fixed bug #137
+	
+#Team
+	- Fixed bug #131
+
+---------------------------
 EMA Version: Release-v4.7(0269)
 Game Version: 4.4.2/1.15.6/11.2.0
 Date: 10/08/2025

@@ -1403,11 +1403,11 @@ end
 
 local function LeaveTheParty()
 	if IsInGroup( "player" ) then
-		if EMAPrivate.Core.isEmaClassicBuild() == true then
-			LeaveParty()
-		else
-			C_PartyInfo.LeaveParty()
-		end		
+		--if EMAPrivate.Core.isEmaClassicBuild() == true then
+		--	LeaveParty()
+		--else
+		C_PartyInfo.LeaveParty()
+		--end		
 	end
 end
 
