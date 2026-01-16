@@ -62,7 +62,7 @@ EMA.moduleIcon = "Interface\\Addons\\EMA\\Media\\NewsIcon.tga"
 EMA.pofileIcon = "Interface\\Addons\\EMA\\Media\\SettingsIcon.tga"
 -- order
 EMA.moduleOrder = 1
-local version =   C_AddOns.GetAddOnMetadata("EMA", "version")
+local version = GetAddOnMetadataCompat("EMA", "version")
 
 -- Load libraries.
 local AceGUI = LibStub("AceGUI-3.0")
@@ -87,7 +87,7 @@ EMAPrivate.SettingsFrame.Widget:AddChild( EMAPrivate.SettingsFrame.WidgetTree )
 
 
 function EMA:OnEnable()
-	local Jamba = C_AddOns.IsAddOnLoaded("Jamba")
+	local Jamba = IsAddOnLoadedCompat("Jamba")
 	if Jamba == true then
 		StaticPopup_Show( "CAN_NOT_RUN_JAMBA_AND_EMA" )
 	end
@@ -322,7 +322,7 @@ end
 
 --Ema Alpha
 local function isEmaAlphaBuild()
-	local EMAVersion = GetAddOnMetadata("EMA", "version")
+	local EMAVersion = GetAddOnMetadataCompat("EMA", "version")
 	-- EMA Alpha Build
 	local Alpha = EMAVersion:find( "Alpha" )
 	if Alpha then
@@ -883,3 +883,5 @@ EMAPrivate.Core.isEmaBetaBuild = isEmaBetaBuild
 EMAPrivate.Core.isEmaAlphaBuild = isEmaAlphaBuild
 EMAPrivate.Core.SendSettingsAllModules = EMA.SendSettingsAllModules
 EMAPrivate.Core.RefreshSettingsAllModules = EMA.RefreshSettingsAllModules
+EMAPrivate.Core.GetAddOnMetadata = GetAddOnMetadataCompat
+EMAPrivate.Core.IsAddOnLoaded = IsAddOnLoadedCompat
