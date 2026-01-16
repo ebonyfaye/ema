@@ -1956,7 +1956,7 @@ function EMA:CreateEMAMiniQuestLogFrame()
 	frame:EnableMouse( true )
 	frame:SetMovable( true )	
 	frame:ClearAllPoints()
-	if IsAddOnLoaded("ElvUI" ) == true then  
+	if EMAPrivate.Core.IsAddOnLoaded("ElvUI" ) == true then  
 		frame:SetPoint("BOTTOMLEFT", QuestLogFrame, "BOTTOMLEFT", 40, -80)
 	else
 		local _, _, _, tocversion = GetBuildInfo()
