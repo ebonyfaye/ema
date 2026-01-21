@@ -1,6 +1,14 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v5.0(0277)
+Game Version: 4.4.2/1.15.6/12.0.0
+Date: 21/01/2026
+
+Should work with TBCAnv as well.
+
+
+---------------------------
 EMA Version: Release-v5.0(0276)
 Game Version: 4.4.2/1.15.6/12.0.0
 Date: 21/01/2026
