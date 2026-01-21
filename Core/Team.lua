@@ -1376,26 +1376,40 @@ function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
 	-- Hide the popup group invitation request if accepted or declined the invite.
 	if hidePopup == true then
 		-- Make sure the invite dialog does not decline the invitation when hidden.
-		for iteratePopups = 1, STATICPOPUP_NUMDIALOGS do
-			local dialog = _G["StaticPopup"..iteratePopups]
-			if dialog.which == "PARTY_INVITE" then
-				-- Set the inviteAccepted flag to true (even if the invite was declined, as the
-				-- flag is only set to stop the dialog from declining in its OnHide event).
-				dialog.inviteAccepted = 1
-				break
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
+			for iteratePopups = 1, STATICPOPUP_NUMDIALOGS do
+				local dialog = _G["StaticPopup"..iteratePopups]
+				if dialog.which == "PARTY_INVITE" then
+					-- Set the inviteAccepted flag to true (even if the invite was declined, as the
+					-- flag is only set to stop the dialog from declining in its OnHide event).
+					dialog.inviteAccepted = 1
+					break
+				end
+				-- Ebony Sometimes invite is from XREALM even though Your on the same realm and have joined the party. This should hide the Popup.
+				if dialog.which == "PARTY_INVITE_XREALM" then
+					-- Set the inviteAccepted flag to true (even if the invite was declined, as the
+					-- flag is only set to stop the dialog from declining in its OnHide event).
+					dialog.inviteAccepted = 1
+					break
+				end
 			end
-			-- Ebony Sometimes invite is from XREALM even though Your on the same realm and have joined the party. This should hide the Popup.
-			if dialog.which == "PARTY_INVITE_XREALM" then
-				-- Set the inviteAccepted flag to true (even if the invite was declined, as the
-				-- flag is only set to stop the dialog from declining in its OnHide event).
-				dialog.inviteAccepted = 1
-				break
-			end
+			StaticPopup_Hide( "PARTY_INVITE" )
+			StaticPopup_Hide( "PARTY_INVITE_XREALM" )
+		else
+			--Warwithin
+			StaticPopup_ForEachShownDialog(function(frame)
+				if frame.which == "PARTY_INVITE" then
+					StaticPopup_Hide( "PARTY_INVITE" )
+				end	
+				if frame.which == "PARTY_INVITE_XREALM" then
+					StaticPopup_Hide( "PARTY_INVITE_XREALM" )	
+				end
+			end)
 		end
-		StaticPopup_Hide( "PARTY_INVITE" )
-		StaticPopup_Hide( "PARTY_INVITE_XREALM" )
 	end	
 end
+	
+
 
 function EMA:DisbandTeamFromParty()
 	EMA:EMASendCommandToTeam( EMA.COMMAND_LEAVE_PARTY )
