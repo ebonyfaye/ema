@@ -2615,8 +2615,8 @@ function EMA:UpdateExperienceStatus( characterName, playerExperience, playerMaxE
 
 	experienceBar:SetAnimatedValues(playerExperience, min, max , playerLevel)
 	
-	experienceGoldBar:SetValue( currentGold, currentGold )
-	
+	experienceGoldBar:SetValue( currentGold )
+	--experienceGoldBar:SetMinMaxValues(0, currentGold)
 	local text = ""
 	if EMA.db.experienceStatusShowValues == true then
 		text = text..tostring( AbbreviateLargeNumbers(playerExperience) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxExperience) )..L[" "]

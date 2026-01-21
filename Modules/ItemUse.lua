@@ -656,7 +656,12 @@ function EMA:RefreshItemUseControls()
 		local itemContainer = EMA.itemContainer[iterateItems]
 		if itemContainer ~= nil then
 			local containerButton = itemContainer["container"]
-			containerButton:Hide()
+			if containerButton ~= nil then
+				containerButton:Hide()
+			else
+				-- Midnight/PTR safety: container can be nil if frame template changed
+				EMA.itemContainer[iterateItems] = nil
+			end
 		end
 	end
 	for iterateItems = 1, EMA.db.numberOfItems, 1 do
@@ -1374,6 +1379,9 @@ function EMA:GetEMAItemCount()
 end
 
 function EMA:ReceiveItemCount( characterName, dataTable )
+	if EMA.sharedInvData == nil then
+		EMA.sharedInvData = {}		   
+	end
 	if InCombatLockdown() then
 		return
     end
