@@ -1376,7 +1376,7 @@ function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
 	-- Hide the popup group invitation request if accepted or declined the invite.
 	if hidePopup == true then
 		-- Make sure the invite dialog does not decline the invitation when hidden.
-		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			for iteratePopups = 1, STATICPOPUP_NUMDIALOGS do
 				local dialog = _G["StaticPopup"..iteratePopups]
 				if dialog.which == "PARTY_INVITE" then
@@ -1545,7 +1545,7 @@ function EMA:OnInitialize()
 		EMAInvite = CreateFrame( "CheckButton", "EMAInvite", nil, "SecureActionButtonTemplate , SecureHandlerBaseTemplate" )
 		EMAInvite:SetAttribute( "type", "macro" )
 		EMAInvite:SetAttribute( "macrotext", "/ema-team invite" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAInvite:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAInvite:Hide()	
@@ -1553,7 +1553,7 @@ function EMA:OnInitialize()
 		EMADisband = CreateFrame( "CheckButton", "EMADisband", nil, "SecureActionButtonTemplate" )
 		EMADisband:SetAttribute( "type", "macro" )
 		EMADisband:SetAttribute( "macrotext", "/ema-team disband" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMADisband:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMADisband:Hide()
@@ -1561,7 +1561,8 @@ function EMA:OnInitialize()
 		EMAMaster = CreateFrame( "CheckButton", "EMAMaster", nil, "SecureActionButtonTemplate" )
 		EMAMaster:SetAttribute( "type", "macro" )
 		EMAMaster:SetAttribute( "macrotext", "/ema-team iammaster" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+		--if EMAPrivate.Core.isEmaBetaBuild() == true then	
 			EMAMaster:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAMaster:Hide()
@@ -1569,112 +1570,112 @@ function EMA:OnInitialize()
 		EMAClickToMove = CreateFrame( "CheckButton", "EMAClickToMove", nil, "SecureActionButtonTemplate" )
 		EMAClickToMove:SetAttribute( "type", "macro" )
 		EMAClickToMove:SetAttribute( "macrotext", "/ema-team ctm all" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAClickToMove:RegisterForClicks( "AnyUp", "AnyDown" )
 		end	
 		EMAClickToMove:Hide()		
 		
 		EMAFocusMaster = CreateFrame( "CheckButton", "EMAFocusMaster", nil, "SecureActionButtonTemplate" )
 		EMAFocusMaster:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusMaster:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusMaster:Hide()
 		
 		EMATargetMaster = CreateFrame( "CheckButton", "EMATargetMaster", nil, "SecureActionButtonTemplate" )
 		EMATargetMaster:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMATargetMaster:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMATargetMaster:Hide()	
 		
 		EMAAssistMaster = CreateFrame( "CheckButton", "EMAAssistMaster", nil, "SecureActionButtonTemplate" )
 		EMAAssistMaster:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAAssistMaster:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAAssistMaster:Hide()
 		
 		EMAFollowMaster = CreateFrame( "CheckButton", "EMAFollowMaster", nil, "SecureActionButtonTemplate" )
 		EMAFollowMaster:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFollowMaster:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFollowMaster:Hide()
 		
 		EMAFollowStopNew = CreateFrame( "CheckButton", "EMAFollowStopNew", nil, "SecureActionButtonTemplate" )
 		EMAFollowStopNew:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFollowStopNew:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFollowStopNew:Hide()
 		
 		EMAFocusOne = CreateFrame( "CheckButton", "EMAFocusOne", nil, "SecureActionButtonTemplate" )
 		EMAFocusOne:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusOne:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusOne:Hide()
 		
 		EMAFocusTwo = CreateFrame( "CheckButton", "EMAFocusTwo", nil, "SecureActionButtonTemplate" )
 		EMAFocusTwo:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then	
 			EMAFocusTwo:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusTwo:Hide()
 		
 		EMAFocusThree = CreateFrame( "CheckButton", "EMAFocusThree", nil, "SecureActionButtonTemplate" )
 		EMAFocusThree:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusThree:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusThree:Hide()
 		
 		EMAFocusFour = CreateFrame( "CheckButton", "EMAFocusFour", nil, "SecureActionButtonTemplate" )
 		EMAFocusFour:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusFour:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusFour:Hide()
 		
 		EMAFocusFive = CreateFrame( "CheckButton", "EMAFocusFive", nil, "SecureActionButtonTemplate" )
 		EMAFocusFive:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusFive:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusFive:Hide()
 		
 		EMAFocusSix = CreateFrame( "CheckButton", "EMAFocusSix", nil, "SecureActionButtonTemplate" )
 		EMAFocusSix:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then	
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then	
 			EMAFocusSix:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusSix:Hide()
 		
 		EMAFocusSeven = CreateFrame( "CheckButton", "EMAFocusSeven", nil, "SecureActionButtonTemplate" )
 		EMAFocusSeven:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusSeven:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusSeven:Hide()
 		
 		EMAFocusEight = CreateFrame( "CheckButton", "EMAFocusEight", nil, "SecureActionButtonTemplate" )
 		EMAFocusEight:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusEight:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusEight:Hide()
 		
 		EMAFocusNine = CreateFrame( "CheckButton", "EMAFocusNine", nil, "SecureActionButtonTemplate" )
 		EMAFocusNine:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusNine:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusNine:Hide()
 		
 		EMAFocusTen = CreateFrame( "CheckButton", "EMAFocusTen", nil, "SecureActionButtonTemplate" )
 		EMAFocusTen:SetAttribute( "type", "macro" )
-		if EMAPrivate.Core.isEmaBetaBuild() == true then
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_MAINLINE or _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
 			EMAFocusTen:RegisterForClicks( "AnyUp", "AnyDown" )
 		end
 		EMAFocusTen:Hide()

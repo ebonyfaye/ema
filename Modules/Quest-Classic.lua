@@ -1,8 +1,8 @@
 -- ================================================================================ --
 --				EMA - ( Ebony's MultiBoxing Assistant )    							--
---				Current Author: Jennifer Calladine (Ebony)								--
+--				Current Author: Jennifer Calladine (Ebony)							--
 --																					--
---				License: All Rights Reserved 2018-2025 Jennifer Cally					--
+--				License: All Rights Reserved 2018-2025 Jennifer Cally				--
 --																					--
 --				Some Code Used from "Jamba" that is 								--
 --				Released under the MIT License 										--
