@@ -322,7 +322,7 @@ end
 local function isEmaClassicBuild()
 	local classic = false
 	-- Classic
-	local classicBuild  = select(4, GetBuildInfo()) <= 11403
+	local classicBuild  = select(4, GetBuildInfo()) <= 6000
 	if 	classicBuild  == true then
 		classic = true
 	end
@@ -345,7 +345,10 @@ local function isEmaClassicBccBuild()
 	end
 	if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC then
 		classic = true
-	end	
+	end
+	if _G.WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then
+		classic = true
+	end
  	return classic
 end	
 

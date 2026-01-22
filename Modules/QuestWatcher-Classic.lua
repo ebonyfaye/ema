@@ -965,38 +965,25 @@ function EMA:UpdateHideBlizzardWatchFrame()
 	if EMA.db.enableQuestWatcher == false then
 		return
 	end
-	-- WOLTK workaround!
-	local _, _, _, tocversion = GetBuildInfo()
-	if tocversion >= 30000 and tocversion <= 40000 then
 		if EMA.db.hideBlizzardWatchFrame == true then
+		if _G.WOW_PROJECT_ID == WOW_PROJECT_MISTS_CLASSIC then 
 			if WatchFrame:IsVisible() then
 				--QuestLogFrame:Hide()
 				WatchFrame:HookScript("OnShow", function(self) self:Hide() end)
 				WatchFrame:Hide()
 			end
-		else
-			WatchFrame:Show()
-		end
+		else	
+		if QuestWatchFrame:IsVisible() then
+				--QuestLogFrame:Hide()
+				QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
+				QuestWatchFrame:Hide()
+			end
+		end	
 	else
-		if EMA.db.hideBlizzardWatchFrame == true then
-			if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_CATACLYSM_CLASSIC then 
-				if WatchFrame:IsVisible() then
-					--QuestLogFrame:Hide()
-					WatchFrame:HookScript("OnShow", function(self) self:Hide() end)
-					WatchFrame:Hide()
-				end
-			else	
-				if QuestWatchFrame:IsVisible() then
-					--QuestLogFrame:Hide()
-					QuestWatchFrame:HookScript("OnShow", function(self) self:Hide() end)
-					QuestWatchFrame:Hide()
-				end
-			end	
-		else
-			QuestWatchFrame:Show()
-		end
-	end	
-end
+		QuestWatchFrame:Show()
+	end
+end	
+
 
 -------------------------------------------------------------------------------------------------------------
 -- QUEST WATCHING HOOKS

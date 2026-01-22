@@ -1376,7 +1376,7 @@ function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
 	-- Hide the popup group invitation request if accepted or declined the invite.
 	if hidePopup == true then
 		-- Make sure the invite dialog does not decline the invitation when hidden.
-		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC then
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC == false then
 			for iteratePopups = 1, STATICPOPUP_NUMDIALOGS do
 				local dialog = _G["StaticPopup"..iteratePopups]
 				if dialog.which == "PARTY_INVITE" then
@@ -1417,11 +1417,11 @@ end
 
 local function LeaveTheParty()
 	if IsInGroup( "player" ) then
-		--if EMAPrivate.Core.isEmaClassicBuild() == true then
-		--	LeaveParty()
-		--else
+		if _G.WOW_PROJECT_ID == _G.WOW_PROJECT_BURNING_CRUSADE_CLASSIC == true then
+		LeaveParty()
+		else
 		C_PartyInfo.LeaveParty()
-		--end		
+		end		
 	end
 end
 
@@ -1493,8 +1493,9 @@ end
 
 function EMA:ReceiveClickToMove( characterName, tag )
 	local clickToMove = GetCVar("Autointeract")
-	--EMA:Print("test", characterName, tag, clickToMove )
+--	EMA:Print("test", characterName, tag, clickToMove )
 	if EMAApi.DoesCharacterHaveTag( EMA.characterName, tag ) then
+		
 		if clickToMove == "1" then
 			ConsoleExec("Autointeract 0")	
 		else

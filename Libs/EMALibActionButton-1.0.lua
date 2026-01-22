@@ -210,12 +210,12 @@ function lib:CreateButton(id, name, header, config)
 
 	local button = setmetatable(CreateFrame("CheckButton", name, header, "ActionButtonTemplate, SecureActionButtonTemplate"), Generic_MT)
 	button:RegisterForDrag("LeftButton", "RightButton")
-	if WoWRetail then
+	if WoWRetail or WoWBCC then
 		button:RegisterForClicks("AnyDown", "AnyUp")
 	else
 		button:RegisterForClicks("AnyUp")
 	end
-
+	
 	-- Frame Scripts
 	button:SetScript("OnEnter", Generic.OnEnter)
 	button:SetScript("OnLeave", Generic.OnLeave)
@@ -1213,8 +1213,9 @@ function Generic:UpdateConfig(config)
 	UpdateTextElements(self)
 	UpdateHotkeys(self)
 	UpdateGrid(self)
-	Update(self)
-	if not WoWRetail then
+	--Update(self)
+	self:UpdateAction(true)
+	if not (WoWRetail or WoWBCC) then
 		self:RegisterForClicks(self.config.clickOnDown and "AnyDown" or "AnyUp")
 	end
 end
@@ -1754,7 +1755,7 @@ function Update(self)
 		else
 			self.HotKey:SetVertexColor(unpack(self.config.text.hotkey.color))
 		end
-		if WoWRetail then
+		if WoWRetail or WoWBCC then
 			if not self.MasqueSkinned then
 				self.SlotBackground:Show()
 				if self.config.hideElements.borderIfEmpty then
@@ -2380,7 +2381,7 @@ if WoWClassic then
 	end
 end
 
-if not WoWRetail then
+if not WoWRetail or WoWBCC then
 	-- disable loss of control cooldown on classic
 	Action.GetLossOfControlCooldown = function(self) return 0,0 end
 end

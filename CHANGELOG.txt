@@ -1,6 +1,23 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v5.0(0279)
+Game Version: 4.4.2/1.15.6/12.0.0
+Date: 22/01/2026
+
+Added Support for MOP (Hopefully)
+
+more TBC fixes with keybindings, Itembar should work. popup should not show on invite anymore.
+
+
+---------------------------
+EMA Version: Release-v5.0(0278)
+Game Version: 4.4.2/1.15.6/12.0.0
+Date: 22/01/2026
+
+More fixes
+
+---------------------------
 EMA Version: Release-v5.0(0277)
 Game Version: 4.4.2/1.15.6/12.0.0
 Date: 21/01/2026
