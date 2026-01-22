@@ -263,14 +263,14 @@ local function InitializePopupDialogs()
 		whileDead = 1,
 		hideOnEscape = 1,
 		OnShow = function( self )
-			self.editBox:SetText("")
-            self.button1:Disable()
-            self.editBox:SetFocus()
+			self.EditBox:SetText("")
+            --self.button1:Disable()
+            self.EditBox:SetFocus()
         end,
 		OnAccept = function( self )
-			EMA:AddTagGUI( self.editBox:GetText() )
+			EMA:AddTagGUI( self.EditBox:GetText() )
 		end,
-		EditBoxOnTextChanged = function( self )
+		--[[EditBoxOnTextChanged = function( self )
             if not self:GetText() or self:GetText():trim() == "" then
 				self:GetParent().button1:Disable()
             else
@@ -282,7 +282,8 @@ local function InitializePopupDialogs()
 				EMA:AddTagGUI( self:GetText() )
             end
             self:GetParent():Hide()
-        end,				
+        end,
+	]]	
     }
    -- Confirm removing characters from member list.
    StaticPopupDialogs["EMATAG_CONFIRM_REMOVE_TAG"] = {
