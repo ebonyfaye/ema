@@ -1,6 +1,14 @@
 ﻿---------------------------
 ChangeLogs:
 ---------------------------
+EMA Version: Release-v5.0(0281)
+Game Version: 4.4.2/1.15.6/12.0.0/5.5.3
+Date: 22/01/2026
+
+tbc fix again on staic popup
+
+
+---------------------------
 EMA Version: Release-v5.0(0280)
 Game Version: 4.4.2/1.15.6/12.0.0/5.5.3
 Date: 22/01/2026

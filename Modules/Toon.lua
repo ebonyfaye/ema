@@ -1156,7 +1156,7 @@ function EMA:OnEnable()
 	EMA:RegisterEvent( "UNIT_COMBAT" )
 	EMA:RegisterEvent( "PLAYER_REGEN_DISABLED" )
 	EMA:RegisterEvent( "PLAYER_REGEN_ENABLED" )
-	EMA:RegisterEvent( "UNIT_HEALTH" )
+--	EMA:RegisterEvent( "UNIT_HEALTH" )
 	EMA:RegisterEvent( "UPDATE_INVENTORY_DURABILITY" )
 	EMA:RegisterEvent( "UNIT_POWER_FREQUENT" )	
 	EMA:RegisterEvent( "MERCHANT_SHOW" )
@@ -1465,68 +1465,38 @@ end
 StaticPopupDialogs["TEAMDEATH"] = {
 	text = L["RELEASE_TEAM_Q"],
 	button1 = DEATH_RELEASE,
-	--button2 = USE_SOULSTONE,
+	--button2 = USE_SOULSTONE, -- na!
 	button2 = CANCEL,
-	OnShow = function(self)
-		--self.timeleft = GetReleaseTimeRemaining()
-		--[[
-		-- TODO FIX FOR 8.0
-		if EMAPrivate.Core.isBetaBuild == true then
-			-- Find out new code????? for now we can not use this
-			local text = nil
-		else 
-			local text = HasSoulstone()
-		end
-		if ( text ) then
-			self.button2:SetText(text)
-		end
-		if ( self.timeleft == -1 ) then
-			self.text:SetText(DEATH_RELEASE_NOTIMER)
-		end
-		--]]
-		self.button1:SetText(L["RELEASE_TEAM"])
-	end,
 	OnAccept = function(self)
-		--EMA:Print("testRes")
-		-- Do we need this???
-		--if not ( CannotBeResurrected() ) then
-		--	return 1
-		--end
-		
 		EMA.teamDeath()
 	end,
+	-- MIX IN AND OUT BULLSHIT CBA!
+	--[[OnShow = function(self)
+		local button1 = self:GetButton(1)
+		local button2 = self:GetButton(2)
+		--self.button1:SetText(L["RELEASE_TEAM"])
+		button1:SetLabel(L["RELEASE_TEAM"])
+	end,
+	
 	OnCancel = function(self, data, reason)
-		--[[
-		if ( reason == "override" ) then
-			return;
-		end
-		if ( reason == "timeout" ) then
-			return;
-		end
-		if ( reason == "clicked" ) then
-			if ( HasSoulstone() ) then
-				EMA.teamSS()
-			else
-				EMA.teamRes()
-			end
-			if ( CannotBeResurrected() ) then
-				return 1
-			end
-		end
-		]]
 	end,
 	OnUpdate = function(self, elapsed)
+		local button1 = self:GetButton(1)
+		local button2 = self:GetButton(2)
+		local button3 = self:GetButton(3)
+		
 		if ( IsFalling() and not IsOutOfBounds()) then
-			self.button1:Disable()
-			self.button2:Disable()
-			--self.button3:Disable()
+			button1:Disable()
+			button2:Disable()
 			return;
 		end
 		
-		local b1_enabled = self.button1:IsEnabled()
-		self.button1:SetEnabled(not IsEncounterInProgress())
+		--local b1_enabled = self.button1:IsEnabled()
+		--local b1_enabled = self.button1:IsEnabled();
+		--self.button1:SetEnabled(not IsEncounterInProgress())
 		
-		if ( b1_enabled ~= self.button1:IsEnabled() ) then
+		--if ( b1_enabled ~= self.button1:IsEnabled() ) then--
+		if ( b1_enabled ~= button1:GetEnabled() ) then
 			if ( b1_enabled ) then
 				self.text:SetText(CAN_NOT_RELEASE_IN_COMBAT)
 			else
@@ -1535,17 +1505,6 @@ StaticPopupDialogs["TEAMDEATH"] = {
 			end
 			StaticPopup_Resize(dialog, which)
 		end
-		--[[
-		if( HasSoulstone() and CanUseSoulstone() ) then
-			self.button2:Enable()
-		else
-			self.button2:Disable()
-		end
-		--]]
-	end,
-	--[[
-	DisplayButton2 = function(self)
-		return HasSoulstone()
 	end,
 	]]
 	timeout = 0,
@@ -1554,7 +1513,7 @@ StaticPopupDialogs["TEAMDEATH"] = {
 	notClosableByLogout = 1,
 	noCancelOnReuse = 1,
 	cancels = "RECOVER_TEAM"
-}
+};
 
 StaticPopupDialogs["RECOVER_TEAM"] = {
 	text = L["RECOVER_CORPSES"],
@@ -1859,22 +1818,25 @@ function EMA:UNIT_POWER_FREQUENT( event, unitAffected, power, ... )
 	end
 end
 
-function EMA:UNIT_HEALTH( event, unitAffected, ... )
-	if EMA.db.warnWhenHealthDropsBelowX == false then
-		return
-	end	
-	if unitAffected ~= "player" then
-		return
-	end
-	local currentHealth = (UnitHealth( "player" ) / UnitHealthMax( "player" ) * 100)
-	if EMA.toldMasterAboutHealth == true then
-		if currentHealth >= tonumber( EMA.db.warnWhenHealthDropsAmount ) then
-			EMA.toldMasterAboutHealth = false
+
+if EMAPrivate.Core.isEmaClassicBccBuild == true then 
+	function EMA:UNIT_HEALTH( event, unitAffected, ... )
+		if EMA.db.warnWhenHealthDropsBelowX == false then
+			return
+		end	
+		if unitAffected ~= "player" then
+			return
 		end
-	else
-		if currentHealth < tonumber( EMA.db.warnWhenHealthDropsAmount ) then
-			EMA.toldMasterAboutHealth = true
-			EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.warnHealthDropsMessage, false )
+		local currentHealth = (UnitHealth( "player" ) / UnitHealthMax( "player" ) * 100)
+		if EMA.toldMasterAboutHealth == true then
+			if currentHealth >= tonumber( EMA.db.warnWhenHealthDropsAmount ) then
+				EMA.toldMasterAboutHealth = false
+			end
+		else
+			if currentHealth < tonumber( EMA.db.warnWhenHealthDropsAmount ) then
+				EMA.toldMasterAboutHealth = true
+				EMA:EMASendMessageToTeam( EMA.db.warningArea, EMA.db.warnHealthDropsMessage, false )
+			end
 		end
 	end
 end

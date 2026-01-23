@@ -1376,7 +1376,7 @@ function EMA:PARTY_INVITE_REQUEST( event, inviter, ... )
 	-- Hide the popup group invitation request if accepted or declined the invite.
 	if hidePopup == true then
 		-- Make sure the invite dialog does not decline the invitation when hidden.
-		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC == false then
+		if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false or WOW_PROJECT_ID == WOW_PROJECT_BURNING_CRUSADE_CLASSIC) == false then
 			for iteratePopups = 1, STATICPOPUP_NUMDIALOGS do
 				local dialog = _G["StaticPopup"..iteratePopups]
 				if dialog.which == "PARTY_INVITE" then
