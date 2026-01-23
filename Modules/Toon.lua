@@ -585,59 +585,61 @@ local function SettingsCreateWarnings( top )
 	)	
 	EMA.settingsControlWarnings.editBoxWarnFocusNotMasterMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnFocusNotMasterMessage )
 	movingTop = movingTop - editBoxHeight
-	EMAHelperSettings:CreateHeading( EMA.settingsControlWarnings, L["HEALTH_POWER"], movingTop, true )
-	movingTop = movingTop - headingHeight	
-	EMA.settingsControlWarnings.checkBoxWarnWhenHealthDropsBelowX = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlWarnings, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["HEALTH_DROPS_BELOW"],
-		EMA.SettingsToggleWarnWhenHealthDropsBelowX,
-		L["HEALTH_DROPS_BELOW_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
-		headingWidth,
-		left,
-		movingTop,
-		L["HEALTH_PERCENTAGE"]
-	)	
-	EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnWhenHealthDropsAmount )
-	movingTop = movingTop - editBoxHeight
-	EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
-		headingWidth,
-		left,
-		movingTop,
-		L["LOW_HEALTH"]
-	)	
-	EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnHealthDropsMessage )
-	movingTop = movingTop - editBoxHeight
-	EMA.settingsControlWarnings.checkBoxWarnWhenManaDropsBelowX = EMAHelperSettings:CreateCheckBox( 
-		EMA.settingsControlWarnings, 
-		headingWidth, 
-		left, 
-		movingTop, 
-		L["MANA_DROPS_BELOW"],
-		EMA.SettingsToggleWarnWhenManaDropsBelowX,
-		L["MANA_DROPS_BELOW_HELP"]
-	)	
-	movingTop = movingTop - checkBoxHeight
-	EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
-		headingWidth,
-		left,
-		movingTop,
-		L["MANA_PERCENTAGE"]
-	)	
-	EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnWhenManaDropsAmount )
-	movingTop = movingTop - editBoxHeight
-	EMA.settingsControlWarnings.editBoxWarnManaDropsMessage = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
-		headingWidth,
-		left,
-		movingTop,
-		L["LOW_MANA"]
-	)	
-	EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnManaDropsMessage )
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
+		EMAHelperSettings:CreateHeading( EMA.settingsControlWarnings, L["HEALTH_POWER"], movingTop, true )
+		movingTop = movingTop - headingHeight
+		EMA.settingsControlWarnings.checkBoxWarnWhenHealthDropsBelowX = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlWarnings, 
+			headingWidth, 
+			left, 
+			movingTop, 
+			L["HEALTH_DROPS_BELOW"],
+			EMA.SettingsToggleWarnWhenHealthDropsBelowX,
+			L["HEALTH_DROPS_BELOW_HELP"]
+		)	
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
+			headingWidth,
+			left,
+			movingTop,
+			L["HEALTH_PERCENTAGE"]
+		)	
+		EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnWhenHealthDropsAmount )
+		movingTop = movingTop - editBoxHeight
+		EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
+			headingWidth,
+			left,
+			movingTop,
+			L["LOW_HEALTH"]
+		)	
+		EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnHealthDropsMessage )
+		movingTop = movingTop - editBoxHeight
+		EMA.settingsControlWarnings.checkBoxWarnWhenManaDropsBelowX = EMAHelperSettings:CreateCheckBox( 
+			EMA.settingsControlWarnings, 
+			headingWidth, 
+			left, 
+			movingTop, 
+			L["MANA_DROPS_BELOW"],
+			EMA.SettingsToggleWarnWhenManaDropsBelowX,
+			L["MANA_DROPS_BELOW_HELP"]
+		)	
+		movingTop = movingTop - checkBoxHeight
+		EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
+			headingWidth,
+			left,
+			movingTop,
+			L["MANA_PERCENTAGE"]
+		)	
+		EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnWhenManaDropsAmount )
+		movingTop = movingTop - editBoxHeight
+		EMA.settingsControlWarnings.editBoxWarnManaDropsMessage = EMAHelperSettings:CreateEditBox( EMA.settingsControlWarnings,
+			headingWidth,
+			left,
+			movingTop,
+			L["LOW_MANA"]
+		)	
+		EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnManaDropsMessage )
+	end
 	movingTop = movingTop - editBoxHeight
 	EMAHelperSettings:CreateHeading( EMA.settingsControlWarnings, L["OTHER"], movingTop, true )
 	movingTop = movingTop - headingHeight	
@@ -665,7 +667,7 @@ local function SettingsCreateWarnings( top )
 		movingTop,
 		L["LOW_DURABILITY_TEXT"]
 	)	
-	EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnDurabilityDropsMessage )	
+	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetCallback( "OnEnterPressed", EMA.EditBoxChangedWarnDurabilityDropsMessage )	
 	movingTop = movingTop - editBoxHeight
 	EMA.settingsControlWarnings.checkBoxWarnCC = EMAHelperSettings:CreateCheckBox( 
 		EMA.settingsControlWarnings, 
@@ -797,12 +799,14 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxWarnTargetNotMasterMessage:SetText( EMA.db.warnTargetNotMasterMessage )
 	EMA.settingsControlWarnings.checkBoxWarnFocusNotMasterEnterCombat:SetValue( EMA.db.warnFocusNotMasterEnterCombat )
 	EMA.settingsControlWarnings.editBoxWarnFocusNotMasterMessage:SetText( EMA.db.warnFocusNotMasterMessage )
-	EMA.settingsControlWarnings.checkBoxWarnWhenHealthDropsBelowX:SetValue( EMA.db.warnWhenHealthDropsBelowX )
-	EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount:SetText( EMA.db.warnWhenHealthDropsAmount )
-	EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetText( EMA.db.warnHealthDropsMessage )
-	EMA.settingsControlWarnings.checkBoxWarnWhenManaDropsBelowX:SetValue( EMA.db.warnWhenManaDropsBelowX )
-	EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetText( EMA.db.warnWhenManaDropsAmount )
-	EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetText( EMA.db.warnManaDropsMessage )		
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
+		EMA.settingsControlWarnings.checkBoxWarnWhenHealthDropsBelowX:SetValue( EMA.db.warnWhenHealthDropsBelowX )
+		EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount:SetText( EMA.db.warnWhenHealthDropsAmount )
+		EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetText( EMA.db.warnHealthDropsMessage )
+		EMA.settingsControlWarnings.checkBoxWarnWhenManaDropsBelowX:SetValue( EMA.db.warnWhenManaDropsBelowX )
+		EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetText( EMA.db.warnWhenManaDropsAmount )
+		EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetText( EMA.db.warnManaDropsMessage )		
+	end
 	EMA.settingsControlWarnings.checkBoxWarnWhenDurabilityDropsBelowX:SetValue( EMA.db.warnWhenDurabilityDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetText( EMA.db.warnWhenDurabilityDropsAmount )
 	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetText( EMA.db.warnDurabilityDropsMessage )	
@@ -840,10 +844,12 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxHitFirstTimeMessage:SetDisabled( not EMA.db.warnHitFirstTimeCombat )
 	EMA.settingsControlWarnings.editBoxWarnTargetNotMasterMessage:SetDisabled( not EMA.db.warnTargetNotMasterEnterCombat )
 	EMA.settingsControlWarnings.editBoxWarnFocusNotMasterMessage:SetDisabled( not EMA.db.warnFocusNotMasterEnterCombat )
-	EMA.settingsControlWarnings.editBoxWarnWhenHealthDropsAmount:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
-	EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
-	EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
-	EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
+		EMA.settingsControlWarnings.editBoxWarneditBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
+		EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
+		EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
+		EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
+	end
 	EMA.settingsControlWarnings.editBoxWarnWhenDurabilityDropsAmount:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )
 	EMA.settingsControlWarnings.editBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenDurabilityDropsBelowX )	
 	EMA.settingsControlWarnings.editBoxWarnWhenBagsAlmostFull:SetDisabled( not EMA.db.warnWhenBagsAlmostFullAmount )
@@ -1796,6 +1802,8 @@ function EMA:MERCHANT_SHOW( event, ... )
 end
 
 function EMA:UNIT_POWER_FREQUENT( event, unitAffected, power, ... )
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == true then return end
+	
 	if EMA.db.warnWhenManaDropsBelowX == false then
 		return
 	end
@@ -1821,6 +1829,7 @@ end
 
 if EMAPrivate.Core.isEmaClassicBccBuild == true then 
 	function EMA:UNIT_HEALTH( event, unitAffected, ... )
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == true then return end
 		if EMA.db.warnWhenHealthDropsBelowX == false then
 			return
 		end	

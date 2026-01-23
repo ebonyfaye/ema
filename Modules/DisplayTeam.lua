@@ -2894,7 +2894,6 @@ function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, i
 	healthBar:SetValue( tonumber( playerHealth ) )
 	healthIncomingBar:SetMinMaxValues( 0, tonumber( playerMaxHealth ) )
 	healthIncomingBar:SetValue( tonumber( playerHealth ) )	
-	
 	if inComingHeal > 0 then
 --	EMA:Print("incomingHeal", inComingHeal)
 		healthIncomingBar:SetValue( tonumber( playerHealth + inComingHeal ) )
@@ -2909,25 +2908,45 @@ function EMA:UpdateHealthStatus( characterName, playerHealth, playerMaxHealth, i
 		--EMA:Print("dead", characterName)
 		text = text..L["DEAD"]
 	else
-		if EMA.db.healthStatusShowValues == true then
-			text = text..tostring( AbbreviateLargeNumbers(playerHealth) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxHealth) )..L[" "].."\n"
+		if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then	
+			if EMA.db.healthStatusShowValues == true then
+				text = text..tostring( AbbreviateLargeNumbers(playerHealth) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxHealth) )..L[" "].."\n"
+			end
+			
+			if EMA.db.healthStatusShowPercentage == true then
+				if EMA.db.healthStatusShowValues == true then
+				text = text.."\n"..tostring( AbbreviateLargeNumbers(playerHealth) )..L[" "]..L["("]..tostring( floor( (playerHealth/playerMaxHealth)*100) )..L["%"]..L[")"]
+			else
+				text = text..tostring( floor( (playerHealth/playerMaxHealth)*100) )..L["%"]
+				end
+			end
 		end
-		if EMA.db.healthStatusShowPercentage == true then
-			--if EMA.db.healthStatusShowValues == true then
-			--text = text.."\n"..tostring( AbbreviateLargeNumbers(playerHealth) )..L[" "]..L["("]..tostring( floor( (playerHealth/playerMaxHealth)*100) )..L["%"]..L[")"]
-		--else
-			text = text..tostring( floor( (playerHealth/playerMaxHealth)*100) )..L["%"]
-			--end
-		end
-	end
+	end	
 	--EMA:Print("test2", text)
 	healthBarText:SetText(text)		
-	EMA:SetStatusBarColourForHealth( healthBar, floor((playerHealth/playerMaxHealth)*100), characterName, class)
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
+		EMA:SetStatusBarColourForHealth( healthBar, floor((playerHealth/playerMaxHealth)*100), characterName, class)
+	else
+		EMA:SetStatusBarColourForHealth12x( healthBar, characterName)
+	end
 end
 
 -- TODO Support for classColors
-function EMA:SetStatusBarColourForHealth( statusBar, statusValue, characterName, class )
-	--EMA:Print("colour class", statusValue, characterName)
+function EMA:SetStatusBarColourForHealth12x( statusBar, characterName)	
+	local name = Ambiguate(characterName, "none")
+	--EMA:Print("nametest", name)
+	local curve = C_CurveUtil.CreateColorCurve();
+	curve:SetType(Enum.LuaCurveType.Step);
+	curve:AddPoint(0.0, CreateColor(1, 0, 0, 1));
+	curve:AddPoint(0.3, CreateColor(1, 1, 0, 1));
+	curve:AddPoint(0.7, CreateColor(0, 1, 0, 1));
+	--EMA:Print("colour", class, statusValue, characterName)
+	local usePredicted = false;
+	local color = UnitHealthPercent( name , usePredicted, curve);
+	statusBar:GetStatusBarTexture():SetVertexColor(color:GetRGB());
+end	
+	
+function EMA:SetStatusBarColourForHealth(statusBar, statusValue, characterName, class)	
 	local classColor = RAID_CLASS_COLORS[class]
 	if classColor ~= nil and EMA.db.showClassColors == true then
 		-- EMA:Print("test", characterName, class, classColor.r, classColor.g, classColor.b )
@@ -2946,7 +2965,7 @@ function EMA:SetStatusBarColourForHealth( statusBar, statusValue, characterName,
 			g = statusValue * 2
 		end
 		b = b
-		statusBar:SetStatusBarColor( r, g, b )
+		statusBar:SetStatusBarColor( r, g, b )	
 	end
 end	
 
@@ -3035,18 +3054,24 @@ function EMA:UpdatePowerStatus( characterName, playerPower, playerMaxPower, powe
 	powerBar:SetMinMaxValues( 0, tonumber( playerMaxPower ) )
 	powerBar:SetValue( tonumber( playerPower ) )
 	local text = ""
-	if EMA.db.powerStatusShowValues == true then
-		text = text..tostring( AbbreviateLargeNumbers(playerPower) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxPower) )..L[" "]
-	end
-	if EMA.db.powerStatusShowPercentage == true then
+	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
 		if EMA.db.powerStatusShowValues == true then
-			text = tostring( AbbreviateLargeNumbers(playerPower) )..L[" "]..L["("]..tostring( floor( (playerPower/playerMaxPower)*100) )..L["%"]..L[")"]
-		else
-			text = tostring( floor( (playerPower/playerMaxPower)*100) )..L["%"]
+			text = text..tostring( AbbreviateLargeNumbers(playerPower) )..L[" / "]..tostring( AbbreviateLargeNumbers(playerMaxPower) )..L[" "]
 		end
-	end
+		if EMA.db.powerStatusShowPercentage == true then
+			if EMA.db.powerStatusShowValues == true then
+				text = tostring( AbbreviateLargeNumbers(playerPower) )..L[" "]..L["("]..tostring( floor( (playerPower/playerMaxPower)*100) )..L["%"]..L[")"]
+			else
+				text = tostring( floor( (playerPower/playerMaxPower)*100) )..L["%"]
+			end
+		end
+	end	
 	powerBarText:SetText( text )		
-	EMA:SetStatusBarColourForPower( powerBar, powerToken )--originalChatacterName )
+	---if (WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false	
+		--EMA:SetStatusBarColourForPower( powerBar, powerToken )--originalChatacterName )
+		
+		
+		EMA:SetStatusBarColourForPower( powerBar, powerToken )--originalChatacterName )
 end
 
 function EMA:SetStatusBarColourForPower( statusBar, powerToken )
