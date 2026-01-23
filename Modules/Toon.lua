@@ -845,7 +845,7 @@ function EMA:SettingsRefresh()
 	EMA.settingsControlWarnings.editBoxWarnTargetNotMasterMessage:SetDisabled( not EMA.db.warnTargetNotMasterEnterCombat )
 	EMA.settingsControlWarnings.editBoxWarnFocusNotMasterMessage:SetDisabled( not EMA.db.warnFocusNotMasterEnterCombat )
 	if WOW_PROJECT_ID == WOW_PROJECT_MAINLINE == false then
-		EMA.settingsControlWarnings.editBoxWarneditBoxWarnDurabilityDropsMessage:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
+		EMA.settingsControlWarnings.checkBoxWarnWhenDurabilityDropsBelowX:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
 		EMA.settingsControlWarnings.editBoxWarnHealthDropsMessage:SetDisabled( not EMA.db.warnWhenHealthDropsBelowX )
 		EMA.settingsControlWarnings.editBoxWarnWhenManaDropsAmount:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
 		EMA.settingsControlWarnings.editBoxWarnManaDropsMessage:SetDisabled( not EMA.db.warnWhenManaDropsBelowX )
