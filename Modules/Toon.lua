@@ -1676,7 +1676,7 @@ function EMA:LFGTeleport( event, arg1, ... )
 end
 
 function EMA:DoLFGTeleport(port)
-	if EMAPrivate.Core.isEmaClassicBccBuild() == ture then return end	
+	if EMAPrivate.Core.isEmaClassicBccBuild() == true then return end	
 	--EMA:Print("TeleCommand", port)
 	EMA.isInternalCommand = true
 	if IsShiftKeyDown() == false then
@@ -1696,10 +1696,10 @@ function EMA:LFG_ROLE_CHECK_SHOW( event, ... )
 			local characterName = EMAUtilities:AddRealmToNameIfMissing( leadername )
 			--EMA:Print("test", characterName)
 			if EMAApi.IsCharacterInTeam( characterName) == true then
-				CompleteLFGRoleCheck("ture")
+				CompleteLFGRoleCheck("true")
 			end
 		else
-			CompleteLFGRoleCheck("ture")
+			CompleteLFGRoleCheck("true")
 		end
 	end	
 end
