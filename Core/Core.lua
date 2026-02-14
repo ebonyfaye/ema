@@ -10,6 +10,29 @@
 --																					--
 -- ================================================================================ --
 
+-------------------------------------------------------------------------------------------------------------
+-- API Compatibility Layer for cross-version support (Classic, TBC, Wrath, Cata, Retail)
+-------------------------------------------------------------------------------------------------------------
+
+local function GetAddOnMetadataCompat(name, field)
+	if C_AddOns and C_AddOns.GetAddOnMetadata then
+		return C_AddOns.GetAddOnMetadata(name, field)
+	elseif GetAddOnMetadata then
+		return GetAddOnMetadata(name, field)
+	end
+	return nil
+end
+
+local function IsAddOnLoadedCompat(name)
+	if C_AddOns and C_AddOns.IsAddOnLoaded then
+		return C_AddOns.IsAddOnLoaded(name)
+	elseif IsAddOnLoaded then
+		return IsAddOnLoaded(name)
+	end
+	return false
+end
+
+-------------------------------------------------------------------------------------------------------------
 -- The global private table for EMA.
 EMAPrivate = {}
 EMAPrivate.Core = {}
